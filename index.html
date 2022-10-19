@@ -5,6 +5,7 @@
       Bonjour 
     </title>
     <style>
+      body {background-color:lightyellow;}
       h2 {text-align: center;}
       h2 {color:blue;}
     </style>
@@ -13,16 +14,7 @@
   <body>
   <h2>Bonjour, je m'appelle <i>Timothee</i>.</h2>
   <p>Ma couleur préférée est le <del>rouge</del> <ins>bleu</ins>.</p>
-  <p>Les autres couleurs sont:</p>
-  <ul>
-  <li>Orange</li>
-  <li>Jaune</li>
-  <li>Vert</li>
-  <li>Rose</li>
-  <li>...</li>
-</ul>
-  <details>
-    <summary>Question:</summary>
+  
     <p><b>Quel</b> est votre nom?<p/>
     <input>
     <p>Préfèrez vous les chiens ou les chats?
@@ -30,8 +22,19 @@
       <option >Chiens</option>
       <option >Chats</option>
     </select></p>
-    <p>Quel est votre couleur préférée?</p>
+    <p>Coisissez votre couleur préférée parmi ces couleurs et inscrivez la en dessous: </p>
+    <details>
+      <summary>Couleurs:</summary>
+      <ul>
+      <font color=red><li>Rouge</li>
+      <font color=orange><li>Orange</li>
+      <font color=yellow><li>Jaune</li>
+      <font color=green><li>Vert</li>
+      <font color=blue><li>Bleu</li>
+      <font color=violet><li>Violet</li>
+      <font color= pink><li>Rose</li>
+      </ul>
+    </details>
     <input>
-  </details>
   </body>
 </html>

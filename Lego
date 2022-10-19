@@ -1,1 +1,17 @@
+<!DOCTYPE html>
+  <html lang="en">
+  <head>
+    <title>
+      Bonjour 
+    </title>
+    <style>
+      body {background-color:lightblue;}
+      h2 {text-align: center;}
+      h2 {color:red;}
+    </style>
+  </head>
 
+  <body>
+  <h2>Lego instructions <i>Timothee</i></h2>
+  </body>
+</html>

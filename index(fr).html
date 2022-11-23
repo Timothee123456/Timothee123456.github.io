@@ -13,16 +13,16 @@ ul {
   background-color: #333;
 }
 
-li {
+.myclass {
   float: left;
   border-right:1px solid #bbb;
 }
 
-li:last-child {
+.myclass:last-child {
   border-right: none;
 }
 
-li a {
+.myclass a {
   display: block;
   color: white;
   text-align: center;
@@ -30,7 +30,7 @@ li a {
   text-decoration: none;
 }
 
-li a:hover:not(.active) {
+.myclass a:hover:not(.active) {
   background-color: #111;
 }
 
@@ -59,9 +59,9 @@ li a:hover:not(.active) {
 <body>
 
 <ul>
-  <li><a class="active" href="https://timothee123456.github.io">Home</a></li>
-  <li><a href="https://timothee123456.github.io/lego">Lego instructions</a></li>
-  <li style="float:right"><a href="#about">About</a></li>
+  <li class="myclass"><a class="active" href="https://timothee123456.github.io">Page d'accueil</a></li>
+  <li class="myclass"><a href="https://timothee123456.github.io/lego">Instructions lego</a></li>
+  <li class="myclass" style="float:right"><a href="#langue">Langue</a></li>
 </ul>
   <h2>Bonjour, je m'appelle <i>Timothée</i></h2>
     <p>Ma couleur préférée est le <del>rouge</del> <ins>bleu</ins>.</p> 
@@ -69,8 +69,9 @@ li a:hover:not(.active) {
     <input>
     <p>Préfèrez vous les chiens ou les chats?
     <select>
-      <option >Chiens</option>
-      <option >Chats</option>
+      <option>Chiens</option>
+      <option>Chats</option>
+      <option>Chiens et chats</option>
     </select></p>
     <details>
       <summary>Image:</summary>
@@ -79,7 +80,6 @@ li a:hover:not(.active) {
     <p>Choisissez votre couleur préférée parmi ces couleurs et inscrivez la en dessous:</p>
     <details>
       <summary>Couleurs:</summary>
-      <ul>
       <font color=red><li>Rouge</li>
       <font color=orange><li>Orange</li>
       <font color=yellow><li>Jaune</li>
@@ -87,7 +87,6 @@ li a:hover:not(.active) {
       <font color=blue><li>Bleu</li>
       <font color=violet><li>Violet</li>
       <font color= pink><li>Rose</li>
-      </ul>
     </details>
     <input>
   </body>

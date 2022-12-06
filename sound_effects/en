@@ -61,7 +61,7 @@ li a:hover:not(.active) {
   <details>
     <summary>Sound track 1:</summary>
     <audio controls>
-  <source src="horse.ogg" type="audio/ogg">
+  <source src="New1.mp3" type="audio/mp3">
 </audio>
   </details>
   <details>

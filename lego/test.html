@@ -34,9 +34,6 @@ li a:hover:not(.active) {
   background-color: #111;
 }
 
-.active {
-  background-color: #04AA6D;
-}
       body {background-color:lightblue;}
       h2 {text-align: center;
         font-size:55px;
@@ -45,12 +42,8 @@ li a:hover:not(.active) {
       summary {font-size:35px;}
       p {font-size:30px;}
 
-.dropdown {
-  float: left;
-  overflow: hidden;
-}
 
-.dropdown .dropbtn {
+button {
   font-size: 16px;  
   border: none;
   outline: none;
@@ -59,7 +52,6 @@ li a:hover:not(.active) {
   background-color: inherit;
   font-family: inherit;
   margin: 0;
-  border-right:1px solid #bbb;
 }
 
 .navbar a:hover, .dropdown:hover .dropbtn {
@@ -69,20 +61,19 @@ li a:hover:not(.active) {
 .dropdown-content {
   display: none;
   position: absolute;
-  background-color: #f9f9f9;
+  background-color:#333 ;
   min-width: 100px;
   box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
   z-index: 1;
 }
 
 .dropdown-content a {
-  float: none;
-  color: black;
-  padding: 12px 16px;
+    display: block;
+  color: white;
+  text-align: center;
+  padding: 14px 16px;
   text-decoration: none;
-  display: block;
-  text-align: left;
-}
+  }
 
 .dropdown-content a:hover {
   background-color: #ddd;
@@ -91,23 +82,26 @@ li a:hover:not(.active) {
 .dropdown:hover .dropdown-content {
   display: block;
 }
+.active {
+  background-color: #04AA6D;
+}
 </style>
 </head>
 <body>
 
 <ul>
   <li><a href="https://timothee123456.github.io/index/en">Home</a></li>
-  <li><a class="active" href="https://timothee123456.github.io/lego/en">Lego instructions</a></li>
-  <li><a href="https://timothee123456.github.io/sound_effects/en">Sound effects</a></li>
-  <li style="float:right"><a href="https://timothee123456.github.io/language/en">Language</a></li>
-  <div class="dropdown">
-    <button class="dropbtn">Lego
+  <li><div class="dropdown">
+    <button class="active">Lego
       <i class="fa fa-caret-down"></i>
     </button>
     <div class="dropdown-content">
-      <a active href="https://timothee123456.github.io/lego/instructions/en">Lego instructions</a>
+      <a href="https://timothee123456.github.io/lego/instructions/en">Lego instructions</a>
       <a href="https://timothee123456.github.io/lego/minecraft/en">Lego minecraft</a>
     </div>
+    </li>
+  <li><a href="https://timothee123456.github.io/sound_effects/en">Sound effects</a></li>
+  <li style="float:right"><a href="https://timothee123456.github.io/language/en">Language</a></li>
 </ul>
   <body>
   <h2>Lego instructions</h2>

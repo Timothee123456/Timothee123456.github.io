@@ -5,9 +5,8 @@
       Hello 
     </title>
 <style>
-body{
-  background-color: red;
-  background-image: linear-gradient(to right, lightyellow , lightgreen);
+.active {
+  background-color: #04AA6D;
 }
 ul {
   list-style-type: none;
@@ -17,16 +16,16 @@ ul {
   background-color: #333;
 }
 
-.myclass {
+li {
   float: left;
   border-right:1px solid #bbb;
 }
 
-.myclass:last-child {
+li:last-child {
   border-right: none;
 }
 
-.myclass a {
+li a {
   display: block;
   color: white;
   text-align: center;
@@ -34,39 +33,15 @@ ul {
   text-decoration: none;
 }
 
-.myclass a:hover:not(.active) {
+li a:hover:not(.active) {
   background-color: #111;
 }
 
-.active {
-  background-color: #04AA6D;
-}
- img:hover {transform: rotate(180deg);}
-      h2 {text-align: center;}
-      h2 {color:blue;}
-      h2 {color: red;
-  animation-name: example;
-  animation-duration: 15s;
+body{
+  background-color: red; /* For browsers that do not support gradients */
+  background-image: linear-gradient(to right, lightyellow , lightgreen);
 }
 
-@keyframes example {
-  from {color: red;}
-  to {color: yellow;}
-  from {color: yellow;}
-  to {color: red;}
-  from {color: red;}
-  to {color:blue;}
-}
-      button {
-  font-size: 16px;  
-  border: none;
-  outline: none;
-  color: white;
-  padding: 14px 16px;
-  background-color: inherit;
-  font-family: inherit;
-  margin: 0;
-}
 
 .navbar a:hover, .dropdown:hover .dropbtn {
   background-color: #111;
@@ -96,19 +71,45 @@ ul {
 .dropdown:hover .dropdown-content {
   display: block;
 }
-
+ img:hover {transform: rotate(180deg);}
+      h2 {text-align: center;}
+      h2 {color:blue;}
+      h2 {color: red;
+  animation-name: example;
+  animation-duration: 15s;
+}
+.button {
+  font-size: 16px;  
+  border: none;
+  outline: none;
+  color: white;
+  padding: 14px 16px;
+  background-color: inherit;
+  font-family: inherit;
+  margin: 0;
+}
+@keyframes example {
+  from {color: red;}
+  to {color: yellow;}
+  from {color: yellow;}
+  to {color: red;}
+  from {color: red;}
+  to {color:blue;}
+}
 </style>
 </head>
 <body>
 
 <ul>
-  <li><a class="active" href="https://timothee123456.github.io/index/en">Home</a></li>
+  <li><a href="https://timothee123456.github.io/index/en">Home</a></li>
   <li><div class="dropdown">
-    <button>Lego
+  <div class="active">
+    <button class="button">Lego
       <i class="fa fa-caret-down"></i>
     </button>
+    </div>
     <div class="dropdown-content">
-      <a href="https://timothee123456.github.io/lego/instructions/en">Lego instructions</a>
+      <a class="active" href="https://timothee123456.github.io/lego/instructions/en">Lego instructions</a>
       <a href="https://timothee123456.github.io/lego/minecraft/en">Lego minecraft</a>
     </div>
     </li>

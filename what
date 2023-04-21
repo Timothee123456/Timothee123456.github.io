@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>
+      Hello 
+    </title>
+    <meta content="">
+    <script scr="http//timothee123456.github.io/what"><script>
+    <script>
+    $(function() {
+      $("#visible").click(function() {
+         $('#invisible').toggleClass("show");
+       });
+     });
+         </script>
+    <style>
+.hide{display:none;}
+.show{display:block;}
+</style>
+</head>
+<body>
+    <p id="visible">Submit</p>
+    <p id="invisible" class="hide">hello</p>
+  </body>
+</html>

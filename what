@@ -2,10 +2,9 @@
 <html>
 <head>
 <title>
-      Hello 
     </title>
     <meta content="">
-    <script scr="http//timothee123456.github.io/what"><script>
+    <script scr="http//code.jquery.com/jquery-lastest.min.js"><script>
     <script>
     $(function() {
       $("#visible").click(function() {

@@ -1,0 +1,63 @@
+<html>
+<body>
+<h3>Remplir le formulaire avec les réponses suivantes: omnivore - omnivore - omnivore</h3>
+<input id="1">
+<nobr id="correction1"></nobr>
+<nobr> definition de omnivore</nobr>
+<br>
+<input id="2">
+<nobr id="correction2"></nobr>
+<nobr> definition de omnivore</nobr>
+<br>
+<input id="3">
+<nobr id="correction3"></nobr>
+<nobr> definition de omnivore</nobr>
+<p></p>
+<button onclick="myFunction()">click</button>
+<script>
+function myFunction() {
+const Word1 = document.getElementById("1").value
+if (Word1 == "Omnivore"){
+document.getElementById("correction1").innerHTML = "✓";
+document.getElementById("correction1").style.color = "green"
+}
+else if(Word1 == "omnivore"){
+document.getElementById("correction1").innerHTML = "✓";
+document.getElementById("correction1").style.color = "green"
+}
+else {
+document.getElementById("correction1").innerHTML = "✕, la réponse est omnivore";
+document.getElementById("correction1").style.color = "red"
+}
+
+const Word2 = document.getElementById("2").value
+if (Word2 == "Omnivore"){
+document.getElementById("correction2").innerHTML = "✓";
+document.getElementById("correction2").style.color = "green"
+}
+else if(Word2 == "omnivore"){
+document.getElementById("correction2").innerHTML = "✓";
+document.getElementById("correction2").style.color = "green"
+}
+else {
+document.getElementById("correction2").innerHTML = "✕, la réponse est omnivore";
+document.getElementById("correction2").style.color = "red"
+}
+
+const Word3 = document.getElementById("3").value
+if (Word3 == "Omnivore"){
+document.getElementById("correction3").innerHTML = "✓";
+document.getElementById("correction3").style.color = "green"
+}
+else if(Word3 == "omnivore"){
+document.getElementById("correction3").innerHTML = "✓";
+document.getElementById("correction3").style.color = "green"
+}
+else {
+document.getElementById("correction3").innerHTML = "✕, la réponse est omnivore";
+document.getElementById("correction3").style.color = "red"
+}
+}
+</script>
+</body>
+</html>

@@ -27,7 +27,10 @@ button {font-size:100%}
 <br>
 <nobr>B:</nobr><input id="5"><nobr id="correction5"></nobr>
 <p></p>
-<nobr>
+<nobr>De quoi se constitue tous les êtres vivants?</nobr>
+<input id="6">
+<nobr id="correction6"></nobr>
+<br>
 <p></p>
 <button onclick="myFunction()">Corriger</button>
 <script>
@@ -79,6 +82,16 @@ document.getElementById("correction5").style.color = "green"
 else {
 document.getElementById("correction5").innerHTML = "✕, la réponse est les décomposeurs";
 document.getElementById("correction5").style.color = "red"
+}
+
+const Word6 = document.getElementById("6").value
+if (Word6 == "Matière organique" || Word6 == "matiere organique" || Word6 == "Matière organique" || Word6 == "matière organique"){
+document.getElementById("correction6").innerHTML = "✓";
+document.getElementById("correction6").style.color = "green"
+}
+else {
+document.getElementById("correction6").innerHTML = "✕, la réponse est matière organique";
+document.getElementById("correction6").style.color = "red"
 }
 }
 

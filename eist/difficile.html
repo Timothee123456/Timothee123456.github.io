@@ -8,7 +8,7 @@ button {font-size:100%}
 </style>
 </head>
 <body>
-<h3>Remplir les définitions avec les réponses suivantes: zoophage - omnivore - phytophage</h3>
+<h3>Remplir les définitions avec les réponses suivantes: zoophage - producteur - omnivore - phytophage</h3>
 <input id="1">
 <nobr id="correction1"></nobr>
   <nobr>:animal qui consomme de la matière organique d'origine végétale.</nobr>
@@ -20,17 +20,44 @@ button {font-size:100%}
 <input id="3">
 <nobr id="correction3"></nobr>
   <nobr>:animal qui consomme de la matière organique d'origine végétale et animale.</nobr>
+  <br>
+<input id="$">
+<nobr id="correction$"></nobr>
+  <nobr>:être vivant qui produit sa propre matière organique.</nobr>
 <h3>À l'aide du document ci dessous, remplir les trous avec les réponses suivantes: Les décomposeurs - Les végétaux</h3>
 <img src="Untitled document.jpg" width="350" height="170">
 <br>
 <nobr>A:</nobr><input id="4"><nobr id="correction4"></nobr>
 <br>
 <nobr>B:</nobr><input id="5"><nobr id="correction5"></nobr>
-<p></p>
+<h3>Répondre au questions suivantes</h3>
 <nobr>De quoi se constitue tous les êtres vivants?</nobr>
 <input id="6">
 <nobr id="correction6"></nobr>
 <br>
+<nobr>De quoi ont besoins les végétaux pour se nourir?</nobr>
+<input id="7">
+<nobr id="correction7"></nobr>
+<br>
+<nobr>De quoi ont besoins les animaux pour se nourir?</nobr>
+<input id="8">
+<nobr id="correction8"></nobr>
+<nobr>et la matière minérale</nobr>
+<br>
+<nobr>Qui sont les premiers maillons de toutes les chaines alimentaires?</nobr>
+<input id="9">
+<nobr id="correction9"></nobr>
+<br>
+<nobr>Comment les appelle-t-on?</nobr>
+<input id="10">
+<nobr id="correction10"></nobr>
+<br>
+<nobr>Comment appelle-t-on tous les autres?</nobr>
+<input id="11">
+<nobr id="correction11"></nobr>
+<nobr>ou producteurs secondaires
+
+</nobr>
 <p></p>
 <button onclick="myFunction()">Corriger</button>
 <script>
@@ -64,6 +91,15 @@ else {
 document.getElementById("correction3").innerHTML = "✕, la réponse est omnivore";
 document.getElementById("correction3").style.color = "red"
 }
+const Word$ = document.getElementById("$").value
+if (Word$ == "Producteur"||Word$ == "producteur"||Word$ == "Producteurs"||Word$ == "producteurs"){
+document.getElementById("correction$").innerHTML = "✓";
+document.getElementById("correction$").style.color = "green"
+}
+else {
+document.getElementById("correction$").innerHTML = "✕, la réponse est producteur";
+document.getElementById("correction$").style.color = "red"
+}
 const Word4 = document.getElementById("4").value
 if (Word4 == "vegetaux" || Word4 == "Vegetaux" || Word4 == "végétaux" || Word4 == "Végétaux" || Word4 == "les vegetaux" || Word4 == "les végétaux" || Word4 == "Les vegetaux" || Word4 == "Les végétaux"){
 document.getElementById("correction4").innerHTML = "✓";
@@ -85,13 +121,63 @@ document.getElementById("correction5").style.color = "red"
 }
 
 const Word6 = document.getElementById("6").value
-if (Word6 == "Matière organique" || Word6 == "matiere organique" || Word6 == "Matière organique" || Word6 == "matière organique"){
+if (Word6 == "Matiere organique" || Word6 == "matiere organique" || Word6 == "Matière organique" || Word6 == "matière organique"){
 document.getElementById("correction6").innerHTML = "✓";
 document.getElementById("correction6").style.color = "green"
 }
 else {
 document.getElementById("correction6").innerHTML = "✕, la réponse est matière organique";
 document.getElementById("correction6").style.color = "red"
+}
+
+const Word7 = document.getElementById("7").value
+if (Word7 == "Matiere minerale" || Word7 == "matiere minerale" || Word7 == "Matière minérale" || Word7 == "matière minérale"){
+document.getElementById("correction7").innerHTML = "✓";
+document.getElementById("correction7").style.color = "green"
+}
+else {
+document.getElementById("correction7").innerHTML = "✕, la réponse est matière minérale";
+document.getElementById("correction7").style.color = "red"
+}
+
+const Word8 = document.getElementById("8").value
+if (Word8 == "Matiere organique" || Word8 == "matiere organique" || Word8 == "Matière organique" || Word8 == "matière organique"){
+document.getElementById("correction8").innerHTML = "✓";
+document.getElementById("correction8").style.color = "green"
+}
+else {
+document.getElementById("correction8").innerHTML = "✕, la réponse est matière organique";
+document.getElementById("correction8").style.color = "red"
+}
+
+const Word9 = document.getElementById("9").value
+if (Word9 == "vegetaux" || Word9 == "Vegetaux" || Word9 == "végétaux" || Word9 == "Végétaux" || Word9 == "les vegetaux" || Word9 == "les végétaux" || Word9 == "Les vegetaux" || Word9 == "Les végétaux"){
+document.getElementById("correction9").innerHTML = "✓";
+document.getElementById("correction9").style.color = "green"
+}
+else {
+document.getElementById("correction9").innerHTML = "✕, la réponse est les végétaux";
+document.getElementById("correction9").style.color = "red"
+}
+
+const Word10 = document.getElementById("10").value
+if (Word10 == "producteurs primaires" || Word10 == "Producteurs primaires"){
+document.getElementById("correction10").innerHTML = "✓";
+document.getElementById("correction10").style.color = "green"
+}
+else {
+document.getElementById("correction10").innerHTML = "✕, la réponse est producteurs primaires";
+document.getElementById("correction10").style.color = "red"
+}
+
+const Word11 = document.getElementById("11").value
+if (Word11 == "consommateurs" || Word11 == "consommateurs"){
+document.getElementById("correction11").innerHTML = "✓";
+document.getElementById("correction11").style.color = "green"
+}
+else {
+document.getElementById("correction11").innerHTML = "✕, la réponse est consommateurs";
+document.getElementById("correction11").style.color = "red"
 }
 }
 

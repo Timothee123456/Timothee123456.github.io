@@ -8,6 +8,9 @@
 .active {
   background-color: #04AA6D;
 }
+.language {
+  background-color: #1ffff4;
+}
 ul {
   list-style-type: none;
   margin: 0;
@@ -90,19 +93,24 @@ li a:hover:not(.active) {
 <ul>
   <li class="li"><a href="https://timothee123456.github.io/index/fr">Page d'accueil</a></li>
   <li class="li"><div class="dropdown">
-  <div class="active">
     <button class="button">Lego
       <i class="fa fa-caret-down"></i>
     </button>
-    </div>
     <div class="dropdown-content">
-      <a href="https://timothee123456.github.io/lego/instructions/fr" class="active">Instructions lego</a>
+      <a class="active" href="https://timothee123456.github.io/lego/instructions/fr">Instructions lego</a>
       <a href="https://timothee123456.github.io/lego/minecraft/fr">Lego minecraft</a>
     </div>
     </li>
   <li class="li"><a href="https://timothee123456.github.io/sound_effects/fr">Effets sonores</a></li>
-    <li class="li"><a href="https://timothee123456.github.io/cambodia_facts/fr">Faits sur le Cambodge</a></li>
-  <li class="li" style="float:right"><a href="https://timothee123456.github.io/language/fr">Langue</a></li>
+  <li class="li"><a href="https://timothee123456.github.io/cambodia_facts/fr">Faits sur le Cambodge</a></li>
+  <li class="li" style="float:right"><div class="dropdown">
+  <button class="button">Langue
+      <i class="fa fa-caret-down"></i>
+    </button>
+    <div class="dropdown-content">
+      <a class="language" href="https://timothee123456.github.io/lego/instructions/fr">Français</a>
+      <a href="https://timothee123456.github.io/lego/instructions/en">Englais</a>
+    </div>
 </ul>
   <body>
   <h2>Instructions lego</h2>

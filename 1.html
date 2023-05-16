@@ -1,0 +1,20 @@
+from gpanel import*
+
+WINDOW_SIZE = 720
+RED = 255-64
+GREEN = 225
+BLUE = 255-64
+
+def onMouseMoved(x, y):
+    var = int(y/720*255)
+    move(WINDOW_SIZE/2, WINDOW_SIZE/2)
+    
+    setColor(RED,225-var,BLUE)
+    fillRectangle(WINDOW_SIZE/2, WINDOW_SIZE/2)
+    
+    setColor(RED,var,BLUE)
+    move(WINDOW_SIZE/2, WINDOW_SIZE/2)
+    fillRectangle(x,x)
+    print("RGB Color:",RED,var,BLUE,"Mouse Position:",x,y)
+    
+makeGPanel(0, WINDOW_SIZE, 0, WINDOW_SIZE, mouseMoved = onMouseMoved)

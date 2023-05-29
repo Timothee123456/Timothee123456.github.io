@@ -1,1 +1,291 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>
+    USA States
+    </title>
+<style>
+.active {
+  background-color: #04AA6D;
+}
+.language {
+  background-color: #1ffff4;
+}
+ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background-color: #333;
+}
 
+.li {
+  float: left;
+  border-right:1px solid #bbb;
+}
+
+li:last-child {
+  border-right: none;
+}
+
+li a {
+  display: block;
+  color: white;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+}
+
+li a:hover:not(.active) {
+  background-color: #111;
+}
+
+
+.navbar a:hover, .dropdown:hover .dropbtn {
+  background-color: #111;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color:#333 ;
+  min-width: 100px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+}
+
+.dropdown-content a {
+    display: block;
+  color: white;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+  }
+
+.dropdown-content a:hover {
+  background-color: #ddd;
+}
+
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+
+.button {
+  font-size: 16px;  
+  border: none;
+  outline: none;
+  color: white;
+  padding: 14px 16px;
+  background-color: inherit;
+  font-family: inherit;
+  margin: 0;
+}
+nobr {font-size: 20px}
+button {font-size: 20px}
+</style>
+</head>
+<body>
+<ul>
+  <li class="li"><a href="https://timothee123456.github.io/index/en">Home</a></li>
+  <li class="li"><div class="dropdown">
+    <button class="button">Lego
+      <i class="fa fa-caret-down"></i>
+    </button>
+    <div class="dropdown-content">
+      <a href="https://timothee123456.github.io/lego/instructions/en">Lego instructions</a>
+      <a href="https://timothee123456.github.io/lego/minecraft/en">Lego minecraft</a>
+    </div>
+    </li>
+  <li class="li"><a href="https://timothee123456.github.io/sound_effects/en">Sound effects</a></li>
+  <li class="li"><a href="https://timothee123456.github.io/cambodia_facts/en">Cambodia facts</a></li>
+  <li class="li"><a href="https://timothee123456.github.io/USA_States/en">USA States</a></li>
+  <li class="li" style="float:right"><div class="dropdown">
+  <button class="button">Language
+      <i class="fa fa-caret-down"></i>
+    </button>
+    <div class="dropdown-content">
+      <a class="language" href="https://timothee123456.github.io/USA_States/en">English</a>
+      <a href="https://timothee123456.github.io/USA_States/fr">French</a>
+    </div>
+</ul>
+<img src="us-states-map-quiz-1.jpg">
+<br>
+<nobr>1.</nobr>
+<input id="1">
+<nobr id="correction1"></nobr>
+<nobr>2.</nobr>
+<input id="2">
+<nobr id="correction2"></nobr>
+<nobr>3.</nobr>
+<input id="3">
+<nobr id="correction3"></nobr>
+<nobr>4.</nobr>
+<input id="4">
+<nobr id="correction4"></nobr>
+<nobr>5.</nobr>
+<input id="5">
+<nobr id="correction5"></nobr>
+<nobr>6.</nobr>
+<input id="6">
+<nobr id="correction6"></nobr>
+<nobr>7.</nobr>
+<input id="7">
+<nobr id="correction7"></nobr>
+<nobr>8.</nobr>
+<input id="8">
+<nobr id="correction8"></nobr>
+<nobr>9.</nobr>
+<input id="9">
+<nobr id="correction9"></nobr>
+<nobr>10.</nobr>
+<input id="10">
+<nobr id="correction10"></nobr>
+<p></p>
+<button onclick="myFunction()">Correct</button>
+<script>
+function myFunction() {
+const Word1 = document.getElementById("1").value
+if (Word1 == "Washington" || Word1 == "washington"){
+document.getElementById("correction1").innerHTML = "✓";
+document.getElementById("correction1").style.color = "green"
+}
+else if (Word1 == ""){
+document.getElementById("1").value = "Washington";
+document.getElementById("1").style.color = "red"
+}
+else {
+document.getElementById("correction1").innerHTML = "✕, Washington";
+document.getElementById("correction1").style.color = "red"
+}
+
+const Word2 = document.getElementById("2").value
+if (Word2 == "Washington" || Word2 == "washington"){
+document.getElementById("correction2").innerHTML = "✓";
+document.getElementById("correction2").style.color = "green"
+}
+else if (Word2 == ""){
+document.getElementById("2").value = "Washington";
+document.getElementById("2").style.color = "red"
+}
+else {
+document.getElementById("correction2").innerHTML = "✕, Washington";
+document.getElementById("correction2").style.color = "red"
+}
+
+const Word3 = document.getElementById("3").value
+if (Word3 == "Washington" || Word3 == "washington"){
+document.getElementById("correction3").innerHTML = "✓";
+document.getElementById("correction3").style.color = "green"
+}
+else if (Word3 == ""){
+document.getElementById("3").value = "Washington";
+document.getElementById("3").style.color = "red"
+}
+else {
+document.getElementById("correction3").innerHTML = "✕, Washington";
+document.getElementById("correction3").style.color = "red"
+}
+
+const Word4 = document.getElementById("4").value
+if (Word4 == "Washington" || Word4 == "washington"){
+document.getElementById("correction4").innerHTML = "✓";
+document.getElementById("correction4").style.color = "green"
+}
+else if (Word4 == ""){
+document.getElementById("4").value = "Washington";
+document.getElementById("4").style.color = "red"
+}
+else {
+document.getElementById("correction4").innerHTML = "✕, Washington";
+document.getElementById("correction4").style.color = "red"
+}
+
+const Word5 = document.getElementById("5").value
+if (Word5 == "Washington" || Word5 == "washington"){
+document.getElementById("correction5").innerHTML = "✓";
+document.getElementById("correction5").style.color = "green"
+}
+else if (Word5 == ""){
+document.getElementById("5").value = "Washington";
+document.getElementById("5").style.color = "red"
+}
+else {
+document.getElementById("correction5").innerHTML = "✕, Washington";
+document.getElementById("correction5").style.color = "red"
+}
+
+const Word6 = document.getElementById("6").value
+if (Word6 == "Washington" || Word6 == "washington"){
+document.getElementById("correction6").innerHTML = "✓";
+document.getElementById("correction6").style.color = "green"
+}
+else if (Word6 == ""){
+document.getElementById("6").value = "Washington";
+document.getElementById("6").style.color = "red"
+}
+else {
+document.getElementById("correction6").innerHTML = "✕, Washington";
+document.getElementById("correction6").style.color = "red"
+}
+
+const Word7 = document.getElementById("7").value
+if (Word7 == "Washington" || Word7 == "washington"){
+document.getElementById("correction7").innerHTML = "✓";
+document.getElementById("correction7").style.color = "green"
+}
+else if (Word7 == ""){
+document.getElementById("7").value = "Washington";
+document.getElementById("7").style.color = "red"
+}
+else {
+document.getElementById("correction7").innerHTML = "✕, Washington";
+document.getElementById("correction7").style.color = "red"
+}
+
+const Word8 = document.getElementById("8").value
+if (Word8 == "Washington" || Word8 == "washington"){
+document.getElementById("correction8").innerHTML = "✓";
+document.getElementById("correction8").style.color = "green"
+}
+else if (Word8 == ""){
+document.getElementById("8").value = "Washington";
+document.getElementById("8").style.color = "red"
+}
+else {
+document.getElementById("correction8").innerHTML = "✕, Washington";
+document.getElementById("correction8").style.color = "red"
+}
+
+const Word9 = document.getElementById("9").value
+if (Word9 == "Washington" || Word9 == "washington"){
+document.getElementById("correction9").innerHTML = "✓";
+document.getElementById("correction9").style.color = "green"
+}
+else if (Word9 == ""){
+document.getElementById("9").value = "Washington";
+document.getElementById("9").style.color = "red"
+}
+else {
+document.getElementById("correction9").innerHTML = "✕, Washington";
+document.getElementById("correction9").style.color = "red"
+}
+
+const Word10 = document.getElementById("10").value
+if (Word10 == "Washington" || Word10 == "washington"){
+document.getElementById("correction10").innerHTML = "✓";
+document.getElementById("correction10").style.color = "green"
+}
+else if (Word10 == ""){
+document.getElementById("10").value = "Washington";
+document.getElementById("10").style.color = "red"
+}
+else {
+document.getElementById("correction10").innerHTML = "✕, Washington";
+document.getElementById("correction10").style.color = "red"
+}
+
+
+}
+</script>
+</body>
+</html>

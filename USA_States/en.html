@@ -272,8 +272,12 @@ button {font-size: 20px}
 <p></p>
 <button onclick="myFunction()">Correct</button>
 <p></p>
-<button onclick="()">Reset</button>
+<button onclick="reset()">Reset</button>
 <script>
+function reset() {
+document.getElementById("correction1").innerHTML = ""
+
+
 function myFunction() {
 const Word1 = document.getElementById("1").value
 if (Word1 == "Washington" || Word1 == "washington"){

@@ -1,0 +1,1196 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>
+    USA States
+    </title>
+<style>
+.active {
+  background-color: #04AA6D;
+}
+.language {
+  background-color: #1ffff4;
+}
+ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background-color: #333;
+}
+
+.li {
+  float: left;
+  border-right:1px solid #bbb;
+}
+
+li:last-child {
+  border-right: none;
+}
+
+li a {
+  display: block;
+  color: white;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+}
+
+li a:hover:not(.active) {
+  background-color: #111;
+}
+
+
+.navbar a:hover, .dropdown:hover .dropbtn {
+  background-color: #111;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color:#333 ;
+  min-width: 100px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+}
+
+.dropdown-content a {
+    display: block;
+  color: white;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+  }
+
+.dropdown-content a:hover {
+  background-color: #ddd;
+}
+
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+
+.button {
+  font-size: 16px;  
+  border: none;
+  outline: none;
+  color: white;
+  padding: 14px 16px;
+  background-color: inherit;
+  font-family: inherit;
+  margin: 0;
+}
+img {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+button a {
+  color: black;
+  text-decoration: none;
+}
+
+button {font-size: 20px}
+</style>
+</head>
+<body>
+<ul>
+  <li class="li"><a href="https://timothee123456.github.io/index/en">Home</a></li>
+  <li class="li"><div class="dropdown">
+    <button class="button">Lego
+      <i class="fa fa-caret-down"></i>
+    </button>
+    <div class="dropdown-content">
+      <a href="https://timothee123456.github.io/lego/instructions/en">Lego instructions</a>
+      <a href="https://timothee123456.github.io/lego/minecraft/en">Lego minecraft</a>
+    </div>
+    </li>
+  <li class="li"><a href="https://timothee123456.github.io/sound_effects/en">Sound effects</a></li>
+  <li class="li"><a href="https://timothee123456.github.io/cambodia_facts/en">Cambodia facts</a></li>
+  <li class="li"><a class="active" href="https://timothee123456.github.io/USA_States/en">USA States</a></li>
+  <li class="li" style="float:right"><div class="dropdown">
+  <button class="button">Language
+      <i class="fa fa-caret-down"></i>
+    </button>
+    <div class="dropdown-content">
+      <a class="language" href="https://timothee123456.github.io/USA_States/en">English</a>
+      <a href="https://timothee123456.github.io/USA_States/fr">French</a>
+    </div>
+</ul>
+<img src="us-states-map-quiz-1.jpg" width="50%">
+<br>
+<nobr>1.</nobr>
+<input autocomplete="off" id="1">
+<nobr id="correction1"></nobr>
+<nobr>2.</nobr>
+<input autocomplete="off" id="2">
+<nobr id="correction2"></nobr>
+<nobr>3.</nobr>
+<input autocomplete="off" id="3">
+<nobr id="correction3"></nobr>
+<nobr>4.</nobr>
+<input autocomplete="off" id="4">
+<nobr id="correction4"></nobr>
+<nobr>5.</nobr>
+<input autocomplete="off" id="5">
+<nobr id="correction5"></nobr>
+<nobr>6.</nobr>
+<input autocomplete="off" id="6">
+<nobr id="correction6"></nobr>
+<nobr>7.</nobr>
+<input autocomplete="off" id="7">
+<nobr id="correction7"></nobr>
+<nobr>8.</nobr>
+<input autocomplete="off" id="8">
+<nobr id="correction8"></nobr>
+<nobr>9.</nobr>
+<input autocomplete="off" id="9">
+<nobr id="correction9"></nobr>
+<nobr>10.</nobr>
+<input autocomplete="off" id="10">
+<nobr id="correction10"></nobr>
+<br>
+<nobr>11.</nobr>
+<input autocomplete="off" id="11">
+<nobr id="correction11"></nobr>
+<nobr>12.</nobr>
+<input autocomplete="off" id="12">
+<nobr id="correction12"></nobr>
+<nobr>13.</nobr>
+<input autocomplete="off" id="13">
+<nobr id="correction13"></nobr>
+<nobr>14.</nobr>
+<input autocomplete="off" id="14">
+<nobr id="correction14"></nobr>
+<nobr>15.</nobr>
+<input autocomplete="off" id="15">
+<nobr id="correction15"></nobr>
+<nobr>16.</nobr>
+<input autocomplete="off" id="16">
+<nobr id="correction16"></nobr>
+<nobr>17.</nobr>
+<input autocomplete="off" id="17">
+<nobr id="correction17"></nobr>
+<nobr>18.</nobr>
+<input autocomplete="off" id="18">
+<nobr id="correction18"></nobr>
+<nobr>19.</nobr>
+<input autocomplete="off" id="19">
+<nobr id="correction19"></nobr>
+<nobr>20.</nobr>
+<input autocomplete="off" id="20">
+<nobr id="correction20"></nobr>
+<br>
+<nobr>21.</nobr>
+<input autocomplete="off" id="21">
+<nobr id="correction21"></nobr>
+<nobr>22.</nobr>
+<input autocomplete="off" id="22">
+<nobr id="correction22"></nobr>
+<nobr>23.</nobr>
+<input autocomplete="off" id="23">
+<nobr id="correction23"></nobr>
+<nobr>24.</nobr>
+<input autocomplete="off" id="24">
+<nobr id="correction24"></nobr>
+<nobr>25.</nobr>
+<input autocomplete="off" id="25">
+<nobr id="correction25"></nobr>
+<nobr>26.</nobr>
+<input autocomplete="off" id="26">
+<nobr id="correction26"></nobr>
+<nobr>27.</nobr>
+<input autocomplete="off" id="27">
+<nobr id="correction27"></nobr>
+<nobr>28.</nobr>
+<input autocomplete="off" id="28">
+<nobr id="correction28"></nobr>
+<nobr>29.</nobr>
+<input autocomplete="off" id="29">
+<nobr id="correction29"></nobr>
+<nobr>30.</nobr>
+<input autocomplete="off" id="30">
+<nobr id="correction30"></nobr>
+<br>
+<nobr>31.</nobr>
+<input autocomplete="off" id="31">
+<nobr id="correction31"></nobr>
+<nobr>32.</nobr>
+<input autocomplete="off" id="32">
+<nobr id="correction32"></nobr>
+<nobr>33.</nobr>
+<input autocomplete="off" id="33">
+<nobr id="correction33"></nobr>
+<nobr>34.</nobr>
+<input autocomplete="off" id="34">
+<nobr id="correction34"></nobr>
+<nobr>35.</nobr>
+<input autocomplete="off" id="35">
+<nobr id="correction35"></nobr>
+<nobr>36.</nobr>
+<input autocomplete="off" id="36">
+<nobr id="correction36"></nobr>
+<nobr>37.</nobr>
+<input autocomplete="off" id="37">
+<nobr id="correction37"></nobr>
+<nobr>38.</nobr>
+<input autocomplete="off" id="38">
+<nobr id="correction38"></nobr>
+<nobr>39.</nobr>
+<input autocomplete="off" id="39">
+<nobr id="correction39"></nobr>
+<nobr>40.</nobr>
+<input autocomplete="off" id="40">
+<nobr id="correction40"></nobr>
+<br>
+<nobr>41.</nobr>
+<input autocomplete="off" id="41">
+<nobr id="correction41"></nobr>
+<nobr>42.</nobr>
+<input autocomplete="off" id="42">
+<nobr id="correction42"></nobr>
+<nobr>43.</nobr>
+<input autocomplete="off" id="43">
+<nobr id="correction43"></nobr>
+<nobr>44.</nobr>
+<input autocomplete="off" id="44">
+<nobr id="correction44"></nobr>
+<nobr>45.</nobr>
+<input autocomplete="off" id="45">
+<nobr id="correction45"></nobr>
+<nobr>46.</nobr>
+<input autocomplete="off" id="46">
+<nobr id="correction46"></nobr>
+<nobr>47.</nobr>
+<input autocomplete="off" id="47">
+<nobr id="correction47"></nobr>
+<nobr>48.</nobr>
+<input autocomplete="off" id="48">
+<nobr id="correction48"></nobr>
+<nobr>49.</nobr>
+<input autocomplete="off" id="49">
+<nobr id="correction49"></nobr>
+<nobr>50.</nobr>
+<input autocomplete="off" id="50">
+<nobr id="correction50"></nobr>
+<br>
+<p></p>
+<button><a href="https://timothee123456.github.io/USA_States/en">Reduce size</a></button>
+<p></p>
+<button onclick="myFunction()">Correct</button>
+<p></p>
+<button onclick="reset()">Reset</button>
+<script>
+function reset() {
+document.getElementById("correction1").innerHTML = ""
+document.getElementById("1").value = ""
+document.getElementById("1").style.color = "black"
+
+document.getElementById("correction2").innerHTML = ""
+document.getElementById("2").value = ""
+document.getElementById("2").style.color = "black"
+
+document.getElementById("correction3").innerHTML = ""
+document.getElementById("3").value = ""
+document.getElementById("3").style.color = "black"
+
+document.getElementById("correction4").innerHTML = ""
+document.getElementById("4").value = ""
+document.getElementById("4").style.color = "black"
+
+document.getElementById("correction5").innerHTML = ""
+document.getElementById("5").value = ""
+document.getElementById("5").style.color = "black"
+
+document.getElementById("correction6").innerHTML = ""
+document.getElementById("6").value = ""
+document.getElementById("6").style.color = "black"
+
+document.getElementById("correction7").innerHTML = ""
+document.getElementById("7").value = ""
+document.getElementById("7").style.color = "black"
+
+document.getElementById("correction8").innerHTML = ""
+document.getElementById("8").value = ""
+document.getElementById("8").style.color = "black"
+
+document.getElementById("correction9").innerHTML = ""
+document.getElementById("9").value = ""
+document.getElementById("9").style.color = "black"
+
+document.getElementById("correction10").innerHTML = ""
+document.getElementById("10").value = ""
+document.getElementById("10").style.color = "black"
+
+document.getElementById("correction11").innerHTML = ""
+document.getElementById("11").value = ""
+document.getElementById("11").style.color = "black"
+
+document.getElementById("correction12").innerHTML = ""
+document.getElementById("12").value = ""
+document.getElementById("12").style.color = "black"
+
+document.getElementById("correction13").innerHTML = ""
+document.getElementById("13").value = ""
+document.getElementById("13").style.color = "black"
+
+document.getElementById("correction14").innerHTML = ""
+document.getElementById("14").value = ""
+document.getElementById("14").style.color = "black"
+
+document.getElementById("correction15").innerHTML = ""
+document.getElementById("15").value = ""
+document.getElementById("15").style.color = "black"
+
+document.getElementById("correction16").innerHTML = ""
+document.getElementById("16").value = ""
+document.getElementById("16").style.color = "black"
+
+document.getElementById("correction17").innerHTML = ""
+document.getElementById("17").value = ""
+document.getElementById("17").style.color = "black"
+
+document.getElementById("correction18").innerHTML = ""
+document.getElementById("18").value = ""
+document.getElementById("18").style.color = "black"
+
+document.getElementById("correction19").innerHTML = ""
+document.getElementById("19").value = ""
+document.getElementById("19").style.color = "black"
+
+document.getElementById("correction20").innerHTML = ""
+document.getElementById("20").value = ""
+document.getElementById("20").style.color = "black"
+
+document.getElementById("correction21").innerHTML = ""
+document.getElementById("21").value = ""
+document.getElementById("21").style.color = "black"
+
+document.getElementById("correction22").innerHTML = ""
+document.getElementById("22").value = ""
+document.getElementById("22").style.color = "black"
+
+document.getElementById("correction23").innerHTML = ""
+document.getElementById("23").value = ""
+document.getElementById("23").style.color = "black"
+
+document.getElementById("correction24").innerHTML = ""
+document.getElementById("24").value = ""
+document.getElementById("24").style.color = "black"
+
+document.getElementById("correction25").innerHTML = ""
+document.getElementById("25").value = ""
+document.getElementById("25").style.color = "black"
+
+document.getElementById("correction26").innerHTML = ""
+document.getElementById("26").value = ""
+document.getElementById("26").style.color = "black"
+
+document.getElementById("correction27").innerHTML = ""
+document.getElementById("27").value = ""
+document.getElementById("27").style.color = "black"
+
+document.getElementById("correction28").innerHTML = ""
+document.getElementById("28").value = ""
+document.getElementById("28").style.color = "black"
+
+document.getElementById("correction29").innerHTML = ""
+document.getElementById("29").value = ""
+document.getElementById("29").style.color = "black"
+
+document.getElementById("correction30").innerHTML = ""
+document.getElementById("30").value = ""
+document.getElementById("30").style.color = "black"
+
+document.getElementById("correction31").innerHTML = ""
+document.getElementById("31").value = ""
+document.getElementById("31").style.color = "black"
+
+document.getElementById("correction32").innerHTML = ""
+document.getElementById("32").value = ""
+document.getElementById("32").style.color = "black"
+
+document.getElementById("correction33").innerHTML = ""
+document.getElementById("33").value = ""
+document.getElementById("33").style.color = "black"
+
+document.getElementById("correction34").innerHTML = ""
+document.getElementById("34").value = ""
+document.getElementById("34").style.color = "black"
+
+document.getElementById("correction35").innerHTML = ""
+document.getElementById("35").value = ""
+document.getElementById("35").style.color = "black"
+
+document.getElementById("correction36").innerHTML = ""
+document.getElementById("36").value = ""
+document.getElementById("36").style.color = "black"
+
+document.getElementById("correction37").innerHTML = ""
+document.getElementById("37").value = ""
+document.getElementById("37").style.color = "black"
+
+document.getElementById("correction38").innerHTML = ""
+document.getElementById("38").value = ""
+document.getElementById("38").style.color = "black"
+
+document.getElementById("correction39").innerHTML = ""
+document.getElementById("39").value = ""
+document.getElementById("39").style.color = "black"
+
+document.getElementById("correction40").innerHTML = ""
+document.getElementById("40").value = ""
+document.getElementById("40").style.color = "black"
+
+document.getElementById("correction41").innerHTML = ""
+document.getElementById("41").value = ""
+document.getElementById("41").style.color = "black"
+
+document.getElementById("correction42").innerHTML = ""
+document.getElementById("42").value = ""
+document.getElementById("42").style.color = "black"
+
+document.getElementById("correction43").innerHTML = ""
+document.getElementById("43").value = ""
+document.getElementById("43").style.color = "black"
+
+document.getElementById("correction44").innerHTML = ""
+document.getElementById("44").value = ""
+document.getElementById("44").style.color = "black"
+
+document.getElementById("correction45").innerHTML = ""
+document.getElementById("45").value = ""
+document.getElementById("45").style.color = "black"
+
+document.getElementById("correction46").innerHTML = ""
+document.getElementById("46").value = ""
+document.getElementById("46").style.color = "black"
+
+document.getElementById("correction47").innerHTML = ""
+document.getElementById("47").value = ""
+document.getElementById("47").style.color = "black"
+
+document.getElementById("correction48").innerHTML = ""
+document.getElementById("48").value = ""
+document.getElementById("48").style.color = "black"
+
+document.getElementById("correction49").innerHTML = ""
+document.getElementById("49").value = ""
+document.getElementById("49").style.color = "black"
+
+document.getElementById("correction50").innerHTML = ""
+document.getElementById("50").value = ""
+document.getElementById("50").style.color = "black"
+
+}
+
+
+
+function myFunction() {
+const Word1 = document.getElementById("1").value
+if (Word1 == "Washington" || Word1 == "washington"){
+document.getElementById("correction1").innerHTML = "✓";
+document.getElementById("correction1").style.color = "green"
+}
+else if (Word1 == ""){
+document.getElementById("1").value = "Washington";
+document.getElementById("1").style.color = "red"
+}
+else {
+document.getElementById("correction1").innerHTML = "✕, Washington";
+document.getElementById("correction1").style.color = "red"
+}
+
+const Word2 = document.getElementById("2").value
+if (Word2 == "Oregon" || Word2 == "oregon"){
+document.getElementById("correction2").innerHTML = "✓";
+document.getElementById("correction2").style.color = "green"
+}
+else if (Word2 == ""){
+document.getElementById("2").value = "Oregon";
+document.getElementById("2").style.color = "red"
+}
+else {
+document.getElementById("correction2").innerHTML = "✕, Oregon";
+document.getElementById("correction2").style.color = "red"
+}
+
+const Word3 = document.getElementById("3").value
+if (Word3 == "California" || Word3 == "california"){
+document.getElementById("correction3").innerHTML = "✓";
+document.getElementById("correction3").style.color = "green"
+}
+else if (Word3 == ""){
+document.getElementById("3").value = "California";
+document.getElementById("3").style.color = "red"
+}
+else {
+document.getElementById("correction3").innerHTML = "✕, California";
+document.getElementById("correction3").style.color = "red"
+}
+
+const Word4 = document.getElementById("4").value
+if (Word4 == "Arizona" || Word4 == "aNevadarizona"){
+document.getElementById("correction4").innerHTML = "✓";
+document.getElementById("correction4").style.color = "green"
+}
+else if (Word4 == ""){
+document.getElementById("4").value = "Arizona";
+document.getElementById("4").style.color = "red"
+}
+else {
+document.getElementById("correction4").innerHTML = "✕, Arizona";
+document.getElementById("correction4").style.color = "red"
+}
+
+const Word5 = document.getElementById("5").value
+if (Word5 == "Nevada" || Word5 == "nevada"){
+document.getElementById("correction5").innerHTML = "✓";
+document.getElementById("correction5").style.color = "green"
+}
+else if (Word5 == ""){
+document.getElementById("5").value = "Nevada";
+document.getElementById("5").style.color = "red"
+}
+else {
+document.getElementById("correction5").innerHTML = "✕, Nevada";
+document.getElementById("correction5").style.color = "red"
+}
+
+const Word6 = document.getElementById("6").value
+if (Word6 == "Utah" || Word6 == "utah"){
+document.getElementById("correction6").innerHTML = "✓";
+document.getElementById("correction6").style.color = "green"
+}
+else if (Word6 == ""){
+document.getElementById("6").value = "Utah";
+document.getElementById("6").style.color = "red"
+}
+else {
+document.getElementById("correction6").innerHTML = "✕, Utah";
+document.getElementById("correction6").style.color = "red"
+}
+
+const Word7 = document.getElementById("7").value
+if (Word7 == "Idaho" || Word7 == "idaho"){
+document.getElementById("correction7").innerHTML = "✓";
+document.getElementById("correction7").style.color = "green"
+}
+else if (Word7 == ""){
+document.getElementById("7").value = "Idaho";
+document.getElementById("7").style.color = "red"
+}
+else {
+document.getElementById("correction7").innerHTML = "✕, Idaho";
+document.getElementById("correction7").style.color = "red"
+}
+
+const Word8 = document.getElementById("8").value
+if (Word8 == "Montana" || Word8 == "montana"){
+document.getElementById("correction8").innerHTML = "✓";
+document.getElementById("correction8").style.color = "green"
+}
+else if (Word8 == ""){
+document.getElementById("8").value = "Montana";
+document.getElementById("8").style.color = "red"
+}
+else {
+document.getElementById("correction8").innerHTML = "✕, Montana";
+document.getElementById("correction8").style.color = "red"
+}
+
+const Word9 = document.getElementById("9").value
+if (Word9 == "Wyoming" || Word9 == "wyoming"){
+document.getElementById("correction9").innerHTML = "✓";
+document.getElementById("correction9").style.color = "green"
+}
+else if (Word9 == ""){
+document.getElementById("9").value = "Wyoming";
+document.getElementById("9").style.color = "red"
+}
+else {
+document.getElementById("correction9").innerHTML = "✕, Wyoming";
+document.getElementById("correction9").style.color = "red"
+}
+
+const Word10 = document.getElementById("10").value
+if (Word10 == "Colorado" || Word10 == "colorado"){
+document.getElementById("correction10").innerHTML = "✓";
+document.getElementById("correction10").style.color = "green"
+}
+else if (Word10 == ""){
+document.getElementById("10").value = "Colorado";
+document.getElementById("10").style.color = "red"
+}
+else {
+document.getElementById("correction10").innerHTML = "✕, Colorado";
+document.getElementById("correction10").style.color = "red"
+}
+
+const Word11 = document.getElementById("11").value
+if (Word11 == "New Mexico" || Word11 == "new mexico"){
+document.getElementById("correction11").innerHTML = "✓";
+document.getElementById("correction11").style.color = "green"
+}
+
+else if (Word11 == ""){
+document.getElementById("11").value = "New Mexico";
+document.getElementById("11").style.color = "red"
+}
+else {
+document.getElementById("correction11").innerHTML = "✕, New Mexico";
+document.getElementById("correction11").style.color = "red"
+}
+
+const Word12 = document.getElementById("12").value
+if (Word12 == "Texas" || Word12 == "texas"){
+document.getElementById("correction12").innerHTML = "✓";
+document.getElementById("correction12").style.color = "green"
+}
+else if (Word12 == ""){
+document.getElementById("12").value = "Texas";
+document.getElementById("12").style.color = "red"
+}
+else {
+document.getElementById("correction12").innerHTML = "✕, Texas";
+document.getElementById("correction12").style.color = "red"
+}
+
+const Word13 = document.getElementById("13").value
+if (Word13 == "Oklahoma" || Word13 == "oklahoma"){
+document.getElementById("correction13").innerHTML = "✓";
+document.getElementById("correction13").style.color = "green"
+}
+else if (Word13 == ""){
+document.getElementById("13").value = "Oklahoma";
+document.getElementById("13").style.color = "red"
+}
+else {
+document.getElementById("correction13").innerHTML = "✕, Oklahoma";
+document.getElementById("correction13").style.color = "red"
+}
+
+const Word14 = document.getElementById("14").value
+if (Word14 == "Kansas" || Word14 == "kansas"){
+document.getElementById("correction14").innerHTML = "✓";
+document.getElementById("correction14").style.color = "green"
+}
+else if (Word14 == ""){
+document.getElementById("14").value = "Kansas";
+document.getElementById("14").style.color = "red"
+}
+else {
+document.getElementById("correction14").innerHTML = "✕, Kansas";
+document.getElementById("correction14").style.color = "red"
+}
+
+const Word15 = document.getElementById("15").value
+if (Word15 == "Nebraska" || Word15 == "nebraska"){
+document.getElementById("correction15").innerHTML = "✓";
+document.getElementById("correction15").style.color = "green"
+}
+else if (Word15 == ""){
+document.getElementById("15").value = "Nebraska";
+document.getElementById("15").style.color = "red"
+}
+else {
+document.getElementById("correction15").innerHTML = "✕, Nebraska";
+document.getElementById("correction15").style.color = "red"
+}
+
+const Word16 = document.getElementById("16").value
+if (Word16 == "South Dakota" || Word16 == "south dakota"){
+document.getElementById("correction16").innerHTML = "✓";
+document.getElementById("correction16").style.color = "green"
+}
+else if (Word16 == ""){
+document.getElementById("16").value = "South Dakota";
+document.getElementById("16").style.color = "red"
+}
+else {
+document.getElementById("correction16").innerHTML = "✕, South Dakota";
+document.getElementById("correction16").style.color = "red"
+}
+
+const Word17 = document.getElementById("17").value
+if (Word17 == "North Dakota" || Word17 == "north dakota"){
+document.getElementById("correction17").innerHTML = "✓";
+document.getElementById("correction17").style.color = "green"
+}
+else if (Word17 == ""){
+document.getElementById("17").value = "North Dakota";
+document.getElementById("17").style.color = "red"
+}
+else {
+document.getElementById("correction17").innerHTML = "✕, North Dakota";
+document.getElementById("correction17").style.color = "red"
+}
+
+const Word18 = document.getElementById("18").value
+if (Word18 == "Minnesota" || Word18 == "minnesota"){
+document.getElementById("correction18").innerHTML = "✓";
+document.getElementById("correction18").style.color = "green"
+}
+else if (Word18 == ""){
+document.getElementById("18").value = "Minnesota";
+document.getElementById("18").style.color = "red"
+}
+else {
+document.getElementById("correction18").innerHTML = "✕, Minnesota";
+document.getElementById("correction18").style.color = "red"
+}
+
+const Word19 = document.getElementById("19").value
+if (Word19 == "Iowa" || Word19 == "iowa"){
+document.getElementById("correction19").innerHTML = "✓";
+document.getElementById("correction19").style.color = "green"
+}
+else if (Word19 == ""){
+document.getElementById("19").value = "Iowa";
+document.getElementById("19").style.color = "red"
+}
+else {
+document.getElementById("correction19").innerHTML = "✕, Iowa";
+document.getElementById("correction19").style.color = "red"
+}
+
+
+const Word20 = document.getElementById("20").value
+if (Word20 == "Missouri" || Word20 == "missouri"){
+document.getElementById("correction20").innerHTML = "✓";
+document.getElementById("correction20").style.color = "green"
+}
+else if (Word20 == ""){
+document.getElementById("20").value = "Missouri";
+document.getElementById("20").style.color = "red"
+}
+else {
+document.getElementById("correction20").innerHTML = "✕, Missouri";
+document.getElementById("correction20").style.color = "red"
+}
+
+const Word21 = document.getElementById("21").value
+if (Word21 == "Arkansas" || Word21 == "arkansas"){
+document.getElementById("correction21").innerHTML = "✓";
+document.getElementById("correction21").style.color = "green"
+}
+else if (Word21 == ""){
+document.getElementById("21").value = "Arkansas";
+document.getElementById("21").style.color = "red"
+}
+else {
+document.getElementById("correction21").innerHTML = "✕, Arkansas";
+document.getElementById("correction21").style.color = "red"
+}
+
+const Word22 = document.getElementById("22").value
+if (Word22 == "Louisiana" || Word22 == "louisiana"){
+document.getElementById("correction22").innerHTML = "✓";
+document.getElementById("correction22").style.color = "green"
+}
+else if (Word22 == ""){
+document.getElementById("22").value = "Louisiana";
+document.getElementById("22").style.color = "red"
+}
+else {
+document.getElementById("correction22").innerHTML = "✕, Louisiana";
+document.getElementById("correction22").style.color = "red"
+}
+
+const Word23 = document.getElementById("23").value
+if (Word23 == "Wisconsin" || Word23 == "wisconsin"){
+document.getElementById("correction23").innerHTML = "✓";
+document.getElementById("correction23").style.color = "green"
+}
+else if (Word23 == ""){
+document.getElementById("23").value = "Wisconsin";
+document.getElementById("23").style.color = "red"
+}
+else {
+document.getElementById("correction23").innerHTML = "✕, Wisconsin";
+document.getElementById("correction23").style.color = "red"
+}
+
+const Word24 = document.getElementById("24").value
+if (Word24 == "Michigan" || Word24 == "michigan"){
+document.getElementById("correction24").innerHTML = "✓";
+document.getElementById("correction24").style.color = "green"
+}
+else if (Word24 == ""){
+document.getElementById("24").value = "Michigan";
+document.getElementById("24").style.color = "red"
+}
+else {
+document.getElementById("correction24").innerHTML = "✕, Michigan";
+document.getElementById("correction24").style.color = "red"
+}
+
+const Word25 = document.getElementById("25").value
+if (Word25 == "Illinois" || Word25 == "illinois"){
+document.getElementById("correction25").innerHTML = "✓";
+document.getElementById("correction25").style.color = "green"
+}
+else if (Word25 == ""){
+document.getElementById("25").value = "Illinois";
+document.getElementById("25").style.color = "red"
+}
+else {
+document.getElementById("correction25").innerHTML = "✕, Illinois";
+document.getElementById("correction25").style.color = "red"
+}
+
+const Word26 = document.getElementById("26").value
+if (Word26 == "Indiana" || Word26 == "indiana"){
+document.getElementById("correction26").innerHTML = "✓";
+document.getElementById("correction26").style.color = "green"
+}
+else if (Word26 == ""){
+document.getElementById("26").value = "Indiana";
+document.getElementById("26").style.color = "red"
+}
+else {
+document.getElementById("correction26").innerHTML = "✕, Indiana";
+document.getElementById("correction26").style.color = "red"
+}
+
+const Word27 = document.getElementById("27").value
+if (Word27 == "Ohio" || Word27 == "ohio"){
+document.getElementById("correction27").innerHTML = "✓";
+document.getElementById("correction27").style.color = "green"
+}
+else if (Word27 == ""){
+document.getElementById("27").value = "Ohio";
+document.getElementById("27").style.color = "red"
+}
+else {
+document.getElementById("correction27").innerHTML = "✕, Ohio";
+document.getElementById("correction27").style.color = "red"
+}
+
+const Word28 = document.getElementById("28").value
+if (Word28 == "Kentucky" || Word28 == "kentucky"){
+document.getElementById("correction28").innerHTML = "✓";
+document.getElementById("correction28").style.color = "green"
+}
+else if (Word28 == ""){
+document.getElementById("28").value = "Kentucky";
+document.getElementById("28").style.color = "red"
+}
+else {
+document.getElementById("correction28").innerHTML = "✕, Kentucky";
+document.getElementById("correction28").style.color = "red"
+}
+
+const Word29 = document.getElementById("29").value
+if (Word29 == "Tennessee" || Word29 == "tennessee"){
+document.getElementById("correction29").innerHTML = "✓";
+document.getElementById("correction29").style.color = "green"
+}
+else if (Word29 == ""){
+document.getElementById("29").value = "Tennessee";
+document.getElementById("29").style.color = "red"
+}
+else {
+document.getElementById("correction29").innerHTML = "✕, Tennessee";
+document.getElementById("correction29").style.color = "red"
+}
+
+const Word30 = document.getElementById("30").value
+if (Word30 == "Mississippi" || Word30 == "mississippi"){
+document.getElementById("correction30").innerHTML = "✓";
+document.getElementById("correction30").style.color = "green"
+}
+else if (Word30 == ""){
+document.getElementById("30").value = "Mississippi";
+document.getElementById("30").style.color = "red"
+}
+else {
+document.getElementById("correction30").innerHTML = "✕, Mississippi";
+document.getElementById("correction30").style.color = "red"
+}
+
+const Word31 = document.getElementById("31").value
+if (Word31 == "Alabama" || Word31 == "alabama"){
+document.getElementById("correction31").innerHTML = "✓";
+document.getElementById("correction31").style.color = "green"
+}
+else if (Word31 == ""){
+document.getElementById("31").value = "Alabama";
+document.getElementById("31").style.color = "red"
+}
+else {
+document.getElementById("correction31").innerHTML = "✕, Alabama";
+document.getElementById("correction31").style.color = "red"
+}
+
+const Word32 = document.getElementById("32").value
+if (Word32 == "Georgia" || Word32 == "georgia"){
+document.getElementById("correction32").innerHTML = "✓";
+document.getElementById("correction32").style.color = "green"
+}
+else if (Word32 == ""){
+document.getElementById("32").value = "Georgia";
+document.getElementById("32").style.color = "red"
+}
+else {
+document.getElementById("correction32").innerHTML = "✕, Georgia";
+document.getElementById("correction32").style.color = "red"
+}
+
+const Word33 = document.getElementById("33").value
+if (Word33 == "Florida" || Word33 == "florida"){
+document.getElementById("correction33").innerHTML = "✓";
+document.getElementById("correction33").style.color = "green"
+}
+else if (Word33 == ""){
+document.getElementById("33").value = "Florida";
+document.getElementById("33").style.color = "red"
+}
+else {
+document.getElementById("correction33").innerHTML = "✕, Florida";
+document.getElementById("correction33").style.color = "red"
+}
+
+const Word34 = document.getElementById("34").value
+if (Word34 == "South Carolina" || Word34 == "south carolina"){
+document.getElementById("correction34").innerHTML = "✓";
+document.getElementById("correction34").style.color = "green"
+}
+else if (Word34 == ""){
+document.getElementById("34").value = "South Carolina";
+document.getElementById("34").style.color = "red"
+}
+else {
+document.getElementById("correction34").innerHTML = "✕, South Carolina";
+document.getElementById("correction34").style.color = "red"
+}
+
+const Word35 = document.getElementById("35").value
+if (Word35 == "North Carolina" || Word35 == "north carolina"){
+document.getElementById("correction35").innerHTML = "✓";
+document.getElementById("correction35").style.color = "green"
+}
+else if (Word35 == ""){
+document.getElementById("35").value = "North Carolina";
+document.getElementById("35").style.color = "red"
+}
+else {
+document.getElementById("correction35").innerHTML = "✕, North Carolina";
+document.getElementById("correction35").style.color = "red"
+}
+
+const Word36 = document.getElementById("36").value
+if (Word36 == "Virginia" || Word36 == "virginia"){
+document.getElementById("correction36").innerHTML = "✓";
+document.getElementById("correction36").style.color = "green"
+}
+else if (Word36 == ""){
+document.getElementById("36").value = "Virginia";
+document.getElementById("36").style.color = "red"
+}
+else {
+document.getElementById("correction36").innerHTML = "✕, Virginia";
+document.getElementById("correction36").style.color = "red"
+}
+
+const Word37 = document.getElementById("37").value
+if (Word37 == "West Virginia" || Word37 == "west virginia"){
+document.getElementById("correction37").innerHTML = "✓";
+document.getElementById("correction37").style.color = "green"
+}
+else if (Word37 == ""){
+document.getElementById("37").value = "West Virginia";
+document.getElementById("37").style.color = "red"
+}
+else {
+document.getElementById("correction37").innerHTML = "✕, West Virginia";
+document.getElementById("correction37").style.color = "red"
+}
+
+const Word38 = document.getElementById("38").value
+if (Word38 == "Pennsylvania" || Word38 == "pennsylvania"){
+document.getElementById("correction38").innerHTML = "✓";
+document.getElementById("correction38").style.color = "green"
+}
+else if (Word38 == ""){
+document.getElementById("38").value = "Pennsylvania";
+document.getElementById("38").style.color = "red"
+}
+else {
+document.getElementById("correction38").innerHTML = "✕, Pennsylvania";
+document.getElementById("correction38").style.color = "red"
+}
+
+const Word39 = document.getElementById("39").value
+if (Word39 == "New York" || Word39 == "new york"){
+document.getElementById("correction39").innerHTML = "✓";
+document.getElementById("correction39").style.color = "green"
+}
+else if (Word39 == ""){
+document.getElementById("39").value = "New York";
+document.getElementById("39").style.color = "red"
+}
+else {
+document.getElementById("correction39").innerHTML = "✕, New York";
+document.getElementById("correction39").style.color = "red"
+}
+
+const Word40 = document.getElementById("40").value
+if (Word40 == "Vermont" || Word40 == "vermont"){
+document.getElementById("correction40").innerHTML = "✓";
+document.getElementById("correction40").style.color = "green"
+}
+else if (Word40 == ""){
+document.getElementById("40").value = "Vermont";
+document.getElementById("40").style.color = "red"
+}
+else {
+document.getElementById("correction40").innerHTML = "✕, Vermont";
+document.getElementById("correction40").style.color = "red"
+}
+
+const Word41 = document.getElementById("41").value
+if (Word41 == "New Hampshire" || Word41 == "new hampshire"){
+document.getElementById("correction41").innerHTML = "✓";
+document.getElementById("correction41").style.color = "green"
+}
+else if (Word41 == ""){
+document.getElementById("41").value = "New Hampshire";
+document.getElementById("41").style.color = "red"
+}
+else {
+document.getElementById("correction41").innerHTML = "✕, New Hampshire";
+document.getElementById("correction41").style.color = "red"
+}
+
+const Word42 = document.getElementById("42").value
+if (Word42 == "Maine" || Word42 == "maine"){
+document.getElementById("correction42").innerHTML = "✓";
+document.getElementById("correction42").style.color = "green"
+}
+else if (Word42 == ""){
+document.getElementById("42").value = "Maine";
+document.getElementById("42").style.color = "red"
+}
+else {
+document.getElementById("correction42").innerHTML = "✕, Maine";
+document.getElementById("correction42").style.color = "red"
+}
+
+const Word43 = document.getElementById("43").value
+if (Word43 == "Massachusetts" || Word43 == "massachusetts"){
+document.getElementById("correction43").innerHTML = "✓";
+document.getElementById("correction43").style.color = "green"
+}
+else if (Word43 == ""){
+document.getElementById("43").value = "Massachusetts";
+document.getElementById("43").style.color = "red"
+}
+else {
+document.getElementById("correction43").innerHTML = "✕, Massachusetts";
+document.getElementById("correction43").style.color = "red"
+}
+
+const Word44 = document.getElementById("44").value
+if (Word44 == "Rhode Island" || Word44 == "rhode island"){
+document.getElementById("correction44").innerHTML = "✓";
+document.getElementById("correction44").style.color = "green"
+}
+else if (Word44 == ""){
+document.getElementById("44").value = "Rhode Island";
+document.getElementById("44").style.color = "red"
+}
+else {
+document.getElementById("correction44").innerHTML = "✕, Rhode Island";
+document.getElementById("correction44").style.color = "red"
+}
+
+const Word45 = document.getElementById("45").value
+if (Word45 == "Connecticut" || Word45 == "connecticut"){
+document.getElementById("correction45").innerHTML = "✓";
+document.getElementById("correction45").style.color = "green"
+}
+else if (Word45 == ""){
+document.getElementById("45").value = "Connecticut";
+document.getElementById("45").style.color = "red"
+}
+else {
+document.getElementById("correction45").innerHTML = "✕, Connecticut";
+document.getElementById("correction45").style.color = "red"
+}
+
+const Word46 = document.getElementById("46").value
+if (Word46 == "New Jersey" || Word46 == "new jersey"){
+document.getElementById("correction46").innerHTML = "✓";
+document.getElementById("correction46").style.color = "green"
+}
+else if (Word46 == ""){
+document.getElementById("46").value = "New Jersey";
+document.getElementById("46").style.color = "red"
+}
+else {
+document.getElementById("correction46").innerHTML = "✕, New Jersey";
+document.getElementById("correction46").style.color = "red"
+}
+
+const Word47 = document.getElementById("47").value
+if (Word47 == "Delaware" || Word47 == "delaware"){
+document.getElementById("correction47").innerHTML = "✓";
+document.getElementById("correction47").style.color = "green"
+}
+else if (Word47 == ""){
+document.getElementById("47").value = "Delaware";
+document.getElementById("47").style.color = "red"
+}
+else {
+document.getElementById("correction47").innerHTML = "✕, Delaware";
+document.getElementById("correction47").style.color = "red"
+}
+
+const Word48 = document.getElementById("48").value
+if (Word48 == "Maryland" || Word48 == "maryland"){
+document.getElementById("correction48").innerHTML = "✓";
+document.getElementById("correction48").style.color = "green"
+}
+else if (Word48 == ""){
+document.getElementById("48").value = "Maryland";
+document.getElementById("48").style.color = "red"
+}
+else {
+document.getElementById("correction48").innerHTML = "✕, Maryland";
+document.getElementById("correction48").style.color = "red"
+}
+
+const Word49 = document.getElementById("49").value
+if (Word49 == "Alaska" || Word49 == "alaska"){
+document.getElementById("correction49").innerHTML = "✓";
+document.getElementById("correction49").style.color = "green"
+}
+else if (Word49 == ""){
+document.getElementById("49").value = "Alaska";
+document.getElementById("49").style.color = "red"
+}
+else {
+document.getElementById("correction49").innerHTML = "✕, Alaska";
+document.getElementById("correction49").style.color = "red"
+}
+
+const Word50 = document.getElementById("50").value
+if (Word50 == "Hawaii" || Word50 == "hawaii"){
+document.getElementById("correction50").innerHTML = "✓";
+document.getElementById("correction50").style.color = "green"
+}
+else if (Word50 == ""){
+document.getElementById("50").value = "Hawaii";
+document.getElementById("50").style.color = "red"
+}
+else {
+document.getElementById("correction50").innerHTML = "✕, Hawaii";
+document.getElementById("correction50").style.color = "red"
+}
+
+}
+</script>
+</body>
+</html>

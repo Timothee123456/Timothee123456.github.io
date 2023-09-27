@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>
+    Mes del año
+    </title>
+<style>
+.active {
+  background-color: #04AA6D;
+}
+.language {
+  background-color: #1ffff4;
+}
+ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background-color: #333;
+}
+
+.li {
+  float: left;
+  border-right:1px solid #bbb;
+}
+
+li:last-child {
+  border-right: none;
+}
+
+li a {
+  display: block;
+  color: white;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+}
+
+li a:hover:not(.active) {
+  background-color: #111;
+}
+
+
+.navbar a:hover, .dropdown:hover .dropbtn {
+  background-color: #111;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color:#333 ;
+  min-width: 100px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+}
+
+.dropdown-content a {
+    display: block;
+  color: white;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+  }
+
+.dropdown-content a:hover {
+  background-color: #ddd;
+}
+
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+
+.button {
+  font-size: 16px;  
+  border: none;
+  outline: none;
+  color: white;
+  padding: 14px 16px;
+  background-color: inherit;
+  font-family: inherit;
+  margin: 0;
+}
+img {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+button a {
+  color: black;
+  text-decoration: none;
+}
+
+button {font-size: 20px}
+</style>
+</head>
+<body>
+<ul>
+  <li class="li"><a href="https://timothee123456.github.io/espagnol/jours-de-la-semaine">Día de la semana</a></li>
+  <li class="li"><a class="active" href="https://timothee123456.github.io/espagnol/mois">Mes del año</a></li>
+<li class="li"><a href="https://timothee123456.github.io/espagnol/saisons">Las estaciones</a></li>
+</ul>
+<center>
+<h2>Écrire les mois de l'année en espagnol</h2>
+<nobr>1.</nobr>
+<input autocomplete="off" id="1">
+<nobr id="correction1"></nobr>
+<nobr>7.</nobr>
+<input autocomplete="off" id="7">
+<nobr id="correction7"></nobr>
+<br>
+<nobr>2.</nobr>
+<input autocomplete="off" id="2">
+<nobr id="correction2"></nobr>
+<nobr>8.</nobr>
+<input autocomplete="off" id="8">
+<nobr id="correction8"></nobr>
+<br>
+<nobr>3.</nobr>
+<input autocomplete="off" id="3">
+<nobr id="correction3"></nobr>
+<nobr>9.</nobr>
+<input autocomplete="off" id="9">
+<nobr id="correction9"></nobr>
+<br>
+<nobr>4.</nobr>
+<input autocomplete="off" id="4">
+<nobr id="correction4"></nobr>
+<nobr>10.</nobr>
+<input autocomplete="off" id="10">
+<nobr id="correction10"></nobr>
+<br>
+<nobr>5.</nobr>
+<input autocomplete="off" id="5">
+<nobr id="correction5"></nobr>
+<nobr>11.</nobr>
+<input autocomplete="off" id="11">
+<nobr id="correction11"></nobr>
+<br>
+<nobr>6.</nobr>
+<input autocomplete="off" id="6">
+<nobr id="correction6"></nobr>
+<nobr>12.</nobr>
+<input autocomplete="off" id="12">
+<nobr id="correction12"></nobr>
+<br>
+
+<p></p>
+<button onclick="myFunction()">Terminado</button>
+<p></p>
+<button onclick="reset()">Réinitialiser</button>
+</center>
+<script>
+function reset() {
+document.getElementById("correction1").innerHTML = ""
+document.getElementById("1").value = ""
+document.getElementById("1").style.color = "black"
+
+document.getElementById("correction2").innerHTML = ""
+document.getElementById("2").value = ""
+document.getElementById("2").style.color = "black"
+
+document.getElementById("correction3").innerHTML = ""
+document.getElementById("3").value = ""
+document.getElementById("3").style.color = "black"
+
+document.getElementById("correction4").innerHTML = ""
+document.getElementById("4").value = ""
+document.getElementById("4").style.color = "black"
+
+document.getElementById("correction5").innerHTML = ""
+document.getElementById("5").value = ""
+document.getElementById("5").style.color = "black"
+
+document.getElementById("correction6").innerHTML = ""
+document.getElementById("6").value = ""
+document.getElementById("6").style.color = "black"
+
+document.getElementById("correction7").innerHTML = ""
+document.getElementById("7").value = ""
+document.getElementById("7").style.color = "black"
+
+}
+
+
+
+function myFunction() {
+const Word1 = document.getElementById("1").value
+if (Word1 == "Lunes" || Word1 == "lunes"){
+document.getElementById("correction1").innerHTML = "✓";
+document.getElementById("correction1").style.color = "green"
+}
+else if (Word1 == ""){
+document.getElementById("1").value = "Lunes";
+document.getElementById("1").style.color = "red"
+}
+else {
+document.getElementById("correction1").innerHTML = "✕, Lunes";
+document.getElementById("correction1").style.color = "red"
+}
+
+const Word2 = document.getElementById("2").value
+if (Word2 == "Martes" || Word2 == "martes"){
+document.getElementById("correction2").innerHTML = "✓";
+document.getElementById("correction2").style.color = "green"
+}
+else if (Word2 == ""){
+document.getElementById("2").value = "Martes";
+document.getElementById("2").style.color = "red"
+}
+else {
+document.getElementById("correction2").innerHTML = "✕, Martes";
+document.getElementById("correction2").style.color = "red"
+}
+
+const Word3 = document.getElementById("3").value
+if (Word3 == "Miércoles" || Word3 == "miércoles" || Word3 == "Miercoles" || Word3 == "miercoles"){
+document.getElementById("correction3").innerHTML = "✓";
+document.getElementById("correction3").style.color = "green"
+}
+else if (Word3 == ""){
+document.getElementById("3").value = "Miércoles";
+document.getElementById("3").style.color = "red"
+}
+else {
+document.getElementById("correction3").innerHTML = "✕, Miércoles";
+document.getElementById("correction3").style.color = "red"
+}
+
+const Word4 = document.getElementById("4").value
+if (Word4 == "Jueves" || Word4 == "jueves"){
+document.getElementById("correction4").innerHTML = "✓";
+document.getElementById("correction4").style.color = "green"
+}
+else if (Word4 == ""){
+document.getElementById("4").value = "Jueves";
+document.getElementById("4").style.color = "red"
+}
+else {
+document.getElementById("correction4").innerHTML = "✕, Jueves";
+document.getElementById("correction4").style.color = "red"
+}
+
+const Word5 = document.getElementById("5").value
+if (Word5 == "Viernes" || Word5 == "viernes"){
+document.getElementById("correction5").innerHTML = "✓";
+document.getElementById("correction5").style.color = "green"
+}
+else if (Word5 == ""){
+document.getElementById("5").value = "Viernes";
+document.getElementById("5").style.color = "red"
+}
+else {
+document.getElementById("correction5").innerHTML = "✕, Viernes";
+document.getElementById("correction5").style.color = "red"
+}
+
+const Word6 = document.getElementById("6").value
+if (Word6 == "Sábado" || Word6 == "Sábado" || Word6 == "Sabado" || Word6 == "Sabado"){
+document.getElementById("correction6").innerHTML = "✓";
+document.getElementById("correction6").style.color = "green"
+}
+else if (Word6 == ""){
+document.getElementById("6").value = "Sábado";
+document.getElementById("6").style.color = "red"
+}
+else {
+document.getElementById("correction6").innerHTML = "✕, Sábado";
+document.getElementById("correction6").style.color = "red"
+}
+
+const Word7 = document.getElementById("7").value
+if (Word7 == "Domingo" || Word7 == "domingo"){
+document.getElementById("correction7").innerHTML = "✓";
+document.getElementById("correction7").style.color = "green"
+}
+else if (Word7 == ""){
+document.getElementById("7").value = "Domingo";
+document.getElementById("7").style.color = "red"
+}
+else {
+document.getElementById("correction7").innerHTML = "✕, Domingo";
+document.getElementById("correction7").style.color = "red"
+}
+
+
+}
+</script>
+</body>
+</html>

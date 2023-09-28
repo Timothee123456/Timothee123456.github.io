@@ -91,6 +91,63 @@ button a {
   text-decoration: none;
 }
 
+
+
+
+
+
+
+
+.myButton {
+	box-shadow: 2px 3px 0px 0px #8a2a21;
+	background:linear-gradient(to bottom, #c62d1f 5%, #f24437 100%);
+	background-color:#c62d1f;
+	border-radius:42px;
+	display:inline-block;
+	cursor:pointer;
+	color:#ffffff;
+	font-family:Arial;
+	font-size:17px;
+	padding:7px 18px;
+	text-decoration:none;
+	text-shadow:1px -1px 3px #810e05;
+}
+.myButton:hover {
+	background:linear-gradient(to bottom, #f24437 5%, #c62d1f 100%);
+	background-color:#f24437;
+}
+.myButton:active {
+	position:relative;
+	top:1px;
+}
+
+
+
+
+.myButton2 {
+	box-shadow: 0px 1px 0px -3px #f0f7fa;
+	background:linear-gradient(to bottom, #33bdef 5%, #019ad2 100%);
+	background-color:#33bdef;
+	border-radius:42px;
+	border:2px solid #057fd0;
+	display:inline-block;
+	cursor:pointer;
+	color:#ffffff;
+	font-family:Arial;
+	font-size:15px;
+	font-weight:bold;
+	padding:8px 10px;
+	text-decoration:none;
+	text-shadow:3px -2px 4px #5b6178;
+}
+.myButton2:hover {
+	background:linear-gradient(to bottom, #019ad2 5%, #33bdef 100%);
+	background-color:#019ad2;
+}
+.myButton2:active {
+	position:relative;
+	top:1px;
+}
 button {font-size: 20px}
 </style>
 </head>
@@ -131,9 +188,9 @@ button {font-size: 20px}
 <nobr id="correction7"></nobr>
 <br>
 <p></p>
-<button onclick="myFunction()">Terminado</button>
+<a href="#" class="myButton" onclick="myFunction()">Terminado</a>
 <p></p>
-<button onclick="reset()">Réinitialiser</button>
+<a href="#" class="myButton2" onclick="reset()">Réinitialiser</a>
 </center>
 <script>
 function reset() {

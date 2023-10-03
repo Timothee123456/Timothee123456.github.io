@@ -155,6 +155,16 @@ input {font-size:21px}
 h2 {font-size:45px}
 nobr {font-size:24px}
 img {width:100}
+
+
+.column {
+  float: left;
+  width: 50%;
+  padding: 5px;
+}
+* {
+  box-sizing: border-box;
+}
 </style>
 </head>
 <body>
@@ -165,12 +175,16 @@ img {width:100}
 </ul>
 <center>
 <h2>Écrire les saisons en espagnol</h2>
-<img src="Printemps.jpg">
-<input placeholder="Printemps" autocomplete="off" id="1">
-<nobr id="correction1"></nobr>
-<img src="Ete.jpg">
-<input placeholder="Été" autocomplete="off" id="2">
-<nobr id="correction2"></nobr>
+<div class="column">
+   <img src="Printemps.jpg">>
+   </div>
+  <div class="column">
+    <img src="Ete.jpg">
+  <div>
+   <input placeholder="Printemps" autocomplete="off" id="1">
+  <nobr id="correction1"></nobr>
+  <input placeholder="Été" autocomplete="off" id="2">
+  <nobr id="correction2"></nobr>
 <img src="Automne.jpg">
 <input placeholder="Automne" autocomplete="off" id="3">
 <nobr id="correction3"></nobr>

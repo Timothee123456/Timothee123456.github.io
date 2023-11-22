@@ -2,7 +2,7 @@
 <html>
 <head>
     <title>
-    Día de la semana
+    Mascotas
     </title>
 <style>
 .active {
@@ -159,38 +159,40 @@ nobr {font-size:24px}
 </head>
 <body>
 <ul>
-  <li class="li"><a class="active" href="https://timothee123456.github.io/espagnol/jours-de-la-semaine">Día de la semana</a></li>
+  <li class="li"><a href="https://timothee123456.github.io/espagnol/jours-de-la-semaine">Día de la semana</a></li>
   <li class="li"><a href="https://timothee123456.github.io/espagnol/mois">Mes del año</a></li>
   <li class="li"><a href="https://timothee123456.github.io/espagnol/saisons">Las estaciones</a></li>
+  <li class="li"><a class="active" href="https://timothee123456.github.io/espagnol/animaux">Mascotas</a></li>
   <li class="li"><a href="https://timothee123456.github.io/espagnol/couleurs">Colores</a></li>
 </ul>
 <center>
-<h2>Écrire les jours de la semaine en espagnol</h2>
-<input type="text" placeholder="Lundi" autocomplete="off" id="1">
+<h2>Écrire les animaux en espagnol</h2>
+<img src="chien.jpg">
+<input type="text" placeholder="Un chien" autocomplete="off" id="1">
 <nobr id="correction1"></nobr>
 <br>
-<img src="Hiver.jpg">
-<input placeholder="Mardi" autocomplete="off" id="2">
+<img src="chat.jpg">
+<input placeholder="Un chat" autocomplete="off" id="2">
 <nobr id="correction2"></nobr>
 <br>
-<img src="Hiver.jpg">
-<input placeholder="Mercredi" autocomplete="off" id="3">
+<img src="poisson.jpg">
+<input placeholder="Un poisson" autocomplete="off" id="3">
 <nobr id="correction3"></nobr>
 <br>
-<img src="Hiver.jpg">
-<input placeholder="Jeudi" autocomplete="off" id="4">
+<img src="lapin.jpg">
+<input placeholder="Un lapin" autocomplete="off" id="4">
 <nobr id="correction4"></nobr>
 <br>
-<img src="Hiver.jpg">
-<input placeholder="Vendredi" autocomplete="off" id="5">
+<img src="perroquet.jpg">
+<input placeholder="Un perroquet" autocomplete="off" id="5">
 <nobr id="correction5"></nobr>
 <br>
-<img src="Hiver.jpg">
-<input placeholder="Samedi" autocomplete="off" id="6">
+<img src="tortue.jpg">
+<input placeholder="Une tortue" autocomplete="off" id="6">
 <nobr id="correction6"></nobr>
 <br>
-<img src="Hiver.jpg">
-<input placeholder="Dimanche" autocomplete="off" id="7">
+<img src="serpent.jpg">
+<input placeholder="Une serpent" autocomplete="off" id="7">
 <nobr id="correction7"></nobr>
 <br>
 <p></p>
@@ -234,100 +236,100 @@ document.getElementById("7").style.color = "black"
 
 function myFunction() {
 const Word1 = document.getElementById("1").value
-if (Word1 == "Lunes" || Word1 == "lunes"){
+if (Word1 == "Un perro" || Word1 == "un perro"){
 document.getElementById("correction1").innerHTML = "✓";
 document.getElementById("correction1").style.color = "green"
 }
 else if (Word1 == ""){
-document.getElementById("1").value = "Lunes";
+document.getElementById("1").value = "Un perro";
 document.getElementById("1").style.color = "red"
 }
 else {
-document.getElementById("correction1").innerHTML = "✕, Lunes";
+document.getElementById("correction1").innerHTML = "✕, Un perro";
 document.getElementById("correction1").style.color = "red"
 }
 
 const Word2 = document.getElementById("2").value
-if (Word2 == "Martes" || Word2 == "martes"){
+if (Word2 == "Un gato" || Word2 == "un gato"){
 document.getElementById("correction2").innerHTML = "✓";
 document.getElementById("correction2").style.color = "green"
 }
 else if (Word2 == ""){
-document.getElementById("2").value = "Martes";
+document.getElementById("2").value = "Un gato";
 document.getElementById("2").style.color = "red"
 }
 else {
-document.getElementById("correction2").innerHTML = "✕, Martes";
+document.getElementById("correction2").innerHTML = "✕, Un gato";
 document.getElementById("correction2").style.color = "red"
 }
 
 const Word3 = document.getElementById("3").value
-if (Word3 == "Miércoles" || Word3 == "miércoles" || Word3 == "Miercoles" || Word3 == "miercoles"){
+if (Word3 == "Un pez" || Word3 == "un pez"){
 document.getElementById("correction3").innerHTML = "✓";
 document.getElementById("correction3").style.color = "green"
 }
 else if (Word3 == ""){
-document.getElementById("3").value = "Miércoles";
+document.getElementById("3").value = "Un pez";
 document.getElementById("3").style.color = "red"
 }
 else {
-document.getElementById("correction3").innerHTML = "✕, Miércoles";
+document.getElementById("correction3").innerHTML = "✕, Un pez";
 document.getElementById("correction3").style.color = "red"
 }
 
 const Word4 = document.getElementById("4").value
-if (Word4 == "Jueves" || Word4 == "jueves"){
+if (Word4 == "Un conejo" || Word4 == "un conejo"){
 document.getElementById("correction4").innerHTML = "✓";
 document.getElementById("correction4").style.color = "green"
 }
 else if (Word4 == ""){
-document.getElementById("4").value = "Jueves";
+document.getElementById("4").value = "Un conejo";
 document.getElementById("4").style.color = "red"
 }
 else {
-document.getElementById("correction4").innerHTML = "✕, Jueves";
+document.getElementById("correction4").innerHTML = "✕, Un conejo";
 document.getElementById("correction4").style.color = "red"
 }
 
 const Word5 = document.getElementById("5").value
-if (Word5 == "Viernes" || Word5 == "viernes"){
+if (Word5 == "Un loro" || Word5 == "un loro"){
 document.getElementById("correction5").innerHTML = "✓";
 document.getElementById("correction5").style.color = "green"
 }
 else if (Word5 == ""){
-document.getElementById("5").value = "Viernes";
+document.getElementById("5").value = "Un loro";
 document.getElementById("5").style.color = "red"
 }
 else {
-document.getElementById("correction5").innerHTML = "✕, Viernes";
+document.getElementById("correction5").innerHTML = "✕, Un loro";
 document.getElementById("correction5").style.color = "red"
 }
 
 const Word6 = document.getElementById("6").value
-if (Word6 == "Sábado" || Word6 == "Sábado" || Word6 == "Sabado" || Word6 == "Sabado"){
+if (Word6 == "Una tortuga" || Word6 == "una tortuga"){
 document.getElementById("correction6").innerHTML = "✓";
 document.getElementById("correction6").style.color = "green"
 }
 else if (Word6 == ""){
-document.getElementById("6").value = "Sábado";
+document.getElementById("6").value = "Una tortuga";
 document.getElementById("6").style.color = "red"
 }
 else {
-document.getElementById("correction6").innerHTML = "✕, Sábado";
+document.getElementById("correction6").innerHTML = "✕, Una tortuga";
 document.getElementById("correction6").style.color = "red"
 }
 
 const Word7 = document.getElementById("7").value
-if (Word7 == "Domingo" || Word7 == "domingo"){
+if (Word7 == "Una serpiente" || Word7 == "una serpiente"){
 document.getElementById("correction7").innerHTML = "✓";
 document.getElementById("correction7").style.color = "green"
 }
 else if (Word7 == ""){
-document.getElementById("7").value = "Domingo";
+document.getElementById("7").value = "Una serpiente";
 document.getElementById("7").style.color = "red"
 }
 else {
-document.getElementById("correction7").innerHTML = "✕, Domingo";
+document.getElementById("correction7").innerHTML = "✕, Una serpiente";
 document.getElementById("correction7").style.color = "red"
 }
 

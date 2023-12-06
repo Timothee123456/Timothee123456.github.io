@@ -1,1 +1,295 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>
+     Mes del año
+    </title>
+<style>
+.active {
+  background-color: #04AA6D;
+}
+.language {
+  background-color: #1ffff4;
+}
+ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background-color: #333;
+}
 
+.li {
+  float: left;
+  border-right:1px solid #bbb;
+}
+
+li:last-child {
+  border-right: none;
+}
+
+li a {
+  display: block;
+  color: white;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+}
+
+li a:hover:not(.active) {
+  background-color: #111;
+}
+
+
+.navbar a:hover, .dropdown:hover .dropbtn {
+  background-color: #111;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color:#333 ;
+  min-width: 100px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+}
+
+.dropdown-content a {
+    display: block;
+  color: white;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+  }
+
+.dropdown-content a:hover {
+  background-color: #ddd;
+}
+
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+
+.button {
+  font-size: 16px;  
+  border: none;
+  outline: none;
+  color: white;
+  padding: 14px 16px;
+  background-color: inherit;
+  font-family: inherit;
+  margin: 0;
+}
+img {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+button a {
+  color: black;
+  text-decoration: none;
+}
+
+
+
+
+
+
+
+
+.myButton {
+	box-shadow: 2px 3px 0px 0px #8a2a21;
+	background:linear-gradient(to bottom, #c62d1f 5%, #f24437 100%);
+	background-color:#c62d1f;
+	border-radius:42px;
+	display:inline-block;
+	cursor:pointer;
+	color:#ffffff;
+	font-family:Arial;
+	font-size:22px;
+	padding:7px 18px;
+	text-decoration:none;
+	text-shadow:1px -1px 3px #810e05;
+}
+.myButton:hover {
+	background:linear-gradient(to bottom, #f24437 5%, #c62d1f 100%);
+	background-color:#f24437;
+}
+.myButton:active {
+	position:relative;
+	top:1px;
+}
+
+
+
+
+.myButton2 {
+	box-shadow: 0px 1px 0px -3px #f0f7fa;
+	background:linear-gradient(to bottom, #33bdef 5%, #019ad2 100%);
+	background-color:#33bdef;
+	border-radius:42px;
+	border:2px solid #057fd0;
+	display:inline-block;
+	cursor:pointer;
+	color:#ffffff;
+	font-family:Arial;
+	font-size:22px;
+	padding:8px 10px;
+	text-decoration:none;
+	text-shadow:3px -2px 4px #5b6178;
+}
+.myButton2:hover {
+	background:linear-gradient(to bottom, #019ad2 5%, #33bdef 100%);
+	background-color:#019ad2;
+}
+.myButton2:active {
+	position:relative;
+	top:1px;
+}
+body {
+  background-color: 02fae; /* For browsers that do not support gradients */
+  background-image: linear-gradient(to bottom right, #02fae9, yellow);
+}
+input {font-size:21px}
+h2 {font-size:45px}
+nobr {font-size:24px}
+img {width:100}
+
+
+.column {
+  float: left;
+  width: 50%;
+  padding: 5px;
+}
+* {
+  box-sizing: border-box;
+}
+
+.input{font-size:25px;}
+</style>
+</head>
+<body>
+<ul>
+  <li class="li"><a href="https://timothee123456.github.io/espagnol/jours-de-la-semaine">Día de la semana</a></li>
+  <li class="li"><a href="https://timothee123456.github.io/espagnol/mois">Mes del año</a></li>
+  <li class="li"><a class="active" href="https://timothee123456.github.io/espagnol/saisons">Las estaciones</a></li>
+  <li class="li"><a href="https://timothee123456.github.io/espagnol/animaux">Mascotas</a></li>
+  <li class="li"><a href="https://timothee123456.github.io/espagnol/couleurs">Colores</a></li>
+</ul>
+<center>
+<h2>Écrire les saisons en espagnol</h2>
+<div class="column">
+      <input placeholder="etre" class="input" autocomplete="off" style="text-align:center;" id="m1">
+      <nobr id="correction1"></nobr>
+      <input placeholder="Automne" autocomplete="off" id="3">
+      <nobr id="correction3"></nobr>
+   </div>
+  <div class="column">
+    <input placeholder="Été" autocomplete="off" id="2">
+    <nobr id="correction2"></nobr>
+    <input placeholder="Hiver" autocomplete="off" id="4">
+    <nobr id="correction4"></nobr>
+  </div>
+<p></p>
+<center>
+<p></p>
+<a href="#" class="myButton" onclick="myFunction()">Terminado</a>
+<p></p>
+<a href="#" class="myButton2" onclick="reset()">Réinitialiser</a>
+</center>
+<script>
+function reset() {
+document.getElementById("correction1").innerHTML = ""
+document.getElementById("1").value = ""
+document.getElementById("1").style.color = "black"
+
+document.getElementById("correction2").innerHTML = ""
+document.getElementById("2").value = ""
+document.getElementById("2").style.color = "black"
+
+document.getElementById("correction3").innerHTML = ""
+document.getElementById("3").value = ""
+document.getElementById("3").style.color = "black"
+
+document.getElementById("correction4").innerHTML = ""
+document.getElementById("4").value = ""
+document.getElementById("4").style.color = "black"
+
+document.getElementById("correction5").innerHTML = ""
+document.getElementById("5").value = ""
+document.getElementById("5").style.color = "black"
+
+document.getElementById("correction6").innerHTML = ""
+document.getElementById("6").value = ""
+document.getElementById("6").style.color = "black"
+
+document.getElementById("correction7").innerHTML = ""
+document.getElementById("7").value = ""
+document.getElementById("7").style.color = "black"
+
+}
+
+
+
+function myFunction() {
+const Word1 = document.getElementById("1").value
+if (Word1 == "La Primavera" || Word1 == "La primavera" || Word1 == "la primavera" || Word1 == "Primavera" || Word1 == "primavera"){
+document.getElementById("correction1").innerHTML = "✓";
+document.getElementById("correction1").style.color = "green"
+}
+else if (Word1 == ""){
+document.getElementById("1").value = "La primavera";
+document.getElementById("1").style.color = "red"
+}
+else {
+document.getElementById("correction1").innerHTML = "✕, La primavera";
+document.getElementById("correction1").style.color = "red"
+}
+
+const Word2 = document.getElementById("2").value
+if (Word2 == "El Verano" || Word2 == "El verano" || Word2 == "el verano" || Word2 == "Verano" || Word2 == "verano"){
+document.getElementById("correction2").innerHTML = "✓";
+document.getElementById("correction2").style.color = "green"
+}
+else if (Word2 == ""){
+document.getElementById("2").value = "El verano";
+document.getElementById("2").style.color = "red"
+}
+else {
+document.getElementById("correction2").innerHTML = "✕, El verano";
+document.getElementById("correction2").style.color = "red"
+}
+
+const Word3 = document.getElementById("3").value
+if (Word3 == "El Otoño" || Word3 == "El otoño" || Word3 == "el otoño" || Word3 == "El Otono" || Word3 == "El otono" || Word3 == "el otono" || Word3 == "Otoño" || Word3 == "otoño" || Word3 == "Otono" || Word3 == "=otono"){
+document.getElementById("correction3").innerHTML = "✓";
+document.getElementById("correction3").style.color = "green"
+}
+else if (Word3 == ""){
+document.getElementById("3").value = "El otoño";
+document.getElementById("3").style.color = "red"
+}
+else {
+document.getElementById("correction3").innerHTML = "✕, El otoño";
+document.getElementById("correction3").style.color = "red"
+}
+
+const Word4 = document.getElementById("4").value
+if (Word4 == "El Invierno" || Word4 == "El invierno" || Word4 == "el invierno" || Word4 == "Invierno" || Word4 == "invierno"){
+document.getElementById("correction4").innerHTML = "✓";
+document.getElementById("correction4").style.color = "green"
+}
+else if (Word4 == ""){
+document.getElementById("4").value = "El invierno";
+document.getElementById("4").style.color = "red"
+}
+else {
+document.getElementById("correction4").innerHTML = "✕, El invierno";
+document.getElementById("correction4").style.color = "red"
+}
+
+}
+</script>
+</body>
+</html>

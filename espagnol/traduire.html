@@ -2,7 +2,7 @@
 <html>
 <head>
     <title>
-     Verbos
+     La descriptión físca
     </title>
 <style>
 .active {
@@ -226,25 +226,22 @@ const adj_number = Math.floor(Math.random() * 13)
 
 if (verb == 0){
 document.getElementById("fr_a").innerHTML = etre_fr[verb_number]
-	if  (adj == 0){
-    	if  (verb_number != 3) {
-        document.getElementById("fr_b").innerHTML = 		adj_etre_m_fr[adj_number]
-        }
-        else {
-        document.getElementById("fr_b").innerHTML = 		adj_etre_f_fr[adj_number]
-        }
+	if  (verb_number == 2){
+    document.getElementById("fr_b").innerHTML = adj_etre_m_fr[adj_number]
+    }
+    else if  (verb_number == 3) {
+    document.getElementById("fr_b").innerHTML = adj_etre_f_fr[adj_number]
+    }
+    else if  (adj == 0) {
+        document.getElementById("fr_b").innerHTML = adj_etre_m_fr[adj_number]
     }
     else {
-    if  (verb_number != 2) {
-        document.getElementById("fr_b").innerHTML = adj_etre_f_fr[adj_number]
-         }
-         else {
-         document.getElementById("fr_b").innerHTML = 		  adj_etre_f_fr[adj_number]
-         }
+    document.getElementById("fr_b").innerHTML = adj_etre_f_fr[adj_number]
     }
 }
 else {
 document.getElementById("fr_a").innerHTML = avoir_fr[verb_number]
+document.getElementById("fr_b").innerHTML = avoir_es[verb_number] + adj_avoir_es[adj_number]
 }
 
 }
@@ -252,6 +249,7 @@ document.getElementById("fr_a").innerHTML = avoir_fr[verb_number]
 
 function myFunction() {
 const Word1 = document.getElementById("1").value
+if (Word1 == avoir_es[verb_number] + adj_avoir_es[adj_number])
 
 }
 </script>

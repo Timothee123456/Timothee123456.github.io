@@ -176,68 +176,72 @@ img {width:100}
   <li class="li"><a href="https://timothee123456.github.io/espagnol/saisons">Las estaciones</a></li>
   <li class="li"><a href="https://timothee123456.github.io/espagnol/animaux">Mascotas</a></li>
   <li class="li"><a href="https://timothee123456.github.io/espagnol/couleurs">Colores</a></li>
-  <li class="li"><a class="active" href="https://timothee123456.github.io/espagnol/couleurs">Verbos</a></li>
+  <li class="li"><a href="https://timothee123456.github.io/espagnol/couleurs">Verbos</a></li>
 </ul>
 <center>
-<h2>Compléter les verbes en espagnol</h2>
-<div class="column">
-      <input placeholder="Être" class="input" autocomplete="off" style="text-align:center;" id="a">
-      <nobr id="correction_b"></nobr>
-      <p></p>
-      <input autocomplete="off" id="1a">
-      <nobr id="correction1a"></nobr>
-      <input autocomplete="off" id="2a">
-      <nobr id="correction2a"></nobr>
-      <input autocomplete="off" id="3a">
-      <nobr id="correction3a"></nobr>
-</div>
-<div class="column">
-      <input placeholder="Avoir" class="input" autocomplete="off" style="text-align:center;" id="b">
-      <nobr id="correction_a"></nobr>
-      <p></p>
-      <input autocomplete="off" id="1b">
-      <nobr id="correction1b"></nobr>
-      <input autocomplete="off" id="2b">
-      <nobr id="correction2b"></nobr>
-      <input autocomplete="off" id="3b">
-      <nobr id="correction3b"></nobr>
-</div>
+<h2>Traduire la phrase en espagnol</h2>
 <p></p>
-<center>
+<nobr id="fr_a"></nobr>
+<nobr id="fr_b"></nobr>
+<p></p>
+<input class="input" autocomplete="off" style="text-align:center;" id="1">
+<nobr id="correction_a"></nobr>
+<br>
+<nobr id="correction_b"></nobr>
 <p></p>
 <a href="#" class="myButton" onclick="myFunction()">Terminado</a>
 <p></p>
 <a href="#" class="myButton2" onclick="reset()">Réinitialiser</a>
 </center>
 <script>
+const etre_fr = ["Je suis", "Tu es", "Il est", "Elle est"];
+const avoir_fr = ["J'ai", "Tu as", "Il a", "Elle a"];
+const etre_es = ["Yo soy", "Tu eres", "El es", "Ella es"];
+const avoir_es = ["Yo tengo", "Tu tienes", "El tiene", "Ella tiene"];
+
+const adj_etre_m_es = ["bajo", "alto", "delgado", "gordo", "feo", "guapo", "calvo", "castaño", "rubio", "pelirrojo", "español", "francés", "inglés"];
+const adj_etre_f_es = ["baja", "alta", "delgada", "gorda", "fea", "guapa", "calva", "castaña", "rubia", "pelirroja", "española", "francésa", "inglésa"];
+const adj_etre_m_fr = ["petit", "grand", "mince", "gros", "moche", "beau", "chauve", "brun", "blond", "roux", "espagnol", "français", "anglais"];
+const adj_etre_f_fr = ["petite", "grande", "mince (féminin)", "grosse", "moche (féminin)", "belle", "chauve (féminin)", "brunne", "blonde", "rousse", "espagnole", "française", "anglaise"];
+
+const adj_avoir_es = ["pecas", "gafas", "trenzas", "barba", "bigote", "el pelo rizardo", "el pelo liso", "el pelo corto", "el pelo largo", "el pelo moreno", "el pelo rubio", "el pelo castaño", "el pelo pelirrojo"];
+const adj_avoir_fr = ["des taches de rousseur", "des lunettes", "des tresses", "une barbe", "une moustache", "les cheveux bouclés", "les cheveux raides (lisses)", "les cheveux courts", "les cheveux longs", "les cheveux bruns (foncés)", "les cheveux blonds", "les cheveux bruns", "les cheveux roux"];
+
+const verb = Math.floor(Math.random() * 2)
+const verb_number = Math.floor(Math.random() * 4)
+const adj = Math.floor(Math.random() * 2)
+const adj_number = Math.floor(Math.random() * 13)
+
+
 function reset() {
-document.getElementById("correction1").innerHTML = ""
+document.getElementById("correction_a").innerHTML = ""
 document.getElementById("1").value = ""
 document.getElementById("1").style.color = "black"
 
-document.getElementById("correction2").innerHTML = ""
-document.getElementById("2").value = ""
-document.getElementById("2").style.color = "black"
+const verb = Math.floor(Math.random() * 2)
+const verb_number = Math.floor(Math.random() * 4)
+const adj = Math.floor(Math.random() * 2)
+const adj_number = Math.floor(Math.random() * 13)
 
-document.getElementById("correction3").innerHTML = ""
-document.getElementById("3").value = ""
-document.getElementById("3").style.color = "black"
-
-document.getElementById("correction4").innerHTML = ""
-document.getElementById("4").value = ""
-document.getElementById("4").style.color = "black"
-
-document.getElementById("correction5").innerHTML = ""
-document.getElementById("5").value = ""
-document.getElementById("5").style.color = "black"
-
-document.getElementById("correction6").innerHTML = ""
-document.getElementById("6").value = ""
-document.getElementById("6").style.color = "black"
-
-document.getElementById("correction7").innerHTML = ""
-document.getElementById("7").value = ""
-document.getElementById("7").style.color = "black"
+if (verb == 0){
+document.getElementById("fr_a").innerHTML = etre_fr[verb_number]
+	if  (verb_number == 2){
+    document.getElementById("fr_b").innerHTML = adj_etre_m_fr[adj_number]
+    }
+    else if  (verb_number == 3) {
+    document.getElementById("fr_b").innerHTML = adj_etre_f_fr[adj_number]
+    }
+    else if  (adj == 0) {
+        document.getElementById("fr_b").innerHTML = adj_etre_m_fr[adj_number]
+    }
+    else {
+    document.getElementById("fr_b").innerHTML = adj_etre_f_fr[adj_number]
+    }
+}
+else {
+document.getElementById("fr_a").innerHTML = avoir_fr[verb_number]
+document.getElementById("fr_b").innerHTML = adj_avoir_fr[adj_number]
+}
 
 }
 
@@ -245,59 +249,19 @@ document.getElementById("7").style.color = "black"
 
 function myFunction() {
 const Word1 = document.getElementById("1").value
-if (Word1 == "La Primavera" || Word1 == "La primavera" || Word1 == "la primavera" || Word1 == "Primavera" || Word1 == "primavera"){
-document.getElementById("correction1").innerHTML = "✓";
-document.getElementById("correction1").style.color = "green"
+document.getElementById("correction_a").innerHTML = avoir_es[verb_number] + " " + adj_avoir_es[adj_number];
+document.getElementById("correction_a").style.color = "green"
+if (Word1 == avoir_es[verb_number] + " " + adj_avoir_es[adj_number]){
+document.getElementById("correction_a").innerHTML = "✓";
+document.getElementById("correction_a").style.color = "green"
 }
-else if (Word1 == ""){
-document.getElementById("1").value = "La primavera";
+if else (Word1 == "") document.getElementById("1").value = avoir_es[verb_number] + " " + adj_avoir_es[adj_number]); 
 document.getElementById("1").style.color = "red"
 }
-else {
-document.getElementById("correction1").innerHTML = "✕, La primavera";
-document.getElementById("correction1").style.color = "red"
-}
-
-const Word2 = document.getElementById("2").value
-if (Word2 == "El Verano" || Word2 == "El verano" || Word2 == "el verano" || Word2 == "Verano" || Word2 == "verano"){
-document.getElementById("correction2").innerHTML = "✓";
-document.getElementById("correction2").style.color = "green"
-}
-else if (Word2 == ""){
-document.getElementById("2").value = "El verano";
-document.getElementById("2").style.color = "red"
-}
-else {
-document.getElementById("correction2").innerHTML = "✕, El verano";
-document.getElementById("correction2").style.color = "red"
-}
-
-const Word3 = document.getElementById("3").value
-if (Word3 == "El Otoño" || Word3 == "El otoño" || Word3 == "el otoño" || Word3 == "El Otono" || Word3 == "El otono" || Word3 == "el otono" || Word3 == "Otoño" || Word3 == "otoño" || Word3 == "Otono" || Word3 == "=otono"){
-document.getElementById("correction3").innerHTML = "✓";
-document.getElementById("correction3").style.color = "green"
-}
-else if (Word3 == ""){
-document.getElementById("3").value = "El otoño";
-document.getElementById("3").style.color = "red"
-}
-else {
-document.getElementById("correction3").innerHTML = "✕, El otoño";
-document.getElementById("correction3").style.color = "red"
-}
-
-const Word4 = document.getElementById("4").value
-if (Word4 == "El Invierno" || Word4 == "El invierno" || Word4 == "el invierno" || Word4 == "Invierno" || Word4 == "invierno"){
-document.getElementById("correction4").innerHTML = "✓";
-document.getElementById("correction4").style.color = "green"
-}
-else if (Word4 == ""){
-document.getElementById("4").value = "El invierno";
-document.getElementById("4").style.color = "red"
-}
-else {
-document.getElementById("correction4").innerHTML = "✕, El invierno";
-document.getElementById("correction4").style.color = "red"
+else { 
+document.getElementById("correction_a").innerHTML = "✕"; 
+document.getElementById("correction_a").style.color = "red" 
+document.getElementById("correction_b").innerHTML = avoir_es[verb_number] + " " + adj_avoir_es[adj_number]); 
 }
 
 }

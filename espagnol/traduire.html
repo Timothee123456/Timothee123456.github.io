@@ -167,7 +167,6 @@ img {width:100}
 }
 
 .input{font-size:25px;}
-.p{font-size:28px;}
 </style>
 </head>
 <body>
@@ -181,9 +180,10 @@ img {width:100}
 </ul>
 <center>
 <h2>Traduire la phrase en espagnol</h2>
-<p class="p"></p>
+<p></p>
 <nobr id="fr_a"></nobr>
 <nobr id="fr_b"></nobr>
+<p></p>
 <input class="input" autocomplete="off" style="text-align:center;" id="1">
 <nobr id="correction_a"></nobr>
 <br>
@@ -226,6 +226,16 @@ const adj_number = Math.floor(Math.random() * 13)
 
 if (verb == 0){
 document.getElementById("fr_a").innerHTML = etre_fr[verb_number]
+	if  (adj == 0){
+    	if  (verb_number != 3) {
+        document.getElementById("fr_b").innerHTML = adj_etre_m_fr[adj_number]
+        }
+    }
+    else {
+    if  (verb_number != 2) {
+        document.getElementById("fr_b").innerHTML = adj_etre_f_fr[adj_number]
+         }
+    }
 }
 else {
 document.getElementById("fr_a").innerHTML = avoir_fr[verb_number]

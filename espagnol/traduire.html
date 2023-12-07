@@ -228,12 +228,18 @@ if (verb == 0){
 document.getElementById("fr_a").innerHTML = etre_fr[verb_number]
 	if  (adj == 0){
     	if  (verb_number != 3) {
-        document.getElementById("fr_b").innerHTML = adj_etre_m_fr[adj_number]
+        document.getElementById("fr_b").innerHTML = 		adj_etre_m_fr[adj_number]
+        }
+        else {
+        document.getElementById("fr_b").innerHTML = 		adj_etre_f_fr[adj_number]
         }
     }
     else {
     if  (verb_number != 2) {
         document.getElementById("fr_b").innerHTML = adj_etre_f_fr[adj_number]
+         }
+         else {
+         document.getElementById("fr_b").innerHTML = 		  adj_etre_f_fr[adj_number]
          }
     }
 }

@@ -157,16 +157,8 @@ nobr {font-size:24px}
 img {width:100}
 
 
-.column {
-  float: left;
-  width: 50%;
-  padding: 5px;
-}
-* {
-  box-sizing: border-box;
-}
-
 .input{font-size:25px;}
+.hidden{display: none;}
 </style>
 </head>
 <body>
@@ -187,11 +179,15 @@ img {width:100}
 <input class="input" autocomplete="off" style="text-align:center;" id="1">
 <nobr id="correction_a"></nobr>
 <br>
-<nobr id="correction_b"></nobr>
+<nobr id="correction_b" style="color:red;"></nobr>
 <p></p>
 <a href="#" class="myButton" onclick="myFunction()">Terminado</a>
 <p></p>
 <a href="#" class="myButton2" onclick="reset()">Réinitialiser</a>
+<p class="hidden" id="verb"></p>
+<p class="hidden" id="verb_number"></p>
+<p class="hidden" id="adj"></p>
+<p class="hidden" id="adj_number"></p>
 </center>
 <script>
 const etre_fr = ["Je suis", "Tu es", "Il est", "Elle est"];
@@ -207,15 +203,9 @@ const adj_etre_f_fr = ["petite", "grande", "mince (féminin)", "grosse", "moche 
 const adj_avoir_es = ["pecas", "gafas", "trenzas", "barba", "bigote", "el pelo rizardo", "el pelo liso", "el pelo corto", "el pelo largo", "el pelo moreno", "el pelo rubio", "el pelo castaño", "el pelo pelirrojo"];
 const adj_avoir_fr = ["des taches de rousseur", "des lunettes", "des tresses", "une barbe", "une moustache", "les cheveux bouclés", "les cheveux raides (lisses)", "les cheveux courts", "les cheveux longs", "les cheveux bruns (foncés)", "les cheveux blonds", "les cheveux bruns", "les cheveux roux"];
 
-const verb = Math.floor(Math.random() * 2)
-const verb_number = Math.floor(Math.random() * 4)
-const adj = Math.floor(Math.random() * 2)
-const adj_number = Math.floor(Math.random() * 13)
-
-
-
 function reset() {
 document.getElementById("correction_a").innerHTML = ""
+document.getElementById("correction_b").innerHTML = ""
 document.getElementById("1").value = ""
 document.getElementById("1").style.color = "black"
 
@@ -223,6 +213,12 @@ const verb = Math.floor(Math.random() * 2)
 const verb_number = Math.floor(Math.random() * 4)
 const adj = Math.floor(Math.random() * 2)
 const adj_number = Math.floor(Math.random() * 13)
+
+document.getElementById("verb").innerHTML = verb
+document.getElementById("verb_number").innerHTML = verb_number
+document.getElementById("adj").innerHTML = adj
+document.getElementById("adj_number").innerHTML = adj_number
+
 
 if (verb == 0){
 document.getElementById("fr_a").innerHTML = etre_fr[verb_number]
@@ -241,16 +237,33 @@ document.getElementById("fr_a").innerHTML = etre_fr[verb_number]
 }
 else {
 document.getElementById("fr_a").innerHTML = avoir_fr[verb_number]
-document.getElementById("fr_b").innerHTML = avoir_es[verb_number] + adj_avoir_es[adj_number]
+document.getElementById("fr_b").innerHTML = adj_avoir_fr[adj_number]
 }
 
 }
 
 
 function myFunction() {
-const Word1 = document.getElementById("1").value
-if (Word1 == avoir_es[verb_number] + adj_avoir_es[adj_number])
 
+const verb = document.getElementById("verb").innerHTML
+const verb_number = document.getElementById("verb_number").innerHTML
+const adj = document.getElementById("adj").innerHTML
+const adj_number = document.getElementById("adj_number").innerHTML
+
+const Word1 = document.getElementById("1").value
+	if (Word1 == avoir_es[verb_number] + "" + adj_avoir_es[adj_number])
+    document.getElementById("correction_a").innerHTML = "✓";
+	document.getElementById("correction_a").style.color = "green"
+	}
+	else if (Word1 == ""){
+	document.getElementById("2").value = avoir_es[verb_number] + " " + adj_avoir_es[adj_number];
+	document.getElementById("2").style.color = "red"
+	}
+    else {
+    document.getElementById("correction_a").innerHTML = "✕";
+	document.getElementById("correction_a").style.color = "red";
+    document.getElementById("correction_b").innerHTML = avoir_es[verb_number] + " " + adj_avoir_es[adj_number]
+	}
 }
 </script>
 </body>

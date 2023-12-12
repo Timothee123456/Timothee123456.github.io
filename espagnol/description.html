@@ -93,11 +93,6 @@ button a {
 
 
 
-
-
-
-
-
 .myButton {
 	box-shadow: 2px 3px 0px 0px #8a2a21;
 	background:linear-gradient(to bottom, #c62d1f 5%, #f24437 100%);
@@ -183,7 +178,7 @@ img {width:100}
 <p></p>
 <a href="#" class="myButton" onclick="myFunction()">Terminado</a>
 <p></p>
-<a href="#" class="myButton2" onclick="reset()">Réinitialiser</a>
+<a href="#" class="myButton2" onclick="reset()">Next</a>
 <p class="hidden" id="verb"></p>
 <p class="hidden" id="verb_number"></p>
 <p class="hidden" id="adj"></p>
@@ -202,6 +197,8 @@ const adj_etre_f_fr = ["petite", "grande", "mince (féminin)", "grosse", "moche 
 
 const adj_avoir_es = ["pecas", "gafas", "trenzas", "barba", "bigote", "el pelo rizardo", "el pelo liso", "el pelo corto", "el pelo largo", "el pelo moreno", "el pelo rubio", "el pelo castaño", "el pelo pelirrojo"];
 const adj_avoir_fr = ["des taches de rousseur", "des lunettes", "des tresses", "une barbe", "une moustache", "les cheveux bouclés", "les cheveux raides (lisses)", "les cheveux courts", "les cheveux longs", "les cheveux bruns (foncés)", "les cheveux blonds", "les cheveux bruns", "les cheveux roux"];
+
+reset()
 
 function reset() {
 document.getElementById("correction_a").innerHTML = ""
@@ -251,19 +248,43 @@ const adj = document.getElementById("adj").innerHTML
 const adj_number = document.getElementById("adj_number").innerHTML
 
 const Word1 = document.getElementById("1").value
-	if (Word1 == avoir_es[verb_number] + "" + adj_avoir_es[adj_number])
-    document.getElementById("correction_a").innerHTML = "✓";
-	document.getElementById("correction_a").style.color = "green"
+	if (verb == 0){
+		if  (verb_number == 2){
+        correct (etre_es[verb_number] + " " + adj_etre_m_es[adj_number])
+    	}
+    	else if  (verb_number == 3) {
+    	correct (etre_es[verb_number] + " " + adj_etre_f_es[adj_number])
+    	}
+    	else if  (adj == 0) {
+        correct (etre_es[verb_number] + " " + adj_etre_m_es[adj_number])
+    	}
+    	else {
+    	correct (etre_es[verb_number] + " " + adj_etre_f_es[adj_number])
+    	}
 	}
-	else if (Word1 == ""){
-	document.getElementById("2").value = avoir_es[verb_number] + " " + adj_avoir_es[adj_number];
-	document.getElementById("2").style.color = "red"
+    
+	else {
+    correct (avoir_es[verb_number] + " " + adj_avoir_es[adj_number])
 	}
-    else {
-    document.getElementById("correction_a").innerHTML = "✕";
-	document.getElementById("correction_a").style.color = "red";
-    document.getElementById("correction_b").innerHTML = avoir_es[verb_number] + " " + adj_avoir_es[adj_number]
-	}
+
+}
+
+function correct (text){
+const Word1 = document.getElementById("1").value
+
+if (Word1 == text){
+    	document.getElementById("correction_a").innerHTML = "✓";
+		document.getElementById("correction_a").style.color = "green"
+		}
+		else if (Word1 == ""){
+		document.getElementById("1").value = text;
+		document.getElementById("1").style.color = "red"
+		}
+	    else {
+	    document.getElementById("correction_a").innerHTML = "✕";
+		document.getElementById("correction_a").style.color = "red";
+	    document.getElementById("correction_b").innerHTML = text
+		}
 }
 </script>
 </body>

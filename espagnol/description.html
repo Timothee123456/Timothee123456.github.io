@@ -163,7 +163,8 @@ img {width:100}
   <li class="li"><a href="https://timothee123456.github.io/espagnol/saisons">Las estaciones</a></li>
   <li class="li"><a href="https://timothee123456.github.io/espagnol/animaux">Mascotas</a></li>
   <li class="li"><a href="https://timothee123456.github.io/espagnol/couleurs">Colores</a></li>
-  <li class="li"><a href="https://timothee123456.github.io/espagnol/couleurs">Verbos</a></li>
+  <li class="li"><a href="https://timothee123456.github.io/espagnol/verbes">Verbos</a></li>
+  <li class="li"><a class="active" href="https://timothee123456.github.io/espagnol/description">Descriptión</a></li>
 </ul>
 <center>
 <h2>Traduire la phrase en espagnol</h2>
@@ -176,7 +177,7 @@ img {width:100}
 <br>
 <nobr id="correction_b" style="color:red;"></nobr>
 <p></p>
-<a href="#" class="myButton" onclick="myFunction()">Terminado</a>
+<a href="#" class="myButton" onclick="myFunction()" id="Terminado">Terminado</a>
 <p></p>
 <a href="#" class="myButton2" onclick="reset()">Next</a>
 <p class="hidden" id="verb"></p>
@@ -201,6 +202,7 @@ const adj_avoir_fr = ["des taches de rousseur", "des lunettes", "des tresses", "
 reset()
 
 function reset() {
+document.getElementById("Terminado").style.display = "inline";
 document.getElementById("correction_a").innerHTML = ""
 document.getElementById("correction_b").innerHTML = ""
 document.getElementById("1").value = ""
@@ -241,6 +243,8 @@ document.getElementById("fr_b").innerHTML = adj_avoir_fr[adj_number]
 
 
 function myFunction() {
+
+document.getElementById("Terminado").style.display = "none";
 
 const verb = document.getElementById("verb").innerHTML
 const verb_number = document.getElementById("verb_number").innerHTML

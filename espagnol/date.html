@@ -2,7 +2,7 @@
 <html>
 <head>
     <title>
-     La descriptión físca
+     Fetcha
     </title>
 <style>
 .active {
@@ -187,11 +187,11 @@ img {width:100}
 </center>
 <script>
 const jour_fr = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"];
-const mois_fr = ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"];
+const mois_fr = ["janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre"];
 
 const jour_es = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"];
-const mois_es = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
-const date_es = ["uno", "dos", "tres", "quatro", "cinco", "seis"];
+const mois_es = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"];
+const date_es = ["uno", "dos", "tres", "cuatro", "cinco", "seis", "siete", "ocho", "nueve", "diez", "once", "doce", "trece", "catorce", "quince", "dieciséis", "diecisiete", "dieciocho", "diecinueve", "veinte", "veintiuno", "veintidós", "veintitrés", "veinticuatro", "veinticinco", "veintiséis", "veintisiete", "veintiocho", "veintinueve", "treinta"];
 
 reset()
 
@@ -202,36 +202,17 @@ document.getElementById("correction_b").innerHTML = ""
 document.getElementById("1").value = ""
 document.getElementById("1").style.color = "black"
 
-const verb = Math.floor(Math.random() * 2)
-const verb_number = Math.floor(Math.random() * 4)
-const adj = Math.floor(Math.random() * 2)
-const adj_number = Math.floor(Math.random() * 13)
+const jour = Math.floor(Math.random() * 7)
+const date = Math.floor(Math.random() * 30)
+const mois = Math.floor(Math.random() * 12)
 
-document.getElementById("verb").innerHTML = verb
-document.getElementById("verb_number").innerHTML = verb_number
-document.getElementById("adj").innerHTML = adj
-document.getElementById("adj_number").innerHTML = adj_number
+document.getElementById("jour").innerHTML = jour
+document.getElementById("mois").innerHTML = mois
+document.getElementById("date").innerHTML = date
 
-
-if (verb == 0){
-document.getElementById("fr_a").innerHTML = etre_fr[verb_number]
-	if  (verb_number == 2){
-    document.getElementById("fr_b").innerHTML = adj_etre_m_fr[adj_number]
-    }
-    else if  (verb_number == 3) {
-    document.getElementById("fr_b").innerHTML = adj_etre_f_fr[adj_number]
-    }
-    else if  (adj == 0) {
-        document.getElementById("fr_b").innerHTML = adj_etre_m_fr[adj_number]
-    }
-    else {
-    document.getElementById("fr_b").innerHTML = adj_etre_f_fr[adj_number]
-    }
-}
-else {
-document.getElementById("fr_a").innerHTML = avoir_fr[verb_number]
-document.getElementById("fr_b").innerHTML = adj_avoir_fr[adj_number]
-}
+document.getElementById("fr_a").innerHTML = jour_fr[jour] + " "
+document.getElementById("fr_b").innerHTML = date 
+document.getElementById("fr_c").innerHTML =  " " + mois_fr[mois]
 
 }
 
@@ -240,31 +221,12 @@ function myFunction() {
 
 document.getElementById("Terminado").style.display = "none";
 
-const verb = document.getElementById("verb").innerHTML
-const verb_number = document.getElementById("verb_number").innerHTML
-const adj = document.getElementById("adj").innerHTML
-const adj_number = document.getElementById("adj_number").innerHTML
+const jour = document.getElementById("jour").innerHTML
+const date = document.getElementById("date").innerHTML
+const mois = document.getElementById("mois").innerHTML
 
 const Word1 = document.getElementById("1").value
-	if (verb == 0){
-		if  (verb_number == 2){
-        correct (etre_es[verb_number] + " " + adj_etre_m_es[adj_number])
-    	}
-    	else if  (verb_number == 3) {
-    	correct (etre_es[verb_number] + " " + adj_etre_f_es[adj_number])
-    	}
-    	else if  (adj == 0) {
-        correct (etre_es[verb_number] + " " + adj_etre_m_es[adj_number])
-    	}
-    	else {
-    	correct (etre_es[verb_number] + " " + adj_etre_f_es[adj_number])
-    	}
-	}
-    
-	else {
-    correct (avoir_es[verb_number] + " " + adj_avoir_es[adj_number])
-	}
-
+correct (jour_es[jour] + " " + date_es[date] + " " + mois_es[mois])
 }
 
 function correct (text){

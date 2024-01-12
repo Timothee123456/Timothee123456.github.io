@@ -209,7 +209,7 @@ document.getElementById("1").value = ""
 document.getElementById("1").style.color = "black"
 
 const verb = Math.floor(Math.random() * 2)
-const verb_number = Math.floor(Math.random() * 4)
+const verb_number = Math.floor(Math.random() * 8)
 const adj = Math.floor(Math.random() * 2)
 const adj_number = Math.floor(Math.random() * 13)
 
@@ -221,10 +221,10 @@ document.getElementById("adj_number").innerHTML = adj_number
 
 if (verb == 0){
 document.getElementById("fr_a").innerHTML = etre_fr[verb_number]
-	if  (verb_number == 2){
+	if  (verb_number == 2 || verb_number == 6){
     document.getElementById("fr_b").innerHTML = adj_etre_m_fr[adj_number]
     }
-    else if  (verb_number == 3) {
+    else if  (verb_number == 3 || verb_number == 7) {
     document.getElementById("fr_b").innerHTML = adj_etre_f_fr[adj_number]
     }
     else if  (adj == 0) {

@@ -191,10 +191,10 @@ const avoir_fr = ["J'ai", "Tu as", "Il a", "Elle a", "Nous avons", "Vous avez", 
 const etre_es = ["Yo soy", "Tu eres", "El es", "Ella es", "Nosotros somos", "Vosotros sois", "Ellos son", "Ellas son"];
 const avoir_es = ["Yo tengo", "Tu tienes", "El tiene", "Ella tiene", "Nosotros tenemos", "Vosotros tenéis", "Ellos tienen", "Ellas tienen"];
 
-const comparer1_fr = ["plus","aussi","moins"]
-const comparer2_fr = ["que","que","que"]
-const comparer1_es = ["más","","menos"]
-const comparer2_es = ["que","como","que"]
+const comparer1_fr = [" plus "," aussi "," moins "]
+const comparer2_fr = [" que "," que "," que "]
+const comparer1_es = [" más "," "," menos "]
+const comparer2_es = [" que "," como "," que "]
 
 const adj_etre_m_es = ["bajo", "alto", "delgado", "gordo", "feo", "guapo", "calvo", "castaño", "rubio", "pelirrojo", "español", "francés", "inglés"];
 const adj_etre_f_es = ["baja", "alta", "delgada", "gorda", "fea", "guapa", "calva", "castaña", "rubia", "pelirroja", "española", "francésa", "inglésa"];
@@ -217,6 +217,8 @@ const verb = Math.floor(Math.random() * 2)
 const verb_number = Math.floor(Math.random() * 8)
 const adj = Math.floor(Math.random() * 2)
 const adj_number = Math.floor(Math.random() * 13)
+const comparer = Math.floor(Math.random() * 2)
+const comparer_number = Math.floor(Math.random() * 3)
 
 document.getElementById("verb").innerHTML = verb
 document.getElementById("verb_number").innerHTML = verb_number

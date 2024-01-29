@@ -181,13 +181,12 @@ img {width:100}
 <a href="#" class="myButton" onclick="myFunction()" id="Terminado">Terminado</a>
 <p></p>
 <a href="#" class="myButton2" onclick="reset()">Next</a>
-<p class="hidden" id="verb"></p>
-<p class="hidden" id="verb_number"></p>
-<p class="hidden" id="adj"></p>
-<p class="hidden" id="adj_number"></p>
+<p class="hidden" id="famille_number"></p>
 </center>
 <script>
-const etre_fr = ["Mi hermano mayor", "Mi hermana menor", "Mi padre", "Mi madre", "", "", "", ""];
+const famille_fr = ["Mon grand frère", "Mon petit frère", "Ma grande sœur", "Ma petite sœur", "Mon père", "Ma mère", "Mon cousin", "Ma cousine", "Mon oncle", "Ma tante", "Mon grand-père paternel", "Ma grand-mère paternel", "Mon grand-père maternel", "Ma grand-mère maternel", "Mon arrière-grand-père", "Mon arrière-grand-mère", "Mon arrière-arrière-grand-père", "Mon arrière-arrière-grand-mère", "Mon amoureux", "Mon amoureuse"];
+const famille_es = ["Mi hermano mayor", "Mi hermano menor", "Mi hermana mayor", "Mi hermana menor", "Mi padre", "Mi madre", "Mi primo", "Mi prima", "Mi tio", "Mi tia", "Mi abuelo paterno", "Mi abuela paterna", "Mi abuelo materno", "Mi abuelo materna", "Mi bisabuelo", "Mi bisabuela", "Mi tatarabuelo", "Mi tatarabuela", "Mi novio", "Mi novia"];
+const famille_number = 0
 
 reset()
 
@@ -198,77 +197,31 @@ document.getElementById("correction_b").innerHTML = ""
 document.getElementById("1").value = ""
 document.getElementById("1").style.color = "black"
 
-const verb = Math.floor(Math.random() * 2)
-const verb_number = Math.floor(Math.random() * 8)
-const adj = Math.floor(Math.random() * 2)
-const adj_number = Math.floor(Math.random() * 13)
-const comparer = Math.floor(Math.random() * 2)
-const comparer_number = Math.floor(Math.random() * 3)
+const famille_number = Math.floor(Math.random() * 20)
+document.getElementById("famille_number").innerHTML = famille_number
 
-document.getElementById("verb").innerHTML = verb
-document.getElementById("verb_number").innerHTML = verb_number
-document.getElementById("adj").innerHTML = adj
-document.getElementById("adj_number").innerHTML = adj_number
-
-
-if (verb == 0){
-document.getElementById("fr_a").innerHTML = etre_fr[verb_number]
-	if  (verb_number == 2 || verb_number == 6){
-    document.getElementById("fr_b").innerHTML = adj_etre_m_fr[adj_number]
-    }
-    else if  (verb_number == 3 || verb_number == 7) {
-    document.getElementById("fr_b").innerHTML = adj_etre_f_fr[adj_number]
-    }
-    else if  (adj == 0) {
-        document.getElementById("fr_b").innerHTML = adj_etre_m_fr[adj_number]
-    }
-    else {
-    document.getElementById("fr_b").innerHTML = adj_etre_f_fr[adj_number]
-    }
-}
-else {
-document.getElementById("fr_a").innerHTML = avoir_fr[verb_number]
-document.getElementById("fr_b").innerHTML = adj_avoir_fr[adj_number]
-}
+document.getElementById("fr").innerHTML = famille_fr[famille_number]
 
 }
+
 
 
 function myFunction() {
 
 document.getElementById("Terminado").style.display = "none";
 
-const verb = document.getElementById("verb").innerHTML
-const verb_number = document.getElementById("verb_number").innerHTML
-const adj = document.getElementById("adj").innerHTML
-const adj_number = document.getElementById("adj_number").innerHTML
+const famille_number = document.getElementById("famille_number").innerHTML
 
 const Word1 = document.getElementById("1").value
-	if (verb == 0){
-		if  (verb_number == 2){
-        correct (etre_es[verb_number] + " " + adj_etre_m_es[adj_number])
-    	}
-    	else if  (verb_number == 3) {
-    	correct (etre_es[verb_number] + " " + adj_etre_f_es[adj_number])
-    	}
-    	else if  (adj == 0) {
-        correct (etre_es[verb_number] + " " + adj_etre_m_es[adj_number])
-    	}
-    	else {
-    	correct (etre_es[verb_number] + " " + adj_etre_f_es[adj_number])
-    	}
-	}
-    
-	else {
-    correct (avoir_es[verb_number] + " " + adj_avoir_es[adj_number])
-	}
+correct (famille_es[famille_number])
 
 }
+
 
 function correct (text){
 const Word1 = document.getElementById("1").value
 
-if (Word1 == text){
+if (Word1.toLowerCase() == text.toLowerCase()){
     	document.getElementById("correction_a").innerHTML = "✓";
 		document.getElementById("correction_a").style.color = "green"
 		}

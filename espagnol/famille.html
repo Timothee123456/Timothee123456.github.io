@@ -184,12 +184,19 @@ img {width:100}
 <p class="hidden" id="famille_number"></p>
 </center>
 <script>
-const famille_fr = ["Mon grand frère", "Mon petit frère", "Ma grande sœur", "Ma petite sœur", "Mon père", "Ma mère", "Mon cousin", "Ma cousine", "Mon oncle", "Ma tante", "Mon grand-père paternel", "Ma grand-mère paternel", "Mon grand-père maternel", "Ma grand-mère maternel", "Mon arrière-grand-père", "Mon arrière-grand-mère", "Mon arrière-arrière-grand-père", "Mon arrière-arrière-grand-mère", "Mon amoureux", "Mon amoureuse"];
-const famille_es = ["Mi hermano mayor", "Mi hermano menor", "Mi hermana mayor", "Mi hermana menor", "Mi padre", "Mi madre", "Mi primo", "Mi prima", "Mi tío", "Mi tía", "Mi abuelo paterno", "Mi abuela paterna", "Mi abuelo materno", "Mi abuela materna", "Mi bisabuelo", "Mi bisabuela", "Mi tatarabuelo", "Mi tatarabuela", "Mi novio", "Mi novia"];
-const famille_pluriel_fr = ["Mes grands frères", "Mes petits frères", "Mes grandes sœurs", "Mes petites sœurs", "Mes parents", "Mes cousins", "Mes cousines", "Mes oncles", "Mes tantes", "Mes grand-pères", "Mes grand-mères", "Mes arrière-grand-pères", "es arrière-grand-mères", "Mes arrière-arrière-grand-pères", "Mes arrière-arrière-grand-mères", "Mes amoureux", "Mes amoureuses"];
-const famille_pluriel_es = ["Mis hermano mayor", "Mis hermano menor", "Mis hermana mayor", "Mis hermana menor", "Mis padre", "Mis primo", "Mis prima", "Mis tío", "Mis tía", "Mis abuelo paterno", "Mis abuela paterna", "Mis abuelo materno", "Mis abuela materna", "Mis bisabuelo", "Mis bisabuela", "Mis tatarabuelo", "Mis tatarabuela", "Mis novio", "Mis novia"];
+const famille_m_fr = ["Mon grand frère", "Mon petit frère", "Mon père", "Mon cousin", "Mon oncle", "Mon grand-père paternel", "Mon grand-père maternel", "Mon arrière-grand-père", "Mon arrière-grand-mère", "Mon arrière-arrière-grand-père", "Mon arrière-arrière-grand-mère", "Mon amoureux", "Mon amoureuse"];
+const famille_m_es = ["Mi hermano mayor", "Mi hermano menor", "Mi padre", "Mi primo", "Mi tío", "Mi abuelo paterno", "Mi abuelo materno", "Mi bisabuelo", "Mi bisabuela", "Mi tatarabuelo", "Mi tatarabuela", "Mi novio", "Mi novia"];
+const famille_f_fr = ["Ma grande sœur", "Ma petite sœur", "Ma mère", "Ma cousine" "Ma tante", "Ma grand-mère paternel", "Ma grand-mère maternel"];
+const famille_f_es = ["Mi hermana mayor", "Mi hermana menor", "Mi madre", "Mi prima",  "Mi tía", "Mi abuela paterna", "Mi abuela materna"];
+
+const famille_pluriel_fr = ["grands frères", "petits frères", "grandes sœurs", "petites sœurs", "parents", "cousins", "cousines", "oncles", "tantes", "grand-pères", "grand-mères", "arrière-grand-pères", "arrière-grand-mères", "arrière-arrière-grand-pères", "arrière-arrière-grand-mères", "amoureux", "amoureuses"];
+const famille_pluriel_es = ["hermanos mayores", "hermanos menores", "hermanas mayores", "hermanas menores", "padres", "primos", "primas", "tíos", "tías", "abuelos", "abuelas", "bisabuelos", "bisabuelas", "tatarabuelos", "tatarabuelas", "novios", "novias"];
+
 const famille_number = 0
 
+const pronoms_m_fr ["Mon","Ton"]
+const pronoms_f_fr [""]
+const pronoms_es [""]
 
 
 reset()

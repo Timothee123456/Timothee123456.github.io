@@ -195,6 +195,7 @@ const famille_pluriel_fr = ["grands frères", "petits frères", "grandes sœurs"
 const famille_pluriel_es = ["hermanos mayores", "hermanos menores", "hermanas mayores", "hermanas menores", "padres", "primos", "primas", "tíos", "tías", "abuelos", "abuelas", "bisabuelos", "bisabuelas", "tatarabuelos", "tatarabuelas", "novios", "novias"];
 
 const famille_number = 0
+const pronom_number = 0
 const m/f = 0
 const pluriel= 0
 
@@ -215,6 +216,8 @@ document.getElementById("correction_b").innerHTML = ""
 document.getElementById("1").value = ""
 document.getElementById("1").style.color = "black"
 
+const pronom_number = Math.floor(Math.random() * 6)
+document.getElementById("m/f").innerHTML = famille_number
 const m/f = Math.floor(Math.random() * 2)
 document.getElementById("m/f").innerHTML = famille_number
 const pluriel = Math.floor(Math.random() * 2)
@@ -228,14 +231,14 @@ if (m/f == 0){
 document.getElementById("famille_number").innerHTML = famille_number
 
 if (pluriel == 1){
-	
+	document.getElementById("fr").innerHTML = pronoms_pluriels_fr[pronom_number] + famille_pluriel_fr[famille_number] 
     }
     else {
     	if (m/f) == 0){
-		document.getElementById("fr").innerHTML = famille_fr[famille_number]
+		document.getElementById("fr").innerHTML = pronoms_m_fr[pronom_number] + famille_m_fr[famille_number]
         }
         else {
-        
+        document.getElementById("fr").innerHTML = pronoms_f_fr[pronom_number] + famille_f_fr[famille_number]
         }
 
 }

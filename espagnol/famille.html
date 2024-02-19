@@ -182,36 +182,61 @@ img {width:100}
 <p></p>
 <a href="#" class="myButton2" onclick="reset()">Next</a>
 <p class="hidden" id="famille_number"></p>
+<p class="hidden" id="m/f"></p>
+<p class="hidden" id="pluriel"></p>
 </center>
 <script>
-const famille_m_fr = ["Mon grand frère", "Mon petit frère", "Mon père", "Mon cousin", "Mon oncle", "Mon grand-père paternel", "Mon grand-père maternel", "Mon arrière-grand-père", "Mon arrière-grand-mère", "Mon arrière-arrière-grand-père", "Mon arrière-arrière-grand-mère", "Mon amoureux", "Mon amoureuse"];
-const famille_m_es = ["Mi hermano mayor", "Mi hermano menor", "Mi padre", "Mi primo", "Mi tío", "Mi abuelo paterno", "Mi abuelo materno", "Mi bisabuelo", "Mi bisabuela", "Mi tatarabuelo", "Mi tatarabuela", "Mi novio", "Mi novia"];
-const famille_f_fr = ["Ma grande sœur", "Ma petite sœur", "Ma mère", "Ma cousine" "Ma tante", "Ma grand-mère paternel", "Ma grand-mère maternel"];
-const famille_f_es = ["Mi hermana mayor", "Mi hermana menor", "Mi madre", "Mi prima",  "Mi tía", "Mi abuela paterna", "Mi abuela materna"];
+const famille_m_fr = ["grand frère", "petit frère", "père", "cousin", "oncle", "grand-père paternel", "grand-père maternel", "arrière-grand-père", "arrière-grand-mère", "arrière-arrière-grand-père", "arrière-arrière-grand-mère", "amoureux", "amoureuse"];
+const famille_m_es = ["hermano mayor", "hermano menor", "padre", "primo", "tío", "abuelo paterno", "abuelo materno", "bisabuelo", "bisabuela", "tatarabuelo", "tatarabuela", "novio", "novia"];
+const famille_f_fr = ["grande sœur", "petite sœur", "mère", " cousine" "tante", "grand-mère paternel", "grand-mère maternel"];
+const famille_f_es = ["hermana mayor", "hermana menor", "madre", "prima",  "tía", "abuela paterna", "abuela materna"];
 
 const famille_pluriel_fr = ["grands frères", "petits frères", "grandes sœurs", "petites sœurs", "parents", "cousins", "cousines", "oncles", "tantes", "grand-pères", "grand-mères", "arrière-grand-pères", "arrière-grand-mères", "arrière-arrière-grand-pères", "arrière-arrière-grand-mères", "amoureux", "amoureuses"];
 const famille_pluriel_es = ["hermanos mayores", "hermanos menores", "hermanas mayores", "hermanas menores", "padres", "primos", "primas", "tíos", "tías", "abuelos", "abuelas", "bisabuelos", "bisabuelas", "tatarabuelos", "tatarabuelas", "novios", "novias"];
 
 const famille_number = 0
+const m/f = 0
+const pluriel= 0
 
-const pronoms_m_fr ["Mon","Ton"]
-const pronoms_f_fr [""]
-const pronoms_es [""]
+const pronoms_m_fr ["Mon ","Ton ", "Son ", "Notre ", "Votre ", "Leur "]
+const pronoms_f_fr ["Ma ","Ta ", "Sa ", "Notre ", "Votre ", "Leur "]
+const pronoms_pluriel_fr ["Mes ","Tes ", "Ses ", "Nos ", "Vos ", "Leurs "]
+const pronoms_m_es ["Mi ","Tu ", "Su ", "Nuestro ", "Vuestro ", "Su "]
+const pronoms_f_es ["Mi ","Tu ", "Su ", "Nuestra ", "Vuestra ", "Su "]
+const pronoms_pluriel_es ["Mis ","Tus ", "Sus ", "Nuestros ", "Vuestros ", "Sus "]
 
 
 reset()
 
-function reset() {
-document.getElementById("Terminado").style.display = "inline";
+function reset() {";
 document.getElementById("correction_a").innerHTML = ""
+document.getElementById("Terminado").style.display = "inline
 document.getElementById("correction_b").innerHTML = ""
 document.getElementById("1").value = ""
 document.getElementById("1").style.color = "black"
 
-const famille_number = Math.floor(Math.random() * 20)
+const m/f = Math.floor(Math.random() * 2)
+document.getElementById("m/f").innerHTML = famille_number
+const pluriel = Math.floor(Math.random() * 2)
+document.getElementById("pluriel").innerHTML = famille_number
+if (m/f == 0){
+	const famille_number = Math.floor(Math.random() * 13)
+    }
+    else {
+	const famille_number = Math.floor(Math.random() * 7)
+	}
 document.getElementById("famille_number").innerHTML = famille_number
 
-document.getElementById("fr").innerHTML = famille_fr[famille_number]
+if (pluriel == 1){
+	
+    }
+    else {
+    	if (m/f) == 0){
+		document.getElementById("fr").innerHTML = famille_fr[famille_number]
+        }
+        else {
+        
+        }
 
 }
 

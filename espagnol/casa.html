@@ -270,7 +270,7 @@ document.getElementById("7").style.color = "black"
 
 function myFunction() {
 const Word1 = document.getElementById("1").value
-if (Word1 == "Lunes" || Word1 == "lunes"){
+if (Word1.toLowerCase() == "un coche"){
 document.getElementById("correction1").innerHTML = "✓";
 document.getElementById("correction1").style.color = "green"
 }

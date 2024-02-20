@@ -369,6 +369,25 @@ document.getElementById("correction7").style.color = "red"
 
 
 }
+
+
+function correct (word, correction, text, text2){
+const Word1 = document.getElementById("1").value
+
+if (word.toLowerCase() == text.toLowerCase() || word.toLowerCase() == text2.toLowerCase()){
+    	document.getElementById("correction_a").innerHTML = "✓";
+		document.getElementById("correction_a").style.color = "green"
+		}
+		else if (Word1 == ""){
+		document.getElementById("1").value = text;
+		document.getElementById("1").style.color = "red"
+		}
+	    else {
+	    document.getElementById("correction_a").innerHTML = "✕";
+		document.getElementById("correction_a").style.color = "red";
+	    document.getElementById("correction_b").innerHTML = text
+		}
+}
 </script>
 </body>
 </html>

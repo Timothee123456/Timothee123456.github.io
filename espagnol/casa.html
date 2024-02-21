@@ -171,7 +171,7 @@ nobr {font-size:24px}
   <li class="li" style="float:right"><a href="https://timothee123456.github.io/espagnol/leçons/jours-de-la-semaine">Leçons</a></li></li>
 </ul>
 <center>
-<h2 style="color:green">Quiz de vocabulaire</h2>
+<h2 style="color:green" id="quiz1">Quiz de vocabulaire</h2>
 <nobr>Une voiture : </nobr>
 <input type="text" autocomplete="off" id="1">
 <nobr id="correction1"></nobr>
@@ -213,7 +213,7 @@ nobr {font-size:24px}
 <nobr id="correction10"></nobr>
 <br>
 <p></p>
-<h2 style="color:red">Quiz de verbes</h2>
+<h2 style="color:red" id="quiz2">Quiz de verbes</h2>
 <nobr>Il y a : </nobr>
 <input autocomplete="off" id="11">
 <nobr id="correction11"></nobr>
@@ -230,12 +230,14 @@ nobr {font-size:24px}
 <input autocomplete="off" id="14">
 <nobr id="correction14"></nobr>
 <p></p>
-<a href="#" class="myButton" onclick="myFunction()">Terminado</a>
+<a href="#" class="myButton" onclick="myFunction()" id="Terminado">Terminado</a>
 <p></p>
 <a href="#" class="myButton2" onclick="reset()">Réinitialiser</a>
 </center>
 <script>
 function reset() {
+document.getElementById("Terminado").style.display = "inline";
+
 document.getElementById("correction1").innerHTML = ""
 document.getElementById("1").value = ""
 document.getElementById("1").style.color = "black"
@@ -292,15 +294,22 @@ document.getElementById("correction14").innerHTML = ""
 document.getElementById("14").value = ""
 document.getElementById("14").style.color = "black"
 
+document.getElementById("quiz1").innerHTML = "Quiz de vocabulaire"
+document.getElementById("quiz2").innerHTML = "Quiz de verbes"
 }
 
 
 
 function myFunction() {
+document.getElementById("Terminado").style.display = "none"
+var quiz1 = 0
+var quiz2 = 0
+
 const Word1 = document.getElementById("1").value
 if (Word1.toLowerCase() == "un coche"){
 document.getElementById("correction1").innerHTML = "✓";
 document.getElementById("correction1").style.color = "green"
+var quiz1 = quiz1 + 2
 }
 else if (Word1 == ""){
 document.getElementById("1").value = "un coche";
@@ -315,6 +324,7 @@ const Word2 = document.getElementById("2").value
 if (Word2.toLowerCase() == "una moto"){
 document.getElementById("correction2").innerHTML = "✓";
 document.getElementById("correction2").style.color = "green"
+var quiz1 = quiz1 + 2
 }
 else if (Word2 == ""){
 document.getElementById("2").value = "una moto";
@@ -329,6 +339,7 @@ const Word3 = document.getElementById("3").value
 if (Word3.toLowerCase() == "una casa"){
 document.getElementById("correction3").innerHTML = "✓";
 document.getElementById("correction3").style.color = "green"
+var quiz1 = quiz1 + 2
 }
 else if (Word3 == ""){
 document.getElementById("3").value = "una casa";
@@ -343,6 +354,7 @@ const Word4 = document.getElementById("4").value
 if (Word4.toLowerCase() == "un barrio tranquilo"){
 document.getElementById("correction4").innerHTML = "✓";
 document.getElementById("correction4").style.color = "green"
+var quiz1 = quiz1 + 2
 }
 else if (Word4 == ""){
 document.getElementById("4").value = "un barrio tranquilo";
@@ -357,14 +369,17 @@ const Word5 = document.getElementById("5").value
 if (Word5.toLowerCase() == "el ruido / el bullicio"){
 document.getElementById("correction5").innerHTML = "✓";
 document.getElementById("correction5").style.color = "green"
+var quiz1 = quiz1 + 2
 }
 else if (Word5.toLowerCase() == "el bullicio"){
 document.getElementById("correction5").innerHTML = "/ el ruido ✓";
 document.getElementById("correction5").style.color = "green"
+var quiz1 = quiz1 + 2
 }
 else if (Word5.toLowerCase() == "el ruido"){
 document.getElementById("correction5").innerHTML = "/ el bullicio ✓";
 document.getElementById("correction5").style.color = "green"
+var quiz1 = quiz1 + 2
 }
 else if (Word5 == ""){
 document.getElementById("5").value = "el ruido / el bullicio";
@@ -379,6 +394,7 @@ const Word6 = document.getElementById("6").value
 if (Word6.toLowerCase() == "él tarda diez minutos" || Word6 == "tarda diez minutos"){
 document.getElementById("correction6").innerHTML = "✓";
 document.getElementById("correction6").style.color = "green"
+var quiz1 = quiz1 + 2
 }
 else if (Word6 == ""){
 document.getElementById("6").value = "él tarda diez minutos";
@@ -393,6 +409,7 @@ const Word7 = document.getElementById("7").value
 if (Word7.toLowerCase() == "él va al trabajo" || Word7.toLowerCase() == "va al trabajo"){
 document.getElementById("correction7").innerHTML = "✓";
 document.getElementById("correction7").style.color = "green"
+var quiz1 = quiz1 + 2
 }
 else if (Word7 == ""){
 document.getElementById("7").value = "él va al trabajo";
@@ -407,6 +424,7 @@ const Word8 = document.getElementById("8").value
 if (Word8.toLowerCase() == "la ciudad"){
 document.getElementById("correction8").innerHTML = "✓";
 document.getElementById("correction8").style.color = "green"
+var quiz1 = quiz1 + 2
 }
 else if (Word8 == ""){
 document.getElementById("8").value = "la ciudad";
@@ -421,6 +439,7 @@ const Word9 = document.getElementById("9").value
 if (Word9.toLowerCase() == "la capital"){
 document.getElementById("correction9").innerHTML = "✓";
 document.getElementById("correction9").style.color = "green"
+var quiz1 = quiz1 + 2
 }
 else if (Word9 == ""){
 document.getElementById("9").value = "la capital";
@@ -435,6 +454,7 @@ const Word10 = document.getElementById("10").value
 if (Word10.toLowerCase() == "muchos coches"){
 document.getElementById("correction10").innerHTML = "✓";
 document.getElementById("correction10").style.color = "green"
+var quiz1 = quiz1 + 2
 }
 else if (Word10 == ""){
 document.getElementById("10").value = "muchos coches";
@@ -445,10 +465,14 @@ document.getElementById("correction10").innerHTML = "✕ muchos coches";
 document.getElementById("correction10").style.color = "red"
 }
 
+document.getElementById("quiz1").innerHTML = "Quiz de vocabulaire " + quiz1 + "/20";
+
+
 const Word11 = document.getElementById("11").value
 if (Word11.toLowerCase() == "hay"){
 document.getElementById("correction11").innerHTML = "✓";
 document.getElementById("correction11").style.color = "green"
+var quiz2 = quiz2 + 5
 }
 else if (Word11 == ""){
 document.getElementById("11").value = "hay";
@@ -463,6 +487,7 @@ const Word12 = document.getElementById("12").value
 if (Word12.toLowerCase() == "él vive" || Word12.toLowerCase() == "vive"){
 document.getElementById("correction12").innerHTML = "✓";
 document.getElementById("correction12").style.color = "green"
+var quiz2 = quiz2 + 5
 }
 else if (Word12 == ""){
 document.getElementById("12").value = "él vive";
@@ -477,6 +502,7 @@ const Word13 = document.getElementById("13").value
 if (Word13.toLowerCase() == "él va al trabajo" || Word13.toLowerCase() == "va al trabajo"){
 document.getElementById("correction13").innerHTML = "✓";
 document.getElementById("correction13").style.color = "green"
+var quiz2 = quiz2 + 5
 }
 else if (Word13 == ""){
 document.getElementById("13").value = "él va al trabajo";
@@ -491,6 +517,7 @@ const Word14 = document.getElementById("14").value
 if (Word14.toLowerCase() == "no hay"){
 document.getElementById("correction14").innerHTML = "✓";
 document.getElementById("correction14").style.color = "green"
+var quiz2 = quiz2 + 5
 }
 else if (Word14 == ""){
 document.getElementById("14").value = "no hay";
@@ -500,8 +527,7 @@ else {
 document.getElementById("correction14").innerHTML = "✕ no hay";
 document.getElementById("correction14").style.color = "red"
 }
-
-
+document.getElementById("quiz2").innerHTML = "Quiz de verbes " + quiz2 + "/20";
 }
 </script>
 </body>

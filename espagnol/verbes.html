@@ -180,60 +180,120 @@ width: 90%}
   <li class="li"><a href="https://timothee123456.github.io/espagnol/saisons/saisons">Las estaciones</a></li>
   <li class="li"><a href="https://timothee123456.github.io/espagnol/animaux/animaux">Mascotas</a></li>
   <li class="li"><a href="https://timothee123456.github.io/espagnol/couleurs">Colores</a></li>
-  <li class="li"><a href="https://timothee123456.github.io/espagnol/couleurs" class="active">Verbos</a></li>
+  <li class="li"><a class="active" href="https://timothee123456.github.io/espagnol/verbes">Verbos</a></li>
   <li class="li"><a href="https://timothee123456.github.io/espagnol/description">Descriptión</a></li>
+  <li class="li"><a href="https://timothee123456.github.io/espagnol/famille">Mi familia</a>
+  <li class="li"><a href="https://timothee123456.github.io/espagnol/famille">Mi casa</a>
+  <li class="li" style="float:right"><a href="https://timothee123456.github.io/espagnol/leçons/jours-de-la-semaine">Leçons</a></li></li>
 </ul>
+
 <center>
 <h2>Compléter le tableau en espagnol</h2>
 <p></p>
 <div class="column">
-<input class="input" placeholder="Infinitif"  wdith="25"autocomplete="off" style="text-align:center;" id="1">
+<input class="input" placeholder="S'appeler"  wdith="25"autocomplete="off" style="text-align:center;" id="1">
 <nobr id="correction1"></nobr>
 <br>
 <input placeholder="Yo"  autocomplete="off" style="text-align:center;" id="2">
 <nobr id="correction2"></nobr>
 <br>
-<input placeholder="Tú"  autocomplete="off" style="text-align:center;" id="2">
-<nobr id="correction2"></nobr>
+<input placeholder="Tú"  autocomplete="off" style="text-align:center;" id="3">
+<nobr id="correction3"></nobr>
 <br>
-<input placeholder="Él/ella"  autocomplete="off" style="text-align:center;" id="2">
-<nobr id="correction2"></nobr>
+<input placeholder="Él/ella"  autocomplete="off" style="text-align:center;" id="4">
+<nobr id="correction4"></nobr>
 <br>
-<input placeholder="Nosotros (as)"  autocomplete="off" style="text-align:center;" id="2">
-<nobr id="correction2"></nobr>
+<input placeholder="Nosotros (as)"  autocomplete="off" style="text-align:center;" id="5">
+<nobr id="correction5"></nobr>
 <br>
-<input placeholder="Vosotros (as)"  autocomplete="off" style="text-align:center;" id="2">
-<nobr id="correction2"></nobr>
+<input placeholder="Vosotros (as)"  autocomplete="off" style="text-align:center;" id="6">
+<nobr id="correction6"></nobr>
 <br>
-<input placeholder="Ellos/ellas"  autocomplete="off" style="text-align:center;" id="2">
-<nobr id="correction2"></nobr>
+<input placeholder="Ellos/ellas"  autocomplete="off" style="text-align:center;" id="7">
+<nobr id="correction7"></nobr>
 </div>
+
 <div class="column">
-<input class="input" autocomplete="off" style="text-align:center;" id="1">
+<input class="input" placeholder="Avoir"  wdith="25"autocomplete="off" style="text-align:center;" id="11">
 <nobr id="correction11"></nobr>
 <br>
-<input class="input" autocomplete="off" style="text-align:center;" id="2">
+<input placeholder="Yo"  autocomplete="off" style="text-align:center;" id="12">
 <nobr id="correction12"></nobr>
+<br>
+<input placeholder="Tú"  autocomplete="off" style="text-align:center;" id="13">
+<nobr id="correction13"></nobr>
+<br>
+<input placeholder="Él/ella"  autocomplete="off" style="text-align:center;" id="14">
+<nobr id="correction14"></nobr>
+<br>
+<input placeholder="Nosotros (as)"  autocomplete="off" style="text-align:center;" id="15">
+<nobr id="correction15"></nobr>
+<br>
+<input placeholder="Vosotros (as)"  autocomplete="off" style="text-align:center;" id="16">
+<nobr id="correction16"></nobr>
+<br>
+<input placeholder="Ellos/ellas"  autocomplete="off" style="text-align:center;" id="17">
+<nobr id="correction17"></nobr>
 </div>
+
 <div class="column">
-<input class="input" autocomplete="off" style="text-align:center;" id="1">
+<input class="input" placeholder="Être"  wdith="25"autocomplete="off" style="text-align:center;" id="21">
 <nobr id="correction21"></nobr>
 <br>
-<input class="input" autocomplete="off" style="text-align:center;" id="2">
+<input placeholder="Yo"  autocomplete="off" style="text-align:center;" id="22">
 <nobr id="correction22"></nobr>
+<br>
+<input placeholder="Tú"  autocomplete="off" style="text-align:center;" id="23">
+<nobr id="correction23"></nobr>
+<br>
+<input placeholder="Él/ella"  autocomplete="off" style="text-align:center;" id="24">
+<nobr id="correction24"></nobr>
+<br>
+<input placeholder="Nosotros (as)"  autocomplete="off" style="text-align:center;" id="25">
+<nobr id="correction25"></nobr>
+<br>
+<input placeholder="Vosotros (as)"  autocomplete="off" style="text-align:center;" id="26">
+<nobr id="correction26"></nobr>
+<br>
+<input placeholder="Ellos/ellas"  autocomplete="off" style="text-align:center;" id="27">
+<nobr id="correction27"></nobr>
 </div>
+
 <p></p>
 <a href="#" class="myButton" onclick="myFunction()">Terminado</a>
 <p></p>
 <a href="#" class="myButton2" onclick="reset()">Réinitialiser</a>
 </center>
 <script>
-
 function reset() {
+document.getElementById("correction1").innerHTML = ""
+document.getElementById("1").value = ""
+document.getElementById("1").style.color = "black"
 
-document.getElementById("correction10").innerHTML = ""
-document.getElementById("10").value = ""
-document.getElementById("10").style.color = "black"
+document.getElementById("correction2").innerHTML = ""
+document.getElementById("2").value = ""
+document.getElementById("2").style.color = "black"
+
+document.getElementById("correction3").innerHTML = ""
+document.getElementById("3").value = ""
+document.getElementById("3").style.color = "black"
+
+document.getElementById("correction4").innerHTML = ""
+document.getElementById("4").value = ""
+document.getElementById("4").style.color = "black"
+
+document.getElementById("correction5").innerHTML = ""
+document.getElementById("5").value = ""
+document.getElementById("5").style.color = "black"
+
+document.getElementById("correction6").innerHTML = ""
+document.getElementById("6").value = ""
+document.getElementById("6").style.color = "black"
+
+document.getElementById("correction7").innerHTML = ""
+document.getElementById("7").value = ""
+document.getElementById("7").style.color = "black"
+
 
 document.getElementById("correction11").innerHTML = ""
 document.getElementById("11").value = ""
@@ -259,82 +319,340 @@ document.getElementById("correction16").innerHTML = ""
 document.getElementById("16").value = ""
 document.getElementById("16").style.color = "black"
 
+document.getElementById("correction17").innerHTML = ""
+document.getElementById("17").value = ""
+document.getElementById("17").style.color = "black"
 
-document.getElementById("correction10").innerHTML = ""
-document.getElementById("10").value = ""
-document.getElementById("10").style.color = "black"
 
-document.getElementById("correction21").innerHTML = ""
+document.getElementById("correction11").innerHTML = ""
 document.getElementById("21").value = ""
 document.getElementById("21").style.color = "black"
 
-document.getElementById("correction22").innerHTML = ""
+document.getElementById("correction12").innerHTML = ""
 document.getElementById("22").value = ""
 document.getElementById("22").style.color = "black"
 
-document.getElementById("correction23").innerHTML = ""
+document.getElementById("correction13").innerHTML = ""
 document.getElementById("23").value = ""
 document.getElementById("23").style.color = "black"
 
-document.getElementById("correction24").innerHTML = ""
+document.getElementById("correction14").innerHTML = ""
 document.getElementById("24").value = ""
 document.getElementById("24").style.color = "black"
 
-document.getElementById("correction25").innerHTML = ""
+document.getElementById("correction15").innerHTML = ""
 document.getElementById("25").value = ""
 document.getElementById("25").style.color = "black"
 
-document.getElementById("correction26").innerHTML = ""
+document.getElementById("correction16").innerHTML = ""
 document.getElementById("26").value = ""
 document.getElementById("26").style.color = "black"
 
+document.getElementById("correction17").innerHTML = ""
+document.getElementById("27").value = ""
+document.getElementById("27").style.color = "black"
 
-document.getElementById("correction30").innerHTML = ""
-document.getElementById("30").value = ""
-document.getElementById("30").style.color = "black"
-
-document.getElementById("correction31").innerHTML = ""
-document.getElementById("31").value = ""
-document.getElementById("31").style.color = "black"
-
-document.getElementById("correction32").innerHTML = ""
-document.getElementById("32").value = ""
-document.getElementById("32").style.color = "black"
-
-document.getElementById("correction33").innerHTML = ""
-document.getElementById("33").value = ""
-document.getElementById("33").style.color = "black"
-
-document.getElementById("correction34").innerHTML = ""
-document.getElementById("34").value = ""
-document.getElementById("34").style.color = "black"
-
-document.getElementById("correction35").innerHTML = ""
-document.getElementById("35").value = ""
-document.getElementById("35").style.color = "black"
-
-document.getElementById("correction36").innerHTML = ""
-document.getElementById("36").value = ""
-document.getElementById("36").style.color = "black"
 
 }
 
 function myFunction() {
 const Word1 = document.getElementById("1").value
-document.getElementById("correction_a").innerHTML = avoir_es[verb_number] + " " + adj_avoir_es[adj_number];
-document.getElementById("correction_a").style.color = "green"
-if (Word1 == avoir_es[verb_number] + " " + adj_avoir_es[adj_number]){
-document.getElementById("correction_a").innerHTML = "✓";
-document.getElementById("correction_a").style.color = "green"
+if (Word1.toLowerCase() == "Llamarse"){
+document.getElementById("correction1").innerHTML = "✓";
+document.getElementById("correction1").style.color = "green"
 }
-if else (Word1 == "") document.getElementById("1").value = avoir_es[verb_number] + " " + adj_avoir_es[adj_number]); 
+else if (Word1 == ""){
+document.getElementById("1").value = "Llamarse";
 document.getElementById("1").style.color = "red"
 }
-else { 
-document.getElementById("correction_a").innerHTML = "✕"; 
-document.getElementById("correction_a").style.color = "red" 
-document.getElementById("correction_b").innerHTML = avoir_es[verb_number] + " " + adj_avoir_es[adj_number]); 
+else {
+document.getElementById("correction1").innerHTML = "✕ Llamarse";
+document.getElementById("correction1").style.color = "red"
 }
+
+const Word2 = document.getElementById("2").value
+if (Word2.toLowerCase() == "me llamo"){
+document.getElementById("correction2").innerHTML = "✓";
+document.getElementById("correction2").style.color = "green"
+}
+else if (Word2 == ""){
+document.getElementById("2").value = "me llamo";
+document.getElementById("2").style.color = "red"
+}
+else {
+document.getElementById("correction2").innerHTML = "✕ me llamo";
+document.getElementById("correction2").style.color = "red"
+}
+
+const Word3 = document.getElementById("3").value
+if (Word3.toLowerCase() == "se llamas"){
+document.getElementById("correction3").innerHTML = "✓";
+document.getElementById("correction3").style.color = "green"
+}
+else if (Word3 == ""){
+document.getElementById("3").value = "se llamas";
+document.getElementById("3").style.color = "red"
+}
+else {
+document.getElementById("correction3").innerHTML = "✕ se llamas";
+document.getElementById("correction3").style.color = "red"
+}
+
+const Word4 = document.getElementById("4").value
+if (Word4.toLowerCase() == "se llama"){
+document.getElementById("correction4").innerHTML = "✓";
+document.getElementById("correction4").style.color = "green"
+}
+else if (Word4 == ""){
+document.getElementById("4").value = "se llama";
+document.getElementById("4").style.color = "red"
+}
+else {
+document.getElementById("correction4").innerHTML = "✕ se llama";
+document.getElementById("correction4").style.color = "red"
+}
+
+const Word5 = document.getElementById("5").value
+if (Word5.toLowerCase() == "nos llamamos"){
+document.getElementById("correction5").innerHTML = "✓";
+document.getElementById("correction5").style.color = "green"
+}
+else if (Word5 == ""){
+document.getElementById("5").value = "nos llamamos";
+document.getElementById("5").style.color = "red"
+}
+else {
+document.getElementById("correction5").innerHTML = "✕ nos llamamos";
+document.getElementById("correction5").style.color = "red"
+}
+
+const Word6 = document.getElementById("6").value
+if (Word6.toLowerCase() == "os amáis"){
+document.getElementById("correction6").innerHTML = "✓";
+document.getElementById("correction6").style.color = "green"
+}
+else if (Word6 == ""){
+document.getElementById("6").value = "os amáis";
+document.getElementById("6").style.color = "red"
+}
+else {
+document.getElementById("correction6").innerHTML = "✕ os amáis";
+document.getElementById("correction6").style.color = "red"
+}
+
+const Word7 = document.getElementById("7").value
+if (Word7.toLowerCase() == "se llaman"){
+document.getElementById("correction7").innerHTML = "✓";
+document.getElementById("correction7").style.color = "green"
+}
+else if (Word7 == ""){
+document.getElementById("7").value = "se llaman";
+document.getElementById("7").style.color = "red"
+}
+else {
+document.getElementById("correction7").innerHTML = "✕ se llaman";
+document.getElementById("correction7").style.color = "red"
+}
+
+
+const Word11 = document.getElementById("11").value
+if (Word11.toLowerCase() == "tener"){
+document.getElementById("correction11").innerHTML = "✓";
+document.getElementById("correction11").style.color = "green"
+}
+else if (Word11 == ""){
+document.getElementById("11").value = "Tener";
+document.getElementById("11").style.color = "red"
+}
+else {
+document.getElementById("correction11").innerHTML = "✕ Tener";
+document.getElementById("correction11").style.color = "red"
+}
+
+const Word12 = document.getElementById("12").value
+if (Word12.toLowerCase() == "tengo"){
+document.getElementById("correction12").innerHTML = "✓";
+document.getElementById("correction12").style.color = "green"
+}
+else if (Word12 == ""){
+document.getElementById("12").value = "tengo";
+document.getElementById("12").style.color = "red"
+}
+else {
+document.getElementById("correction12").innerHTML = "✕ tengo";
+document.getElementById("correction12").style.color = "red"
+}
+
+const Word13 = document.getElementById("13").value
+if (Word13.toLowerCase() == "tienes"){
+document.getElementById("correction13").innerHTML = "✓";
+document.getElementById("correction13").style.color = "green"
+}
+else if (Word13 == ""){
+document.getElementById("13").value = "tienes";
+document.getElementById("13").style.color = "red"
+}
+else {
+document.getElementById("correction13").innerHTML = "✕ tienes";
+document.getElementById("correction13").style.color = "red"
+}
+
+const Word14 = document.getElementById("14").value
+if (Word14.toLowerCase() == "tiene"){
+document.getElementById("correction14").innerHTML = "✓";
+document.getElementById("correction14").style.color = "green"
+}
+else if (Word14 == ""){
+document.getElementById("14").value = "tiene";
+document.getElementById("14").style.color = "red"
+}
+else {
+document.getElementById("correction14").innerHTML = "✕ tiene";
+document.getElementById("correction14").style.color = "red"
+}
+
+const Word15 = document.getElementById("15").value
+if (Word15.toLowerCase() == "tenemos"){
+document.getElementById("correction15").innerHTML = "✓";
+document.getElementById("correction15").style.color = "green"
+}
+else if (Word15 == ""){
+document.getElementById("15").value = "tenemos";
+document.getElementById("15").style.color = "red"
+}
+else {
+document.getElementById("correction15").innerHTML = "✕ tenemos";
+document.getElementById("correction15").style.color = "red"
+}
+
+const Word16 = document.getElementById("16").value
+if (Word16.toLowerCase() == "tenéis"){
+document.getElementById("correction16").innerHTML = "✓";
+document.getElementById("correction16").style.color = "green"
+}
+else if (Word16 == ""){
+document.getElementById("16").value = "tenéis";
+document.getElementById("16").style.color = "red"
+}
+else {
+document.getElementById("correction16").innerHTML = "✕ tenéis";
+document.getElementById("correction16").style.color = "red"
+}
+
+const Word17 = document.getElementById("17").value
+if (Word17.toLowerCase() == "tienen"){
+document.getElementById("correction17").innerHTML = "✓";
+document.getElementById("correction17").style.color = "green"
+}
+else if (Word17 == ""){
+document.getElementById("17").value = "tienen";
+document.getElementById("17").style.color = "red"
+}
+else {
+document.getElementById("correction17").innerHTML = "✕ tienen";
+document.getElementById("correction17").style.color = "red"
+}
+
+
+const Word21 = document.getElementById("21").value
+if (Word21.toLowerCase() == "ser"){
+document.getElementById("correction21").innerHTML = "✓";
+document.getElementById("correction21").style.color = "green"
+}
+else if (Word21 == ""){
+document.getElementById("21").value = "Ser";
+document.getElementById("21").style.color = "red"
+}
+else {
+document.getElementById("correction21").innerHTML = "✕ Ser";
+document.getElementById("correction21").style.color = "red"
+}
+
+const Word22 = document.getElementById("22").value
+if (Word22.toLowerCase() == "soy"){
+document.getElementById("correction22").innerHTML = "✓";
+document.getElementById("correction22").style.color = "green"
+}
+else if (Word22 == ""){
+document.getElementById("22").value = "soy";
+document.getElementById("22").style.color = "red"
+}
+else {
+document.getElementById("correction22").innerHTML = "✕ soy";
+document.getElementById("correction22").style.color = "red"
+}
+
+const Word23 = document.getElementById("23").value
+if (Word23.toLowerCase() == "eres"){
+document.getElementById("correction23").innerHTML = "✓";
+document.getElementById("correction23").style.color = "green"
+}
+else if (Word23 == ""){
+document.getElementById("23").value = "eres";
+document.getElementById("23").style.color = "red"
+}
+else {
+document.getElementById("correction23").innerHTML = "✕ eres";
+document.getElementById("correction23").style.color = "red"
+}
+
+const Word24 = document.getElementById("24").value
+if (Word24.toLowerCase() == "es"){
+document.getElementById("correction24").innerHTML = "✓";
+document.getElementById("correction24").style.color = "green"
+}
+else if (Word24 == ""){
+document.getElementById("24").value = "es";
+document.getElementById("24").style.color = "red"
+}
+else {
+document.getElementById("correction24").innerHTML = "✕ es";
+document.getElementById("correction24").style.color = "red"
+}
+
+const Word25 = document.getElementById("25").value
+if (Word25.toLowerCase() == "somos"){
+document.getElementById("correction25").innerHTML = "✓";
+document.getElementById("correction25").style.color = "green"
+}
+else if (Word25 == ""){
+document.getElementById("25").value = "somos";
+document.getElementById("25").style.color = "red"
+}
+else {
+document.getElementById("correction25").innerHTML = "✕ somos";
+document.getElementById("correction25").style.color = "red"
+}
+
+const Word26 = document.getElementById("26").value
+if (Word26.toLowerCase() == "sois"){
+document.getElementById("correction26").innerHTML = "✓";
+document.getElementById("correction26").style.color = "green"
+}
+else if (Word26 == ""){
+document.getElementById("26").value = "sois";
+document.getElementById("26").style.color = "red"
+}
+else {
+document.getElementById("correction26").innerHTML = "✕ sois";
+document.getElementById("correction26").style.color = "red"
+}
+
+const Word27 = document.getElementById("27").value
+if (Word27.toLowerCase() == "sonsois"){
+document.getElementById("correction27").innerHTML = "✓";
+document.getElementById("correction27").style.color = "green"
+}
+else if (Word27 == ""){
+document.getElementById("27").value = "sonsois";
+document.getElementById("27").style.color = "red"
+}
+else {
+document.getElementById("correction27").innerHTML = "✕ sonsois";
+document.getElementById("correction27").style.color = "red"
+}
+
+
 
 }
 </script>

@@ -366,7 +366,7 @@ document.getElementById("correction4").style.color = "red"
 }
 
 const Word5 = document.getElementById("5").value
-if (Word5.toLowerCase() == "el ruido / el bullicio"){
+if (Word5.toLowerCase() == "el ruido / el bullicio" || Word5.toLowerCase() == "el bullicio / el ruido"){
 document.getElementById("correction5").innerHTML = "✓";
 document.getElementById("correction5").style.color = "green"
 var quiz1 = quiz1 + 2
@@ -374,12 +374,12 @@ var quiz1 = quiz1 + 2
 else if (Word5.toLowerCase() == "el bullicio"){
 document.getElementById("correction5").innerHTML = "/ el ruido ✓";
 document.getElementById("correction5").style.color = "green"
-var quiz1 = quiz1 + 2
+var quiz1 = quiz1 + 1
 }
 else if (Word5.toLowerCase() == "el ruido"){
 document.getElementById("correction5").innerHTML = "/ el bullicio ✓";
 document.getElementById("correction5").style.color = "green"
-var quiz1 = quiz1 + 2
+var quiz1 = quiz1 + 1
 }
 else if (Word5 == ""){
 document.getElementById("5").value = "el ruido / el bullicio";

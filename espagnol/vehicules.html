@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>
+    Mi casa
+    </title>
+<style>
+.active {
+  background-color: #04AA6D;
+}
+.language {
+  background-color: #1ffff4;
+}
+ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background-color: #333;
+}
+
+.li {
+  float: left;
+  border-right:1px solid #bbb;
+}
+
+li:last-child {
+  border-right: none;
+}
+
+li a {
+  display: block;
+  color: white;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+}
+
+li a:hover:not(.active) {
+  background-color: #111;
+}
+
+
+.navbar a:hover, .dropdown:hover .dropbtn {
+  background-color: #111;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color:#333 ;
+  min-width: 100px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+}
+
+.dropdown-content a {
+    display: block;
+  color: white;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+  }
+
+.dropdown-content a:hover {
+  background-color: #ddd;
+}
+
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+
+.button {
+  font-size: 16px;  
+  border: none;
+  outline: none;
+  color: white;
+  padding: 14px 16px;
+  background-color: inherit;
+  font-family: inherit;
+  margin: 0;
+}
+img {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+button a {
+  color: black;
+  text-decoration: none;
+}
+
+
+
+
+
+
+
+
+.myButton {
+	box-shadow: 2px 3px 0px 0px #8a2a21;
+	background:linear-gradient(to bottom, #c62d1f 5%, #f24437 100%);
+	background-color:#c62d1f;
+	border-radius:42px;
+	display:inline-block;
+	cursor:pointer;
+	color:#ffffff;
+	font-family:Arial;
+	font-size:22px;
+	padding:7px 18px;
+	text-decoration:none;
+	text-shadow:1px -1px 3px #810e05;
+}
+.myButton:hover {
+	background:linear-gradient(to bottom, #f24437 5%, #c62d1f 100%);
+	background-color:#f24437;
+}
+.myButton:active {
+	position:relative;
+	top:1px;
+}
+
+
+
+
+.myButton2 {
+	box-shadow: 0px 1px 0px -3px #f0f7fa;
+	background:linear-gradient(to bottom, #33bdef 5%, #019ad2 100%);
+	background-color:#33bdef;
+	border-radius:42px;
+	border:2px solid #057fd0;
+	display:inline-block;
+	cursor:pointer;
+	color:#ffffff;
+	font-family:Arial;
+	font-size:22px;
+	padding:8px 10px;
+	text-decoration:none;
+	text-shadow:3px -2px 4px #5b6178;
+}
+.myButton2:hover {
+	background:linear-gradient(to bottom, #019ad2 5%, #33bdef 100%);
+	background-color:#019ad2;
+}
+.myButton2:active {
+	position:relative;
+	top:1px;
+}
+body {
+  height:1000px;
+  background-color: 02fae; /* For browsers that do not support gradients */
+  background-image: linear-gradient(to bottom right, #02fae9, yellow);
+}
+input {font-size:21px}
+h2 {font-size:45px}
+nobr {font-size:24px}
+</style>
+</head>
+<body>
+<ul>
+  <li class="li"><a href="https://timothee123456.github.io/espagnol/jours-de-la-semaine">Día de la semana</a></li>
+  <li class="li"><a href="https://timothee123456.github.io/espagnol/mois">Mes del año</a></li>
+  <li class="li"><a href="https://timothee123456.github.io/espagnol/saisons/saisons">Las estaciones</a></li>
+  <li class="li"><a href="https://timothee123456.github.io/espagnol/animaux/animaux">Mascotas</a></li>
+  <li class="li"><a href="https://timothee123456.github.io/espagnol/couleurs">Colores</a></li>
+  <li class="li"><a href="https://timothee123456.github.io/espagnol/verbes">Verbos</a></li>
+  <li class="li"><a href="https://timothee123456.github.io/espagnol/description">Descriptión</a></li>
+  <li class="li"><a href="https://timothee123456.github.io/espagnol/famille">Mi familia</a>
+  <li class="li"><a class="active" href="https://timothee123456.github.io/espagnol/casa">Mi casa</a>
+  <li class="li"><a class="active" href="https://timothee123456.github.io/espagnol/vehicules">Vehículos</a>
+  <li class="li" style="float:right"><a href="https://timothee123456.github.io/espagnol/leçons/jours-de-la-semaine">Leçons</a></li></li>
+</ul>
+<center>
+<h2 style="color:green" id="quiz1">Di en español</h2>
+<nobr>Une voiture : </nobr>
+<input type="text" autocomplete="off" id="1">
+<nobr id="correction1"></nobr>
+<br>
+<nobr>Un taxi : </nobr>
+<input autocomplete="off" id="2">
+<nobr id="correction2"></nobr>
+<br>
+<nobr>Un bus : </nobr>
+<input autocomplete="off" id="3">
+<nobr id="correction3"></nobr>
+<br>
+<nobr>Une moto : </nobr>
+<input autocomplete="off" id="4">
+<nobr id="correction4"></nobr>
+<br>
+<nobr>Une trottinette : </nobr>
+<input autocomplete="off" id="5">
+<nobr id="correction5"></nobr>
+<br>
+<nobr>Un vélo : </nobr>
+<input autocomplete="off" id="6">
+<nobr id="correction6"></nobr>
+<br>
+<nobr>Un hélicoptère : </nobr>
+<input autocomplete="off" id="7">
+<nobr id="correction7"></nobr>
+<br>
+<nobr>Un avion : </nobr>
+<input autocomplete="off" id="8">
+<nobr id="correction8"></nobr>
+<br>
+<nobr>Le metro : </nobr>
+<input autocomplete="off" id="9">
+<nobr id="correction9"></nobr>
+<br>
+<nobr>Le train : </nobr>
+<input autocomplete="off" id="10">
+<nobr id="correction10"></nobr>
+<br>
+<nobr>Le tramway : </nobr>
+<input autocomplete="off" id="11">
+<nobr id="correction11"></nobr>
+<br>
+<nobr>Le bâteau : </nobr>
+<input autocomplete="off" id="12">
+<nobr id="correction12"></nobr>
+<p></p>
+<a href="#" class="myButton" onclick="myFunction()" id="Terminado">Terminado</a>
+<p></p>
+<a href="#" class="myButton2" onclick="reset()">Réinitialiser</a>
+</center>
+<script>
+function reset() {
+document.getElementById("Terminado").style.display = "inline";
+
+document.getElementById("correction1").innerHTML = ""
+document.getElementById("1").value = ""
+document.getElementById("1").style.color = "black"
+
+document.getElementById("correction2").innerHTML = ""
+document.getElementById("2").value = ""
+document.getElementById("2").style.color = "black"
+
+document.getElementById("correction3").innerHTML = ""
+document.getElementById("3").value = ""
+document.getElementById("3").style.color = "black"
+
+document.getElementById("correction4").innerHTML = ""
+document.getElementById("4").value = ""
+document.getElementById("4").style.color = "black"
+
+document.getElementById("correction5").innerHTML = ""
+document.getElementById("5").value = ""
+document.getElementById("5").style.color = "black"
+
+document.getElementById("correction6").innerHTML = ""
+document.getElementById("6").value = ""
+document.getElementById("6").style.color = "black"
+
+document.getElementById("correction7").innerHTML = ""
+document.getElementById("7").value = ""
+document.getElementById("7").style.color = "black"
+
+document.getElementById("correction8").innerHTML = ""
+document.getElementById("8").value = ""
+document.getElementById("8").style.color = "black"
+
+document.getElementById("correction9").innerHTML = ""
+document.getElementById("9").value = ""
+document.getElementById("9").style.color = "black"
+
+document.getElementById("correction10").innerHTML = ""
+document.getElementById("10").value = ""
+document.getElementById("10").style.color = "black"
+
+document.getElementById("correction11").innerHTML = ""
+document.getElementById("11").value = ""
+document.getElementById("11").style.color = "black"
+
+document.getElementById("correction12").innerHTML = ""
+document.getElementById("12").value = ""
+document.getElementById("12").style.color = "black"
+
+document.getElementById("quiz1").innerHTML = "Quiz de vocabulaire"
+}
+
+
+
+function myFunction() {
+document.getElementById("Terminado").style.display = "none"
+var quiz1 = 0
+var quiz2 = 0
+
+const Word1 = document.getElementById("1").value
+if (Word1.toLowerCase() == "un coche" || Word1.toLowerCase() == "un coche" + " "){
+document.getElementById("correction1").innerHTML = "✓";
+document.getElementById("correction1").style.color = "green"
+var quiz1 = quiz1 + 2
+}
+else if (Word1 == ""){
+document.getElementById("1").value = "un coche";
+document.getElementById("1").style.color = "red"
+}
+else {
+document.getElementById("correction1").innerHTML = "✕ un coche";
+document.getElementById("correction1").style.color = "red"
+}
+
+const Word2 = document.getElementById("2").value
+if (Word2.toLowerCase() == "una moto" || Word2.toLowerCase() == "una moto" + " "){
+document.getElementById("correction2").innerHTML = "✓";
+document.getElementById("correction2").style.color = "green"
+var quiz1 = quiz1 + 2
+}
+else if (Word2 == ""){
+document.getElementById("2").value = "una moto";
+document.getElementById("2").style.color = "red"
+}
+else {
+document.getElementById("correction2").innerHTML = "✕ una moto";
+document.getElementById("correction2").style.color = "red"
+}
+
+const Word3 = document.getElementById("3").value
+if (Word3.toLowerCase() == "una casa" || Word3.toLowerCase() == "una casa" + " "){
+document.getElementById("correction3").innerHTML = "✓";
+document.getElementById("correction3").style.color = "green"
+var quiz1 = quiz1 + 2
+}
+else if (Word3 == ""){
+document.getElementById("3").value = "una casa";
+document.getElementById("3").style.color = "red"
+}
+else {
+document.getElementById("correction3").innerHTML = "✕ una casa";
+document.getElementById("correction3").style.color = "red"
+}
+
+const Word4 = document.getElementById("4").value
+if (Word4.toLowerCase() == "un barrio tranquilo" || Word4.toLowerCase() == "un barrio tranquilo" + " "){
+document.getElementById("correction4").innerHTML = "✓";
+document.getElementById("correction4").style.color = "green"
+var quiz1 = quiz1 + 2
+}
+else if (Word4 == ""){
+document.getElementById("4").value = "un barrio tranquilo";
+document.getElementById("4").style.color = "red"
+}
+else {
+document.getElementById("correction4").innerHTML = "✕ un barrio tranquilo";
+document.getElementById("correction4").style.color = "red"
+}
+
+const Word5 = document.getElementById("5").value
+if (Word5.toLowerCase() == "el ruido / el bullicio" || Word5.toLowerCase() == "el bullicio / el ruido"){
+document.getElementById("correction5").innerHTML = "✓";
+document.getElementById("correction5").style.color = "green"
+var quiz1 = quiz1 + 2
+}
+else if (Word5.toLowerCase() == "el bullicio"){
+document.getElementById("correction5").innerHTML = "/ el ruido ✓";
+document.getElementById("correction5").style.color = "green"
+var quiz1 = quiz1 + 1
+}
+else if (Word5.toLowerCase() == "el ruido"){
+document.getElementById("correction5").innerHTML = "/ el bullicio ✓";
+document.getElementById("correction5").style.color = "green"
+var quiz1 = quiz1 + 1
+}
+else if (Word5 == ""){
+document.getElementById("5").value = "el ruido / el bullicio";
+document.getElementById("5").style.color = "red"
+}
+else {
+document.getElementById("correction5").innerHTML = "✕ el ruido / el bullicio";
+document.getElementById("correction5").style.color = "red"
+}
+
+const Word6 = document.getElementById("6").value
+if (Word6.toLowerCase() == "él tarda diez minutos" || Word6.toLowerCase() == "tarda diez minutos" || Word6.toLowerCase() == "él tarda diez minutos" + " " || Word6.toLowerCase() == "tarda diez minutos" + " "){
+document.getElementById("correction6").innerHTML = "✓";
+document.getElementById("correction6").style.color = "green"
+var quiz1 = quiz1 + 2
+}
+else if (Word6 == ""){
+document.getElementById("6").value = "él tarda diez minutos";
+document.getElementById("6").style.color = "red"
+}
+else {
+document.getElementById("correction6").innerHTML = "✕ él tarda diez minutos";
+document.getElementById("correction6").style.color = "red"
+}
+
+const Word7 = document.getElementById("7").value
+if (Word7.toLowerCase() == "él va al trabajo" || Word7.toLowerCase() == "va al trabajo" || Word7.toLowerCase() == "él va al trabajo" + " " || Word7.toLowerCase() == "va al trabajo" + " "){
+document.getElementById("correction7").innerHTML = "✓";
+document.getElementById("correction7").style.color = "green"
+var quiz1 = quiz1 + 2
+}
+else if (Word7 == ""){
+document.getElementById("7").value = "él va al trabajo";
+document.getElementById("7").style.color = "red"
+}
+else {
+document.getElementById("correction7").innerHTML = "✕ él va al trabajo";
+document.getElementById("correction7").style.color = "red"
+}
+
+const Word8 = document.getElementById("8").value
+if (Word8.toLowerCase() == "la ciudad" || Word8.toLowerCase() == "la ciudad" + " "){
+document.getElementById("correction8").innerHTML = "✓";
+document.getElementById("correction8").style.color = "green"
+var quiz1 = quiz1 + 2
+}
+else if (Word8 == ""){
+document.getElementById("8").value = "la ciudad";
+document.getElementById("8").style.color = "red"
+}
+else {
+document.getElementById("correction8").innerHTML = "✕ la ciudad";
+document.getElementById("correction8").style.color = "red"
+}
+
+const Word9 = document.getElementById("9").value
+if (Word9.toLowerCase() == "la capital" || Word9.toLowerCase() == "la capital" + " "){
+document.getElementById("correction9").innerHTML = "✓";
+document.getElementById("correction9").style.color = "green"
+var quiz1 = quiz1 + 2
+}
+else if (Word9 == ""){
+document.getElementById("9").value = "la capital";
+document.getElementById("9").style.color = "red"
+}
+else {
+document.getElementById("correction9").innerHTML = "✕ la capital";
+document.getElementById("correction9").style.color = "red"
+}
+
+const Word10 = document.getElementById("10").value
+if (Word10.toLowerCase() == "muchos coches" || Word10.toLowerCase() == "muchos coches" + " "){
+document.getElementById("correction10").innerHTML = "✓";
+document.getElementById("correction10").style.color = "green"
+var quiz1 = quiz1 + 2
+}
+else if (Word10 == ""){
+document.getElementById("10").value = "muchos coches";
+document.getElementById("10").style.color = "red"
+}
+else {
+document.getElementById("correction10").innerHTML = "✕ muchos coches";
+document.getElementById("correction10").style.color = "red"
+}
+
+document.getElementById("quiz1").innerHTML = "Quiz de vocabulaire " + quiz1 + "/20";
+
+
+const Word11 = document.getElementById("11").value
+if (Word11.toLowerCase() == "hay" || Word11.toLowerCase() == "hay" + " "){
+document.getElementById("correction11").innerHTML = "✓";
+document.getElementById("correction11").style.color = "green"
+var quiz2 = quiz2 + 5
+}
+else if (Word11 == ""){
+document.getElementById("11").value = "hay";
+document.getElementById("11").style.color = "red"
+}
+else {
+document.getElementById("correction11").innerHTML = "✕ hay";
+document.getElementById("correction11").style.color = "red"
+}
+
+const Word12 = document.getElementById("12").value
+if (Word12.toLowerCase() == "él vive" || Word12.toLowerCase() == "vive" || Word12.toLowerCase() == "él vive" + " " || Word12.toLowerCase() == "vive" + " "){
+document.getElementById("correction12").innerHTML = "✓";
+document.getElementById("correction12").style.color = "green"
+var quiz2 = quiz2 + 5
+}
+else if (Word12 == ""){
+document.getElementById("12").value = "él vive";
+document.getElementById("12").style.color = "red"
+}
+else {
+document.getElementById("correction12").innerHTML = "✕ él vive";
+document.getElementById("correction12").style.color = "red"
+}
+
+const Word13 = document.getElementById("13").value
+if (Word13.toLowerCase() == "él va al trabajo" || Word13.toLowerCase() == "va al trabajo" || Word13.toLowerCase() == "él va al trabajo" + " " || Word13.toLowerCase() == "va al trabajo" + " "){
+document.getElementById("correction13").innerHTML = "✓";
+document.getElementById("correction13").style.color = "green"
+var quiz2 = quiz2 + 5
+}
+else if (Word13 == ""){
+document.getElementById("13").value = "él va al trabajo";
+document.getElementById("13").style.color = "red"
+}
+else {
+document.getElementById("correction13").innerHTML = "✕ él va al trabajo";
+document.getElementById("correction13").style.color = "red"
+}
+
+const Word14 = document.getElementById("14").value
+if (Word14.toLowerCase() == "no hay" || Word14.toLowerCase() == "no hay" + " "){
+document.getElementById("correction14").innerHTML = "✓";
+document.getElementById("correction14").style.color = "green"
+var quiz2 = quiz2 + 5
+}
+else if (Word14 == ""){
+document.getElementById("14").value = "no hay";
+document.getElementById("14").style.color = "red"
+}
+else {
+document.getElementById("correction14").innerHTML = "✕ no hay";
+document.getElementById("correction14").style.color = "red"
+}
+document.getElementById("quiz2").innerHTML = "Quiz de verbes " + quiz2 + "/20";
+}
+</script>
+</body>
+</html>

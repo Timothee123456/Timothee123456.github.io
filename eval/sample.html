@@ -2,7 +2,7 @@
 <html>
 <head>
     <title>
-    Mi casa
+    Sample
     </title>
 <style>
 .active {
@@ -292,8 +292,6 @@ document.getElementById("quiz").innerHTML = "Quiz de vocabulaire"
 
 
 function myFunction() {
-document.getElementById("Terminado").style.display = "none"
-var quiz = 0
 
 const Word1c = "un coche"
 const Word2c = "una moto"
@@ -305,6 +303,9 @@ const Word7c = "él va al trabajo"
 const Word8c = ""
 const Word9c = ""
 const Word10c = ""
+
+document.getElementById("Terminado").style.display = "none"
+var quiz = 0
 
 const Word1 = document.getElementById("1").value
 if (Word1.toLowerCase() == Word1c || Word1.toLowerCase() == Word1c + " "){
@@ -382,32 +383,32 @@ document.getElementById("correction5").style.color = "red"
 }
 
 const Word6 = document.getElementById("6").value
-if (Word6.toLowerCase() == Word6c || Word6.toLowerCase() == Word6c + " "){
+if (Word6.toLowerCase() == "él tarda diez minutos" || Word6.toLowerCase() == "tarda diez minutos" + " "){
 document.getElementById("correction6").innerHTML = "✓";
 document.getElementById("correction6").style.color = "green"
-var quiz = quiz + 1
+var quiz = quiz + 2
 }
 else if (Word6 == ""){
-document.getElementById("6").value = Word6c;
+document.getElementById("6").value = "él tarda diez minutos";
 document.getElementById("6").style.color = "red"
 }
 else {
-document.getElementById("correction6").innerHTML = "✕" + Word6c;
+document.getElementById("correction6").innerHTML = "✕ él tarda diez minutos";
 document.getElementById("correction6").style.color = "red"
 }
 
 const Word7 = document.getElementById("7").value
-if (Word7.toLowerCase() == Word7c Word7.toLowerCase() == Word7c + " "){
+if (Word7.toLowerCase() == "él va al trabajo" || Word7.toLowerCase() == "va al trabajo" + " "){
 document.getElementById("correction7").innerHTML = "✓";
 document.getElementById("correction7").style.color = "green"
-var quiz = quiz + 1
+var quiz = quiz + 2
 }
 else if (Word7 == ""){
-document.getElementById("7").value = Word7c;
+document.getElementById("7").value = "él va al trabajo";
 document.getElementById("7").style.color = "red"
 }
 else {
-document.getElementById("correction7").innerHTML = "✕" + Word7c;
+document.getElementById("correction7").innerHTML = "✕ él va al trabajo";
 document.getElementById("correction7").style.color = "red"
 }
 
@@ -415,7 +416,7 @@ const Word8 = document.getElementById("8").value
 if (Word8.toLowerCase() == "la ciudad" || Word8.toLowerCase() == "la ciudad" + " "){
 document.getElementById("correction8").innerHTML = "✓";
 document.getElementById("correction8").style.color = "green"
-var quiz = quiz + 1
+var quiz = quiz + 2
 }
 else if (Word8 == ""){
 document.getElementById("8").value = "la ciudad";
@@ -430,7 +431,7 @@ const Word9 = document.getElementById("9").value
 if (Word9.toLowerCase() == "la capital" || Word9.toLowerCase() == "la capital" + " "){
 document.getElementById("correction9").innerHTML = "✓";
 document.getElementById("correction9").style.color = "green"
-var quiz = quiz + 1
+var quiz = quiz + 2
 }
 else if (Word9 == ""){
 document.getElementById("9").value = "la capital";
@@ -445,7 +446,7 @@ const Word10 = document.getElementById("10").value
 if (Word10.toLowerCase() == "muchos coches" || Word10.toLowerCase() == "muchos coches" + " "){
 document.getElementById("correction10").innerHTML = "✓";
 document.getElementById("correction10").style.color = "green"
-var quiz = quiz + 1
+var quiz = quiz + 2
 }
 else if (Word10 == ""){
 document.getElementById("10").value = "muchos coches";
@@ -458,70 +459,8 @@ document.getElementById("correction10").style.color = "red"
 
 
 
-const Word11 = document.getElementById("11").value
-if (Word11.toLowerCase() == "hay" || Word11.toLowerCase() == "hay" + " "){
-document.getElementById("correction11").innerHTML = "✓";
-document.getElementById("correction11").style.color = "green"
-var quiz = quiz + 1
-}
-else if (Word11 == ""){
-document.getElementById("11").value = "hay";
-document.getElementById("11").style.color = "red"
-}
-else {
-document.getElementById("correction11").innerHTML = "✕ hay";
-document.getElementById("correction11").style.color = "red"
-}
-
-const Word12 = document.getElementById("12").value
-if (Word12.toLowerCase() == "él vive" || Word12.toLowerCase() == "vive" || Word12.toLowerCase() == "él vive" + " " || Word12.toLowerCase() == "vive" + " "){
-document.getElementById("correction12").innerHTML = "✓";
-document.getElementById("correction12").style.color = "green"
-var quiz = quiz + 1
-}
-else if (Word12 == ""){
-document.getElementById("12").value = "él vive";
-document.getElementById("12").style.color = "red"
-}
-else {
-document.getElementById("correction12").innerHTML = "✕ él vive";
-document.getElementById("correction12").style.color = "red"
-}
-
-const Word13 = document.getElementById("13").value
-if (Word13.toLowerCase() == "él va al trabajo" || Word13.toLowerCase() == "va al trabajo" || Word13.toLowerCase() == "él va al trabajo" + " " || Word13.toLowerCase() == "va al trabajo" + " "){
-document.getElementById("correction13").innerHTML = "✓";
-document.getElementById("correction13").style.color = "green"
-var quiz = quiz + 1
-}
-else if (Word13 == ""){
-document.getElementById("13").value = "él va al trabajo";
-document.getElementById("13").style.color = "red"
-}
-else {
-document.getElementById("correction13").innerHTML = "✕ él va al trabajo";
-document.getElementById("correction13").style.color = "red"
-}
-
-const Word14 = document.getElementById("14").value
-if (Word14.toLowerCase() == "no hay" || Word14.toLowerCase() == "no hay" + " "){
-document.getElementById("correction14").innerHTML = "✓";
-document.getElementById("correction14").style.color = "green"
-var quiz = quiz + 1
-}
-else if (Word14 == ""){
-document.getElementById("14").value = "no hay";
-document.getElementById("14").style.color = "red"
-}
-else {
-document.getElementById("correction14").innerHTML = "✕ no hay";
-document.getElementById("correction14").style.color = "red"
-}
-
 document.getElementById("quiz").innerHTML = "Quiz de vocabulaire " + quiz + "/20";
 }
 </script>
 </body>
 </html>
-
-

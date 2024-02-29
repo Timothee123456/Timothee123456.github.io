@@ -300,9 +300,9 @@ const Word4c = "un barrio tranquilo"
 const Word5c = "el ruido / el bullicio"
 const Word6c = "él tarda diez minutos"
 const Word7c = "él va al trabajo"
-const Word8c = ""
-const Word9c = ""
-const Word10c = ""
+const Word8c = "la ciudad"
+const Word9c = "la capital"
+const Word10c = "muchos coches"
 
 document.getElementById("Terminado").style.display = "none"
 var quiz = 0
@@ -383,77 +383,77 @@ document.getElementById("correction5").style.color = "red"
 }
 
 const Word6 = document.getElementById("6").value
-if (Word6.toLowerCase() == "él tarda diez minutos" || Word6.toLowerCase() == "tarda diez minutos" + " "){
+if (Word6.toLowerCase() == Word6c || Word6.toLowerCase() == Word6c + " "){
 document.getElementById("correction6").innerHTML = "✓";
 document.getElementById("correction6").style.color = "green"
 var quiz = quiz + 2
 }
 else if (Word6 == ""){
-document.getElementById("6").value = "él tarda diez minutos";
+document.getElementById("6").value = Word6c;
 document.getElementById("6").style.color = "red"
 }
 else {
-document.getElementById("correction6").innerHTML = "✕ él tarda diez minutos";
+document.getElementById("correction6").innerHTML = "✕" + Word6c;
 document.getElementById("correction6").style.color = "red"
 }
 
 const Word7 = document.getElementById("7").value
-if (Word7.toLowerCase() == "él va al trabajo" || Word7.toLowerCase() == "va al trabajo" + " "){
+if (Word7.toLowerCase() == Word7c || Word7.toLowerCase() == Word7c + " "){
 document.getElementById("correction7").innerHTML = "✓";
 document.getElementById("correction7").style.color = "green"
 var quiz = quiz + 2
 }
 else if (Word7 == ""){
-document.getElementById("7").value = "él va al trabajo";
+document.getElementById("7").value = Word7c;
 document.getElementById("7").style.color = "red"
 }
 else {
-document.getElementById("correction7").innerHTML = "✕ él va al trabajo";
+document.getElementById("correction7").innerHTML = "✕" + Word7c;
 document.getElementById("correction7").style.color = "red"
 }
 
 const Word8 = document.getElementById("8").value
-if (Word8.toLowerCase() == "la ciudad" || Word8.toLowerCase() == "la ciudad" + " "){
+if (Word8.toLowerCase() == Word8c || Word8.toLowerCase() == Word8c + " "){
 document.getElementById("correction8").innerHTML = "✓";
 document.getElementById("correction8").style.color = "green"
 var quiz = quiz + 2
 }
 else if (Word8 == ""){
-document.getElementById("8").value = "la ciudad";
+document.getElementById("8").value = Word8c;
 document.getElementById("8").style.color = "red"
 }
 else {
-document.getElementById("correction8").innerHTML = "✕ la ciudad";
+document.getElementById("correction8").innerHTML = "✕" + Word8c;
 document.getElementById("correction8").style.color = "red"
 }
 
 const Word9 = document.getElementById("9").value
-if (Word9.toLowerCase() == "la capital" || Word9.toLowerCase() == "la capital" + " "){
+if (Word9.toLowerCase() == Word9c || Word9.toLowerCase() == Word9c + " "){
 document.getElementById("correction9").innerHTML = "✓";
 document.getElementById("correction9").style.color = "green"
 var quiz = quiz + 2
 }
 else if (Word9 == ""){
-document.getElementById("9").value = "la capital";
+document.getElementById("9").value = Word9c;
 document.getElementById("9").style.color = "red"
 }
 else {
-document.getElementById("correction9").innerHTML = "✕ la capital";
+document.getElementById("correction9").innerHTML = "✕" + Word9c;
 document.getElementById("correction9").style.color = "red"
 }
 
 const Word10 = document.getElementById("10").value
-if (Word10.toLowerCase() == "muchos coches" || Word10.toLowerCase() == "muchos coches" + " "){
+if (Word10.toLowerCase() == Word10c || Word10.toLowerCase() == Word10c + " "){
 document.getElementById("correction10").innerHTML = "✓";
 document.getElementById("correction10").style.color = "green"
 var quiz = quiz + 2
 }
 else if (Word10 == ""){
-document.getElementById("10").value = "muchos coches";
+document.getElementById("10").value = Word10c;
 document.getElementById("10").style.color = "red"
 }
 else {
-document.getElementById("correction10").innerHTML = "✕ muchos coches";
+document.getElementById("correction10").innerHTML = "✕" + Word10c;
 document.getElementById("correction10").style.color = "red"
 }
 

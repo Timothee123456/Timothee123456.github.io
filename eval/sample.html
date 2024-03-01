@@ -203,30 +203,35 @@ nobr {font-size:24px}
 <nobr>Beaucoup de voitures : </nobr>
 <input autocomplete="off" id="10">
 <nobr id="correction10"></nobr>
-<br>
-<p></p>
-<h2 style="color:red">Quiz de verbes</h2>
-<nobr>Il y a : </nobr>
-<input autocomplete="off" id="11">
-<nobr id="correction11"></nobr>
-<br>
-<nobr>Il vit : </nobr>
-<input autocomplete="off" id="12">
-<nobr id="correction12"></nobr>
-<br>
-<nobr>Il va au travail : </nobr>
-<input autocomplete="off" id="13">
-<nobr id="correction13"></nobr>
-<br>
-<nobr>Il n'y a pas : </nobr>
-<input autocomplete="off" id="14">
-<nobr id="correction14"></nobr>
 <p></p>
 <a href="#" class="myButton" onclick="myFunction()" id="Terminado">Terminado</a>
 <p></p>
 <a href="#" class="myButton2" onclick="reset()">Réinitialiser</a>
 </center>
 <script>
+const Word1f = "Une voiture"
+const Word2f = "Une moto"
+const Word3f = "Une maison"
+const Word4f = "Un quartier tranquille"
+const Word5f = "Le bruit"
+const Word6f = "Il met 10 minutes"
+const Word7f = "Il va au travail"
+const Word8f = "La ville"
+const Word9f = "La capitale"
+const Word10f = "Beaucoup de voitures"
+
+const Word1c = "un coche"
+const Word2c = "una moto"
+const Word3c = "una casa"
+const Word4c = "un barrio tranquilo"
+const Word5c = "el ruido / el bullicio"
+const Word6c = "él tarda diez minutos"
+const Word7c = "él va al trabajo"
+const Word8c = "la ciudad"
+const Word9c = "la capital"
+const Word10c = "muchos coches"
+
+
 function reset() {
 document.getElementById("Terminado").style.display = "inline";
 
@@ -292,17 +297,6 @@ document.getElementById("quiz").innerHTML = "Quiz de vocabulaire"
 
 
 function myFunction() {
-
-const Word1c = "un coche"
-const Word2c = "una moto"
-const Word3c = "una casa"
-const Word4c = "un barrio tranquilo"
-const Word5c = "el ruido / el bullicio"
-const Word6c = "él tarda diez minutos"
-const Word7c = "él va al trabajo"
-const Word8c = "la ciudad"
-const Word9c = "la capital"
-const Word10c = "muchos coches"
 
 document.getElementById("Terminado").style.display = "none"
 var quiz = 0

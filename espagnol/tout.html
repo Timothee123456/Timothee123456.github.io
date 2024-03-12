@@ -275,11 +275,16 @@ img {width:100}
    
    	/* Classe */
     	/* Salle de classe */
-        const classe_m_fr = 
+        const classe_m_fr = ["étudiants", "enseignant", "ordinateur", "tableau noir", "écran", "vidéoprojecteur", "sac à dos"]
         const classe_m_es = ["alumnos", "ordenador", "proyector de video"]
         const classe_fr = ["fenêtre", "chaise", "étudiants", "étudiantes", "enseignant", "ordinateur", "poubelle", "poubelle à papier", "tableau noir", "porte", "écran", "vidéoprojecteur " , "table", "sac à dos"]
         const classe_es = ["ventana", "silla", "alumnos", "alumnas", "profesora", "ordenador", "basura", "papelera", "pizarra", "puerta", "pantalla", "proyector de video", "mesa", "mochila"]
-
+        
+        /* Sur la table */
+		const table_m_fr = ["cahier", "livre", "agenda"]
+        const table_m_es = ["cuaderno", "libro", "estuche"]
+        const table_fr = ["cahier", "livre", "agenda", "trousse"]
+        const table_es = ["cuaderno", "libro", "agenda", "estuche"]
 
         
     
@@ -393,6 +398,33 @@ if (Word1 == text){
 		document.getElementById("correction_a").style.color = "red";
 	    document.getElementById("correction_b").innerHTML = text
 		}
+}
+
+
+/* Fonctions ChatGPT */
+function mettreAuPluriel(nom) {
+  const dernierCaractere = nom.charAt(nom.length - 1).toLowerCase();
+  
+  if (estVoyelle(dernierCaractere)) {
+    // Si la dernière lettre est une voyelle, on ajoute '-s' au nom
+    return nom + 's';
+  } else {
+    // Si la dernière lettre est une consonne, on ajoute '-es' au nom
+    return nom + 'es';
+  }
+}
+
+function estVoyelle(lettre) {
+  const voyelles = ['a', 'e', 'i', 'o', 'u'];
+  return voyelles.includes(lettre);
+}
+
+
+function verifierCommenceParVoyelle(verbe) {
+  const premiereLettre = verbe.charAt(0).toLowerCase();
+  const voyelles = ['a', 'e', 'i', 'o', 'u'];
+  
+  return voyelles.includes(premiereLettre);
 }
 </script>
 </body>

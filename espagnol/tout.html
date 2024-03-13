@@ -176,13 +176,10 @@ img {width:100}
 <a href="#" class="myButton" onclick="myFunction()" id="Terminado">Terminado</a>
 <p></p>
 <a href="#" class="myButton2" onclick="reset()">Next</a>
-<p class="hidden" id="verb"></p>
-<p class="hidden" id="verb_number"></p>
-<p class="hidden" id="adj"></p>
-<p class="hidden" id="adj_number"></p>
+<p class="hidden" id="sujet"></p>
 </center>
 <script>
-/* Lists */
+/* Listes */
 	/* Sujet */
     	/* Pronoms */
 		const pronoms_m_fr = ["Je", "Tu", "Il", "Nous", "Vous", "Ils"];
@@ -285,9 +282,6 @@ img {width:100}
         const table_m_es = ["cuaderno", "libro", "estuche"]
         const table_fr = ["cahier", "livre", "agenda", "trousse"]
         const table_es = ["cuaderno", "libro", "agenda", "estuche"]
-
-        
-    
         
 
 
@@ -315,38 +309,10 @@ document.getElementById("correction_b").innerHTML = ""
 document.getElementById("1").value = ""
 document.getElementById("1").style.color = "black"
 
-const verb = Math.floor(Math.random() * 2)
-const verb_number = Math.floor(Math.random() * 8)
-const adj = Math.floor(Math.random() * 2)
-const adj_number = Math.floor(Math.random() * 13)
-const comparer = Math.floor(Math.random() * 2)
-const comparer_number = Math.floor(Math.random() * 3)
+const sujet = Math.floor(Math.random() * 6)
 
-document.getElementById("verb").innerHTML = verb
-document.getElementById("verb_number").innerHTML = verb_number
-document.getElementById("adj").innerHTML = adj
-document.getElementById("adj_number").innerHTML = adj_number
+document.getElementById("1").value = "sujet"
 
-
-if (verb == 0){
-document.getElementById("fr_a").innerHTML = etre_fr[verb_number]
-	if  (verb_number == 2 || verb_number == 6){
-    document.getElementById("fr_b").innerHTML = adj_etre_m_fr[adj_number]
-    }
-    else if  (verb_number == 3 || verb_number == 7) {
-    document.getElementById("fr_b").innerHTML = adj_etre_f_fr[adj_number]
-    }
-    else if  (adj == 0) {
-        document.getElementById("fr_b").innerHTML = adj_etre_m_fr[adj_number]
-    }
-    else {
-    document.getElementById("fr_b").innerHTML = adj_etre_f_fr[adj_number]
-    }
-}
-else {
-document.getElementById("fr_a").innerHTML = avoir_fr[verb_number]
-document.getElementById("fr_b").innerHTML = adj_avoir_fr[adj_number]
-}
 
 }
 

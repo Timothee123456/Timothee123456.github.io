@@ -147,6 +147,32 @@ body {
   background-color: 02fae; /* For browsers that do not support gradients */
   background-image: linear-gradient(to bottom right, #02fae9, yellow);
 }
+
+
+
+.accents {
+	background:linear-gradient(to bottom, #599bb3 5%, #408c99 100%);
+	background-color:#599bb3;
+	border-radius:8px;
+	display:inline-block;
+	cursor:pointer;
+	color:#ffffff;
+	font-family:Arial;
+	font-size:20px;
+	padding:7px 10px;
+	text-decoration:none;
+}
+.accents:hover {
+	background:linear-gradient(to bottom, #408c99 5%, #599bb3 100%);
+	background-color:#408c99;
+}
+.accents:active {
+	position:relative;
+	top:1px;
+}
+
+
+
 input {font-size:21px}
 h2 {font-size:45px}
 nobr {font-size:24px}
@@ -170,8 +196,16 @@ img {width:100}
 <p></p>
 <input class="input" autocomplete="off" style="text-align:center;" id="1">
 <nobr id="correction_a"></nobr>
+<p></p>
+<a href="#" class="accents" onclick="accent(á)">á</a>
+<a href="#" class="accents" onclick="accent(é)">é</a>
+<a href="#" class="accents" onclick="accent(í)">í</a>
+<a href="#" class="accents" onclick="accent(ó)">ó</a>
+<a href="#" class="accents" onclick="accent(ú)">ú</a>
+
 <br>
 <nobr id="correction_b" style="color:red;"></nobr>
+<p></p>
 <p></p>
 <a href="#" class="myButton" onclick="myFunction()" id="Terminado">Terminado</a>
 <p></p>

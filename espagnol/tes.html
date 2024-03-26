@@ -205,12 +205,12 @@ img {width:100}
 <br>
 <nobr id="correction_b" style="color:red;"></nobr>
 <p></p>
-<a href="#" class="accents" onclick="accent(á)">á</a>
-<a href="#" class="accents" onclick="accent(é)">é</a>
-<a href="#" class="accents" onclick="accent(í)">í</a>
-<a href="#" class="accents" onclick="accent(ó)">ó</a>
-<a href="#" class="accents" onclick="accent(ú)">ú</a>
-<a href="#" class="accents" onclick="accent(ñ)">ñ</a>
+<a href="#" class="accents" onclick="accent('á')">á</a>
+<a href="#" class="accents" onclick="accent('é')">é</a>
+<a href="#" class="accents" onclick="accent('í')">í</a>
+<a href="#" class="accents" onclick="accent('ó')">ó</a>
+<a href="#" class="accents" onclick="accent('ú')">ú</a>
+<a href="#" class="accents" onclick="accent('ñ')">ñ</a>
 <p></p>
 <a href="#" class="myButton" onclick="myFunction()" id="Terminado">Terminado</a>
 <p></p>
@@ -222,6 +222,17 @@ img {width:100}
 <p class="hidden" id="adj_number"></p>
 </center>
 <script>
+
+
+
+
+
+
+
+
+
+
+
 const etre_fr = ["Je suis", "Tu es", "Il est", "Elle est", "Nous sommmes", "Vous êtes", "Ils sont", "Elles sont"];
 const avoir_fr = ["J'ai", "Tu as", "Il a", "Elle a", "Nous avons", "Vous avez", "Ils ont", "Elles ont"];
 const etre_es = ["Yo soy", "Tu eres", "El es", "Ella es", "Nosotros somos", "Vosotros sois", "Ellos son", "Ellas son"];
@@ -333,6 +344,14 @@ if (Word1 == text){
 	    document.getElementById("correction_b").innerHTML = text
 		}
 }
+
+
+
+function accent (lettre){
+const Word1 = document.getElementById("1").value
+document.getElementById("1").value = Word1 + lettre;
+}
+
 </script>
 </body>
 </html>

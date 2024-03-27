@@ -6,11 +6,13 @@ from random import randint
 def mouse_pressed():
         # print('🎯')
         if hit_colour == Color('blue').hex:
-            print('You hit the outer circle, 50 points!')
+            print('🎯 You hit the outer circle, 50 points!')
         elif hit_colour == Color('red').hex:
-            print('You hit the inner circle, 200 points!')
+            print('🎯 You hit the inner circle, 200 points!')
         elif hit_colour == Color('yellow').hex:
-            print('You hit the middle, 500 points!')
+            print('🎯 You hit the middle, 500 points!')
+        else:
+            print('You loose! No points!')
 
 
 # The shoot_arrow function goes here

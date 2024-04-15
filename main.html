@@ -29,7 +29,7 @@
       background-color: #e3f2fd;
       padding: 20px;
       text-align: center;
-      height: 80px;
+      height: 100vh;
     }
 
     nav ul {
@@ -43,17 +43,24 @@
       margin-right: 10px;
     }
 
-    nav ul li button {
-      background-color: #2196f3;
+    nav ul li a {
+      display: inline-block;
+      text-decoration: none;
+      padding: 15px 30px;
+      font-size: 20px;
       color: #fff;
-      border: none;
-      padding: 10px 20px;
-      font-size: 16px;
-      cursor: pointer;
+      background-color: #2196f3;
     }
 
-    nav ul li button:hover {
+    nav ul li a:hover {
       background-color: #1976d2;
+    }
+
+    nav ul li.hr {
+      border-top: 3px solid #1565c0;
+      width: 100%;
+      margin-bottom: 10px;
+      margin-top: 10px;
     }
 
     footer {
@@ -72,14 +79,16 @@
 
   <nav>
     <ul>
-      <li><button>Accueil</button></li>
-      <li><button>Mon site</button></li>
-      <li><button>BDs</button></li>
-      <li><button>Accents</button></li>
-      <li><button>EIST 6ème</button></li>
-      <li><button>Espagnol</button></li>
-      <li><button>EIST Mandarin</button></li>
-      <li><button>HSKSIA</button></li>
+      <li><a href="https://timothee123456.github.io/index/fr">Mon site</a></li>
+      <li><a href="https://timothee123456.github.io/BD/fr">BDs</a></li>
+      <li><a href="https://timothee123456.github.io/accents">Accents</a></li>
+      <li><a href="https://timothee123456.github.io/eval/EIST/circuits.html">EIST</a></li>
+      <li><a href="#">EIST 6ème</a></li>
+      <li class="hr"></li>
+      <li><a href="https://timothee123456.github.io/espagnol/jours-de-la-semaine">Espagnol</a></li>
+      <li><a href="https://timothee123456.github.io/eval/mandarin/france.html">Mandarin</a></li>
+      <li><a href="https://timothee123456.github.io/eval/mandarin/HSK/2.html">HSK</a></li>
+      <li><a href="https://timothee123456.github.io/eval/SIA/OMAM">SIA</a></li>
     </ul>
   </nav>
 

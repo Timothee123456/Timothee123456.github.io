@@ -210,6 +210,30 @@ nobr {font-size:24px}
 <a href="#" class="myButton2" onclick="reset()">Réinitialiser</a>
 </center>
 <script>
+	var navigationMenu = document.getElementById("navigation-menu");
+for (var i = 0; i < pages.length; i++) {
+  var page = pages[i];
+  var listItem = document.createElement("li");
+  var link = document.createElement("a");
+  link.href = page.url;
+  link.textContent = page.title;
+
+  // Add the "active" class to the current page's link
+  if (window.location.pathname === page.url) {
+    link.classList.add("active");
+  }
+
+  listItem.appendChild(link);
+  navigationMenu.appendChild(listItem);
+}
+
+
+
+
+
+
+
+	
 function reset() {
 document.getElementById("correction1").innerHTML = ""
 document.getElementById("1").value = ""

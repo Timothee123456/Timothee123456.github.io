@@ -215,7 +215,7 @@ for (var i = 0; i < pages.length; i++) {
   link.textContent = page.title;
 
   // Add the "active" class to the current page's link
-String originalString = page.url;
+var originalString = page.url;
 String textToRemove = "https://timothee123456.github.io";
 String modifiedString = originalString.replace(textToRemove, "");
   if (window.location.pathname === modifiedString) {

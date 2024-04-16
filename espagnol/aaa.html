@@ -9,7 +9,7 @@
   text-decoration: underline;
 }
 .language {
-  background-color: #1ffff4;
+  background-color: #04AA6D;
 }
 ul {
   list-style-type: none;
@@ -29,7 +29,7 @@ li a {
   color: white;
   text-align: center;
   padding: 14px 16px;
-
+  text-decoration: none;
 }
 
 li a:hover:not(.active) {
@@ -215,7 +215,10 @@ for (var i = 0; i < pages.length; i++) {
   link.textContent = page.title;
 
   // Add the "active" class to the current page's link
-  if (window.location.pathname === page.url) {
+String originalString = page.url;
+String textToRemove = "https://timothee123456.github.io";
+String modifiedString = originalString.replace(textToRemove, "");
+  if (window.location.pathname === modifiedString) {
     link.classList.add("active");
   }
 	

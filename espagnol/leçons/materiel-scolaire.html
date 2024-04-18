@@ -157,21 +157,34 @@ body {
 <script src="navigation2.js"></script>
 </head>
 <body>
-<ul>
-  <li class="li"><a href="https://timothee123456.github.io/espagnol/leçons/jours-de-la-semaine">Día de la semana</a></li>
-  <li class="li"><a href="https://timothee123456.github.io/espagnol/leçons/mois">Mes del año</a></li>
-  <li class="li"><a href="https://timothee123456.github.io/espagnol/leçons/nombres">Números</a></li>
-  <li class="li"><a href="https://timothee123456.github.io/espagnol/leçons/animaux">Mascotas</a></li>
-  <li class="li"><a class="active" href="https://timothee123456.github.io/espagnol/leçons/materiel-scolaire">Material escolar</a></li>
-  <li class="li"><a href="https://timothee123456.github.io/espagnol/leçons/verbes">Verbos</a></li>
-  <li class="li"><a href="https://timothee123456.github.io/espagnol/leçons/description">Descriptión</a></li>
-  <li class="li"><a href="https://timothee123456.github.io/espagnol/leçons/comparer">Comparer</a></li>
-  <li class="li" style="float:right"><a href="https://timothee123456.github.io/espagnol/jours-de-la-semaine">Exercices</a></li>
-</ul>
+<ul id="navigation2-menu"></ul>
 <center>
 <img src="materiel-scolaire1.png" width="90%">
 <br>
 <img src="materiel-scolaire2.png" width="90%">
 </center>
 </body>
+<script>
+var navigationMenu = document.getElementById("navigation2-menu");
+for (var i = 0; i < pages.length; i++) {
+  var page = pages[i];
+  var listItem = document.createElement("li");
+  var link = document.createElement("a");
+  link.href = page.url;
+  link.textContent = page.title;
+
+  // Add the "active" class to the current page's link
+var originalString = page.url;
+var textToRemove = "https://timothee123456.github.io";
+var textToRemove2 = ".html";
+var modifiedString = originalString.replace(textToRemove, "");
+var modifiedString2 = modifiedString.replace(textToRemove2, "");
+  if (window.location.pathname === modifiedString || window.location.pathname === modifiedString2) {
+    link.classList.add("active");
+  }
+	
+  listItem.appendChild(link);
+  navigationMenu.appendChild(listItem);
+}
+</script>
 </html>

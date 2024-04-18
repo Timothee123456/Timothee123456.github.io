@@ -180,10 +180,7 @@ var modifiedString2 = modifiedString.replace(textToRemove2, "");
   if (window.location.pathname === modifiedString || window.location.pathname === modifiedString2) {
     link.classList.add("active");
   }
-	
-  // Add console.log statements to check the values
-  console.log("Current page URL:", window.location.pathname);
-  console.log("Page URL:", page.url);	
+
 	
   listItem.appendChild(link);
   navigationMenu.appendChild(listItem);

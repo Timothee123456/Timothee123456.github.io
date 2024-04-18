@@ -9,5 +9,6 @@ var pages = [
   { title: "Comparer", url: "https://timothee123456.github.io/espagnol/leçons/comparer" },
   { title: "Arbre généalogique", url: "https://timothee123456.github.io/espagnol/leçons/famille" },
   { title: "Exercices", url: "https://timothee123456.github.io/espagnol/jours-de-la-semaine" },
+  { title: "TEST1", url: "https://timothee123456.github.io/espagnol/jours-de-la-semaine" },
   // Add more pages here as needed
 ];

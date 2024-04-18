@@ -217,8 +217,10 @@ for (var i = 0; i < pages.length; i++) {
   // Add the "active" class to the current page's link
 var originalString = page.url;
 var textToRemove = "https://timothee123456.github.io";
+var textToAdd = ".html";
 var modifiedString = originalString.replace(textToRemove, "");
-  if (window.location.pathname === modifiedString) {
+var modifiedString2 = modifiedString + textToAdd2);
+  if (window.location.pathname === modifiedString || window.location.pathname === modifiedString2) {
     link.classList.add("active");
   }
 	

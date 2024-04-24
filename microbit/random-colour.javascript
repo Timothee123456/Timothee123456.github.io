@@ -6,4 +6,5 @@ basic.forever(function () {
     item = randint(0, 30)
     strip.setPixelColor(item, neopixel.rgb(randint(0, 255), randint(0, 255), randint(0, 255)))
     strip.show()
+    basic.showNumber(randint(0, 9))
 })

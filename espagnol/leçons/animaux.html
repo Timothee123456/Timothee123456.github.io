@@ -167,7 +167,7 @@ for (var i = 0; i < pages.length; i++) {
   link.href = page.url;
   link.textContent = page.title;
 
-  // Add the "active" class to the current page's link
+  /* Add the "active" class to the current page's link
 var originalString = page.url;
 var textToRemove = "https://timothee123456.github.io";
 var textToRemove2 = ".html";
@@ -176,6 +176,21 @@ var modifiedString2 = modifiedString.replace(textToRemove2, "");
   if (window.location.pathname === modifiedString || window.location.pathname === modifiedString2) {
     link.classList.add("active");
   }
+*/
+
+	
+var currentPage = decodeURI(window.location.pathname);
+
+var navigationItems = document.getElementsByClassName("navigation-item");
+for (var i = 0; i < navigationItems.length; i++) {
+  var navigationItem = navigationItems[i];
+  var navigationLink = navigationItem.getAttribute("href");
+  if (navigationLink && decodeURI(navigationLink) === currentPage) {
+    navigationItem.classList.add("active");
+    break;
+  }
+}
+
 	
   listItem.appendChild(link);
   navigationMenu.appendChild(listItem);

@@ -2,7 +2,7 @@
 <html>
 <head>
     <title>
-     La descriptión físca
+     Horas
     </title>
 <style>
 .active {
@@ -143,8 +143,10 @@ button a {
 	top:1px;
 }
 body {
+  height:1000px;
   background-color: 02fae; /* For browsers that do not support gradients */
-  background-image: linear-gradient(to bottom right, #02fae9, yellow);
+  background-image: linear-gradient(to bottom right, #02fae9, yellow)
+  ;
 }
 input {font-size:21px}
 h2 {font-size:45px}
@@ -187,18 +189,18 @@ img {width:100}
   <li class="li"><a href="https://timothee123456.github.io/espagnol/animaux/animaux">Mascotas</a></li>
   <li class="li"><a href="https://timothee123456.github.io/espagnol/couleurs">Colores</a></li>
   <li class="li"><a href="https://timothee123456.github.io/espagnol/verbes">Verbos</a></li>
-  <li class="li"><a class="active" href="https://timothee123456.github.io/espagnol/description">Descriptión</a></li>
+  <li class="li"><a href="https://timothee123456.github.io/espagnol/description">Descriptión</a></li>
   <li class="li"><a href="https://timothee123456.github.io/espagnol/famille">Mi familia</a>
   <li class="li"><a href="https://timothee123456.github.io/espagnol/casa">Mi casa 1</a>
   <li class="li"><a href="https://timothee123456.github.io/espagnol/vehicules">Vehículos</a>
   <li class="li"><a href="https://timothee123456.github.io/espagnol/casa2">Mi casa 2</a>
+    <li class="li"><a class="active" href="https://timothee123456.github.io/espagnol/heures">Horas</a></li>
   <li class="li" style="float:right"><a href="https://timothee123456.github.io/espagnol/leçons/jours-de-la-semaine">Leçons</a></li></li>
 </ul>
 <center>
-<h2>Traduire la phrase en espagnol</h2>
+<h2>¿Qué hora es?</h2>
 <p></p>
-<nobr id="fr_a"></nobr>
-<nobr id="fr_b"></nobr>
+<nobr id="fr"></nobr>
 <p></p>
 <input class="input" autocomplete="off" style="text-align:center;" id="1">
 <nobr id="correction_a"></nobr>
@@ -222,40 +224,23 @@ img {width:100}
 <p class="hidden" id="adj_number"></p>
 </center>
 <script>
-const moment_es = ["de la mañana", "de la tarde", "de la noche"]
+const moment_es = ["de la madrugada", "de la mañana", "de la tarde", "de la noche"]
 
-const heures_matin_fr = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"]
-const heures_aprem_fr = ["13", "14", "15", "16", "17", "18"]
-const heures_soir_fr = ["19", "20", "21", "22", "23", "00"]
+const heures_matin_fr = ["1", "2", "3", "4", "5"]
+const heures_matin2_fr = ["6", "7", "8", "9", "10", "11", "12"]
+const heures_aprem_fr = ["13", "14", "15", "16", "17", "17"]
+const heures_soir_fr = ["18", "20", "21", "22", "23", "00"]
 
-const heures_matin+_fr = ["00", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"]
-const heures_aprem+_fr = ["12", "13", "14", "15", "16", "17", "18", "19", "20"]
+const heures_matin+_fr = ["00", "1", "2", "3", "4", "5", "6", "7"]
+const heures_matin2+_fr = ["00", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"]
+const heures_aprem+_fr = ["12", "13", "14", "15", "16", "17", "18", "19"]
 const heures_soir+_fr = ["17", "18", "19", "20", "21", "22", "23", "00"]
 
 
+const heures_es = ["Es la una", "Son las dos", "Son las tres", "Son las cuatro", "Son las cinco", "Son las seis", "Son las siete", "Son las ocho", "Son las nueve", "Son las diez", "Son las once", "Son las doce"]
+const minutes_es = ["", "cinco", "diez", "cuarto", "veinte", "veinticinco", "treinta", "treinta y cinco", "cuarenta", "cuarenta y cinco", "cincuenta", "cincuenta y cinco"]
 
-
-
-
-
-
-const etre_fr = ["Je suis", "Tu es", "Il est", "Elle est", "Nous sommmes", "Vous êtes", "Ils sont", "Elles sont"];
-const avoir_fr = ["J'ai", "Tu as", "Il a", "Elle a", "Nous avons", "Vous avez", "Ils ont", "Elles ont"];
-const etre_es = ["Yo soy", "Tu eres", "El es", "Ella es", "Nosotros somos", "Vosotros sois", "Ellos son", "Ellas son"];
-const avoir_es = ["Yo tengo", "Tu tienes", "El tiene", "Ella tiene", "Nosotros tenemos", "Vosotros tenéis", "Ellos tienen", "Ellas tienen"];
-
-const comparer1_fr = [" plus "," aussi "," moins "]
-const comparer2_fr = [" que "," que "," que "]
-const comparer1_es = [" más "," "," menos "]
-const comparer2_es = [" que "," como "," que "]
-
-const adj_etre_m_es = ["bajo", "alto", "delgado", "gordo", "feo", "guapo", "calvo", "castaño", "rubio", "pelirrojo", "español", "francés", "inglés"];
-const adj_etre_f_es = ["baja", "alta", "delgada", "gorda", "fea", "guapa", "calva", "castaña", "rubia", "pelirroja", "española", "francésa", "inglésa"];
-const adj_etre_m_fr = ["petit", "grand", "mince", "gros", "moche", "beau", "chauve", "brun", "blond", "roux", "espagnol", "français", "anglais"];
-const adj_etre_f_fr = ["petite", "grande", "mince (féminin)", "grosse", "moche (féminin)", "belle", "chauve (féminin)", "brunne", "blonde", "rousse", "espagnole", "française", "anglaise"];
-
-const adj_avoir_es = ["pecas", "gafas", "trenzas", "barba", "bigote", "el pelo rizardo", "el pelo liso", "el pelo corto", "el pelo largo", "el pelo moreno", "el pelo rubio", "el pelo castaño", "el pelo pelirrojo"];
-const adj_avoir_fr = ["des taches de rousseur", "des lunettes", "des tresses", "une barbe", "une moustache", "les cheveux bouclés", "les cheveux lisses", "les cheveux courts", "les cheveux longs", "les cheveux bruns (foncés)", "les cheveux blonds", "les cheveux bruns", "les cheveux roux"];
+const minutes_fr = ["00", "05", "10", "15", "20", "25", "30", "35", "40", "45", "50", "55"]
 
 reset()
 
@@ -266,39 +251,15 @@ document.getElementById("correction_b").innerHTML = ""
 document.getElementById("1").value = ""
 document.getElementById("1").style.color = "black"
 
-const verb = Math.floor(Math.random() * 2)
-const verb_number = Math.floor(Math.random() * 8)
-const adj = Math.floor(Math.random() * 2)
-const adj_number = Math.floor(Math.random() * 13)
-const comparer = Math.floor(Math.random() * 2)
-const comparer_number = Math.floor(Math.random() * 3)
+const heure = Math.floor(Math.random() * 24)
+const minutes = Math.floor(Math.random() * 12)
 
-document.getElementById("verb").innerHTML = verb
-document.getElementById("verb_number").innerHTML = verb_number
-document.getElementById("adj").innerHTML = adj
-document.getElementById("adj_number").innerHTML = adj_number
+document.getElementById("?").innerHTML = ?
+document.getElementById("?").innerHTML = ?
+document.getElementById("?").innerHTML = ?
+document.getElementById("?").innerHTML = ?
 
-
-if (verb == 0){
-document.getElementById("fr_a").innerHTML = etre_fr[verb_number]
-	if  (verb_number == 2 || verb_number == 6){
-    document.getElementById("fr_b").innerHTML = adj_etre_m_fr[adj_number]
-    }
-    else if  (verb_number == 3 || verb_number == 7) {
-    document.getElementById("fr_b").innerHTML = adj_etre_f_fr[adj_number]
-    }
-    else if  (adj == 0) {
-        document.getElementById("fr_b").innerHTML = adj_etre_m_fr[adj_number]
-    }
-    else {
-    document.getElementById("fr_b").innerHTML = adj_etre_f_fr[adj_number]
-    }
-}
-else {
-document.getElementById("fr_a").innerHTML = avoir_fr[verb_number]
-document.getElementById("fr_b").innerHTML = adj_avoir_fr[adj_number]
-}
-
+document.getElementById("fr").innerHTML = heure + ":" + minutes_fr[minutes]
 }
 
 

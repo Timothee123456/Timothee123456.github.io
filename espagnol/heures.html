@@ -218,10 +218,8 @@ img {width:100}
 <p></p>
 <a href="#" class="myButton2" onclick="reset()">Next</a>
 
-<p class="hidden" id="verb"></p>
-<p class="hidden" id="verb_number"></p>
-<p class="hidden" id="adj"></p>
-<p class="hidden" id="adj_number"></p>
+<p class="hidden" id="heure"></p>
+<p class="hidden" id="minutes"></p>
 </center>
 <script>
 const moment_es = ["de la madrugada", "de la mañana", "de la tarde", "de la noche"]
@@ -238,7 +236,8 @@ const heures_soir+_fr = ["17", "18", "19", "20", "21", "22", "23", "00"]
 
 
 const heures_es = ["Es la una", "Son las dos", "Son las tres", "Son las cuatro", "Son las cinco", "Son las seis", "Son las siete", "Son las ocho", "Son las nueve", "Son las diez", "Son las once", "Son las doce"]
-const minutes_es = ["", "cinco", "diez", "cuarto", "veinte", "veinticinco", "treinta", "treinta y cinco", "cuarenta", "cuarenta y cinco", "cincuenta", "cincuenta y cinco"]
+const minutes+_es = ["", "cinco", "diez", "cuarto", "veinte", "veinticinco", "treinta", "treinta y cinco", "cuarenta", "cuarenta y cinco", "cincuenta", "cincuenta y cinco"]
+const minutes-_es = ["cinco", "diez", "cuarto", "veinte", "veinticinco"]
 
 const minutes_fr = ["00", "05", "10", "15", "20", "25", "30", "35", "40", "45", "50", "55"]
 
@@ -254,10 +253,8 @@ document.getElementById("1").style.color = "black"
 const heure = Math.floor(Math.random() * 24)
 const minutes = Math.floor(Math.random() * 12)
 
-document.getElementById("?").innerHTML = ?
-document.getElementById("?").innerHTML = ?
-document.getElementById("?").innerHTML = ?
-document.getElementById("?").innerHTML = ?
+document.getElementById("heure").innerHTML = heure
+document.getElementById("minutes").innerHTML = minutes
 
 document.getElementById("fr").innerHTML = heure + ":" + minutes_fr[minutes]
 }
@@ -267,30 +264,10 @@ function myFunction() {
 
 document.getElementById("Terminado").style.display = "none";
 
-const verb = document.getElementById("verb").innerHTML
-const verb_number = document.getElementById("verb_number").innerHTML
-const adj = document.getElementById("adj").innerHTML
-const adj_number = document.getElementById("adj_number").innerHTML
+const heure = document.getElementById("heure").innerHTML
+const minutes = document.getElementById("minutes").innerHTML
 
-const Word1 = document.getElementById("1").value
-	if (verb == 0){
-		if  (verb_number == 2){
-        correct (etre_es[verb_number] + " " + adj_etre_m_es[adj_number])
-    	}
-    	else if  (verb_number == 3) {
-    	correct (etre_es[verb_number] + " " + adj_etre_f_es[adj_number])
-    	}
-    	else if  (adj == 0) {
-        correct (etre_es[verb_number] + " " + adj_etre_m_es[adj_number])
-    	}
-    	else {
-    	correct (etre_es[verb_number] + " " + adj_etre_f_es[adj_number])
-    	}
-	}
-    
-	else {
-    correct (avoir_es[verb_number] + " " + adj_avoir_es[adj_number])
-	}
+correct (heures_es[heure] + " " + minutes_es[minutes])
 
 }
 

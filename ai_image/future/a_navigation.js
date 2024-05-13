@@ -20,5 +20,9 @@ var pages = [
   "https://timothee123456.github.io/ai_image/future/ships(3).html",
   "https://timothee123456.github.io/ai_image/future/planes(1).html",
   "https://timothee123456.github.io/ai_image/future/planes(2).html",
+  "https://timothee123456.github.io/ai_image/future/underwater_cities(1).html",
+  "https://timothee123456.github.io/ai_image/future/underwater_cities(2).html",
+  "https://timothee123456.github.io/ai_image/future/underwater_cities(3).html",
+  "https://timothee123456.github.io/ai_image/future/underwater_cities(4).html",
   // Add more pages here as needed
 ];

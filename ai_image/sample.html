@@ -41,8 +41,16 @@
 
 
 <div style="display: flex; justify-content: space-between;">
-<button class="next">← Previous</button>
-<button class="next" style="text-align:right;">Next →</button>
+<button class="next" id="previous">← Previous</button>
+<button class="next" id="next" style="text-align:right;">Next →</button>
 </div>
 </body>
+<head>
+<script src="a_navigation.js"></script>
+<script>
+const nb = 0
+document.getElementById("previous").href = a_navigation[nb - 1];
+document.getElementById("next").href = a_navigation[nb + 1];
+</script>
+</head>
 </html>

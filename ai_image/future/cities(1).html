@@ -41,14 +41,19 @@
 
 
 <div style="display: flex; justify-content: space-between;">
-<a class="next">← Previous</a>
-<a class="next" style="text-align:right;">Next →</a>
+<a class="next" id="previous">← Previous</a>
+<a class="next" id="next" style="text-align:right;">Next →</a>
 </div>
+
+
+
 </body>
 <head>
 <script src="a_navigation.js"></script>
-<style>
-
-</style>
+<script>
+const nb = 2
+document.getElementById("previous").href = a_navigation[nb - 1];
+document.getElementById("previous").href = a_navigation[nb + 1];
+</script>
 </head>
 </html>

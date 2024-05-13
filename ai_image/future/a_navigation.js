@@ -9,5 +9,7 @@ var pages = [
   "https://timothee123456.github.io/ai_image/future/cities(8).html",
   "https://timothee123456.github.io/ai_image/future/cities(9).html",
   "https://timothee123456.github.io/ai_image/future/cities(10).html",
+  "https://timothee123456.github.io/ai_image/future/cities(11).html",
+  "https://timothee123456.github.io/ai_image/future/cars(1).html",
   // Add more pages here as needed
 ];

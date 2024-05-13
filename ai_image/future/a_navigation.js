@@ -11,5 +11,14 @@ var pages = [
   "https://timothee123456.github.io/ai_image/future/cities(10).html",
   "https://timothee123456.github.io/ai_image/future/cities(11).html",
   "https://timothee123456.github.io/ai_image/future/cars(1).html",
+  "https://timothee123456.github.io/ai_image/future/cars(2).html",
+  "https://timothee123456.github.io/ai_image/future/cars(3).html",
+  "https://timothee123456.github.io/ai_image/future/cars(4).html",
+  "https://timothee123456.github.io/ai_image/future/cars(5).html",
+  "https://timothee123456.github.io/ai_image/future/ships(1).html",
+  "https://timothee123456.github.io/ai_image/future/ships(2).html",
+  "https://timothee123456.github.io/ai_image/future/ships(3).html",
+  "https://timothee123456.github.io/ai_image/future/planes(1).html",
+  "https://timothee123456.github.io/ai_image/future/planes(2).html",
   // Add more pages here as needed
 ];

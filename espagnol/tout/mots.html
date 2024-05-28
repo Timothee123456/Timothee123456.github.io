@@ -194,24 +194,24 @@ img {width:100}
 </center>
 <details>
       <summary>Settings:</summary>
-      <input type="checkbox" id="pronoms"><label>Pronoms</label><br>
-      <input type="checkbox" id="possessifs"><label>Possesifs</label><br>
-      <input type="checkbox" id="famille"><label>Famille</label><br>
-      <input type="checkbox" id="vehicules"><label>Vehicule</label><br>
-      <input type="checkbox" id="maison"><label>Maison</label><br>
-      <input type="checkbox" id="animaux"><label>Animaux</label><br>
-      <input type="checkbox" id="couleurs"><label>Couleurs</label><br>
-      <input type="checkbox" id="couleurs"><label>Chiffres</label><br>
+      <input type="checkbox" id="pronoms" checked><label>Pronoms</label><br>
+      <input type="checkbox" id="possessifs" checked><label>Possesifs</label><br>
+      <input type="checkbox" id="famille" checked><label>Famille</label><br>
+      <input type="checkbox" id="vehicules" checked><label>Vehicule</label><br>
+      <input type="checkbox" id="maison" checked><label>Maison</label><br>
+      <input type="checkbox" id="animaux" checked><label>Animaux</label><br>
+      <input type="checkbox" id="couleurs" checked><label>Couleurs</label><br>
+      <input type="checkbox" id="chiffres" checked><label>Chiffres</label><br>
       <details>
       	<summary>Classe</summary>
-        <input type="checkbox" id="salle"><label>Salle de classe</label>
-        <input type="checkbox" id="table"><label>Sur la table</label><br>
+        <input type="checkbox" id="salle" checked><label>Salle de classe</label>
+        <input type="checkbox" id="table" checked><label>Sur la table</label><br>
       </details>
       <details>
       <summary>Date</summary>
-        <input type="checkbox" id="jour"><label>Jour</label>
-        <input type="checkbox" id="mois"><label>Mois</label>
-        <input type="checkbox" id="saison"><label>Saison</label><br>
+        <input type="checkbox" id="jour" checked><label>Jour</label>
+        <input type="checkbox" id="mois" checked><label>Mois</label>
+        <input type="checkbox" id="saison" checked><label>Saison</label><br>
       </details>
 </details>
 <center>
@@ -238,6 +238,8 @@ img {width:100}
 <p class="hidden" id="sujet"></p>
 </center>
 <script>
+const names = ["pronoms", "possesifs", "famille", "vehicule", "maison", "animaux", "couleurs", "chiffres", "salle", "table", "jour", "mois", "saison"]
+
 /*Pronoms*/
 const pronoms_fr = ["Je", "Tu", "Il", "Elle", "Nous", "Vous", "Ils", "Elles"];
 const pronoms_es = ["Yo", "Tú", "Él", "Ella", "Nosotros", "Vosotros", "Ellos", "Ellas"];

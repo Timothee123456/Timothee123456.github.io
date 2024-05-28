@@ -240,7 +240,7 @@ img {width:100}
 <script>
 const names = ["pronoms", "possesifs", "famille", "vehicule", "maison", "animaux", "couleurs", "chiffres", "salle", "table", "jour", "mois", "saison"]
 
-/*Pronoms*/
+/* Pronoms */
 const pronoms_fr = ["Je", "Tu", "Il", "Elle", "Nous", "Vous", "Ils", "Elles"];
 const pronoms_es = ["Yo", "Tú", "Él", "Ella", "Nosotros", "Vosotros", "Ellos", "Ellas"];
         
@@ -251,7 +251,15 @@ const possessifs_es = ["Mi", "Tu", "Su", "Nusetro", "Nusetra", "Vosotro", "Vosot
 /* Famille */
 const famille_fr = ["grand frère", "petit frère", "père", "oncle", "cousin", "grand-père paternel", "grand-père maternel", "arrière-grand-père", "arrière-arrière-grand-père", "amoureux", "arrière-grand-mère", "arrière-arrière-grand-mère", "amoureuse", "grande sœur", "petite sœur", "mère", "tante", "cousine", "grand-mère paternelle", "grand-mère maternelle"];
 const famille_es = ["hermano mayor", "hermano menor", "padre", "tío", "primo", "abuelo paterno", "abuelo materno", "bisabuelo", "tatarabuelo", "novio", "bisabuela", "tatarabuela", "novia", "hermana mayor", "hermana menor", "madre", "tía", "prima", "abuela paterna", "abuela materna"];
-      
+
+/* Collège */
+const collège_fr = ["élève", "élève (féminin)", "proffesseur", "proffesseur (féminin)", "lycée", "collège"];
+const collège_es = ["alumno", "alumna", "profesor", "profesora", "instituto", "colegio"];
+
+/* Saluer */
+const collège_fr = ["bonjour (1 mot)", "bonjour (2 mot)", "bon après-midi", "bonne nuit", "au revoir", "à plus tard", "à demain"];
+const collège_es = ["Hola", "buenos día", "buenas tardes", "buenas noches", "adiós", "hasta luego", "hasta mañana"];
+	
 /* Vehicules */
 const vehicules_fr = ["voiture", "taxi", "bus", "moto", "trottinette", "vélo", "hélicoptère", "avion", "métro", "train", "tramway", "bâteau"];
 const vehicules_es = ["coche", "taxi", "bus", "moto", "patinete", "bicicleta", "helicóptero", "avión", "metro", "tren", "tranvía", "barco"];
@@ -268,25 +276,6 @@ const animales_es = ["perro", "gato", "pez", "conejo", "loro", "tortuga", "serpi
 /* Couleurs */
 const couleurs_m_fr = ["noir", "gris", "marron", "blanc", "vert", "bleu", "violet", "rose", "rouge", "orange", "jaune", "beige", "noire", "grise", "blanche", "verte", "bleue", "violette", "rouge (féminin)", "orange (féminin)", "jaune (féminin)"]
 const couleurs_m_es = ["negro", "gris", "marrón", "blanco", "verde", "azul", "violeta", "rosa", "rojo", "naranja", "amarillo", "beige", "negra", "gris", "blanca", "verde", "azul", "violeta", "roja", "naranja", "amarilla"]
-        
-/* Verbes */
-const appeler_fr = ["m'appelle", "t'appelles", "s'appelle", "nous appelons", "vous appelez", "s'appellent"]
-const appeler_es = ["me llamo", "te llamas", "se llama", "nos llamamos", "os llamáis", "se llaman"]
-
-const avoir_fr = ["ai", "as" "a", "avons", "avez", "ont"]
-const avoir_es = ["tengo", "tienes", "tiene", "tenemos", "tenéis", "tienen"]
-
-const etre_fr = ["suis", "es" "est", "sommes", "êtes", "sont"]
-const etre_es = ["soy", "eres", "es", "somos", "sois", "son"]
-
-const vivre_fr = ["vis", "vis" "vit", "vivons", "vivez", "vivent"]
-const vivre_es = ["vivo", "vives", "vive", "vivimos", "vivís", "viven"]
-
-const deranger_fr = ["dérange", "déranges" "dérange", "dérangeons", "dérangez", "dérangent"]
-const deranger_es = ["molesto", "molestas", "molesta", "molestamos", "molestáis", "molestan"] 
-
-const mettre_fr = ["mets", "mets" "met", "mettons", "mettez", "mettent"]
-const mettre_es = ["tardo", "tardas", "tarda", "tardamos", "tardáis", "tardan"]
         
         
 /* Chiffres */
@@ -317,11 +306,32 @@ const chiffres_es = ["uno", "dos", "tres", "cuatro", "cinco", "seis", "siete", "
         const table_fr = ["cahier", "livre", "agenda", "trousse"]
         const table_es = ["cuaderno", "libro", "agenda", "estuche"]
 
-/* Description physique */
+/* Fêtes */
 const description_fr = ["grand", "petit"]
 const description_es = ["bajo", "alto"]
 
+/* Description physique */
+const description_fr = ["grand", "petit"]
+const description_es = ["bajo", "alto"]
+        
+/* Verbes */
+const appeler_fr = ["m'appelle", "t'appelles", "s'appelle", "nous appelons", "vous appelez", "s'appellent"]
+const appeler_es = ["me llamo", "te llamas", "se llama", "nos llamamos", "os llamáis", "se llaman"]
 
+const avoir_fr = ["ai", "as" "a", "avons", "avez", "ont"]
+const avoir_es = ["tengo", "tienes", "tiene", "tenemos", "tenéis", "tienen"]
+
+const etre_fr = ["suis", "es" "est", "sommes", "êtes", "sont"]
+const etre_es = ["soy", "eres", "es", "somos", "sois", "son"]
+
+const vivre_fr = ["vis", "vis" "vit", "vivons", "vivez", "vivent"]
+const vivre_es = ["vivo", "vives", "vive", "vivimos", "vivís", "viven"]
+
+const deranger_fr = ["dérange", "déranges" "dérange", "dérangeons", "dérangez", "dérangent"]
+const deranger_es = ["molesto", "molestas", "molesta", "molestamos", "molestáis", "molestan"] 
+
+const mettre_fr = ["mets", "mets" "met", "mettons", "mettez", "mettent"]
+const mettre_es = ["tardo", "tardas", "tarda", "tardamos", "tardáis", "tardan"]
 
 
 

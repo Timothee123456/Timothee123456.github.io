@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #d5e8e8;
+      color: #333;
+    }
+
+    h1 {
+      color: #4CAF50;
+      text-align: center;
+    }
+
+    #weekend_countdown {
+      font-size: 24px;
+      font-weight: bold;
+      color: #e91e63;
+    }
+  </style>
+  <script>
+    function countdownToWeekend() {
+      // Get the current date and time
+      const now = new Date();
+
+      // Find the next Saturday
+      let nextSaturday = new Date(now);
+      nextSaturday.setDate(nextSaturday.getDate() + ((6 - nextSaturday.getDay()) % 7 + 1));
+      nextSaturday.setHours(0, 0, 0, 0);
+
+      // Calculate the time difference in milliseconds
+      const timeDiff = nextSaturday.getTime() - now.getTime();
+
+      // Convert the time difference to days, hours, minutes, and seconds
+      const daysLeft = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
+      const hoursLeft = Math.floor((timeDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutesLeft = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
+      const secondsLeft = Math.floor((timeDiff % (1000 * 60)) / 1000);
+
+      // Update the HTML element with the countdown
+      document.getElementById("weekend_countdown").textContent = `${daysLeft-1} jours, ${hoursLeft} heures, ${minutesLeft} minutes, et ${secondsLeft} secondes`;
+    }
+
+    // Call the function every second to update the countdown
+    setInterval(countdownToWeekend, 1000);
+  </script>
+</head>
+<body>
+
+<h1>Le week-end</h1>
+
+<p>Le week-end n'est que dans <span id="weekend_countdown"></span> !</p>
+
+</body>
+</html>

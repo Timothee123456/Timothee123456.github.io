@@ -2,7 +2,7 @@
 <html>
 <head>
     <title>
-     Fetcha
+     Los vacaciones
     </title>
 <style>
 .active {
@@ -153,7 +153,7 @@ nobr {font-size:24px}
 img {width:100}
 
 
-.input{font-size:25px;}
+.input{font-size:25px; width:700px}
 .hidden{display: none;}
 </style>
 </head>
@@ -170,10 +170,11 @@ img {width:100}
   <li class="li"><a href="https://timothee123456.github.io/espagnol/casa">Mi casa 1</a>
   <li class="li"><a href="https://timothee123456.github.io/espagnol/vehicules">Vehículos</a>
   <li class="li"><a href="https://timothee123456.github.io/espagnol/casa2">Mi casa 2</a>
+  <li class="li"><a class="active" href="https://timothee123456.github.io/espagnol/vacances">Los vacaciones</a>
   <li class="li" style="float:right"><a href="https://timothee123456.github.io/espagnol/leçons/jours-de-la-semaine">Leçons</a></li></li>
 </ul>
 <center>
-<h2>Écrire la date en espagnol</h2>
+<h2>Traduire la phrase en espagnol (les nombres en lettres)</h2>
 <p></p>
 <nobr id="fr"></nobr>
 <p></p>
@@ -186,14 +187,16 @@ img {width:100}
 <p></p>
 <a href="#" class="myButton2" onclick="reset()">Next</a>
 <p class="hidden" id="version"></p>
-<p class="hidden" id="date"></p>
+<p class="hidden" id="start"></p>
+<p class="hidden" id="date1"></p>
+<p class="hidden" id="date2"></p>
 <p class="hidden" id="mois"></p>
 </center>
 <script>
-const version_fr = ["Je suis en vacances", "J'ai des vacances", "Je vais en vacances"]
+const start_fr = ["Je suis en vacances", "J'ai des vacances", "Je vais en vacances"]
 const mois_fr = ["janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre"];
 
-const version_es = ["Estoy de vacaciones", "Tengo vacaciones", "Voy de vacaciones"]
+const start_es = ["Estoy de vacaciones", "Tengo vacaciones", "Voy de vacaciones"]
 const mois_es = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"];
 const date_es = ["uno", "dos", "tres", "cuatro", "cinco", "seis", "siete", "ocho", "nueve", "diez", "once", "doce", "trece", "catorce", "quince", "dieciséis", "diecisiete", "dieciocho", "diecinueve", "veinte", "veintiuno", "veintidós", "veintitrés", "veinticuatro", "veinticinco", "veintiséis", "veintisiete", "veintiocho", "veintinueve", "treinta"];
 
@@ -207,15 +210,25 @@ document.getElementById("1").value = ""
 document.getElementById("1").style.color = "black"
 
 const version = Math.floor(Math.random() * 2)
-const date = Math.floor(Math.random() * 30)
+const start = Math.floor(Math.random() * 3)
+const date1 = Math.floor(Math.random() * 30)
+const date2 = Math.floor(Math.random() * 30)
 const mois = Math.floor(Math.random() * 12)
 
 document.getElementById("version").innerHTML = version
+document.getElementById("start").innerHTML = start
 document.getElementById("mois").innerHTML = mois
-document.getElementById("date").innerHTML = date
+document.getElementById("date1").innerHTML = date1
+document.getElementById("date2").innerHTML = date2
 
-document.getElementById("fr").innerHTML = version_fr[version] + " " + date + 1 + " " + mois_fr[mois]
-
+const date11 = date1 + 1
+const date22 = date2 + 1
+if (version == 0) {
+		document.getElementById("fr").innerHTML = start_fr[start] + " le " + date11 + " " + mois_fr[mois]
+		}
+        else {
+        document.getElementById("fr").innerHTML = start_fr[start] + " du " + date11 + " " + mois_fr[mois] + " au " + date22 + " " + mois_fr[mois]
+        }
 }
 
 
@@ -224,11 +237,18 @@ function myFunction() {
 document.getElementById("Terminado").style.display = "none";
 
 const version = document.getElementById("version").innerHTML
-const date = document.getElementById("date").innerHTML
+const start = document.getElementById("start").innerHTML
+const date1 = document.getElementById("date1").innerHTML
+const date2 = document.getElementById("date2").innerHTML
 const mois = document.getElementById("mois").innerHTML
 
 const Word1 = document.getElementById("1").value
-correct (version_es[version] + " " + date_es[date] + " de " + mois_es[mois])
+if (version == 0) {
+		correct (start_es[start] + " el " + date_es[date1] + " " + mois_es[mois])
+		}
+        else {
+        correct (start_es[start] + " del " + date_es[date1] + " " + mois_es[mois] + " al " + date_es[date2] + " " + mois_es[mois])
+        }
 }
 
 

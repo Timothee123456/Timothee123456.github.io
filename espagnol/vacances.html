@@ -185,14 +185,15 @@ img {width:100}
 <a href="#" class="myButton" onclick="myFunction()" id="Terminado">Terminado</a>
 <p></p>
 <a href="#" class="myButton2" onclick="reset()">Next</a>
-<p class="hidden" id="jour"></p>
+<p class="hidden" id="version"></p>
 <p class="hidden" id="date"></p>
 <p class="hidden" id="mois"></p>
 </center>
 <script>
-const version_es = ["Estoy de vacaciones", "Tengo vacaciones", "Voy de vacaciones"]
+const version_fr = ["Je suis en vacances", "J'ai des vacances", "Je vais en vacances"]
 const mois_fr = ["janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre"];
 
+const version_es = ["Estoy de vacaciones", "Tengo vacaciones", "Voy de vacaciones"]
 const mois_es = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"];
 const date_es = ["uno", "dos", "tres", "cuatro", "cinco", "seis", "siete", "ocho", "nueve", "diez", "once", "doce", "trece", "catorce", "quince", "dieciséis", "diecisiete", "dieciocho", "diecinueve", "veinte", "veintiuno", "veintidós", "veintitrés", "veinticuatro", "veinticinco", "veintiséis", "veintisiete", "veintiocho", "veintinueve", "treinta"];
 
@@ -205,14 +206,15 @@ document.getElementById("correction_b").innerHTML = ""
 document.getElementById("1").value = ""
 document.getElementById("1").style.color = "black"
 
-const jour = Math.floor(Math.random() * 7)
+const version = Math.floor(Math.random() * 2)
 const date = Math.floor(Math.random() * 30)
 const mois = Math.floor(Math.random() * 12)
 
+document.getElementById("version").innerHTML = version
 document.getElementById("mois").innerHTML = mois
 document.getElementById("date").innerHTML = date
 
-document.getElementById("fr").innerHTML = date + 1 + " " + mois_fr[mois]
+document.getElementById("fr").innerHTML = version_fr[version] + " " + date + 1 + " " + mois_fr[mois]
 
 }
 
@@ -221,12 +223,16 @@ function myFunction() {
 
 document.getElementById("Terminado").style.display = "none";
 
+const version = document.getElementById("version").innerHTML
 const date = document.getElementById("date").innerHTML
 const mois = document.getElementById("mois").innerHTML
 
 const Word1 = document.getElementById("1").value
-correct (date_es[date] + " " + mois_es[mois])
+correct (version_es[version] + " " + date_es[date] + " de " + mois_es[mois])
 }
+
+
+
 
 function correct (text){
 const Word1 = document.getElementById("1").value

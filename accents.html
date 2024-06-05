@@ -2,17 +2,49 @@
   <title> Accents </title>
   <style>
     body {background-image: linear-gradient(to right,blue , white , red)}
-    p {font-size: 50px}  
+    h2 {font-size: 50px} 
+    .myButton {
+  	box-shadow: 0px 0px 0px 2px #9fb4f2;
+  	background:linear-gradient(to bottom, #7892c2 5%, #476e9e 100%);
+  	background-color:#7892c2;
+  	border-radius:42px;
+  	border:2px solid #4e6096;
+  	display:inline-block;
+  	cursor:pointer;
+  	color:#ffffff;
+  	font-family:Arial;
+  	font-size:19px;
+  	padding:12px 22px;
+  	text-decoration:none;
+  	text-shadow:2px 3px 3px #283966;
+  }
+  .myButton:hover {
+  	background:linear-gradient(to bottom, #476e9e 5%, #7892c2 100%);
+  	background-color:#476e9e;
+  }
+  .myButton:active {
+  	position:relative;
+  	top:1px;
+  }
+
     </style>
 </head>
 <main>
 <center>
-<p>Les accents:</p>
+<h2>Les accents:</h2>
 <h1>é, è, ê, ë</h1>
 <h1>ó, ô, œ</h1>
 <h1>á, à, â</h1>
 <h1>ú, û, ù</h1>
 <h1>í, î, ï</h1>
 <h1>ç</h1>
+<a href="#" class="myButton" id="myButton">Mettre les accents sur du texte</a>
+<h1 id="outputText"></h1>
 </center>
 </main>
+<script> document.getElementById("myButton").addEventListener("click", function() { var answer = prompt("Votre phrase (mettre ,c pour ç, oe pour œ et ' pour ''):");
+var replace = answer.replace(/[']{2}/g, "'"); 
+replace = replace.replace("'e", "é"); replace = replace.replace("`e", "è"); replace = replace.replace("^e", "ê"); replace = replace.replace('"e', "ë"); replace = replace.replace("'o", "ó"); replace = replace.replace("^o", "ô"); replace = replace.replace("oe", "œ"); replace = replace.replace("'a", "á"); replace = replace.replace("`a", "à"); replace = replace.replace("^a", "â"); replace = replace.replace("'u", "ú"); replace = replace.replace("^u", "û"); replace = replace.replace("`u", "ù"); replace = replace.replace("'i", "í"); replace = replace.replace("^i", "î"); replace = replace.replace('"i', "ï"); replace = replace.replace(",c", "ç"); replace =
+replace.replace("`E", "È"); replace = replace.replace("^E", "Ê"); replace = replace.replace('"E', "Ë"); replace = replace.replace("'O", "Ó"); replace = replace.replace("^O", "Ô"); replace = replace.replace("OE", "Œ"); replace = replace.replace("'A", "Á"); replace = replace.replace("`A", "À"); replace = replace.replace("^A", "Â"); replace = replace.replace("'U", "Ú"); replace = replace.replace("^U", "Û"); replace = replace.replace("`U", "Ù"); replace = replace.replace("'I", "Í"); replace = replace.replace("^I", "Î"); replace = replace.replace('"I', "Ï"); replace = replace.replace(",C", "Ç");                                                                                  
+document.getElementById("outputText").textContent = replace; }); </script>
+</html>

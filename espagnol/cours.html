@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Countdown to Next Spanish Class</title>
+  <style>
+     body {
+      font-family: Arial, sans-serif;
+      background-color: #d5e8e8;
+      color: #333;
+    }
+
+    h1 {
+      color: #4CAF50;
+      text-align: center;
+    }
+
+    #weekend_countdown {
+      font-size: 24px;
+      font-weight: bold;
+      color: #e91e63;
+    }
+  </style>
+</head>
+<body>
+<h1>Le cours d'espagnol</h1>
+  <div id="countdown"></div>
+
+  <script>
+    function countdown() {
+      // Get the current date and time
+      var now = new Date().getTime();
+
+      // Set the dates we're counting down to
+      var monday = new Date();
+      monday.setDate(monday.getDate() + ((1 + 7 - monday.getDay()) % 7) + 1);
+      monday.setHours(14, 30, 0, 0);
+      var mondayCountdown = monday.getTime();
+
+      var tuesday = new Date();
+      tuesday.setDate(tuesday.getDate() + ((2 + 7 - tuesday.getDay()) % 7) + 1);
+      tuesday.setHours(20, 30, 0, 0);
+      var tuesdayCountdown = tuesday.getTime();
+
+      // Determine which date is sooner
+      var countDownDate = (mondayCountdown < tuesdayCountdown) ? mondayCountdown : tuesdayCountdown;
+      var targetDay = (mondayCountdown < tuesdayCountdown) ? "Monday" : "Tuesday";
+      var targetTime = (mondayCountdown < tuesdayCountdown) ? "2:30 PM" : "8:30 PM";
+
+      // Update the count down every 1 second
+      var x = setInterval(function() {
+
+        // Get today's date and time
+        var now = new Date().getTime();
+
+        // Find the distance between now and the count down date
+        var distance = countDownDate - now;
+
+        // Time calculations for days, hours, minutes and seconds
+        var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+        var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+        // Output the result in an element with id="countdown"
+        document.getElementById("countdown").innerHTML = "Le prochain cours d'espagnol aura lieu dans : " + days + " jours, " + hours + " heures, " + minutes + " minutes et " + seconds + " secondes!";
+
+      }, 1000);
+    }
+
+    countdown();
+  </script>
+</body>
+</html>

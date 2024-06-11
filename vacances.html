@@ -42,9 +42,9 @@
   </style>
   <body>
     <h1>Les grandes vacances sont dans:</h1>
-    <p><span id="jours"></span><span id="heures"></span><span id="minutes"></span> et <span id="secondes"></span></p>
+    <p><span id="jours"></span><span id="heures"></span><span id="minutes"></span><span id="et"> et </span><span id="secondes"></span></p>
     <script>
-      // Set the date we're counting down to
+      // Set the date we're counting down to (June 28, 2024 at 4:35:14 PM)
       var countDownDate = new Date("Jun 28, 2024 16:35:00").getTime();
 
       // Update the count down every 1 second
@@ -69,6 +69,7 @@
         document.getElementById("heures").innerHTML = hours + " heures ";
         document.getElementById("minutes").className = minutes > 0 ? "" : "hide";
         document.getElementById("minutes").innerHTML = minutes + " minutes";
+        document.getElementById("et").className = (days > 0 || hours > 0 || minutes > 0) ? "" : "hide";
         document.getElementById("secondes").innerHTML = seconds + " secondes ";
 
         // If the count down is over, write some text 

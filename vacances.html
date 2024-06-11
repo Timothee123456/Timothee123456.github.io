@@ -64,18 +64,18 @@
 
         // Output the result in an element with id="countdown"
         document.getElementById("jours").className = days > 0 ? "" : "hide";
-        document.getElementById("jours").innerHTML = days + " jours ";
+        document.getElementById("jours").innerHTML = days + " jour" + (days !== 1 ? "s " : " ");
         document.getElementById("heures").className = hours > 0 ? "" : "hide";
-        document.getElementById("heures").innerHTML = hours + " heures ";
+        document.getElementById("heures").innerHTML = hours + " heure" + (hours !== 1 ? "s " : " ");
         document.getElementById("minutes").className = minutes > 0 ? "" : "hide";
-        document.getElementById("minutes").innerHTML = minutes + " minutes";
+        document.getElementById("minutes").innerHTML = minutes + " minute" + (minutes !== 1 ? "s " : " ");
         document.getElementById("et").className = (days > 0 || hours > 0 || minutes > 0) ? "" : "hide";
-        document.getElementById("secondes").innerHTML = seconds + " secondes ";
+        document.getElementById("secondes").innerHTML = seconds + " seconde" + (seconds !== 1 ? "s " : " ");
 
         // If the count down is over, write some text 
         if (distance < 0) {
           clearInterval(x);
-          document.getElementById("secondes").innerHTML = "C'est les grandes vacances!!!";
+          document.getElementById("countdown").innerHTML = "C'est les grandes vacances!!!";
         }
       }, 1000);
     </script>

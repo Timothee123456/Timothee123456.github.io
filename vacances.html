@@ -72,12 +72,94 @@
         document.getElementById("et").className = (days > 0 || hours > 0 || minutes > 0) ? "" : "hide";
         document.getElementById("secondes").innerHTML = seconds + " seconde" + (seconds !== 1 ? "s " : " ");
 
-        // If the count down is over, write some text 
-        if (distance < 0) {
-          clearInterval(x);
-          document.getElementById("countdown").innerHTML = "Vous êtes officiellement en vacances!!!";
-        }
-      }, 1000);
+          // If the count down is over, write some text and add fireworks
+  if (distance < 0) {
+    clearInterval(x);
+    document.getElementById("countdown").innerHTML = "Vous êtes officiellement en vacances!!!";
+    addFireworks();
+  }
+}, 1000);
+
+// Function to create fireworks
+function addFireworks() {
+  // Create a canvas element
+  var canvas = document.createElement("canvas");
+  canvas.id = "fireworks";
+  document.body.appendChild(canvas);
+
+  // Set the canvas dimensions to fill the entire page
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+
+  // Get the 2D rendering context
+  var ctx = canvas.getContext("2d");
+
+  // Create an array to store the fireworks
+  var fireworks = [];
+
+  // Function to create a new firework
+  function createFirework() {
+    // Random starting position
+    var x = Math.random() * canvas.width;
+    var y = canvas.height;
+
+    // Random speed and angle
+    var vx = (Math.random() - 0.5) * 10;
+    var vy = (Math.random() - 1) * -20;
+
+    // Create the firework object
+    var firework = {
+      x: x,
+      y: y,
+      vx: vx,
+      vy: vy,
+      size: 5,
+      color: "#" + Math.floor(Math.random() * 16777215).toString(16)
+    };
+
+    // Add the firework to the array
+    fireworks.push(firework);
+  }
+
+  // Function to animate the fireworks
+  function animateFireworks() {
+    // Clear the canvas
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // Update and draw the fireworks
+    for (var i = 0; i < fireworks.length; i++) {
+      var firework = fireworks[i];
+
+      // Update the position
+      firework.x += firework.vx;
+      firework.y += firework.vy;
+
+      // Draw the firework
+      ctx.beginPath();
+      ctx.arc(firework.x, firework.y, firework.size, 0, 2 * Math.PI);
+      ctx.fillStyle = firework.color;
+      ctx.fill();
+
+      // Remove the firework if it goes off-screen
+      if (firework.y > canvas.height || firework.x < 0 || firework.x > canvas.width) {
+        fireworks.splice(i, 1);
+        i--;
+      }
+    }
+
+    // Create new fireworks randomly
+    if (Math.random() < 0.05) {
+      createFirework();
+    }
+
+    // Request the next animation frame
+    requestAnimationFrame(animateFireworks);
+  }
+
+  // Start the fireworks animation
+  animateFireworks();
+}
+
     </script>
   </body>
 </html>

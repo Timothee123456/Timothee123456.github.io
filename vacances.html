@@ -79,9 +79,21 @@
   if (distance < 0) {
     clearInterval(x);
     document.getElementById("secondes").innerHTML = "Vous êtes officiellement en vacances !!!";
-    addFireworks();
+    startRedirect();
   }
 }, 10);
+
+       var countdown = 0; var redirectTimer;
+function startRedirect() {
+  redirectTimer = setInterval(function() {
+    countdown--;
+    document.getElementById("countdown").textContent = countdown;
+    if (countdown === 0) {
+      clearInterval(redirectTimer);
+      window.location.href = "https://timothee123456.github.io/main";
+    }
+  }, 1000);
+}
 
 // Function to create fireworks
 function addFireworks() {

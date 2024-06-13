@@ -2,7 +2,7 @@
 <html>
 <head>
     <title>
-     Tout mots
+     Duolingo
     </title>
 <style>
 .active {
@@ -185,8 +185,8 @@ img {width:100}
 </head>
 <body>
 <ul>
-  <li class="li"><a class="active"  href="https://timothee123456.github.io/espagnol/jours-de-la-semaine">Español</a></li>
-  <li class="li"><a href="https://timothee123456.github.io/espagnol/mois">Francais</a></li>
+  <li class="li"><a class="active"  href="https://timothee123456.github.io/espagnol/duolingo">Español</a></li>
+  <li class="li"><a href="https://timothee123456.github.io/espagnol/duolingo">Francais</a></li>
 </ul>
 <center>
 <h2>Traduire la phrase en espagnol</h2>
@@ -195,6 +195,8 @@ img {width:100}
 <p></p>
 <input class="input" autocomplete="off" style="text-align:center;" id="1">
 <nobr id="correction_a"></nobr>
+<br>
+<nobr id="correction_b" style="color:red;"></nobr>
 <p></p>
 <a href="#" class="accents" onclick="accent('á')">á</a>
 <a href="#" class="accents" onclick="accent('é')">é</a>
@@ -202,9 +204,6 @@ img {width:100}
 <a href="#" class="accents" onclick="accent('ó')">ó</a>
 <a href="#" class="accents" onclick="accent('ú')">ú</a>
 <a href="#" class="accents" onclick="accent('ñ')">ñ</a>
-
-<br>
-<nobr id="correction_b" style="color:red;"></nobr>
 <p></p>
 <p></p>
 <a href="#" class="myButton" onclick="myFunction()" id="Terminado">Terminado</a>
@@ -225,7 +224,9 @@ document.getElementById("correction_b").innerHTML = ""
 document.getElementById("1").value = ""
 document.getElementById("1").style.color = "black"
 
-const sujet = Math.floor(Math.random() * 6)
+const mot = Math.floor(Math.random() * 6)
+document.getElementById("mot").innerHTML = mot
+document.getElementById("fr").innerHTML = list_fr[mot]
 
 document.getElementById("1").value = ""
 
@@ -240,7 +241,7 @@ document.getElementById("Terminado").style.display = "none";
 const mot = document.getElementById("mot").innerHTML
 
 const Word1 = document.getElementById("1").value
-	correct (mot)
+correct (list_es[mot])
 }
 
 function correct (text){

@@ -38637,25 +38637,91 @@ i.image_centrale_notification:before {
     background: url("../../images/SonPourListePause.png") no-repeat;
     cursor: pointer;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.myButton {
+	box-shadow: 0px 1px 0px -3px #f0f7fa;
+	background:linear-gradient(to bottom, #33bdef 5%, #019ad2 100%);
+	background-color:#33bdef;
+	border-radius:42px;
+	border:2px solid #057fd0;
+	display:inline-block;
+	cursor:pointer;
+	color:#ffffff;
+	font-family:Arial;
+	font-size:22px;
+	padding:8px 10px;
+	text-decoration:none;
+	text-shadow:3px -2px 4px #5b6178;
+}
+.myButton:hover {
+	background:linear-gradient(to bottom, #019ad2 5%, #33bdef 100%);
+	background-color:#019ad2;
+}
+.myButton:active {
+	position:relative;
+	top:1px;
+}
+
     </style>
 </head>
 <center>
 <h1>Calculer sa moyenne</h1>
 <span class="NiveauAcquisition NiveauAcquisition_Pastille" style="background-color:#008000;color: #FFFFFF;" title="Dépassés" aria-label="Dépassés">+</span>
-<input>
+<input id="1">
 <br>
 <span class="NiveauAcquisition NiveauAcquisition_Pastille" style="background-color:#45B851;" title="Atteints" aria-label="Atteints">&nbsp;</span>
-<input>
+<input id="2">
 <br>
 <span class="NiveauAcquisition NiveauAcquisition_Pastille" style="background-color:#FFDA01;" title="Partiellement atteints" aria-label="Partiellement atteints">&nbsp;</span>
-<input>
+<input id="3">
 <br>
 <span class="NiveauAcquisition NiveauAcquisition_Pastille" style="background-color:#F80A0A;" title="Non atteints" aria-label="Non atteints">&nbsp;</span>
-<input>
+<input id="4">
+<br>
+<br>
+<a href="#" class="myButton" onclick="myFunction()" id="Suite">Suite</a>
 <br>
 <p id="p"></p>
+<span class="NiveauAcquisition NiveauAcquisition_Pastille" style="color: #FFFFFF;" id="mySpan"></span>
 </center>
 <script>
-document.getElementById("p").innerHTML = "1"; ;
+function myFunction(){
+  i1 = document.getElementById("1").value
+  i2 = document.getElementById("2").value
+  i3 = document.getElementById("3").value
+  i4 = document.getElementById("4").value
+  totalCouleurs = Number(i1) + Number (i2) + Number (i3) + Number (i4)
+  b1 = i1 * 4
+  b2 = i2 * 3
+  b3 = i3 * 2
+  b4 = i4 * 1
+  total_nb = Number (b1) + Number (b2) + Number (b3) + Number (b4)
+  total = total_nb / totalCouleurs
+  total_rounded = Math. round(total)
+  total_rounded2 = Math. round(total * 100) / 100
+  document.getElementById("p").innerHTML = total_rounded2;
+  
+  
+  var span = document.getElementById("mySpan");
+  if (total_rounded = 4) {
+      span.style.color = "green";
+  } else {
+      span.style.color = "black";
+  }
+}
 </script>
 </html>

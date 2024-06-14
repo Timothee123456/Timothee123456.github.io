@@ -38696,9 +38696,20 @@ i.image_centrale_notification:before {
 <a href="#" class="myButton" onclick="myFunction()" id="Suite">Suite</a>
 <br>
 <p id="p"></p>
-<span class="NiveauAcquisition NiveauAcquisition_Pastille" style="color: #FFFFFF;" id="mySpan"></span>
+<span class="NiveauAcquisition NiveauAcquisition_Pastille" style="background-color:#008000;color: #FFFFFF;" title="Dépassés" aria-label="Dépassés" id="span1">+</span>
+<span class="NiveauAcquisition NiveauAcquisition_Pastille" style="background-color:#45B851;" title="Atteints" aria-label="Atteints" id="span2">&nbsp;</span>
+<span class="NiveauAcquisition NiveauAcquisition_Pastille" style="background-color:#FFDA01;" title="Partiellement atteints" aria-label="Partiellement atteints" id="span3">&nbsp;</span>
+<span class="NiveauAcquisition NiveauAcquisition_Pastille" style="background-color:#F80A0A;" title="Non atteints" aria-label="Non atteints" id="span4">&nbsp;</span>
 </center>
 <script>
+var span1 = document.getElementById("span1");
+span1.style.visibility = "hidden";
+var span2 = document.getElementById("span2");
+span2.style.display = "none";
+var span3 = document.getElementById("span3");
+span3.style.display = "none";
+var span4 = document.getElementById("span4");
+span4.style.display = "none";
 function myFunction(){
   i1 = document.getElementById("1").value
   i2 = document.getElementById("2").value
@@ -38715,13 +38726,20 @@ function myFunction(){
   total_rounded2 = Math. round(total * 100) / 100
   document.getElementById("p").innerHTML = total_rounded2;
   
-  
-  var span = document.getElementById("mySpan");
-  if (total_rounded = 4) {
-      span.style.color = "green";
-  } else {
-      span.style.color = "black";
+  if (total_rounded == 4){
+  span1.style.visibility = "visible";
   }
+  if (total_rounded == 3){
+  span2.style.visibility = "visible";
+  }
+  if (total_rounded == 2){
+  span3.style.visibility = "visible";
+  }
+  if (total_rounded == 1){
+  span4.style.visibility = "visible";
+  }
+  
+
 }
 </script>
 </html>

@@ -221,16 +221,14 @@ img {width:100}
 <input class="input" autocomplete="off" style="text-align:center;" id="1">
 <nobr id="correction_a"></nobr>
 <p></p>
+<nobr id="correction_b" style="color:red;"></nobr>
+<p></p>
 <a href="#" class="accents" onclick="accent('á')">á</a>
 <a href="#" class="accents" onclick="accent('é')">é</a>
 <a href="#" class="accents" onclick="accent('í')">í</a>
 <a href="#" class="accents" onclick="accent('ó')">ó</a>
 <a href="#" class="accents" onclick="accent('ú')">ú</a>
 <a href="#" class="accents" onclick="accent('ñ')">ñ</a>
-
-<br>
-<nobr id="correction_b" style="color:red;"></nobr>
-<p></p>
 <p></p>
 <a href="#" class="myButton" onclick="myFunction()" id="Terminado">Terminado</a>
 <p></p>
@@ -358,9 +356,9 @@ const verbes_fr = [être_fr, avoir_fr, appeler_fr, aller_fr, vivre_fr, célébre
 const verbes_es = [être_es, avoir_es, appeler_es, aller_es, vivre_es, célébrer_es, déranger_es, mettre_es, commencer_es, terminer_es, porter_es];
 
 
-const categorie = [[pronoms_fr, pronoms_es], [possessifs_fr, possessifs_es], [famille_fr, famille_es],[collège_fr, collège_es], [saluer_fr, saluer_es], [moments_fr, moments_es], [date_fr, date_es], [jours_fr, jours_es], [mois_fr, mois_es], [saisons_fr, saisons_es], [animaux_fr, animaux_es], [couleurs_fr, couleurs_es], [description_fr, description_es], [adj_fr, adj_es], [ville_fr, ville_es], [véhicules_fr, véhicules_es], [maison_fr, maison_es], [matière_fr, matière_es], [connecteurs_fr, connecteurs_es], [vacances_fr, vacances_es], [météo_fr, météo_es], [vêtements_fr, vêtements_es], [verbes_fr, verbes_es]];
+const categorie = [[pronoms_fr, pronoms_es], [possessifs_fr, possessifs_es], [famille_fr, famille_es],[collège_fr, collège_es], [saluer_fr, saluer_es], [moments_fr, moments_es], [date_fr, date_es], [jours_fr, jours_es], [mois_fr, mois_es], [saisons_fr, saisons_es], [animaux_fr, animaux_es], [couleurs_fr, couleurs_es], [description_fr, description_es], [adj_fr, adj_es], [ville_fr, ville_es], [véhicules_fr, véhicules_es], [maison_fr, maison_es], [matière_fr, matière_es], [connecteurs_fr, connecteurs_es], [vacances_fr, vacances_es], [météo_fr, météo_es], [vêtements_fr, vêtements_es]];
 
-categorieName = ['pronoms', 'possessifs', 'famille','collège', 'saluer', 'moments', 'date', 'jours', 'mois', 'saisons', 'animaux', 'couleurs', 'description', 'adj', 'ville', 'véhicules', 'maison', 'matière', 'connecteurs', 'vacances', 'météo', 'vêtements', 'verbes'];
+categorieName = ['pronoms', 'possessifs', 'famille','collège', 'saluer', 'moments', 'date', 'jours', 'mois', 'saisons', 'animaux', 'couleurs', 'description', 'adj', 'ville', 'véhicules', 'maison', 'matière', 'connecteurs', 'vacances', 'météo', 'vêtements'];
 
 
 
@@ -402,7 +400,7 @@ else{
 function correct (answer1, answer2){
 const Word1 = document.getElementById("1").value
 
-if (answer2 = false){
+if (answer2 == false){
     if (Word1 == answer1){
             document.getElementById("correction_a").innerHTML = "✓";
             document.getElementById("correction_a").style.color = "green"
@@ -419,18 +417,18 @@ if (answer2 = false){
 	}
     
 else {
-    if (Word1 == answer1 || Word1 == answer1){
+    if (Word1 == answer1 || Word1 == answer2){
             document.getElementById("correction_a").innerHTML = "✓";
             document.getElementById("correction_a").style.color = "green"
             }
             else if (Word1 == ""){
-            document.getElementById("1").value = answer1 + '/' + answer2;
+            document.getElementById("1").value = answer1 + ' / ' + answer2;
             document.getElementById("1").style.color = "red"
             }
             else {
             document.getElementById("correction_a").innerHTML = "✕";
             document.getElementById("correction_a").style.color = "red";
-            document.getElementById("correction_b").innerHTML = answer1 + '/' + answer2
+            document.getElementById("correction_b").innerHTML = answer1 + ' / ' + answer2
             }
 	}
 }

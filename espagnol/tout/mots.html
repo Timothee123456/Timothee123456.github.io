@@ -376,18 +376,17 @@ document.getElementById("correction_b").innerHTML = ""
 document.getElementById("1").value = ""
 document.getElementById("1").style.color = "black"
 
-
-
-const categorie_nb = Math.floor(Math.random() * categorie.lenght)
+const categorie_nb = Math.floor(Math.random() * 23)
+const chosen_categorie = categorie[categorie_nb]
+const chosen_categorie_fr = chosen_categorie[0]
+const done = false
 do {
-  text += i + "<br>";
-  i++;
+  if 
 }
-while (i < 5);
+while (done == true);
 document.getElementById("categorie_nb").innerHTML = categorie_nb
 
-
-document.getElementById("1").value = "sujet"
+document.getElementById("1").value = chosen_categorie_fr
 }
 
 

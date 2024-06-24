@@ -235,7 +235,6 @@ img {width:100}
 <a href="#" class="myButton" onclick="myFunction()" id="Terminado">Terminado</a>
 <p></p>
 <a href="#" class="myButton2" onclick="reset()">Next</a>
-<p class="hidden" id="categorie_nb"></p>
 </center>
 <script>
 /* Pronoms */
@@ -365,9 +364,6 @@ categorieName = ['pronoms', 'possessifs', 'famille','collège', 'saluer', 'momen
 
 
 
-
-
-
 reset()
 
 function reset() {
@@ -379,16 +375,10 @@ document.getElementById("1").style.color = "black"
 
 
 categorie_nb = Math.floor(Math.random() * categorieName.length)
-document.getElementById("fr").innerHTML = categorie[categorie_nb]
-done = false
+list = categorie[categorie_nb][0]
+nb = Math.floor(Math.random() * list.length)
 
-document.getElementById("1").value = cc
-
-
-document.getElementById("categorie_nb").innerHTML = categorieName.lenght
-
-
-
+document.getElementById("fr").innerHTML = list[nb]
 
 
 }

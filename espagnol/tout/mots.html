@@ -239,8 +239,6 @@ img {width:100}
 <p class="hidden" id="sujet"></p>
 </center>
 <script>
-const names = ["pronoms", "possesifs", "famille", "vehicule", "maison", "animaux", "couleurs", "chiffres", "salle", "table", "jour", "mois", "saison"]
-
 /* Pronoms */
 const pronoms_fr = ["Je", "Tu", "Il", "Elle", "Nous", "Vous", "Ils", "Elles"];
 const pronoms_es = ["Yo", "Tú", "Él", "Ella", "Nosotros", "Vosotros", "Ellos", "Ellas"];
@@ -298,9 +296,6 @@ const description_es = ["bajo", "alto", "delgado", "gordo", "feo", "guapo", "cal
 const adj_fr = ["persévérant", "affectueuse", "fidèle", "innocent", "amoureux", "rêveur", "détailliste", "intéressant", "cupide", "distrait", "coquette", "mon meilleur ami", "romantique", "timide", "fiable", "tendre"];
 const adj_es = ["perseverante", "cariñosa", "fiel", "inocente", "enamorado", "soñadora", "detallista", "interesante", "cupido", "distraído", "coqueta", "mi mejor amigo", "romántico", "tímido", "confiable", "tierno"];
 
-// La famille
-const famille_fr = ["famille", "grand frère", "petit frère", "grande soeur", "petite soeur", "père", "mère", "parents", "cousin", "cousine", "oncle", "tante", "grand-père paternel", "grand-père maternel", "grand-mère paternel", "grand-mère maternel", "arrière-grand-père", "arrière-grand-mère", "arrière-arrière-grand-père", "arrière-arrière-grand-mère", "amoureux", "amoureuse"];
-const famille_es = ["familia", "hermano mayor", "hermano menor", "hermana mayor", "hermana menor", "padre", "madre", "padres", "primo", "prima", "tío", "tía", "abuelo paterno", "abuelo materno", "abuela paterna", "abuela materna", "bisabuelo", "bisabuela", "tatarabuelo", "tatarabuela", "novio", "novia"];
 
 // Ville et campagne
 const ville_fr = ["ville", "campagne", "capitale", "quartier", "maison", "loin", "près", "bruit", "tranquille", "travail"];
@@ -348,24 +343,23 @@ const commencer_fr = ["commence", "commences", "commence", "commençons", "comme
 const terminer_fr = ["termine", "termines", "termine", "terminons", "terminez", "terminent"];
 const porter_fr = ["porte", "portes", "porte", "portons", "portez", "portent"];
 
-const être_es = ["soy", "eres", "es", "somos", "sois", "son"];
-const être2_es = ["estoy", "estás", "está", "estamos", "estáis", "están"];
+const être_es = [["soy", "estoy"], ["eres", "estás"], ["es", "está"], ["somos", "estamos"], ["sois", "estáis"], ["son", "están"]];
 const avoir_es = ["tengo", "tienes", "tiene", "tenemos", "tenéis", "tienen"];
-const llamarse_es = ["me llamo", "te llamas", "se llama", "nos llamamos", "os llamáis", "se llaman"];
-const ir_es = ["voy", "vas", "va", "vamos", "vais", "van"];
-const vivir_es = ["vivo", "vives", "vive", "vivimos", "vivís", "viven"];
-const celebrar_es = ["celebro", "celebras", "celebra", "celebramos", "celebráis", "celebran"];
-const molestar_es = ["molesto", "molestas", "molesta", "molestamos", "molestáis", "molestan"];
-const tardar_es = ["tardo", "tardas", "tarda", "tardamos", "tardáis", "tardan"];
-const empezar_es = ["empiezo", "empiezas", "empieza", "empezamos", "empezáis", "empiezan"];
-const terminar_es = ["termino", "terminas", "termina", "terminamos", "termináis", "terminan"];
-const llevar_es = ["llevo", "llevas", "lleva", "llevamos", "lleváis", "llevan"];
+const appeler_es = ["me llamo", "te llamas", "se llama", "nos llamamos", "os llamáis", "se llaman"];
+const aller_es = ["voy", "vas", "va", "vamos", "vais", "van"];
+const vivre_es = ["vivo", "vives", "vive", "vivimos", "vivís", "viven"];
+const célébrer_es = ["celebro", "celebras", "celebra", "celebramos", "celebráis", "celebran"];
+const déranger_es = ["molesto", "molestas", "molesta", "molestamos", "molestáis", "molestan"];
+const mettre_es = ["tardo", "tardas", "tarda", "tardamos", "tardáis", "tardan"];
+const commencer_es = ["empiezo", "empiezas", "empieza", "empezamos", "empezáis", "empiezan"];
+const terminer_es = ["termino", "terminas", "termina", "terminamos", "termináis", "terminan"];
+const porter_es = ["llevo", "llevas", "lleva", "llevamos", "lleváis", "llevan"];
 
 
+const verbes_fr = [être_fr, avoir_fr, appeler_fr, aller_fr, vivre_fr, célébrer_fr, déranger_fr, mettre_fr, commencer_fr, terminer_fr, porter_fr]
 
 
-
-
+const names = [[pronoms_fr, pronoms_es], [possesifs_fr, possesifs_es], [famille_fr, famille_es],[collège_fr, collège_es], [saluer_fr, saluer_es], [moments_fr, moments_es], [date_fr, date_es], [jours_fr, jours_es], [mois_fr, mois_es], [saisons_fr, saisons_es], [animaux_fr, animaux_es], [couleurs_fr, couleurs_es], [description_fr, description_es], [adj_fr, adj_es], [ville_fr, ville_es], [véhicules_fr, véhicules_es], [maison_fr, maison_es], [matière_fr, matière_es], [connecteurs_fr, connecteurs_es], [vacances_fr, vacances_es], [météo_fr, météo_es], [vêtements_fr, vêtements_es], [verbes_fr, verbes_es]]
 
 
 
@@ -446,5 +440,3 @@ document.getElementById("1").value = Word1 + lettre;
 </body>
 </html>
 </html>
-
-

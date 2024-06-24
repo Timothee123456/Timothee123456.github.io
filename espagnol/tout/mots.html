@@ -362,7 +362,7 @@ const verbes_es = [être_es, avoir_es, appeler_es, aller_es, vivre_es, célébre
 
 const categorie = [[pronoms_fr, pronoms_es], [possessifs_fr, possessifs_es], [famille_fr, famille_es],[collège_fr, collège_es], [saluer_fr, saluer_es], [moments_fr, moments_es], [date_fr, date_es], [jours_fr, jours_es], [mois_fr, mois_es], [saisons_fr, saisons_es], [animaux_fr, animaux_es], [couleurs_fr, couleurs_es], [description_fr, description_es], [adj_fr, adj_es], [ville_fr, ville_es], [véhicules_fr, véhicules_es], [maison_fr, maison_es], [matière_fr, matière_es], [connecteurs_fr, connecteurs_es], [vacances_fr, vacances_es], [météo_fr, météo_es], [vêtements_fr, vêtements_es], [verbes_fr, verbes_es]];
 
-const categorieName = ['pronoms', 'possessifs', 'famille_fr','collège', 'saluer', 'moments', 'date', 'jours', 'mois', 'saisons', 'animaux', 'couleurs', 'description', 'adj', 'ville', 'véhicules', 'maison', 'matière', 'connecteurs', 'vacances', 'météo', 'vêtements', 'verbes'];
+const categorieName = ['pronoms', 'possessifs', 'famille','collège', 'saluer', 'moments', 'date', 'jours', 'mois', 'saisons', 'animaux', 'couleurs', 'description', 'adj', 'ville', 'véhicules', 'maison', 'matière', 'connecteurs', 'vacances', 'météo', 'vêtements', 'verbes'];
 
 
 
@@ -380,14 +380,23 @@ document.getElementById("1").style.color = "black"
 
 const categorie_nb = Math.floor(Math.random() * 23)
 const cc = categorieName[categorie_nb]
-const done = false
+done = false
+
+document.getElementById("1").value = cc
+
 do {
-  if (cc == pronoms || )
+if (cc == 'pronoms' && document.getElementById("pronoms").checked == true){
+document.getElementById("1").value = 'TRUE'
+done = true
+}
 }
 while (done == true);
 document.getElementById("categorie_nb").innerHTML = categorie_nb
 
-document.getElementById("1").value = chosen_categorie_fr
+
+
+
+
 }
 
 

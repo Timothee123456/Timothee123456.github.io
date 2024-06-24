@@ -389,23 +389,34 @@ document.getElementById("fr").innerHTML = list_fr[nb]
 
 }
 
+// check the checkboxes
+document.getElementById("pronoms").addEventListener("change", function()) {
+  if (this.checked) {
+    checked("pronoms");
+  }
+  else {
+  	unchecked("pronoms");
+  }
+});
 
-document.getElementById("pronoms").addEventListener("change", function() {
+document.getElementById("possessifs").addEventListener("change", function()) {
   if (this.checked) {
-    checked("pronoms");
+    checked("possessifs");
   }
   else {
-  	unchecked("pronoms");
+  	unchecked("possessifs");
   }
 });
-document.getElementById("pronoms").addEventListener("change", function() {
+
+document.getElementById("famille").addEventListener("change", function() {
   if (this.checked) {
-    checked("pronoms");
+    checked("famille");
   }
   else {
-  	unchecked("pronoms");
+  	unchecked("famille");
   }
 });
+
 
 
 function checked(name) {
@@ -418,7 +429,7 @@ function unchecked(name) {
     categorie.splice(categorieName_indexOf(name), 1);
 }
 
-
+// myFunction
 function myFunction() {
 
 document.getElementById("Terminado").style.display = "none";

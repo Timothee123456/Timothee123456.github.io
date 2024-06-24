@@ -375,10 +375,11 @@ document.getElementById("1").style.color = "black"
 
 
 categorie_nb = Math.floor(Math.random() * categorieName.length)
-list = categorie[categorie_nb][0]
-nb = Math.floor(Math.random() * list.length)
+list_fr = categorie[categorie_nb][0]
+list_es = categorie[categorie_nb][1]
+nb = Math.floor(Math.random() * list_fr.length)
 
-document.getElementById("fr").innerHTML = list[nb]
+document.getElementById("fr").innerHTML = list_fr[nb]
 
 
 }
@@ -390,49 +391,48 @@ function myFunction() {
 
 document.getElementById("Terminado").style.display = "none";
 
-const verb = document.getElementById("verb").innerHTML
-const verb_number = document.getElementById("verb_number").innerHTML
-const adj = document.getElementById("adj").innerHTML
-const adj_number = document.getElementById("adj_number").innerHTML
-
-const Word1 = document.getElementById("1").value
-	if (verb == 0){
-		if  (verb_number == 2){
-        correct (etre_es[verb_number] + " " + adj_etre_m_es[adj_number])
-    	}
-    	else if  (verb_number == 3) {
-    	correct (etre_es[verb_number] + " " + adj_etre_f_es[adj_number])
-    	}
-    	else if  (adj == 0) {
-        correct (etre_es[verb_number] + " " + adj_etre_m_es[adj_number])
-    	}
-    	else {
-    	correct (etre_es[verb_number] + " " + adj_etre_f_es[adj_number])
-    	}
-	}
-    
-	else {
-    correct (avoir_es[verb_number] + " " + adj_avoir_es[adj_number])
-	}
-
+if (Array.isArray(list_es[nb])){ 
+	correct (list_es[nb][0], list_es[nb][1])
+}
+else{
+}
+	correct (list_es[nb], false)
 }
 
-function correct (text){
+function correct (answer1, answer2){
 const Word1 = document.getElementById("1").value
 
-if (Word1 == text){
-    	document.getElementById("correction_a").innerHTML = "✓";
-		document.getElementById("correction_a").style.color = "green"
-		}
-		else if (Word1 == ""){
-		document.getElementById("1").value = text;
-		document.getElementById("1").style.color = "red"
-		}
-	    else {
-	    document.getElementById("correction_a").innerHTML = "✕";
-		document.getElementById("correction_a").style.color = "red";
-	    document.getElementById("correction_b").innerHTML = text
-		}
+if (answer2 = false){
+    if (Word1 == answer1){
+            document.getElementById("correction_a").innerHTML = "✓";
+            document.getElementById("correction_a").style.color = "green"
+            }
+            else if (Word1 == ""){
+            document.getElementById("1").value = answer1;
+            document.getElementById("1").style.color = "red"
+            }
+            else {
+            document.getElementById("correction_a").innerHTML = "✕";
+            document.getElementById("correction_a").style.color = "red";
+            document.getElementById("correction_b").innerHTML = answer1
+            }
+	}
+    
+else {
+    if (Word1 == answer1 || Word1 == answer1){
+            document.getElementById("correction_a").innerHTML = "✓";
+            document.getElementById("correction_a").style.color = "green"
+            }
+            else if (Word1 == ""){
+            document.getElementById("1").value = answer1 + '/' + answer2;
+            document.getElementById("1").style.color = "red"
+            }
+            else {
+            document.getElementById("correction_a").innerHTML = "✕";
+            document.getElementById("correction_a").style.color = "red";
+            document.getElementById("correction_b").innerHTML = answer1 + '/' + answer2
+            }
+	}
 }
 
 function accent (lettre){

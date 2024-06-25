@@ -2,7 +2,7 @@
 <html>
 <head>
     <title>
-     Tout mots
+     Tous mots
     </title>
 <style>
 .active {
@@ -197,7 +197,7 @@ img {width:100}
       <summary>Settings:</summary>
       <input type="checkbox" id="pronoms" checked><label>Pronoms</label><br>
       <input type="checkbox" id="possessifs" checked><label>Possesifs</label><br>
-      <input type="checkbox" id="famille" checked><label>Famille</label><br>
+      <input type="checkbox" id="famille" onclick="checkbox('famille')" checked><label>Famille</label><br>
       <input type="checkbox" id="vehicules" checked><label>Vehicule</label><br>
       <input type="checkbox" id="maison" checked><label>Maison</label><br>
       <input type="checkbox" id="animaux" checked><label>Animaux</label><br>
@@ -389,45 +389,19 @@ document.getElementById("fr").innerHTML = list_fr[nb]
 
 }
 
-// check the checkboxes
-document.getElementById("pronoms").addEventListener("change", function()) {
-  if (this.checked) {
-    checked("pronoms");
-  }
-  else {
-  	unchecked("pronoms");
-  }
-});
-
-document.getElementById("possessifs").addEventListener("change", function()) {
-  if (this.checked) {
-    checked("possessifs");
-  }
-  else {
-  	unchecked("possessifs");
-  }
-});
-
-document.getElementById("famille").addEventListener("change", function() {
-  if (this.checked) {
-    checked("famille");
-  }
-  else {
-  	unchecked("famille");
-  }
-});
-
-
-
-function checked(name) {
+function checkbox(name) {
+	var checkBox = document.getElementById(name);
+    if (checkBox.checked == true){
 	categorieName.push(name);
     categorie.push(categorie_base[categorieName_base.indexOf(name)]);
+    }
+    else {
+    var index = categorieName.indexOf(name)
+	categorieName.splice(index, 1);
+    categorie.splice(index, 1);
+  	}
 }
 
-function unchecked(name) {
-	categorieName.splice(categorieName_indexOf(name), 1);
-    categorie.splice(categorieName_indexOf(name), 1);
-}
 
 // myFunction
 function myFunction() {

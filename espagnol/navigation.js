@@ -7,7 +7,7 @@ function createMenu() {
 
     // Define the menu items as an array of objects
     var menuItems = [
-        { title: "Día de la semana", url: "https://timothee123456.github.io/espagnol/jours-de-la-semaine" },
+        { title: "Día de la semana", url: "timothee123456.github.io/espagnol/jours-de-la-semaine" },
         { title: "Mes del año", url: "https://timothee123456.github.io/espagnol/mois" },
         { title: "Las estaciones", url: "https://timothee123456.github.io/espagnol/saisons/saisons" },
         { title: "Mascotas", url: "https://timothee123456.github.io/espagnol/animaux/animaux" },

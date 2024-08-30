@@ -10,7 +10,7 @@ function createMenu() {
             dropdown: true,
             items: [
                 { title: "Date", url: "https://timothee123456.github.io/espagnol/date" },
-                { title: "Día de la semana", url: "https://timothee123456.github.io/espagnol/jours-de-la-semaine", active: true },
+                { title: "Día de la semana", url: "https://timothee123456.github.io/espagnol/jours-de-la-semaine" },
                 { title: "Mes del año", url: "https://timothee123456.github.io/espagnol/mois" }
             ]
         },
@@ -25,6 +25,9 @@ function createMenu() {
         { title: "Vehículos", url: "https://timothee123456.github.io/espagnol/vehicules" },
         { title: "Leçons", url: "https://timothee123456.github.io/espagnol/leçons/jours-de-la-semaine", floatRight: true }
     ];
+
+    // Get the current page title
+    var currentPageTitle = document.title;
 
     // Loop through the menu items and create list elements
     menuItems.forEach(function(item) {
@@ -54,9 +57,12 @@ function createMenu() {
                 var a = document.createElement('a');
                 a.href = subItem.url;
                 a.textContent = subItem.title;
-                if (subItem.active) {
+
+                // Set the active class if the page title matches the subitem title
+                if (currentPageTitle === subItem.title) {
                     a.className = 'active';
                 }
+
                 divDropdownContent.appendChild(a);
             });
 
@@ -67,6 +73,12 @@ function createMenu() {
             var a = document.createElement('a');
             a.href = item.url;
             a.textContent = item.title;
+
+            // Set the active class if the page title matches the item title
+            if (currentPageTitle === item.title) {
+                a.className = 'active';
+            }
+
             li.appendChild(a);
         }
 

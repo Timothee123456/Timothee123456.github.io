@@ -18,9 +18,12 @@ function createMenu() {
         { title: "Mi casa 1", url: "https://timothee123456.github.io/espagnol/casa" },
         { title: "Vehículos", url: "https://timothee123456.github.io/espagnol/vehicules" },
         { title: "Mi casa 2", url: "https://timothee123456.github.io/espagnol/casa2" },
-        { title: "Horas", url: "https://timothee123456.github.io/espagnol/heures", active: true },
+        { title: "Horas", url: "https://timothee123456.github.io/espagnol/heures" },
         { title: "Leçons", url: "https://timothee123456.github.io/espagnol/leçons/jours-de-la-semaine", floatRight: true }
     ];
+
+    // Get the current page URL
+    var currentUrl = window.location.href;
 
     // Loop through the menu items and create list elements
     menuItems.forEach(function(item) {
@@ -35,7 +38,8 @@ function createMenu() {
         a.href = item.url;
         a.textContent = item.title;
 
-        if (item.active) {
+        // Set the active class if the URL matches the current page
+        if (currentUrl === item.url) {
             a.className = 'active';
         }
 

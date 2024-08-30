@@ -20,6 +20,7 @@ function createMenu() {
         { title: "Mi casa 2", url: "https://timothee123456.github.io/espagnol/casa2" },
         { title: "Horas", url: "https://timothee123456.github.io/espagnol/heures" },
         { title: "Entrevisto", url: "https://timothee123456.github.io/espagnol/interview" },
+        { title: "Asignaturas", url: "https://timothee123456.github.io/espagnol/matières" },
         { title: "Leçons", url: "https://timothee123456.github.io/espagnol/leçons/jours-de-la-semaine", floatRight: true }
     ];
 

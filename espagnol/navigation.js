@@ -39,7 +39,7 @@ function createMenu() {
         a.textContent = item.title;
 
         // Set the active class if the URL matches the current page
-        if (currentUrl === item.url) {
+        if (document.title === item.title) {
             a.className = 'active';
         }
 

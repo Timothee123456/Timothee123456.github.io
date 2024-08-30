@@ -9,7 +9,7 @@ function createMenu() {
             title: "Date",
             dropdown: true,
             items: [
-                { title: "Date", url: "https://timothee123456.github.io/espagnol/date" },
+                { title: "Fecha", url: "https://timothee123456.github.io/espagnol/date" },
                 { title: "Día de la semana", url: "https://timothee123456.github.io/espagnol/jours-de-la-semaine" },
                 { title: "Mes del año", url: "https://timothee123456.github.io/espagnol/mois" }
             ]

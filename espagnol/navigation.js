@@ -1,5 +1,3 @@
-// menu.js
-
 // Function to create the menu and add it to the page
 function createMenu() {
     // Create the unordered list element
@@ -7,25 +5,26 @@ function createMenu() {
 
     // Define the menu items as an array of objects
     var menuItems = [
-        { title: "Día de la semana", url: "timothee123456.github.io/espagnol/jours-de-la-semaine" },
-        { title: "Mes del año", url: "https://timothee123456.github.io/espagnol/mois" },
+        {
+            title: "Date",
+            dropdown: true,
+            items: [
+                { title: "Date", url: "https://timothee123456.github.io/espagnol/date" },
+                { title: "Día de la semana", url: "https://timothee123456.github.io/espagnol/jours-de-la-semaine", active: true },
+                { title: "Mes del año", url: "https://timothee123456.github.io/espagnol/mois" }
+            ]
+        },
         { title: "Las estaciones", url: "https://timothee123456.github.io/espagnol/saisons/saisons" },
         { title: "Mascotas", url: "https://timothee123456.github.io/espagnol/animaux/animaux" },
         { title: "Colores", url: "https://timothee123456.github.io/espagnol/couleurs" },
         { title: "Verbos", url: "https://timothee123456.github.io/espagnol/verbes" },
-        { title: "La descriptión físca", url: "https://timothee123456.github.io/espagnol/description" },
+        { title: "Descriptión", url: "https://timothee123456.github.io/espagnol/description" },
         { title: "Mi familia", url: "https://timothee123456.github.io/espagnol/famille" },
         { title: "Mi casa 1", url: "https://timothee123456.github.io/espagnol/casa" },
         { title: "Mi casa 2", url: "https://timothee123456.github.io/espagnol/casa2" },
         { title: "Vehículos", url: "https://timothee123456.github.io/espagnol/vehicules" },
-        { title: "Entrevisto", url: "https://timothee123456.github.io/espagnol/interview" },
-        { title: "Asignaturas", url: "https://timothee123456.github.io/espagnol/matières" },
-        { title: "Las vacaciones", url: "https://timothee123456.github.io/espagnol/vacances" },
         { title: "Leçons", url: "https://timothee123456.github.io/espagnol/leçons/jours-de-la-semaine", floatRight: true }
     ];
-
-    // Get the current page URL
-    var currentUrl = window.location.href;
 
     // Loop through the menu items and create list elements
     menuItems.forEach(function(item) {
@@ -36,16 +35,41 @@ function createMenu() {
             li.style.float = 'right';
         }
 
-        var a = document.createElement('a');
-        a.href = item.url;
-        a.textContent = item.title;
+        if (item.dropdown) {
+            var divDropdown = document.createElement('div');
+            divDropdown.className = 'dropdown';
 
-        // Set the active class if the URL matches the current page
-        if (document.title === item.title) {
-            a.className = 'active';
+            var button = document.createElement('button');
+            button.className = 'button';
+            button.textContent = item.title + ' ';
+
+            var caretIcon = document.createElement('i');
+            caretIcon.className = 'fa fa-caret-down';
+            button.appendChild(caretIcon);
+
+            var divDropdownContent = document.createElement('div');
+            divDropdownContent.className = 'dropdown-content';
+
+            item.items.forEach(function(subItem) {
+                var a = document.createElement('a');
+                a.href = subItem.url;
+                a.textContent = subItem.title;
+                if (subItem.active) {
+                    a.className = 'active';
+                }
+                divDropdownContent.appendChild(a);
+            });
+
+            divDropdown.appendChild(button);
+            divDropdown.appendChild(divDropdownContent);
+            li.appendChild(divDropdown);
+        } else {
+            var a = document.createElement('a');
+            a.href = item.url;
+            a.textContent = item.title;
+            li.appendChild(a);
         }
 
-        li.appendChild(a);
         ul.appendChild(li);
     });
 

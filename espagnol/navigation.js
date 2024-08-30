@@ -19,6 +19,7 @@ function createMenu() {
         { title: "Vehículos", url: "https://timothee123456.github.io/espagnol/vehicules" },
         { title: "Mi casa 2", url: "https://timothee123456.github.io/espagnol/casa2" },
         { title: "Horas", url: "https://timothee123456.github.io/espagnol/heures" },
+        { title: "Entrevisto", url: "https://timothee123456.github.io/espagnol/interview" },
         { title: "Leçons", url: "https://timothee123456.github.io/espagnol/leçons/jours-de-la-semaine", floatRight: true }
     ];
 

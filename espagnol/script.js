@@ -1,10 +1,54 @@
-// script.js
+// menu.js
 
-// Function to add text to a div
-function addTextToDiv() {
-    var myDiv = document.getElementById('myDiv');
-    myDiv.textContent = 'Hello, this text was added by JavaScript!';
+// Function to create the menu and add it to the page
+function createMenu() {
+    // Create the unordered list element
+    var ul = document.createElement('ul');
+
+    // Define the menu items as an array of objects
+    var menuItems = [
+        { title: "Día de la semana", url: "https://timothee123456.github.io/espagnol/jours-de-la-semaine" },
+        { title: "Mes del año", url: "https://timothee123456.github.io/espagnol/mois" },
+        { title: "Las estaciones", url: "https://timothee123456.github.io/espagnol/saisons/saisons" },
+        { title: "Mascotas", url: "https://timothee123456.github.io/espagnol/animaux/animaux" },
+        { title: "Colores", url: "https://timothee123456.github.io/espagnol/couleurs" },
+        { title: "Verbos", url: "https://timothee123456.github.io/espagnol/verbes" },
+        { title: "Descriptión", url: "https://timothee123456.github.io/espagnol/description" },
+        { title: "Mi familia", url: "https://timothee123456.github.io/espagnol/famille" },
+        { title: "Mi casa 1", url: "https://timothee123456.github.io/espagnol/casa" },
+        { title: "Vehículos", url: "https://timothee123456.github.io/espagnol/vehicules" },
+        { title: "Mi casa 2", url: "https://timothee123456.github.io/espagnol/casa2" },
+        { title: "Horas", url: "https://timothee123456.github.io/espagnol/heures", active: true },
+        { title: "Leçons", url: "https://timothee123456.github.io/espagnol/leçons/jours-de-la-semaine", floatRight: true }
+    ];
+
+    // Loop through the menu items and create list elements
+    menuItems.forEach(function(item) {
+        var li = document.createElement('li');
+        li.className = 'li';
+
+        if (item.floatRight) {
+            li.style.float = 'right';
+        }
+
+        var a = document.createElement('a');
+        a.href = item.url;
+        a.textContent = item.title;
+
+        if (item.active) {
+            a.className = 'active';
+        }
+
+        li.appendChild(a);
+        ul.appendChild(li);
+    });
+
+    // Find the div with the ID 'menuContainer' and append the ul to it
+    var menuContainer = document.getElementById('menuContainer');
+    if (menuContainer) {
+        menuContainer.appendChild(ul);
+    }
 }
 
-// Run the function to add text when the page loads
-window.onload = addTextToDiv;
+// Run the createMenu function when the page loads
+window.onload = createMenu;

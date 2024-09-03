@@ -25,7 +25,7 @@ function createMenu() {
         { title: "Entrevisto", url: "https://timothee123456.github.io/espagnol/interview" },
         { title: "Asignaturas", url: "https://timothee123456.github.io/espagnol/matières" },
         { title: "Las vacaciones", url: "https://timothee123456.github.io/espagnol/vacances" },
-        { title: "5ème", url: "https://timothee123456.github.io/espagnol/5/materiel-scolaire", floatRight: true }
+        { title: "4ème", url: "https://timothee123456.github.io/espagnol/4/materiel-scolaire", floatRight: true }
     ];
 
     // Get the current page title

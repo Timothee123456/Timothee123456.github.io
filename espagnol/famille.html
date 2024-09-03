@@ -393,7 +393,7 @@ document.getElementById("correction13").innerHTML = "✕" + Word13c;
 document.getElementById("correction13").style.color = "red"
 }
 
-const Word14 = document.getElementById("14").value
+ const Word14 = document.getElementById("14").value
 if (Word14.toLowerCase() == Word14c.toLowerCase() || Word14.toLowerCase() == Word14c.toLowerCase() + " "){
 document.getElementById("correction14").innerHTML = "✓";
 document.getElementById("correction14").style.color = "green"
@@ -406,6 +406,96 @@ document.getElementById("14").style.color = "red"
 else {
 document.getElementById("correction14").innerHTML = "✕" + Word14c;
 document.getElementById("correction14").style.color = "red"
+}
+
+ const Word15 = document.getElementById("15").value
+if (Word15.toLowerCase() == Word15c.toLowerCase() || Word15.toLowerCase() == Word15c.toLowerCase() + " "){
+document.getElementById("correction15").innerHTML = "✓";
+document.getElementById("correction15").style.color = "green"
+var quiz = quiz + 1
+}
+else if (Word15 == ""){
+document.getElementById("15").value = Word15c;
+document.getElementById("15").style.color = "red"
+}
+else {
+document.getElementById("correction15").innerHTML = "✕" + Word15c;
+document.getElementById("correction15").style.color = "red"
+}
+
+ const Word16 = document.getElementById("16").value
+if (Word16.toLowerCase() == Word16c.toLowerCase() || Word16.toLowerCase() == Word16c.toLowerCase() + " "){
+document.getElementById("correction16").innerHTML = "✓";
+document.getElementById("correction16").style.color = "green"
+var quiz = quiz + 1
+}
+else if (Word16 == ""){
+document.getElementById("16").value = Word16c;
+document.getElementById("16").style.color = "red"
+}
+else {
+document.getElementById("correction16").innerHTML = "✕" + Word16c;
+document.getElementById("correction16").style.color = "red"
+}
+
+ const Word17 = document.getElementById("17").value
+if (Word17.toLowerCase() == Word17c.toLowerCase() || Word17.toLowerCase() == Word17c.toLowerCase() + " "){
+document.getElementById("correction17").innerHTML = "✓";
+document.getElementById("correction17").style.color = "green"
+var quiz = quiz + 1
+}
+else if (Word17 == ""){
+document.getElementById("17").value = Word17c;
+document.getElementById("17").style.color = "red"
+}
+else {
+document.getElementById("correction17").innerHTML = "✕" + Word17c;
+document.getElementById("correction17").style.color = "red"
+}
+
+ const Word18 = document.getElementById("18").value
+if (Word18.toLowerCase() == Word18c.toLowerCase() || Word18.toLowerCase() == Word18c.toLowerCase() + " "){
+document.getElementById("correction18").innerHTML = "✓";
+document.getElementById("correction18").style.color = "green"
+var quiz = quiz + 1
+}
+else if (Word18 == ""){
+document.getElementById("18").value = Word18c;
+document.getElementById("18").style.color = "red"
+}
+else {
+document.getElementById("correction18").innerHTML = "✕" + Word18c;
+document.getElementById("correction18").style.color = "red"
+}
+
+ const Word19 = document.getElementById("19").value
+if (Word19.toLowerCase() == Word19c.toLowerCase() || Word19.toLowerCase() == Word19c.toLowerCase() + " "){
+document.getElementById("correction19").innerHTML = "✓";
+document.getElementById("correction19").style.color = "green"
+var quiz = quiz + 1
+}
+else if (Word19 == ""){
+document.getElementById("19").value = Word19c;
+document.getElementById("19").style.color = "red"
+}
+else {
+document.getElementById("correction19").innerHTML = "✕" + Word19c;
+document.getElementById("correction19").style.color = "red"
+}
+
+ const Word20 = document.getElementById("20").value
+if (Word20.toLowerCase() == Word20c.toLowerCase() || Word20.toLowerCase() == Word20c.toLowerCase() + " "){
+document.getElementById("correction20").innerHTML = "✓";
+document.getElementById("correction20").style.color = "green"
+var quiz = quiz + 1
+}
+else if (Word20 == ""){
+document.getElementById("20").value = Word20c;
+document.getElementById("20").style.color = "red"
+}
+else {
+document.getElementById("correction20").innerHTML = "✕" + Word20c;
+document.getElementById("correction20").style.color = "red"
 }
 
 document.getElementById("quiz").innerHTML = title + " " + quiz + slash;

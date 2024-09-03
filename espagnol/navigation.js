@@ -14,15 +14,17 @@ function createMenu() {
                 { title: "Mes del año", url: "https://timothee123456.github.io/espagnol/mois" }
             ]
         },
-        { title: "Las estaciones", url: "https://timothee123456.github.io/espagnol/saisons/saisons" },
         { title: "Mascotas", url: "https://timothee123456.github.io/espagnol/animaux/animaux" },
         { title: "Colores", url: "https://timothee123456.github.io/espagnol/couleurs" },
         { title: "Verbos", url: "https://timothee123456.github.io/espagnol/verbes" },
-        { title: "Descriptión", url: "https://timothee123456.github.io/espagnol/description" },
+        { title: "La descriptión físca", url: "https://timothee123456.github.io/espagnol/description" },
         { title: "Mi familia", url: "https://timothee123456.github.io/espagnol/famille" },
         { title: "Mi casa 1", url: "https://timothee123456.github.io/espagnol/casa" },
         { title: "Mi casa 2", url: "https://timothee123456.github.io/espagnol/casa2" },
         { title: "Vehículos", url: "https://timothee123456.github.io/espagnol/vehicules" },
+        { title: "Entrevisto", url: "https://timothee123456.github.io/espagnol/interview" },
+        { title: "Asignaturas", url: "https://timothee123456.github.io/espagnol/matières" },
+        { title: "Las vacaciones", url: "https://timothee123456.github.io/espagnol/vacances" },
         { title: "Leçons", url: "https://timothee123456.github.io/espagnol/leçons/jours-de-la-semaine", floatRight: true }
     ];
 

@@ -270,6 +270,19 @@ class FlipDown {
       rotorGroup.classList.add('rotor-group-seconds');
       break;
   }
+
+
+    
+    var dayRotorGroupHeading = document.createElement("div");
+    dayRotorGroupHeading.className = "rotor-group-heading";
+    dayRotorGroupHeading.setAttribute(
+      "data-before",
+      this.opts.headings[rotorIndex]
+    );
+    rotorGroup.appendChild(dayRotorGroupHeading);
+    appendChildren(rotorGroup, rotors);
+    return rotorGroup;
+  }
   }
 
   /**

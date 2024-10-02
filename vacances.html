@@ -1,0 +1,459 @@
+<head>
+        <!--WordPress head-->
+        <title></title>
+<script>
+var date = "Oct 2, 2024 16:07:15"
+var date2 = "Jun 27, 2025 16:35:00"
+</script>
+
+<style>
+/* THEMES */
+
+/********** Theme **********/
+/* Font styles */
+.flipdown.flipdown__theme-dark {
+  font-family: sans-serif;
+  font-weight: bold;
+}
+/* Rotor group headings */
+.flipdown.flipdown__theme-dark .rotor-group-heading:before {
+  color: #ffffff;
+}
+/* Delimeters */
+.flipdown.flipdown__theme-dark .rotor-group:nth-child(n+2):nth-child(-n+3):before,
+.flipdown.flipdown__theme-dark .rotor-group:nth-child(n+2):nth-child(-n+3):after {
+  background-color: #e8e8e8;
+}
+
+/* Rotor tops */
+.flipdown.flipdown .rotor,
+.flipdown.flipdown .rotor-top,
+.flipdown.flipdown .rotor-leaf-front {
+  color: #FFFFFF;
+  background-color: #0072BB;
+}
+/* Rotor bottoms */
+.flipdown.flipdown__theme-dark .rotor-bottom,
+.flipdown.flipdown__theme-dark .rotor-leaf-rear {
+  color: #EFEFEF;
+  background-color: #0070B8;
+}
+/* Hinge */
+.flipdown.flipdown__theme-dark .rotor:after {
+  border-top: solid 1px #151515;
+}
+
+/* END OF THEMES */
+
+.flipdown {
+  overflow: visible;
+  width: 510px;
+  height: 110px;
+      margin-left: auto;
+    margin-right: auto;
+}
+
+.flipdown .rotor-group {
+  position: relative;
+  float: left;
+  padding-right: 30px;
+}
+
+.flipdown .rotor-group:last-child {
+  padding-right: 0;
+}
+
+.flipdown .rotor-group-heading:before {
+  display: block;
+  height: 30px;
+  line-height: 30px;
+  text-align: center;
+}
+
+.flipdown .rotor-group:nth-child(1) .rotor-group-heading:before {
+  content: attr(data-before);
+}
+
+.flipdown .rotor-group:nth-child(2) .rotor-group-heading:before {
+  content: attr(data-before);
+}
+
+.flipdown .rotor-group:nth-child(3) .rotor-group-heading:before {
+  content: attr(data-before);
+}
+
+.flipdown .rotor-group:nth-child(4) .rotor-group-heading:before {
+  content: attr(data-before);
+}
+
+.flipdown .rotor-group:nth-child(n+2):nth-child(-n+3):before {
+  content: '';
+  position: absolute;
+  bottom: 20px;
+  left: 115px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.flipdown .rotor-group:nth-child(n+2):nth-child(-n+3):after {
+  content: '';
+  position: absolute;
+  bottom: 50px;
+  left: 115px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.flipdown .rotor {
+  position: relative;
+  float: left;
+  width: 50px;
+  height: 80px;
+  margin: 0px 5px 0px 0px;
+  border-radius: 4px;
+  font-size: 4rem;
+  text-align: center;
+  perspective: 200px;
+}
+
+.flipdown .rotor:last-child {
+  margin-right: 0;
+}
+
+.flipdown .rotor-top,
+.flipdown .rotor-bottom {
+  overflow: hidden;
+  position: absolute;
+  width: 50px;
+  height: 40px;
+}
+
+.flipdown .rotor-leaf {
+  z-index: 1;
+  position: absolute;
+  width: 50px;
+  height: 80px;
+  transform-style: preserve-3d;
+  transition: transform 0s;
+}
+
+.flipdown .rotor-leaf.flipped {
+  transform: rotateX(-180deg);
+  transition: all 0.5s ease-in-out;
+}
+
+.flipdown .rotor-leaf-front,
+.flipdown .rotor-leaf-rear {
+  overflow: hidden;
+  position: absolute;
+  width: 50px;
+  height: 40px;
+  margin: 0;
+  transform: rotateX(0deg);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.flipdown .rotor-leaf-front {
+  line-height: 80px;
+  border-radius: 4px 4px 0px 0px;
+}
+
+.flipdown .rotor-leaf-rear {
+  line-height: 0px;
+  border-radius: 0px 0px 4px 4px;
+  transform: rotateX(-180deg);
+}
+
+.flipdown .rotor-top {
+  line-height: 80px;
+  border-radius: 4px 4px 0px 0px;
+}
+
+.flipdown .rotor-bottom {
+  bottom: 0;
+  line-height: 0px;
+  border-radius: 0px 0px 4px 4px;
+}
+
+.flipdown .rotor:after {
+  content: '';
+  z-index: 2;
+  position: absolute;
+  bottom: 0px;
+  left: 0px;
+  width: 50px;
+  height: 40px;
+  border-radius: 0px 0px 4px 4px;
+}
+
+@media (max-width: 760px) {
+
+  .flipdown {
+    width: 312px;
+    height: 70px;
+   
+  }
+
+  .flipdown .rotor {
+    font-size: 2.2rem;
+    margin-right: 3px;
+  }
+
+  .flipdown .rotor,
+  .flipdown .rotor-leaf,
+  .flipdown .rotor-leaf-front,
+  .flipdown .rotor-leaf-rear,
+  .flipdown .rotor-top,
+  .flipdown .rotor-bottom,
+  .flipdown .rotor:after {
+    width: 30px;
+  }
+
+  .flipdown .rotor-group {
+    padding-right: 20px;
+  }
+
+  .flipdown .rotor-group:last-child {
+    padding-right: 0px;
+  }
+
+  .flipdown .rotor-group-heading:before {
+    font-size: 0.8rem;
+    height: 20px;
+    line-height: 20px;
+  }
+
+  .flipdown .rotor-group:nth-child(n+2):nth-child(-n+3):before,
+  .flipdown .rotor-group:nth-child(n+2):nth-child(-n+3):after {
+    left: 69px;
+  }
+
+  .flipdown .rotor-group:nth-child(n+2):nth-child(-n+3):before {
+    bottom: 13px;
+    height: 8px;
+    width: 8px;
+  }
+
+  .flipdown .rotor-group:nth-child(n+2):nth-child(-n+3):after {
+    bottom: 29px;
+    height: 8px;
+    width: 8px;
+  }
+
+  .flipdown .rotor-leaf-front,
+  .flipdown .rotor-top {
+    line-height: 50px;
+  }
+
+  .flipdown .rotor-leaf,
+  .flipdown .rotor {
+    height: 50px;
+  }
+
+  .flipdown .rotor-leaf-front,
+  .flipdown .rotor-leaf-rear,
+  .flipdown .rotor-top,
+  .flipdown .rotor-bottom,
+  .flipdown .rotor:after {
+    height: 25px;
+  }
+}
+</style>
+
+<script type="text/javascript" src="https://www.hebehaven24hour.com/wp-includes/js/jquery/jquery.min.js?ver=3.7.1" id="jquery-core-js"></script>
+
+
+
+<script type="text/javascript" src="https://www.hebehaven24hour.com/wp-content/plugins/hhyc-rest/WordpressHebe/jquery/flipdown.js?ver=6.6.2?ver=6.6.2" id="flipdown-js"></script>
+
+
+<head>
+  <title>Vacances</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: Arial, sans-serif;
+      background-color: black;
+      color: #333;
+      overflow: hidden;
+    }
+    h1 {
+      font-size: 50px;
+      color: #4CAF50;
+      text-align: center;
+      position: relative;
+      z-index: 10;
+    }
+
+    }
+  </style>
+
+
+
+
+ 
+        <!--end WordPress head-->
+       
+                <!--.site-branding-->
+               
+ 
+                            </head>
+
+
+
+
+  <h1 id="title">Les grandes vacances sont dans :</h1>
+<body><div id="flipdown" class="flipdown flipdown__theme-dark"></div>
+<canvas id="canvas"></canvas>
+                       
+                   
+                               
+              
+               
+                 
+
+ 
+        <!--end WordPress footer-->
+   
+    <script type="text/javascript">
+jQuery( document ).ready(function() {
+
+    if (jQuery("#flipdown").length) {
+        new FlipDown(Date.parse(date)  / 1000 ).start();
+    }
+   
+});
+    </script>
+
+
+
+  <script>
+    // Fireworks code
+    const author = "Alfa";
+    let canvas = document.getElementById("canvas");
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    let ctx = canvas.getContext("2d");
+
+    window.addEventListener("resize", () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    });
+
+    const gravity = 0.05;
+    const friction = 0.99;
+    let particles = [];
+    let particleCount = 1000;
+    let mouse;
+
+    class Particle {
+      constructor(x, y, r, color, velocity) {
+        this.x = x;
+        this.y = y;
+        this.r = r;
+        this.color = color;
+        this.dx = velocity.x;
+        this.dy = velocity.y;
+        this.opacity = 1;
+      }
+      draw() {
+        ctx.save();
+        ctx.globalAlpha = this.opacity;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+        ctx.fillStyle = this.color;
+        ctx.fill();
+        ctx.restore();
+        ctx.closePath();
+      }
+      update() {
+        this.draw();
+        this.dy += gravity;
+        this.dx *= friction;
+        this.dy *= friction;
+        this.x += this.dx;
+        this.y += this.dy;
+        this.opacity -= 0.01;
+      }
+    }
+
+    function animate() {
+      requestAnimationFrame(animate);
+      ctx.fillStyle = "rgba(0, 0, 0, .09)";
+      ctx.fillRect(0, 0, window.innerWidth, window.innerHeight);
+
+      particles.forEach((particle, i) => {
+        if (particle.opacity > 0) {
+          particle.update();
+        } else {
+          particles.splice(i, 1);
+        }
+      });
+    }
+
+    function explode(x = canvas.width / 2, y = canvas.height / 2) {
+      let speed = 40;
+      let angleIncrement = (Math.PI * 2) / particleCount;
+
+      for (let i = 0; i < particleCount; i++) {
+        particles.push(
+          new Particle(x, y, 2, `hsl(${Math.random() * 360}, 50%, 50%)`, {
+            x: Math.cos(angleIncrement * i) * Math.random() * speed,
+            y: Math.sin(angleIncrement * i) * Math.random() * speed
+          })
+        );
+      }
+    }
+
+    let fireworksInterval;
+
+    function startFireworks() {
+      animate();
+      explode();
+      fireworksInterval = setInterval(() => {
+        explode((Math.random() * window.innerWidth), (Math.random() * window.innerHeight));
+      }, 1000);
+    }
+
+    // Countdown code
+    var countDownDate = new Date(date).getTime();
+
+    var x = setInterval(function() {
+      var now = new Date().getTime();
+      var distance = countDownDate - now;
+
+      var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+      var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+      var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+      if (distance < 1) {
+    	clearInterval(x);
+        
+        // Masquer la div flipdown
+        document.getElementById("flipdown").style.display = "none";
+
+        document.getElementById("title").innerHTML = "Vous êtes officiellement en vacances !!!";
+        startFireworks(); // Start fireworks when countdown reaches zero
+       }
+        }, 10);
+
+    // Enable manual fireworks on click (only after countdown finishes)
+    canvas.addEventListener("click", (e) => {
+      if (new Date().getTime() >= countDownDate) {
+        mouse = {
+          x: e.clientX,
+          y: e.clientY
+        };
+        explode(mouse.x, mouse.y);
+      }
+    });
+  </script>
+</body>

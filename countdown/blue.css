@@ -8,12 +8,12 @@
 }
 /* Rotor group headings */
 .flipdown.flipdown__theme-dark .rotor-group-heading:before {
-  color: #ffffff;
+  color: #000000;
 }
 /* Delimeters */
 .flipdown.flipdown__theme-dark .rotor-group:nth-child(n+2):nth-child(-n+3):before,
 .flipdown.flipdown__theme-dark .rotor-group:nth-child(n+2):nth-child(-n+3):after {
-  background-color: #e8e8e8;
+  background-color: #151515;
 }
 
 /* Rotor tops */

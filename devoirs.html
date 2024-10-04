@@ -1,0 +1,99 @@
+<head>
+  <title>Calculer sa moyenne</title>
+<style>
+body {
+      display: flex;
+    }
+iframe {
+      width: 100vw;
+      height: 100%; /* 100% of viewport height */
+    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Bar</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: sans-serif;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+
+        .search-container {
+            display: flex;
+            position: fixed; /* Keeps the search bar at the top */
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-color: white; /* Background color for the search bar */
+            padding: 10px;
+            border-bottom: 1px solid #ddd; /* Adds a bottom border */
+            z-index: 100; /* Ensures the search bar stays on top of other content */
+            justify-content: center;
+        }
+
+        input[type="text"] {
+            padding: 10px;
+            border: 1px solid #ccc;
+            flex-grow: 1;
+            outline: none;
+            border-radius: 5px 0 0 5px;
+        }
+
+        button {
+            padding: 10px 15px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 0 5px 5px 0;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+
+        /* Responsive adjustments */
+        @media (max-width: 400px) {
+            .search-container {
+                padding: 5px; /* Reduced padding */
+            }
+            input[type="text"] {
+                font-size: 14px;
+            }
+            button {
+                font-size: 14px;
+                padding: 8px 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="search-container">
+        <input  id="search-input" type="text" placeholder="Search...">
+        <button id="search-button" type="submit">Search</button>
+    </div>
+<iframe src="about:blank" id="my-iframe" title="External Site" class="iframe-container"></iframe>
+<script>
+        const searchInput = document.getElementById('search-input');
+        const searchButton = document.getElementById('search-button');
+        const iframe = document.getElementById('my-iframe');
+
+        searchButton.addEventListener('click', () => {
+            const searchTerm = searchInput.value;
+            const targetUrl = searchTerm
+            iframe.src = targetUrl;
+        });
+
+        // Optional: Handle initial load (if you want a default URL in the iframe)
+        window.onload = () => {
+            iframe.src = "https://timothee123456.github.io/main"; // Replace with your default URL
+        };
+
+    </script>
+</html>

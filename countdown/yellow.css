@@ -1,13 +1,3 @@
-<head>
-        <!--WordPress head-->
-        <title></title>
-
-
-
-
-<link rel="stylesheet" id="flipdown-css" href="https://www.hebehaven24hour.com/wp-content/plugins/hhyc-rest/WordpressHebe/css/flipdown.css?ver=6.6.2" type="text/css" media="all">
-
-<style>
 /* THEMES */
 
 /********** Theme: dark **********/
@@ -294,48 +284,3 @@
     height: 25px;
   }
 }
-</style>
-
-<script type="text/javascript" src="https://www.hebehaven24hour.com/wp-includes/js/jquery/jquery.min.js?ver=3.7.1" id="jquery-core-js"></script>
-
-
-<script type="text/javascript" src="https://www.hebehaven24hour.com/wp-content/plugins/hhyc-rest/WordpressHebe/jquery/flipdown.js?ver=6.6.2" id="flipdown-js"></script>
-
-
-
-
- 
-        <!--end WordPress head-->
-       
-                <!--.site-branding-->
-               
- 
-                            </head>
-
-
-
-
-
-<body><div id="flipdown" class="flipdown flipdown__theme-dark"></div>
-                       
-                   
-                               
-               
-               
-                 
-
- 
-        <!--end WordPress footer-->
-   
-    <script type="text/javascript">
-jQuery( document ).ready(function() {
-
-    if (jQuery("#flipdown").length) {
-        new FlipDown(Date.parse('27 Sep 2024 19:43:00')  / 1000 ).start();
-    }
-   
-});
-    </script>
-
-
-</body>

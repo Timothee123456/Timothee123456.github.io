@@ -7,9 +7,6 @@
 <script>
 var date = "Oct 18, 2024 10:40:00"
 </script>
-<link rel="stylesheet" id="flipdown-css" href="https://timothee123456.github.io/countdown/green.css?ver=6.6.2" type="text/css" media="all">
-<script type="text/javascript" src="https://timothee123456.github.io/countdown/file2.js?ver=6.6.2?ver=6.6.2" id="jquery-core-js"></script>
-<script type="text/javascript" src="https://timothee123456.github.io/countdown/file1.js?ver=6.6.2?ver=6.6.2" id="flipdown-js"></script>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -19,8 +16,6 @@ var date = "Oct 18, 2024 10:40:00"
 <!-- Link to the JavaScript file -->
 <script src="navigation.js"></script>
 <center>
-<h1 style="color:red; font-size:50px">Pour réviser, il vous reste:</h1>
-<div id="flipdown" class="flipdown flipdown__theme-dark"></div>
 <h2 style="color:green" id="quiz"></h2>
 <img src="https://timothee123456.github.io/eval/SVT/img3.jpg" width="90%">
 <br>
@@ -48,15 +43,6 @@ var date = "Oct 18, 2024 10:40:00"
 <p></p>
 <a href="#" class="myButton2" onclick="reset()">Réinitialiser</a>
 </center>
-<script type="text/javascript">
-jQuery( document ).ready(function() {
-
-    if (jQuery("#flipdown").length) {
-        new FlipDown(Date.parse(date)  / 1000 ).start();
-    }
-   
-});
-    </script>
 <script>
 const title = "Schéma"
 const slash = "/5"

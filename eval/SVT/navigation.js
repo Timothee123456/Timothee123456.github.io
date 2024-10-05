@@ -9,7 +9,6 @@ function createMenu() {
             title: "Evaluation 1",
             dropdown: true,
             items: [
-                { title: "Évaluation 1", url: "https://timothee123456.github.io/eval/SVT/eval1" },
                 { title: "Schéma 1", url: "https://timothee123456.github.io/eval/SVT/schema1" },
                 { title: "Schéma 2", url: "https://timothee123456.github.io/eval/SVT/schema2" },
                 { title: "Schéma 3", url: "https://timothee123456.github.io/eval/SVT/schema3" }

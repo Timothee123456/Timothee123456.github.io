@@ -1,15 +1,12 @@
-public class Main {
-
-    public static String removeHyphen(String str) {  // Changed return type to String
-        if (str == null) {
-            return null; // Handle null input
-        }
-        String[] parts = str.split("-", 2); // Limit split to 2 parts
-        if (parts.length >= 2) { // Check if there's a second part
-            return parts[1];
-        } else {
-            return "";
-        }
+function removeHyphen(str) {
+    if (str === null) {
+        return null;
+    }
+    var parts = str.split("-", 2);
+    if (parts.length >= 2) {
+        return parts[1].trim(); // Trim whitespace from the second part
+    } else {
+        return "";
     }
 }
 

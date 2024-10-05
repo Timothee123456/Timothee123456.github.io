@@ -83,18 +83,14 @@ function createMenu() {
 }
 
 
-function removeHyphen(str) {
-    if (str === null) {
-        return null;
-    }
-    var parts = str.split("-", 2);
-    if (parts.length >= 2) {
-        return parts[1].trim(); // Trim whitespace from the second part
+function removePrefix(str) {
+    const prefix = "SVT - ";
+    if (str.startsWith(prefix)) {
+        return str.substring(prefix.length);
     } else {
-        return "";
+        return str; // Or handle the case where the prefix isn't there
     }
 }
-
 
 // Run the createMenu function when the page loads
 window.onload = createMenu;

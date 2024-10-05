@@ -1,15 +1,3 @@
-function removeHyphen(str) {
-    if (str === null) {
-        return null;
-    }
-    var parts = str.split("-", 2);
-    if (parts.length >= 2) {
-        return parts[1].trim(); // Trim whitespace from the second part
-    } else {
-        return "";
-    }
-}
-
 // Function to create the menu and add it to the page
 function createMenu() {
     // Create the unordered list element
@@ -93,6 +81,20 @@ function createMenu() {
         menuContainer.appendChild(ul);
     }
 }
+
+
+function removeHyphen(str) {
+    if (str === null) {
+        return null;
+    }
+    var parts = str.split("-", 2);
+    if (parts.length >= 2) {
+        return parts[1].trim(); // Trim whitespace from the second part
+    } else {
+        return "";
+    }
+}
+
 
 // Run the createMenu function when the page loads
 window.onload = createMenu;

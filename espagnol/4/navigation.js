@@ -9,6 +9,7 @@ function createMenu() {
         { title: "5ème", url: "https://timothee123456.github.io/espagnol/jours-de-la-semaine", floatRight: true }
     ];
 
+   
     // Get the current page title
     var currentPageTitle = document.title;
 
@@ -58,7 +59,7 @@ function createMenu() {
             a.textContent = item.title;
 
             // Set the active class if the page title matches the item title
-            if (currentPageTitle === item.title) {
+            if (removeHyphen(currentPageTitle) === item.title) {
                 a.className = 'active';
             }
 
@@ -72,6 +73,16 @@ function createMenu() {
     var menuContainer = document.getElementById('menuContainer');
     if (menuContainer) {
         menuContainer.appendChild(ul);
+    }
+}
+
+
+function removePrefix(str) {
+    const prefix = "SVT - ";
+    if (str.startsWith(prefix)) {
+        return str.substring(prefix.length);
+    } else {
+        return str; // Or handle the case where the prefix isn't there
     }
 }
 

@@ -1,3 +1,11 @@
+function removeHyphen(string){
+    if (string == null) {
+            return null; // Handle null input
+        }
+    String[] parts = str.split("-", 2); // Limit split to 2 parts
+    return parts[1];
+System.out.println(removeHyphen(SVT - schéma 1));
+
 // Function to create the menu and add it to the page
 function createMenu() {
     // Create the unordered list element
@@ -6,7 +14,7 @@ function createMenu() {
     // Define the menu items as an array of objects
     var menuItems = [
         {
-            title: "Evaluation 1",
+            title: "Les besoins des plantes",
             dropdown: true,
             items: [
                 { title: "Schéma 1", url: "https://timothee123456.github.io/eval/SVT/schema1" },

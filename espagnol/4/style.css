@@ -141,6 +141,7 @@ button a {
 	top:1px;
 }
 body {
+  height:100%;
   background-color: 02fae; /* For browsers that do not support gradients */
   background-image: linear-gradient(to bottom right, #02fae9, yellow);
 }

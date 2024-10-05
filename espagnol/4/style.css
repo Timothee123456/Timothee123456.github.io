@@ -141,7 +141,7 @@ button a {
 	top:1px;
 }
 body {
-  height:100%;
+  min-height: 100vh; /* Ensure the body takes up at least the full viewport height */
   background-color: 02fae; /* For browsers that do not support gradients */
   background-image: linear-gradient(to bottom right, #02fae9, yellow);
 }

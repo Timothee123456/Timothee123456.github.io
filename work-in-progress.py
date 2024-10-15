@@ -40,37 +40,105 @@ class color:
 def is_even(number):
     return number % 2 == 0
 
-
-
-checked_numbers = [1, 2, 4]
-checked_numbers_times = [0, 1, 2]
+checked_numbers = [1]
+checked_numbers_times = [0]
 
 i2 = 1
 i = 1
 times = 0
-#print(color.BOLD + color.dark.BLUE + f'Get ({i})' + color.END)
+number = 10
 
-while i2 <= 100000:
-    if i in checked_numbers:
-        index = checked_numbers.index(i)
-        times += checked_numbers_times[index]
-        checked_numbers.append(i2)
-        checked_numbers_times.append(times)
-        #print(color.BOLD + color.light.GREEN + f'✓ ({times})' + color.END)
-        #print('')
-        i2 += 1
-        i = i2
-        times = 0
-        #print(color.BOLD + color.dark.BLUE + f'Get ({i})' + color.END)
-    else:
-        times = times + 1
-        if is_even(i): 
-            i = i / 2
+
+
+
+def full_text():
+    global checked_numbers
+    global checked_numbers_times
+    global i2
+    global i
+    global times
+    
+    #print(color.BOLD + color.dark.BLUE + f'Get ({i})' + color.END)
+    
+    while i2 <= number:
+        if i == 1:
+            checked_numbers.append(i2)
+            checked_numbers_times.append(times)
+            print(color.BOLD + color.light.GREEN + f'✓ ({times})' + color.END)
+            print('')
+            i2 += 1
+            i = i2
+            times = 0
+            print(color.BOLD + color.dark.BLUE + f'Get ({i})' + color.END)
         else:
-            i = i * 3 + 1
-        #print(math.floor(i))
+            times = times + 1
+            if is_even(i): 
+                i = i / 2
+            else:
+                i = i * 3 + 1
+            print(math.floor(i))
 
 
+def light_text():
+    global checked_numbers
+    global checked_numbers_times
+    global i2
+    global i
+    global times
+    
+    print(color.BOLD + color.dark.BLUE + f'Get ({i})' + color.END)
+    
+    while i2 <= number:
+        if i in checked_numbers:
+            index = checked_numbers.index(i)
+            times += checked_numbers_times[index]
+            checked_numbers.append(i2)
+            checked_numbers_times.append(times)
+            print(color.BOLD + color.light.GREEN + f'✓ ({times})' + color.END)
+            print('')
+            i2 += 1
+            i = i2
+            times = 0
+            print(color.BOLD + color.dark.BLUE + f'Get ({i})' + color.END)
+        else:
+            times = times + 1
+            if is_even(i): 
+                i = i / 2
+            else:
+                i = i * 3 + 1
+            print(math.floor(i))
+
+   
+def no_text():
+    global checked_numbers
+    global checked_numbers_times
+    global i2
+    global i
+    global times
+    
+    #print(color.BOLD + color.dark.BLUE + f'Get ({i})' + color.END)
+    
+    while i2 <= number:
+        if i in checked_numbers:
+            index = checked_numbers.index(i)
+            times += checked_numbers_times[index]
+            checked_numbers.append(i2)
+            checked_numbers_times.append(times)
+            #print(color.BOLD + color.light.GREEN + f'✓ ({times})' + color.END)
+            #print('')
+            i2 += 1
+            i = i2
+            times = 0
+            #print(color.BOLD + color.dark.BLUE + f'Get ({i})' + color.END)
+        else:
+            times = times + 1
+            if is_even(i): 
+                i = i / 2
+            else:
+                i = i * 3 + 1
+            #print(math.floor(i))
+    
+full_text()
 end_time = time.time()
 execution_time = end_time - start_time
 
@@ -82,4 +150,3 @@ print(color.light.RED + f'The number with the largest steps is number {bi} who h
 print(f'It took the computer {execution_time} seconds to find it.')
 print(checked_numbers)
 print(checked_numbers_times)
-

@@ -2,8 +2,6 @@ import time
 import math
 import re
 
-start_time = time.time()
-
 class color:
     END = '\033[0m'
     BOLD = '\033[1m'
@@ -60,11 +58,11 @@ times = 0
 print('To which number would you like to go to?')
 number = input(">")
 while not check_number(number):
-    print(color.BOLD + "Wrong person!!!")
-    time.sleep(0.5) 
+    print('Enter a non decimal number that starts with 1 and is followed by 0s')
+    number = input(">")
 number = int(number)
 
-
+start_time = time.time()
 def full_text():
     global checked_numbers
     global checked_numbers_times

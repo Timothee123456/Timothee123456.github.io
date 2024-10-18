@@ -58,6 +58,10 @@
 <nobr id="fr12"></nobr>
 <input autocomplete="off" id="12">
 <nobr id="correction12"></nobr>
+<br>
+<nobr id="fr13"></nobr>
+<input autocomplete="off" id="13">
+<nobr id="correction13"></nobr>
 <p></p>
 <a href="#" class="myButton" onclick="myFunction()" id="Terminado">Terminer</a>
 <p></p>
@@ -66,7 +70,7 @@
 </body>
 <script>
 const title = "Quiz de vocabulaire"
-const slash = "/12"
+const slash = "/13"
 
 const Word1f = "数学课"
 const Word2f = "体育"
@@ -80,6 +84,7 @@ const Word9f = "美术课"
 const Word10f = "生物课"
 const Word11f = "音乐课"
 const Word12f = "自习"
+const Word13f = "电脑课"
 
 const Word1c = "shù xué kè";
 const Word2c = "tǐ yù";
@@ -93,6 +98,7 @@ const Word9c = "měi shù kè";
 const Word10c = "shēng wù kè";
 const Word11c = "yīn yuè kè";
 const Word12c = "zì xí";
+const Word12c = "diàn nǎo kè";
 
 
 document.getElementById("fr1").innerHTML = Word1f
@@ -107,6 +113,7 @@ document.getElementById("fr9").innerHTML = Word9f
 document.getElementById("fr10").innerHTML = Word10f
 document.getElementById("fr11").innerHTML = Word11f
 document.getElementById("fr12").innerHTML = Word12f
+document.getElementById("fr13").innerHTML = Word13f
 
 document.getElementById("quiz").innerHTML = title
 
@@ -162,6 +169,10 @@ document.getElementById("11").style.color = "black"
 document.getElementById("correction12").innerHTML = ""
 document.getElementById("12").value = ""
 document.getElementById("12").style.color = "black"
+
+document.getElementById("correction13").innerHTML = ""
+document.getElementById("13").value = ""
+document.getElementById("13").style.color = "black"
 
 
 
@@ -356,6 +367,22 @@ document.getElementById("correction12").innerHTML = "✕" + Word12c;
 document.getElementById("correction12").style.color = "red"
 }
 
+	
+const Word13 = document.getElementById("13").value
+if (Word13.toLowerCase() == Word13c.toLowerCase() || Word13.toLowerCase() == Word13c.toLowerCase() + " "){
+document.getElementById("correction13").innerHTML = "✓";
+document.getElementById("correction13").style.color = "green"
+var quiz = quiz + 1
+}
+else if (Word13 == ""){
+document.getElementById("13").value = Word13c;
+document.getElementById("13").style.color = "red"
+}
+else {
+document.getElementById("correction13").innerHTML = "✕" + Word13c;
+document.getElementById("correction13").style.color = "red"
+}
+	
 
 document.getElementById("quiz").innerHTML = title + " " + quiz + slash;
 }

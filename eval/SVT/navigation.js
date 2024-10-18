@@ -9,9 +9,9 @@ function createMenu() {
             title: "Les besoins des plantes",
             dropdown: true,
             items: [
-                { title: "Schéma 1", url: "https://timothee123456.github.io/eval/SVT/schema1" },
-                { title: "Schéma 2", url: "https://timothee123456.github.io/eval/SVT/schema2" },
-                { title: "Schéma 3", url: "https://timothee123456.github.io/eval/SVT/schema3" }
+                { title: "Schéma 1", url: "https://timothee123456.github.io/eval/SVT/1/schema1" },
+                { title: "Schéma 2", url: "https://timothee123456.github.io/eval/SVT/1/schema2" },
+                { title: "Schéma 3", url: "https://timothee123456.github.io/eval/SVT/1/schema3" }
             ]
         },
         ];

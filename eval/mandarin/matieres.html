@@ -58,38 +58,6 @@
 <nobr id="fr12"></nobr>
 <input autocomplete="off" id="12">
 <nobr id="correction12"></nobr>
-<br>
-<nobr id="fr13"></nobr>
-<input autocomplete="off" id="13">
-<nobr id="correction13"></nobr>
-<br>
-<nobr id="fr14"></nobr>
-<input autocomplete="off" id="14">
-<nobr id="correction14"></nobr>
-<br>
-<nobr id="fr15"></nobr>
-<input autocomplete="off" id="15">
-<nobr id="correction15"></nobr>
-<br>
-<nobr id="fr16"></nobr>
-<input autocomplete="off" id="16">
-<nobr id="correction16"></nobr>
-<br>
-<nobr id="fr17"></nobr>
-<input autocomplete="off" id="17">
-<nobr id="correction17"></nobr>
-<br>
-<nobr id="fr18"></nobr>
-<input autocomplete="off" id="18">
-<nobr id="correction18"></nobr>
-<br>
-<nobr id="fr19"></nobr>
-<input autocomplete="off" id="19">
-<nobr id="correction19"></nobr>
-<br>
-<nobr id="fr20"></nobr>
-<input autocomplete="off" id="20">
-<nobr id="correction20"></nobr>
 <p></p>
 <a href="#" class="myButton" onclick="myFunction()" id="Terminado">Terminer</a>
 <p></p>
@@ -98,7 +66,7 @@
 </body>
 <script>
 const title = "Quiz de vocabulaire"
-const slash = "/20"
+const slash = "/12"
 
 const Word1f = "数学课"
 const Word2f = "体育"
@@ -112,14 +80,6 @@ const Word9f = "美术课"
 const Word10f = "生物课"
 const Word11f = "音乐课"
 const Word12f = "自习"
-const Word13f = ""
-const Word14f = ""
-const Word15f = ""
-const Word16f = ""
-const Word17f = ""
-const Word18f = ""
-const Word19f = ""
-const Word20f = ""
 
 const Word1c = "shù xué kè";
 const Word2c = "tǐ yù";
@@ -133,14 +93,6 @@ const Word9c = "měi shù kè";
 const Word10c = "shēng wù kè";
 const Word11c = "yīn yuè kè";
 const Word12c = "zì xí";
-const Word13c = ""
-const Word14c = ""
-const Word15c = ""
-const Word16c = ""
-const Word17c = ""
-const Word18c = ""
-const Word19c = ""
-const Word20c = ""
 
 
 document.getElementById("fr1").innerHTML = Word1f
@@ -155,14 +107,6 @@ document.getElementById("fr9").innerHTML = Word9f
 document.getElementById("fr10").innerHTML = Word10f
 document.getElementById("fr11").innerHTML = Word11f
 document.getElementById("fr12").innerHTML = Word12f
-document.getElementById("fr13").innerHTML = Word13f
-document.getElementById("fr14").innerHTML = Word14f
-document.getElementById("fr15").innerHTML = Word15f
-document.getElementById("fr16").innerHTML = Word16f
-document.getElementById("fr17").innerHTML = Word17f
-document.getElementById("fr18").innerHTML = Word18f
-document.getElementById("fr19").innerHTML = Word19f
-document.getElementById("fr20").innerHTML = Word20f
 
 document.getElementById("quiz").innerHTML = title
 
@@ -218,38 +162,6 @@ document.getElementById("11").style.color = "black"
 document.getElementById("correction12").innerHTML = ""
 document.getElementById("12").value = ""
 document.getElementById("12").style.color = "black"
-
-document.getElementById("correction13").innerHTML = ""
-document.getElementById("13").value = ""
-document.getElementById("13").style.color = "black"
-
-document.getElementById("correction14").innerHTML = ""
-document.getElementById("14").value = ""
-document.getElementById("14").style.color = "black"
-
-document.getElementById("correction15").innerHTML = ""
-document.getElementById("15").value = ""
-document.getElementById("15").style.color = "black"
-
-document.getElementById("correction16").innerHTML = ""
-document.getElementById("16").value = ""
-document.getElementById("16").style.color = "black"
-
-document.getElementById("correction17").innerHTML = ""
-document.getElementById("17").value = ""
-document.getElementById("17").style.color = "black"
-
-document.getElementById("correction18").innerHTML = ""
-document.getElementById("18").value = ""
-document.getElementById("18").style.color = "black"
-
-document.getElementById("correction19").innerHTML = ""
-document.getElementById("19").value = ""
-document.getElementById("19").style.color = "black"
-
-document.getElementById("correction20").innerHTML = ""
-document.getElementById("20").value = ""
-document.getElementById("20").style.color = "black"
 
 
 
@@ -442,126 +354,6 @@ document.getElementById("12").style.color = "red"
 else {
 document.getElementById("correction12").innerHTML = "✕" + Word12c;
 document.getElementById("correction12").style.color = "red"
-}
-
-const Word13 = document.getElementById("13").value
-if (Word13.toLowerCase() == Word13c.toLowerCase() || Word13.toLowerCase() == Word13c.toLowerCase() + " "){
-document.getElementById("correction13").innerHTML = "✓";
-document.getElementById("correction13").style.color = "green"
-var quiz = quiz + 1
-}
-else if (Word13 == ""){
-document.getElementById("13").value = Word13c;
-document.getElementById("13").style.color = "red"
-}
-else {
-document.getElementById("correction13").innerHTML = "✕" + Word13c;
-document.getElementById("correction13").style.color = "red"
-}
-
-const Word14 = document.getElementById("14").value
-if (Word14.toLowerCase() == Word14c.toLowerCase() || Word14.toLowerCase() == Word14c.toLowerCase() + " "){
-document.getElementById("correction14").innerHTML = "✓";
-document.getElementById("correction14").style.color = "green"
-var quiz = quiz + 1
-}
-else if (Word14 == ""){
-document.getElementById("14").value = Word14c;
-document.getElementById("14").style.color = "red"
-}
-else {
-document.getElementById("correction14").innerHTML = "✕" + Word14c;
-document.getElementById("correction14").style.color = "red"
-}
-
-const Word15 = document.getElementById("15").value
-if (Word15.toLowerCase() == Word15c.toLowerCase() || Word15.toLowerCase() == Word15c.toLowerCase() + " "){
-document.getElementById("correction15").innerHTML = "✓";
-document.getElementById("correction15").style.color = "green"
-var quiz = quiz + 1
-}
-else if (Word15 == ""){
-document.getElementById("15").value = Word15c;
-document.getElementById("15").style.color = "red"
-}
-else {
-document.getElementById("correction15").innerHTML = "✕" + Word15c;
-document.getElementById("correction15").style.color = "red"
-}
-
-const Word16 = document.getElementById("16").value
-if (Word16.toLowerCase() == Word16c.toLowerCase() || Word16.toLowerCase() == Word16c.toLowerCase() + " "){
-document.getElementById("correction16").innerHTML = "✓";
-document.getElementById("correction16").style.color = "green"
-var quiz = quiz + 1
-}
-else if (Word16 == ""){
-document.getElementById("16").value = Word16c;
-document.getElementById("16").style.color = "red"
-}
-else {
-document.getElementById("correction16").innerHTML = "✕" + Word16c;
-document.getElementById("correction16").style.color = "red"
-}
-
-const Word17 = document.getElementById("17").value
-if (Word17.toLowerCase() == Word17c.toLowerCase() || Word17.toLowerCase() == Word17c.toLowerCase() + " "){
-document.getElementById("correction17").innerHTML = "✓";
-document.getElementById("correction17").style.color = "green"
-var quiz = quiz + 1
-}
-else if (Word17 == ""){
-document.getElementById("17").value = Word17c;
-document.getElementById("17").style.color = "red"
-}
-else {
-document.getElementById("correction17").innerHTML = "✕" + Word17c;
-document.getElementById("correction17").style.color = "red"
-}
-
-const Word18 = document.getElementById("18").value
-if (Word18.toLowerCase() == Word18c.toLowerCase() || Word18.toLowerCase() == Word18c.toLowerCase() + " "){
-document.getElementById("correction18").innerHTML = "✓";
-document.getElementById("correction18").style.color = "green"
-var quiz = quiz + 1
-}
-else if (Word18 == ""){
-document.getElementById("18").value = Word18c;
-document.getElementById("18").style.color = "red"
-}
-else {
-document.getElementById("correction18").innerHTML = "✕" + Word18c;
-document.getElementById("correction18").style.color = "red"
-}
-
-const Word19 = document.getElementById("19").value
-if (Word19.toLowerCase() == Word19c.toLowerCase() || Word19.toLowerCase() == Word19c.toLowerCase() + " "){
-document.getElementById("correction19").innerHTML = "✓";
-document.getElementById("correction19").style.color = "green"
-var quiz = quiz + 1
-}
-else if (Word19 == ""){
-document.getElementById("19").value = Word19c;
-document.getElementById("19").style.color = "red"
-}
-else {
-document.getElementById("correction19").innerHTML = "✕" + Word19c;
-document.getElementById("correction19").style.color = "red"
-}
-
-const Word20 = document.getElementById("20").value
-if (Word20.toLowerCase() == Word20c.toLowerCase() || Word20.toLowerCase() == Word20c.toLowerCase() + " "){
-document.getElementById("correction20").innerHTML = "✓";
-document.getElementById("correction20").style.color = "green"
-var quiz = quiz + 1
-}
-else if (Word20 == ""){
-document.getElementById("20").value = Word20c;
-document.getElementById("20").style.color = "red"
-}
-else {
-document.getElementById("correction20").innerHTML = "✕" + Word20c;
-document.getElementById("correction20").style.color = "red"
 }
 
 

@@ -6,12 +6,10 @@ function createMenu() {
     // Define the menu items as an array of objects
     var menuItems = [
         {
-            title: "Les besoins des plantes",
+            title: "L'urbanisation du monde",
             dropdown: true,
             items: [
-                { title: "Schéma 1", url: "https://timothee123456.github.io/eval/SVT/1/schema1" },
-                { title: "Schéma 2", url: "https://timothee123456.github.io/eval/SVT/1/schema2" },
-                { title: "Schéma 3", url: "https://timothee123456.github.io/eval/SVT/1/schema3" }
+                { title: "Carte 1", url: "https://timothee123456.github.io/error2" },
             ]
         },
         ];

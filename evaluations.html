@@ -1,9 +1,6 @@
 <!DOCTYPE html>
 <title>Évaluations</title>
 <script>
-var date = "Oct 21, 2024 13:00:00"
-</script>
-<script>
   const evaluations = [
     { title: "SVT", site: "https://timothee123456.github.io/eval/SVT/eval.html", date: "Oct 18, 2024 10:40:00" },
     { title: "Français", site: false, date: "Oct 18, 2024 8:30:00"},
@@ -142,17 +139,51 @@ var date = "Oct 21, 2024 13:00:00"
   const evaluationsContainer = document.getElementById("evaluations");
   const countdownContainer = document.getElementById("countdown");
 
+function findClosestDate(dateStrings) {
+    const targetDate = new Date(); // Target date is always now
+
+    const parseDate = (dateString) => {
+        return new Date(dateString);
+    };
+
+
+    if (!dateStrings || dateStrings.length === 0) {
+        return null;
+    }
+
+    let closestDate = null;
+    let minDifference = Infinity;
+
+    for (const dateString of dateStrings) {
+        const date = parseDate(dateString);
+        if (isNaN(date)) {
+            console.warn("Invalid date format:", dateString);
+            continue;
+        }
+        const difference = Math.abs(targetDate - date);
+
+        if (difference < minDifference) {
+            minDifference = difference;
+            closestDate = date;
+        }
+    }
+
+    return closestDate;
+}
+
+
   function displayEvaluations() {
     evaluationsContainer.innerHTML = "";
     var nextEvalDate = null;
 
     const now = new Date();
+    const times = []
 
     evaluations.forEach(evalData => {
       const evalDate = new Date(evalData.date);
 
       if (evalDate > now) {
-
+		times.push(evalDate);
         const diff = evalDate.getTime() - now.getTime();
 
 		const evalDiv = document.createElement("div");
@@ -173,6 +204,7 @@ var date = "Oct 21, 2024 13:00:00"
         }
         evaluationsContainer.appendChild(evalDiv);
       }
+      date = findClosestDate(times)
     });
 
     

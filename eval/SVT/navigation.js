@@ -35,7 +35,7 @@ function createMenu() {
             // Create the <a> element for the main dropdown title
             var mainLink = document.createElement('a');
             mainLink.href = item.url;
-            mainLink.textContent = item.title + ' ';
+            mainLink.textContent = item.title + ' hello';
             mainLink.className = 'button'; // Apply the button styling
 
             var caretIcon = document.createElement('i');

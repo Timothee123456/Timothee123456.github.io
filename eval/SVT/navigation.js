@@ -6,7 +6,7 @@ function createMenu() {
     // Define the menu items as an array of objects
     var menuItems = [
         {
-            title: "Les besoins des plantes", url: "https://timothee123456.github.io/eval/SVT/1/eval",
+            title: "Les besoins des plantes",
             dropdown: true,
             items: [
                 { title: "Schéma 1", url: "https://timothee123456.github.io/eval/SVT/1/schema1" },
@@ -32,11 +32,9 @@ function createMenu() {
             var divDropdown = document.createElement('div');
             divDropdown.className = 'dropdown';
 
-            // Create the <a> element for the main dropdown title
-            var mainLink = document.createElement('a');
-            mainLink.href = item.url;
-            mainLink.textContent = item.title + ' hello';
-            mainLink.className = 'button'; // Apply the button styling
+            var button = document.createElement('button');
+            button.className = 'button';
+            button.textContent = item.title + ' ';
 
             var caretIcon = document.createElement('i');
             caretIcon.className = 'fa fa-caret-down';

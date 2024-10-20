@@ -4,14 +4,14 @@
 <script>
 var date = "Dec 6, 2024 10:40:00"
 </script>
+<main>
 <!-- This is the div where the menu will be dynamically inserted -->
 <div id="menuContainer"></div>
 
 <!-- Link to the JavaScript file -->
 <script src="navigation.js"></script>
-</head>
+
   <h1 class="title">Pour réviser, il vous reste :</h1>
-<body>
 <div id="flipdown" class="flipdown flipdown__theme-dark"></div>
 
 <center>
@@ -21,8 +21,7 @@ var date = "Dec 6, 2024 10:40:00"
 <a href="https://timothee123456.github.io/error2" class="myButton">Site pour réviser</a>
 
 </center>
-<div class="space"></div>
-<div class="space"></div>
+</main>
 <footer>
   <p>&copy; 2024 Timothee123456. Tous droits réservés. Les sites pour réviser sont une aide, et non une révision complète.</p>
 </footer>
@@ -42,7 +41,6 @@ var date = "Dec 6, 2024 10:40:00"
       font-family: Arial, sans-serif;
       background-color: black;
       color: #333;
-      overflow: hidden;
     }
     .title {
       color: #7A2DA0;
@@ -60,6 +58,8 @@ var date = "Dec 6, 2024 10:40:00"
       color: #333;
       margin: 0;
       padding: 0;
+      display: flex;
+      flex-direction: column;
       min-height: 100vh; /* Ensure the body takes up at least the full viewport height */
     }
 
@@ -100,6 +100,12 @@ var date = "Dec 6, 2024 10:40:00"
 	height:30px;
 	}
 
+
+main {
+      flex: 1; /* Allow the main content to grow and take up available space */
+    }
+    
+    
     footer {
       background-color: #1565c0;
       padding: 20px;

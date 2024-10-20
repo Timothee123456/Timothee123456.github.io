@@ -9,7 +9,7 @@ function createMenu() {
             title: "L'urbanisation du monde",
             dropdown: true,
             items: [
-                { title: "Carte 1", url: "https://timothee123456.github.io/error2" },
+                { title: "Les villes les plus peuplées de la planète", url: "https://timothee123456.github.io/eval/histoire-geo/3/carte1" },
             ]
         },
         ];
@@ -82,7 +82,7 @@ function createMenu() {
 
 
 function removePrefix(str) {
-    const prefix = "SVT - ";
+    const prefix = "Histoire-géo - ";
     if (str.startsWith(prefix)) {
         return str.substring(prefix.length);
     } else {

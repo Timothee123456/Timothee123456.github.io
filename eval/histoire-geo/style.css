@@ -148,7 +148,6 @@ body {
 
 .container {
   display: flex;
-  flex-direction: row; /* Arrange items horizontally */
   width: 100vw; /* Adjust as needed */
   margin: 0 auto; /* Center the container */
 }

@@ -111,7 +111,7 @@ main {
     iframe {
       width: 100vw;
       border: none; /* Remove default iframe border */
-  	  clip-path: inset(50px 0 0 0); /* Adjust the 100px to control how much is clipped */
+      clip-path: inset(50px 0 0 0); /* Adjust the 100px to control how much is clipped */
     }
     
 </style>
@@ -126,5 +126,18 @@ jQuery( document ).ready(function() {
     </script>
 <script>
   document.getElementById("website-frame").src = url;
+
+const iframe = document.getElementById('website-frame');
+
+// Check if the iframe content is from the same origin
+if (iframe.contentWindow.location.origin === window.location.origin) {
+    iframe.contentWindow.addEventListener('click', function(event) {
+        // Prevent default link behavior within the iframe
+        event.preventDefault();
+
+        // Navigate the top-level window to the clicked URL
+        window.top.location.href = event.target.href;
+    });
+} 
 </script>
 </body>

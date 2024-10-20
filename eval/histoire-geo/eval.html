@@ -129,8 +129,6 @@ jQuery( document ).ready(function() {
 
 const iframe = document.getElementById('website-frame');
 
-// Check if the iframe content is from the same origin
-if (iframe.contentWindow.location.origin === window.location.origin) {
     iframe.contentWindow.addEventListener('click', function(event) {
         // Prevent default link behavior within the iframe
         event.preventDefault();
@@ -138,6 +136,5 @@ if (iframe.contentWindow.location.origin === window.location.origin) {
         // Navigate the top-level window to the clicked URL
         window.top.location.href = event.target.href;
     });
-} 
 </script>
 </body>

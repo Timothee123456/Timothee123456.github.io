@@ -73,10 +73,12 @@
 <!-- Link to the JavaScript file -->
 <script src="https://timothee123456.github.io/eval/histoire-geo/navigation.js"></script>
 </head>
-  <h1 class="title">L'urbanisation du monde</h1>
-<body>
-<center>
-<div class="space"></div>
-<a href="https://timothee123456.github.io/eval/histoire-geo/3/carte1"><h2>Les villes les plus peuplées de la planète</h2></a>
-<a href="https://timothee123456.github.io/eval/histoire-geo/3/carte1" class="myButton">Site pour réviser</a>
+<div id="content-from-page"></div>
 </body>
+<script>
+fetch('https://timothee123456.github.io/eval/histoire-geo/3/eval-content.html')
+  .then(response => response.text())
+  .then(html => {
+    document.getElementById('content-from-page').innerHTML = html;
+  });
+</script>

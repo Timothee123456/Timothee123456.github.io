@@ -145,6 +145,10 @@ body {
   background-color: 02fae; /* For browsers that do not support gradients */
   background-image: linear-gradient(to right, #02fae9, yellow);
 }
+.column {
+  flex: 1; /* Each column takes equal width */
+  padding: 10px; /* Add some spacing between columns */
+}
 input {font-size:21px}
 h2 {font-size:45px}
 nobr {font-size:24px}

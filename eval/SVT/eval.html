@@ -2,6 +2,7 @@
 <title>SVT - Évaluation 2</title>
 <script>
 var date = "Dec 6, 2024 10:40:00"
+var url = "https://timothee123456.github.io/eval/SVT/2/eval"
 </script>
 <main>
 <!-- This is the div where the menu will be dynamically inserted -->
@@ -12,7 +13,7 @@ var date = "Dec 6, 2024 10:40:00"
 
   <h1 class="title">Pour réviser, il vous reste :</h1>
 <div id="flipdown" class="flipdown flipdown__theme-dark"></div>
-<iframe src="https://timothee123456.github.io/eval/SVT/2/eval"></iframe>
+<iframe id="website-frame"></iframe>
 </main>
 <footer>
   <p>&copy; 2024 Timothee123456. Tous droits réservés. Les sites pour réviser sont une aide, et non une révision complète.</p>
@@ -123,4 +124,7 @@ jQuery( document ).ready(function() {
    
 });
     </script>
+<script>
+  document.getElementById("website-frame").src = url;
+</script>
 </body>

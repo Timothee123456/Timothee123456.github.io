@@ -13,7 +13,7 @@ var url = "https://timothee123456.github.io/eval/SVT/2/eval"
 
   <h1 class="title">Pour réviser, il vous reste :</h1>
 <div id="flipdown" class="flipdown flipdown__theme-dark"></div>
-<iframe id="website-frame"></iframe>
+<div id="content-from-page"></div>
 </main>
 <footer>
   <p>&copy; 2024 Timothee123456. Tous droits réservés. Les sites pour réviser sont une aide, et non une révision complète.</p>
@@ -125,6 +125,10 @@ jQuery( document ).ready(function() {
 });
     </script>
 <script>
-  document.getElementById("website-frame").src = url;
+fetch('https://timothee123456.github.io/eval/histoire-geo/3/eval-content.html')
+  .then(response => response.text())
+  .then(html => {
+    document.getElementById('content-from-page').innerHTML = html;
+  });
 </script>
 </body>

@@ -106,6 +106,7 @@ const Word2c = "New York"
 
 const Word3f = "C"
 const Word3c = "Mexico"
+const Word3c2 = "Mexico City"
 
 const Word4f = "D"
 const Word4c = "Sao Paulo"
@@ -127,6 +128,7 @@ const Word9c = "Karachi"
 
 const Word10f = "J"
 const Word10c = "Delhi"
+const Word10c2 = "New Delhi"
 
 const Word11f = "K"
 const Word11c = "Mumbai"
@@ -286,7 +288,7 @@ document.getElementById("correction2").style.color = "red"
 }
 
 const Word3 = document.getElementById("3").value
-if (Word3.toLowerCase() == Word3c.toLowerCase() || Word3.toLowerCase() == Word3c.toLowerCase() + " "){
+if (Word3.toLowerCase() == Word3c.toLowerCase() || Word3.toLowerCase() == Word3c.toLowerCase() + " " || Word3.toLowerCase() == Word3c2.toLowerCase() || Word3.toLowerCase() == Word3c2.toLowerCase() + " "){
 document.getElementById("correction3").innerHTML = "✓";
 document.getElementById("correction3").style.color = "green"
 var quiz = quiz + 1
@@ -391,7 +393,7 @@ document.getElementById("correction9").style.color = "red"
 }
 
 const Word10 = document.getElementById("10").value
-if (Word10.toLowerCase() == Word10c.toLowerCase() || Word10.toLowerCase() == Word10c.toLowerCase() + " "){
+if (Word10.toLowerCase() == Word10c.toLowerCase() || Word10.toLowerCase() == Word10c.toLowerCase() + " " || Word10.toLowerCase() == Word10c2.toLowerCase() || Word10.toLowerCase() == Word10c2.toLowerCase() + " "){
 document.getElementById("correction10").innerHTML = "✓";
 document.getElementById("correction10").style.color = "green"
 var quiz = quiz + 1

@@ -9,10 +9,8 @@ function createMenu() {
             title: "Forces et interactions",
             dropdown: true,
             items: [
-                { title: "1", url: "https://timothee123456.github.io/eval/physique/2/schema1" },
-                { title: "2", url: "https://timothee123456.github.io/eval/physique/2/schema2" },
-                { title: "3", url: "https://timothee123456.github.io/eval/physique/2/schema3" }
-            ]
+                { title: "Les quatres caractéristiques de la force", url: "https://timothee123456.github.io/eval/physique/2/caracteristiques-force" },
+                ]
         },
         ];
 

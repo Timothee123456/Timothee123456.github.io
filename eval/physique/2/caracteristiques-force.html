@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Les quatres caractéristiques de la force</title>
+<link rel="stylesheet" href="https://timothee123456.github.io/eval/physique/style.css">
+</head>
+<body>
+<div id="menuContainer"></div>
+<script src="https://timothee123456.github.io/eval/physique/navigation.js"></script>
+<center>
+<h2 style="color:green" id="quiz"></h2>
+<nobr id="fr1"></nobr>
+<input autocomplete="off" id="1">
+<nobr id="correction1"></nobr>
+<br>
+<nobr id="fr2"></nobr>
+<input autocomplete="off" id="2">
+<nobr id="correction2"></nobr>
+<br>
+<nobr id="fr3"></nobr>
+<input autocomplete="off" id="3">
+<nobr id="correction3"></nobr>
+<br><!DOCTYPE html>
+<html>
+<head>
+    <title>Les quatres caractéristiques de la force</title>
+<link rel="stylesheet" href="https://timothee123456.github.io/eval/SVT/style.css">
+</head>
+<body>
+<div id="menuContainer"></div>
+<script src="https://timothee123456.github.io/eval/physique/navigation.js"></script>
+<center>
+<h2 style="color:green" id="quiz"></h2>
+<nobr>- </nobr>
+<input autocomplete="off" id="1">
+<span id="check1"></span>
+<br>
+<nobr>- </nobr>
+<input autocomplete="off" id="2">
+<span id="check2"></span>
+<br>
+<nobr>- </nobr>
+<input autocomplete="off" id="3">
+<span id="check3"></span>
+<br>
+<nobr>- </nobr>
+<input autocomplete="off" id="4">
+<span id="check4"></span>
+<br>
+<p></p>
+<a href="#" class="myButton" onclick="myFunction()" id="Terminado">Terminer</a>
+<p></p>
+<a href="#" class="myButton2" onclick="reset()">Réinitialiser</a>
+<p id="correction" style="color:green;"></p> </center>
+<script>
+const title = "Les quatres caractéristiques de la force";
+const correctAnswers = [
+    "direction",
+    "sens",
+    "point d'application"
+];
+
+document.getElementById("quiz").innerHTML = title;
+
+function reset() {
+    document.getElementById("Terminado").style.display = "inline-block";
+    for (let i = 1; i <= 4; i++) {
+        document.getElementById(String(i)).value = "";
+        document.getElementById(String(i)).style.color = "black";
+        document.getElementById(`check${i}`).innerHTML = "";
+    }
+    document.getElementById("correction").innerHTML = "";
+    document.getElementById("quiz").innerHTML = title;
+}
+function myFunction() {
+    document.getElementById("Terminado").style.display = "none";
+    const userAnswers = [];
+    for (let i = 1; i <= 4; i++) {
+        userAnswers.push(document.getElementById(String(i)).value.trim().toLowerCase());
+    }
+
+    let correctCount = 0;
+    let intensityOrValueProvided = false;
+    let checks = [false, false, false];
+    let missingAnswers = [];
+
+    for (let i = 0; i < correctAnswers.length; i++) {
+        let found = false;
+        for (let j = 0; j < userAnswers.length; j++) {
+            if (userAnswers[j].includes(correctAnswers[i])) {
+                if (!checks[i]) {
+                    correctCount++;
+                    checks[i] = true;
+                    document.getElementById(`check${j + 1}`).innerHTML = " ✓";
+                    document.getElementById(`check${j + 1}`).style.color = "green";
+                    found = true;
+                    break;
+                }
+            }
+        }
+        if (!found) {
+            missingAnswers.push(correctAnswers[i]);
+        }
+    }
+
+
+    let intensityOrValueIndex = -1;
+    for (let i = 0; i < userAnswers.length; i++) {
+        if (userAnswers[i].includes("intensité") || userAnswers[i].includes("valeur")) {
+            if (!intensityOrValueProvided) {
+                correctCount++;
+                intensityOrValueProvided = true;
+                intensityOrValueIndex = i;
+                document.getElementById(`check${i + 1}`).innerHTML = " ✓";
+                document.getElementById(`check${i + 1}`).style.color = "green";
+                break;
+            }
+        }
+    }
+    if (!intensityOrValueProvided) {
+        missingAnswers.push("intensité / valeur");
+    }
+
+    // Add crosses for incorrect answers:
+    for (let i = 0; i < userAnswers.length; i++) {
+        if (document.getElementById(`check${i + 1}`).innerHTML === "") { // No checkmark yet
+            document.getElementById(`check${i + 1}`).innerHTML = " ✕";
+            document.getElementById(`check${i + 1}`).style.color = "red";
+        }
+    }
+
+
+    document.getElementById("quiz").innerHTML = title + " " + correctCount + "/4";
+
+    if (correctCount < 4) {
+        document.getElementById("correction").innerHTML = "Réponses manquantes ou incorrectes: " + missingAnswers.join(", ");
+        document.getElementById("correction").style.color = "red";
+    } else {
+        document.getElementById("correction").innerHTML = "";
+    }
+}
+
+</script>
+</html>

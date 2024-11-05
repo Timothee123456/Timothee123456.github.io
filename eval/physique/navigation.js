@@ -10,6 +10,7 @@ function createMenu() {
             dropdown: true,
             items: [
                 { title: "Les quatres caractéristiques de la force", url: "https://timothee123456.github.io/eval/physique/2/caracteristiques-force" },
+                { title: "Types d'interactions", url: "https://timothee123456.github.io/eval/physique/2/interactions" },
                 ]
         },
         ];

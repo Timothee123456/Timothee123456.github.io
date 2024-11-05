@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Types d'interactions</title>
+<link rel="stylesheet" href="https://timothee123456.github.io/eval/physique/style.css">
+</head>
+<body>
+<div id="menuContainer"></div>
+<script src="https://timothee123456.github.io/eval/physique/navigation.js"></script>
+<center>
+<h2 style="color:green" id="quiz"></h2>
+<nobr id="fr1"></nobr>
+<input autocomplete="off" id="1">
+<nobr id="correction1"></nobr>
+<br>
+<nobr id="fr2"></nobr>
+<input autocomplete="off" id="2">
+<nobr id="correction2"></nobr>
+<br>
+<nobr id="fr3"></nobr>
+<input autocomplete="off" id="3">
+<nobr id="correction3"></nobr>
+<br>
+<nobr id="fr4"></nobr>
+<input autocomplete="off" id="4">
+<nobr id="correction4"></nobr>
+<p></p>
+<a href="#" class="myButton" onclick="myFunction()" id="Terminado">Terminer</a>
+<p></p>
+<a href="#" class="myButton2" onclick="reset()">Réinitialiser</a>
+</center>
+<script>
+const title = "Types d'interactions"
+const slash = "/4"
+const separation = " "
+
+const Word1f = "Quand les interactions"
+const Word1c = "de contact"
+
+const Word2f = "s'exerce sur une petite zone d'un objet, on dit que l'interaction est"
+const Word2c = "localisée"
+
+const Word3f = "Dans le cas contraire, on dit que l'interaction est"
+const Word3c = "répartie"
+
+const Word4f = "Les interactions qui ne touchent pas l'objet sont des interations à"
+const Word4c = "distance"
+
+
+document.getElementById("fr1").innerHTML = Word1f + separation
+document.getElementById("fr2").innerHTML = Word2f + separation
+document.getElementById("fr3").innerHTML = Word3f + separation
+document.getElementById("fr4").innerHTML = Word4f + separation
+
+document.getElementById("quiz").innerHTML = title
+
+function reset() {
+document.getElementById("Terminado").style.display = "inline-block"
+document.getElementById("1").value = "";
+document.getElementById("2").value = "";
+document.getElementById("3").value = "";
+document.getElementById("4").value = "";
+
+document.getElementById("correction1").innerHTML = "";
+document.getElementById("correction2").innerHTML = "";
+document.getElementById("correction3").innerHTML = "";
+document.getElementById("correction4").innerHTML = "";
+
+document.getElementById("1").style.color = "black"
+document.getElementById("2").style.color = "black"
+document.getElementById("3").style.color = "black"
+document.getElementById("4").style.color = "black"
+
+document.getElementById("quiz").innerHTML = title
+}
+
+function myFunction() {
+
+document.getElementById("Terminado").style.display = "none"
+var quiz = 0
+
+// Vérification pour chaque question (de 1 à 4)
+for (let i = 1; i <= 4; i++) {
+    const word = document.getElementById(String(i)).value;
+    const correctWord = eval(`Word${i}c`); // Récupère la bonne réponse dynamiquement
+
+    if (word.toLowerCase() == correctWord.toLowerCase() || word.toLowerCase() == correctWord.toLowerCase() + " ") {
+        document.getElementById(`correction${i}`).innerHTML = "✓";
+        document.getElementById(`correction${i}`).style.color = "green";
+        quiz++;
+    } else if (word == "") {
+        document.getElementById(String(i)).value = correctWord;
+        document.getElementById(String(i)).style.color = "red";
+    } else {
+        document.getElementById(`correction${i}`).innerHTML = " ✕ " + correctWord;
+        document.getElementById(`correction${i}`).style.color = "red";
+    }
+}
+
+document.getElementById("quiz").innerHTML = title + " " + quiz + slash;
+}
+</script>
+</html>

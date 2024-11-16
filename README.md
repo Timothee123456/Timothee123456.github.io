@@ -149,4 +149,4 @@ Visit PyPI and search for your module. Once you find it, you can **copy the inst
 Open a new terminal window or tab and **paste the installation command** to install your package from TestPyPI.
 
 
-Congratulations! You have successfully packaged and uploaded your Python module to PyPI, making it available for installation by others worldwide. Anyone can now dounload your module using `python3 -m pip install [your-package]` in their terminal
+Congratulations! You have successfully packaged and uploaded your Python module to PyPI, making it available for installation by others worldwide. Anyone can now dounload your module using `pip install [your-package]` in their terminal

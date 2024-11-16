@@ -6,18 +6,20 @@ This guide will walk you through the process of uploading your Python module to 
 ### Creating the package files
 You will now add files that are used to prepare the project for distribution. When you’re done, the project structure will look like this:
 ```
-packaging_tutorial/
+YOUR_MODULE_NAME/
 ├── LICENSE
 ├── pyproject.toml
 ├── README.md
 ├── src/
-│   └── example_package_YOUR_USERNAME_HERE/
+│   └── YOUR_MODULE_NAME
 │       ├── __init__.py
-│       └── example.py
+│       └── YOUR_MODULE_NAME.py
 └── tests/
 ```
-### Project.toml
-Open pyproject.toml and enter the following content.
+Replace YOUR_MODULE_NAME with the name of your module.
+
+### Creating Project.toml
+Open `pyproject.toml and enter the following content.
 ```
 [build-system]
 requires = ["hatchling"]
@@ -40,9 +42,39 @@ classifiers = [
 ```
 Replace YOUR_MODULE_NAME with the name of your module and YOUR_DESCRIPTION with a small discription you would like to add.
 
+### Creating README.md
+Open `README.md` and enter the following content. You can customize this if you’d like.
+```
+# Example Package
+
 This is a simple example package. You can use
 [GitHub-flavored Markdown](https://guides.github.com/features/mastering-markdown/)
 to write your content.
+```
+
+### Creating a LICENSE
+Open `README.md` and enter the following MIT licence.
+```
+Copyright (c) 2018 The Python Packaging Authority
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+```
 
 ## Uploading the files to PyPi
 ### Step 1: Navigate to Your Module Directory

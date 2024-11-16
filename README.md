@@ -106,7 +106,7 @@ python3 -m twine upload --repository testpypi dist/*
 Visit TestPyPI and search for your module. Once you find it, you can **copy the installation command provided on the page**.
 
 ### Download Your Package Installation
-Open a new terminal window or tab and **paste the installation command** to install your package from TestPyPI:
+Open a new terminal window or tab and **paste the installation command** to install your package from TestPyPI.
 
 ### Test Module
 Once installed, **test your module** to ensure everything is functioning as expected. You can do this by importing it in a Python shell or running any scripts that utilize it.
@@ -130,7 +130,7 @@ python3 -m twine upload --repository testpypi dist/*
 Visit TestPyPI and search for your module. Once you find it, you can **copy the installation command provided on the page**.
 
 ### Download Your Package Installation
-Open a new terminal window or tab and **paste the installation command** to install your package from TestPyPI:
+Open a new terminal window or tab and **paste the installation command** to install your package from TestPyPI.
 
 ### Test Module
 Once installed, **test your module** to ensure everything is functioning as expected. You can do this by importing it in a Python shell or running any scripts that utilize it.

@@ -101,7 +101,7 @@ source ~/my_venv/bin/activate
 ```bash
 cd Python/modules/YOUR_MODULE_NAME
 ```
-```
+```bash
 export PYTHONIOENCODING=utf-8
 ```
 
@@ -132,8 +132,9 @@ source ~/my_venv/bin/activate
 ```bash
 cd Python/modules/YOUR_MODULE_NAME
 ```
-```
+```bash
 export PYTHONIOENCODING=utf-8
+```
 
 ### Upload to PyPI
 You can now upload your package to main PyPI repository.

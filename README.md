@@ -1,6 +1,6 @@
 # Uploading Your Module to PyPI
 
-This guide will walk you through the process of testing your Python module on the Python Package Index (TestPyPI). Follow these steps to ensure a smooth upload and testing experience.
+This guide will walk you through the process of uploading your Python module on the Python Package Index (PyPI). Follow these steps to ensure a smooth upload and testing experience.
 
 ## Creating the files
 ### Creating the package files

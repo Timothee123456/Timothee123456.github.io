@@ -77,7 +77,10 @@ SOFTWARE.
 ```
 
 ### Navigating to Your Module Directory
-Open your terminal and change to the directory where your module is located. Replace YOUR_MODULE_NAME with the actual name of your module.
+First activate your virtual environment. Then, open your terminal and change to the directory where your module is located. Replace YOUR_MODULE_NAME with the actual name of your module.
+```bash
+source ~/my_venv/bin/activate
+```
 ```bash
 cd Python/modules/YOUR_MODULE_NAME
 ```
@@ -91,7 +94,10 @@ python3 -m build
 
 ## Uploading Your Module to TestPyPI
 ### Navigate to Your Module Directory
-Open your terminal and change to the directory where your module is located. Replace YOUR_MODULE_NAME with the actual name of your module.
+First activate your virtual environment. Then, open your terminal and change to the directory where your module is located. Replace YOUR_MODULE_NAME with the actual name of your module.
+```bash
+source ~/my_venv/bin/activate
+```
 ```bash
 cd Python/modules/YOUR_MODULE_NAME
 ```
@@ -115,7 +121,10 @@ Once installed, **test your module** to ensure everything is functioning as expe
 
 ## Uploading Your Module to PyPI
 ### Navigate to Your Module Directory
-Open your terminal and change to the directory where your module is located. Replace YOUR_MODULE_NAME with the actual name of your module.
+First activate your virtual environment. Then, open your terminal and change to the directory where your module is located. Replace YOUR_MODULE_NAME with the actual name of your module.
+```bash
+source ~/my_venv/bin/activate
+```
 ```bash
 cd Python/modules/YOUR_MODULE_NAME
 ```

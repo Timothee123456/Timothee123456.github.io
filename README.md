@@ -143,7 +143,7 @@ python3 -m twine upload dist/*
 ```
 
 ### Download Your Module
-Visit TestPyPI and search for your module. Once you find it, you can **copy the installation command provided on the page**.
+Visit PyPI and search for your module. Once you find it, you can **copy the installation command provided on the page**.
 
 ### Download Your Package Installation
 Open a new terminal window or tab and **paste the installation command** to install your package from TestPyPI.

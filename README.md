@@ -120,10 +120,10 @@ Open your terminal and change to the directory where your module is located. Rep
 cd Python/modules/YOUR_MODULE_NAME
 ```
 
-### Upload to TestPyPI
+### Upload to PyPI
 Next, upload your package to TestPyPI for testing purposes. This step ensures that everything works correctly before you publish it to the main PyPI repository.
 ```bash
-python3 -m twine upload --repository testpypi dist/*
+python3 -m twine upload dist/*
 ```
 
 ### Download Your Module
@@ -136,4 +136,4 @@ Open a new terminal window or tab and **paste the installation command** to inst
 Once installed, **test your module** to ensure everything is functioning as expected. You can do this by importing it in a Python shell or running any scripts that utilize it.
 
 
-Congratulations! You have successfully packaged and uploaded your Python module to PyPI, making it available for installation by others worldwide.
+Congratulations! You have successfully packaged and uploaded your Python module to PyPI, making it available for installation by others worldwide. Anyone can now dounload your module using `python3 -m pip install [your-package]` in their terminal

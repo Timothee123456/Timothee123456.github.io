@@ -2,7 +2,49 @@
 
 This guide will walk you through the process of uploading your Python module to the Python Package Index (PyPI). Follow these steps to ensure a smooth upload and testing experience.
 
-## Step-by-Step Instructions
+## Creating the files
+### Creating the package files
+You will now add files that are used to prepare the project for distribution. When you’re done, the project structure will look like this:
+```
+packaging_tutorial/
+├── LICENSE
+├── pyproject.toml
+├── README.md
+├── src/
+│   └── example_package_YOUR_USERNAME_HERE/
+│       ├── __init__.py
+│       └── example.py
+└── tests/
+```
+### Project.toml
+Open pyproject.toml and enter the following content.
+```
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "YOUR_MODULE_NAME"
+version = "0.0.1"
+authors = [
+  { name="Timothee" },
+]
+description = "YOUR_DESCRIPTION"
+readme = "README.md"
+requires-python = ">=3.8"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+```
+Replace YOUR_MODULE_NAME with the name of your module and YOUR_DESCRIPTION with a small discription you would like to add.
+
+This is a simple example package. You can use
+[GitHub-flavored Markdown](https://guides.github.com/features/mastering-markdown/)
+to write your content.
+
+## Uploading the files to PyPi
 ### Step 1: Navigate to Your Module Directory
 Open your terminal and change to the directory where your module is located. Replace YOUR_MODULE_NAME with the actual name of your module.
 ```bash

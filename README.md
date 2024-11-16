@@ -93,13 +93,16 @@ python3 -m build
 
 
 ## Uploading Your Module to TestPyPI
-### Navigate to Your Module Directory
-First activate your virtual environment. Then, open your terminal and change to the directory where your module is located. Replace YOUR_MODULE_NAME with the actual name of your module.
+### Preparing for upload
+First activate your virtual environment. Then, open your terminal and change to the directory where your module is located. Replace YOUR_MODULE_NAME with the actual name of your module. And finally activate PYTHONIOENCODING=utf-8.
 ```bash
 source ~/my_venv/bin/activate
 ```
 ```bash
 cd Python/modules/YOUR_MODULE_NAME
+```
+```
+export PYTHONIOENCODING=utf-8
 ```
 
 ### Upload to TestPyPI
@@ -121,13 +124,16 @@ Once installed, **test your module** to ensure everything is functioning as expe
 
 ## Uploading Your Module to PyPI
 ### Navigate to Your Module Directory
-First activate your virtual environment. Then, open your terminal and change to the directory where your module is located. Replace YOUR_MODULE_NAME with the actual name of your module.
+### Preparing for upload
+First activate your virtual environment. Then, open your terminal and change to the directory where your module is located. Replace YOUR_MODULE_NAME with the actual name of your module. And finally activate PYTHONIOENCODING=utf-8.
 ```bash
 source ~/my_venv/bin/activate
 ```
 ```bash
 cd Python/modules/YOUR_MODULE_NAME
 ```
+```
+export PYTHONIOENCODING=utf-8
 
 ### Upload to PyPI
 You can now upload your package to main PyPI repository.

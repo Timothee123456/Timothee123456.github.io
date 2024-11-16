@@ -121,7 +121,7 @@ cd Python/modules/YOUR_MODULE_NAME
 ```
 
 ### Upload to PyPI
-Next, upload your package to TestPyPI for testing purposes. This step ensures that everything works correctly before you publish it to the main PyPI repository.
+You can now upload your package to main PyPI repository.
 ```bash
 python3 -m twine upload dist/*
 ```

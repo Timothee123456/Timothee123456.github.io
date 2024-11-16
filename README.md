@@ -148,8 +148,5 @@ Visit TestPyPI and search for your module. Once you find it, you can **copy the 
 ### Download Your Package Installation
 Open a new terminal window or tab and **paste the installation command** to install your package from TestPyPI.
 
-### Test Module
-Once installed, **test your module** to ensure everything is functioning as expected. You can do this by importing it in a Python shell or running any scripts that utilize it.
-
 
 Congratulations! You have successfully packaged and uploaded your Python module to PyPI, making it available for installation by others worldwide. Anyone can now dounload your module using `python3 -m pip install [your-package]` in their terminal

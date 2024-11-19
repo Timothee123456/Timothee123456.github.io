@@ -24,6 +24,7 @@
             font-size: 24px;
             text-align: right;
             padding: 0 10px;
+            overflow-wrap: break-word; /*  Pour gérer les dépassements  */
         }
         .calculator button {
             height: 50px;
@@ -35,6 +36,18 @@
         }
         .calculator button:hover {
             background-color: #ddd;
+        }
+        #printButton {
+            grid-column: 1 / span 2;
+            margin-top: 5px;
+        }
+        #resultArea {
+            grid-column: 1 / span 4;
+            margin-top: 5px;
+            text-align: right;
+            font-size: 18px;
+            word-break: break-all; /*  Pour gérer les longs nombres  */
+            overflow-wrap: break-word;
         }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bignumber.js/9.1.1/bignumber.min.js"></script>
@@ -61,10 +74,12 @@
     <button onclick="appendToDisplay('3')">3</button>
     <button onclick="appendToDisplay('0')">0</button>
     <button onclick="appendToDisplay('.')">.</button>
-</div>
+    <button id="printButton" onclick="printResult()">Imprimer</button>
+    <div id="resultArea"></div>  </div>
 
 <script>
     let display = document.getElementById('display');
+    let resultArea = document.getElementById('resultArea'); //  Obtient l'élément pour afficher le résultat
     math.config({ number: 'BigNumber', precision: 1000 });
 
     function appendToDisplay(value) {
@@ -104,6 +119,10 @@
             }
         }
     });
+
+    function printResult() {
+        resultArea.textContent = display.value; // Affiche le résultat dans la div
+    }
 </script>
 
 </body>

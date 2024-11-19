@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculatrice</title>
+    <style>
+        body {
+            font-family: sans-serif;
+        }
+        .calculator {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-gap: 5px;
+            max-width: 300px;
+            margin: 50px auto;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .calculator input[type="text"] {
+            grid-column: 1 / span 4;
+            height: 40px;
+            font-size: 18px;
+            text-align: right;
+            padding: 0 10px;
+        }
+        .calculator button {
+            height: 40px;
+            font-size: 18px;
+            background-color: #eee;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .calculator button:hover {
+            background-color: #ddd;
+        }
+
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bignumber.js/9.1.1/bignumber.min.js"></script>
+</head>
+<body>
+
+<div class="calculator">
+    <input type="text" id="display" readonly>
+    <button onclick="clearDisplay()">C</button>
+    <button onclick="appendToDisplay('/')">/</button>
+    <button onclick="appendToDisplay('*')">*</button>
+    <button onclick="appendToDisplay('-')">-</button>
+    <button onclick="appendToDisplay('7')">7</button>
+    <button onclick="appendToDisplay('8')">8</button>
+    <button onclick="appendToDisplay('9')">9</button>
+    <button onclick="appendToDisplay('+')">+</button>
+    <button onclick="appendToDisplay('4')">4</button>
+    <button onclick="appendToDisplay('5')">5</button>
+    <button onclick="appendToDisplay('6')">6</button>
+    <button onclick="calculate()">=</button>
+    <button onclick="appendToDisplay('1')">1</button>
+    <button onclick="appendToDisplay('2')">2</button>
+    <button onclick="appendToDisplay('3')">3</button>
+    <button onclick="appendToDisplay('0')">0</button>
+    <button onclick="appendToDisplay('.')">.</button>
+
+
+</div>
+
+<script>
+    let display = document.getElementById('display');
+
+    function appendToDisplay(value) {
+        display.value += value;
+    }
+
+    function clearDisplay() {
+        display.value = '';
+    }
+
+    function calculate() {
+            try {
+                // Utilise BigNumber pour les calculs
+                let result = new BigNumber(eval(display.value));
+
+                // Configure l'arrondi (ici, ROUND_DOWN pour tronquer) et la précision
+                BigNumber.config({ DECIMAL_PLACES: 50, ROUNDING_MODE: BigNumber.ROUND_DOWN });
+
+                display.value = result.toFixed(50); // Affiche avec 50 décimales
+            } catch (error) {
+                display.value = 'Erreur';
+            }
+        }
+</script>
+
+</body>
+</html>

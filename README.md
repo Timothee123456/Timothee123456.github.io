@@ -19,7 +19,7 @@ YOUR_MODULE_NAME/
 Replace YOUR_MODULE_NAME with the name of your module.
 
 ### Creating Project.toml
-Open `pyproject.toml and enter the following content.
+Open `pyproject.toml` and enter the following content.
 ```
 [build-system]
 requires = ["hatchling"]

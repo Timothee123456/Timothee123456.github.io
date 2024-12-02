@@ -1,0 +1,201 @@
+<head>
+<title>Noël</title>
+<script>
+var date = "Dec 25, 2024 00:00:00"
+</script>
+<link rel="stylesheet" id="flipdown-css" href="https://timothee123456.github.io/countdown/green-white.css?ver=6.6.2" type="text/css" media="all">
+<script type="text/javascript" src="https://timothee123456.github.io/countdown/file2.js?ver=6.6.2?ver=6.6.2" id="jquery-core-js"></script>
+<script type="text/javascript" src="https://timothee123456.github.io/countdown/file1.js?ver=6.6.2?ver=6.6.2" id="flipdown-js"></script>
+
+
+<head>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: Arial, sans-serif;
+      background-color: black;
+      color: #333;
+      overflow: hidden;
+    }
+    h1 {
+      font-size: 80px;
+      color: #4CAF50;
+      text-align: center;
+      position: relative;
+      z-index: 10;
+    }
+
+
+  </style>
+
+
+
+
+ 
+        <!--end WordPress head-->
+       
+                <!--.site-branding-->
+               
+ 
+                            </head>
+
+
+
+
+  <h1 id="title">Noël est dans :</h1>
+<body><div id="flipdown" class="flipdown flipdown__theme-dark"></div>
+<canvas id="canvas"></canvas>
+                       
+                   
+                               
+              
+               
+                 
+
+ 
+        <!--end WordPress footer-->
+   
+    <script type="text/javascript">
+jQuery( document ).ready(function() {
+
+    if (jQuery("#flipdown").length) {
+        new FlipDown(Date.parse(date)  / 1000 ).start();
+    }
+   
+});
+    </script>
+
+
+
+  <script>
+    // Fireworks code
+    const author = "Alfa";
+    let canvas = document.getElementById("canvas");
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    let ctx = canvas.getContext("2d");
+
+    window.addEventListener("resize", () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    });
+
+    const gravity = 0.05;
+    const friction = 0.99;
+    let particles = [];
+    let particleCount = 1000;
+    let mouse;
+
+    class Particle {
+      constructor(x, y, r, color, velocity) {
+        this.x = x;
+        this.y = y;
+        this.r = r;
+        this.color = color;
+        this.dx = velocity.x;
+        this.dy = velocity.y;
+        this.opacity = 1;
+      }
+      draw() {
+        ctx.save();
+        ctx.globalAlpha = this.opacity;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+        ctx.fillStyle = this.color;
+        ctx.fill();
+        ctx.restore();
+        ctx.closePath();
+      }
+      update() {
+        this.draw();
+        this.dy += gravity;
+        this.dx *= friction;
+        this.dy *= friction;
+        this.x += this.dx;
+        this.y += this.dy;
+        this.opacity -= 0.01;
+      }
+    }
+
+    function animate() {
+      requestAnimationFrame(animate);
+      ctx.fillStyle = "rgba(0, 0, 0, .09)";
+      ctx.fillRect(0, 0, window.innerWidth, window.innerHeight);
+
+      particles.forEach((particle, i) => {
+        if (particle.opacity > 0) {
+          particle.update();
+        } else {
+          particles.splice(i, 1);
+        }
+      });
+    }
+
+    function explode(x = canvas.width / 2, y = canvas.height / 2) {
+      let speed = 40;
+      let angleIncrement = (Math.PI * 2) / particleCount;
+
+      for (let i = 0; i < particleCount; i++) {
+        particles.push(
+          new Particle(x, y, 2, `hsl(${Math.random() * 360}, 50%, 50%)`, {
+            x: Math.cos(angleIncrement * i) * Math.random() * speed,
+            y: Math.sin(angleIncrement * i) * Math.random() * speed
+          })
+        );
+      }
+    }
+
+    let fireworksInterval;
+
+    function startFireworks() {
+      animate();
+      explode();
+      fireworksInterval = setInterval(() => {
+        explode((Math.random() * window.innerWidth), (Math.random() * window.innerHeight));
+      }, 1000);
+    }
+
+    // Countdown code
+    var countDownDate = new Date(date).getTime();
+
+    var x = setInterval(function() {
+      var now = new Date().getTime();
+      var distance = countDownDate - now;
+
+      var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+      var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+      var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+      if (distance < 1) {
+    	clearInterval(x);
+        
+        // Masquer la div flipdown
+        document.getElementById("flipdown").style.display = "none";
+
+        document.getElementById("title").innerHTML = "Vous êtes officiellement en vacances !!!";
+        startFireworks(); // Start fireworks when countdown reaches zero
+       }
+        }, 10);
+
+    // Enable manual fireworks on click (only after countdown finishes)
+    canvas.addEventListener("click", (e) => {
+      if (new Date().getTime() >= countDownDate) {
+        mouse = {
+          x: e.clientX,
+          y: e.clientY
+        };
+        explode(mouse.x, mouse.y);
+      }
+    });
+  </script>
+</body>
+        explode(mouse.x, mouse.y);
+      }
+    });
+  </script>
+</body>

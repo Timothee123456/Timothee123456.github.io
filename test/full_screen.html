@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Fullscreen Toggle with 'E' Key</title>
+<style>
+  body {
+    margin: 0; /* Remove default body margin */
+    overflow: hidden; /* Prevent scrollbars when in fullscreen */
+  }
+
+  /* Optional styling for demonstration */
+  #content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f0f0f0;
+    font-size: 2em;
+  }
+</style>
+</head>
+<body>
+
+<div id="content">Press 'E' to toggle fullscreen</div>
+
+<script>
+  let isFullscreen = false;
+  const contentDiv = document.getElementById('content');
+
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'e' || event.key === 'E') {
+      if (!isFullscreen) {
+        if (contentDiv.requestFullscreen) {
+          contentDiv.requestFullscreen();
+        } else if (contentDiv.mozRequestFullScreen) { /* Firefox */
+          contentDiv.mozRequestFullScreen();
+        } else if (contentDiv.webkitRequestFullscreen) { /* Chrome, Safari and Opera */
+          contentDiv.webkitRequestFullscreen();
+        } else if (contentDiv.msRequestFullscreen) { /* IE/Edge */
+          contentDiv.msRequestFullscreen();
+        }
+      } else {
+        if (document.exitFullscreen) {
+          document.exitFullscreen();
+        } else if (document.mozCancelFullScreen) { /* Firefox */
+          document.mozCancelFullScreen();
+        } else if (document.webkitExitFullscreen) { /* Chrome, Safari and Opera */
+          document.webkitExitFullscreen();
+        } else if (document.msExitFullscreen) { /* IE/Edge */
+          document.msExitFullscreen();
+        }
+      }
+      isFullscreen = !isFullscreen; // Toggle the fullscreen state
+    }
+  });
+
+
+
+</script>
+
+</body>
+</html>

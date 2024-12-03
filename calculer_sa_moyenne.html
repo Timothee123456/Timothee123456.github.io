@@ -73,6 +73,7 @@ iframe {
 <br>
 <br>
 <a href="#" class="myButton" onclick="myFunction()" id="Suite">Suite</a>
+<a href="#" class="reset" onclick="myFunction()" id="Reset">Reset</a>
 <br>
 <p id="p"></p>
 <span class="NiveauAcquisition NiveauAcquisition_Pastille" style="background-color:#008000;color: #FFFFFF;" title="Dépassés" aria-label="Dépassés" id="span1">+</span>
@@ -81,14 +82,24 @@ iframe {
 <span class="NiveauAcquisition NiveauAcquisition_Pastille" style="background-color:#F80A0A;" title="Non atteints" aria-label="Non atteints" id="span4">&nbsp;</span>
 </center>
 <script>
-var span1 = document.getElementById("span1");
-span1.style.visibility = "hidden";
-var span2 = document.getElementById("span2");
-span2.style.visibility = "hidden";
-var span3 = document.getElementById("span3");
-span3.style.visibility = "hidden";
-var span4 = document.getElementById("span4");
-span4.style.visibility = "hidden";
+reset()
+function reset(){
+	var span1 = document.getElementById("span1");
+	span1.style.visibility = "hidden";
+	var span2 = document.getElementById("span2");
+	span2.style.visibility = "hidden";
+	var span3 = document.getElementById("span3");
+	span3.style.visibility = "hidden";
+	var span4 = document.getElementById("span4");
+	span4.style.visibility = "hidden";
+
+	document.getElementById("1").value = ""
+	document.getElementById("2").value = ""
+	document.getElementById("3").value = ""
+	document.getElementById("4").value = ""
+}
+
+	
 function myFunction(){
   var span1 = document.getElementById("span1");
   span1.style.visibility = "hidden";
@@ -125,5 +136,7 @@ function myFunction(){
   
 
 }
+
+
 </script>
 </html>

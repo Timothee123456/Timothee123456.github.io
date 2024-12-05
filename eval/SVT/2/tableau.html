@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Tableau de comparaison entre reproduction sexuée et asexuée</title>
+<link rel="stylesheet" href="https://timothee123456.github.io/eval/SVT/style.css">
+</head>
+<body>
+<div id="menuContainer"></div>
+<script src="https://timothee123456.github.io/eval/SVT/navigation.js"></script>
+<center>
+<h2 style="color:green" id="quiz"></h2>
+<nobr id="fr1"></nobr>
+<input autocomplete="off" id="1">
+<nobr id="correction1"></nobr>
+<br>
+<nobr id="fr2"></nobr>
+<input autocomplete="off" id="2">
+<nobr id="correction2"></nobr>
+<br>
+<nobr id="fr3"></nobr>
+<input autocomplete="off" id="3">
+<nobr id="correction3"></nobr>
+<br>
+<nobr id="fr4"></nobr>
+<input autocomplete="off" id="4">
+<nobr id="correction4"></nobr>
+<br>
+<nobr id="fr5"></nobr>
+<input autocomplete="off" id="5">
+<nobr id="correction5"></nobr>
+<br>
+<nobr id="fr6"></nobr>
+<input autocomplete="off" id="6">
+<nobr id="correction6"></nobr>
+<br>
+<nobr id="fr7"></nobr>
+<input autocomplete="off" id="7">
+<nobr id="correction7"></nobr>
+<br>
+<nobr id="fr8"></nobr>
+<input autocomplete="off" id="8">
+<nobr id="correction8"></nobr>
+<p></p>
+<a href="#" class="myButton" onclick="myFunction()" id="Terminado">Terminer</a>
+<p></p>
+<a href="#" class="myButton2" onclick="reset()">Réinitialiser</a>
+</center>
+<script>
+const title = "Tableau de comparaison entre reproduction sexuée et asexuée"
+const slash = "/4"
+const separation = " : "
+
+const Word1f = "Reproduction sexuée --> avantage principal"
+const Word1c = "descendance diverse"
+
+const Word2f = "Donc..."
+const Word2c = "meilleure adaptation"
+
+const Word3f = "Reproduction sexuée --> inconvéniant principal"
+const Word3c = "Besoin de partenaire sexuel"
+
+const Word4f = "Reproduction asexuée --> avantage principal"
+const Word4c = "reproduction seul"
+
+const Word5f = "Reproduction asexuée --> inconvéniant principal"
+const Word5c = "clone"
+
+const Word6f = "Donc..."
+const Word6c = "difficultés d'adaptation"
+
+const Word7f = ""
+const Word7c = ""
+
+const Word8f = "La science expliquant les variations du nombre d’individus d’une population au cours du temps, c'est le/la"
+const Word8c = "Dynamique de population"
+
+const Word9f = ""
+const Word9c = ""
+
+const Word10f = ""
+const Word10c = ""
+
+const Word11f = ""
+const Word11c = ""
+
+const Word12f = ""
+const Word12c = ""
+
+const Word13f = ""
+const Word13c = ""
+
+const Word14f = ""
+const Word14c = ""
+
+const Word15f = ""
+const Word15c = ""
+
+const Word16f = ""
+const Word16c = ""
+
+const Word17f = ""
+const Word17c = ""
+
+const Word18f = ""
+const Word18c = ""
+
+const Word19f = ""
+const Word19c = ""
+
+const Word20f = ""
+const Word20c = ""
+
+document.getElementById("quiz").innerHTML = title
+    
+document.getElementById("fr1").innerHTML = Word1f + separation
+document.getElementById("fr2").innerHTML = Word2f + separation
+document.getElementById("fr3").innerHTML = Word3f + separation
+document.getElementById("fr4").innerHTML = Word3f + separation
+document.getElementById("fr5").innerHTML = Word5f + separation
+document.getElementById("fr6").innerHTML = Word6f + separation
+document.getElementById("fr7").innerHTML = Word7f + separation
+document.getElementById("fr8").innerHTML = Word8f + separation
+document.getElementById("fr9").innerHTML = Word9f + separation
+document.getElementById("fr10").innerHTML = Word10f + separation
+document.getElementById("fr11").innerHTML = Word11f + separation
+document.getElementById("fr12").innerHTML = Word12f + separation
+document.getElementById("fr13").innerHTML = Word13f + separation
+document.getElementById("fr14").innerHTML = Word14f + separation
+document.getElementById("fr15").innerHTML = Word15f + separation
+document.getElementById("fr16").innerHTML = Word16f + separation
+document.getElementById("fr17").innerHTML = Word17f + separation
+document.getElementById("fr18").innerHTML = Word18f + separation
+document.getElementById("fr19").innerHTML = Word19f + separation
+document.getElementById("fr20").innerHTML = Word20f + separation
+
+function reset() {
+document.getElementById("Terminado").style.display = "inline";
+
+document.getElementById("correction1").innerHTML = ""
+document.getElementById("1").value = ""
+document.getElementById("1").style.color = "black"
+
+document.getElementById("correction2").innerHTML = ""
+document.getElementById("2").value = ""
+document.getElementById("2").style.color = "black"
+
+document.getElementById("correction3").innerHTML = ""
+document.getElementById("3").value = ""
+document.getElementById("3").style.color = "black"
+
+document.getElementById("correction4").innerHTML = ""
+document.getElementById("4").value = ""
+document.getElementById("4").style.color = "black"
+
+document.getElementById("correction5").innerHTML = ""
+document.getElementById("5").value = ""
+document.getElementById("5").style.color = "black"
+
+document.getElementById("correction6").innerHTML = ""
+document.getElementById("6").value = ""
+document.getElementById("6").style.color = "black"
+
+document.getElementById("correction7").innerHTML = ""
+document.getElementById("7").value = ""
+document.getElementById("7").style.color = "black"
+
+document.getElementById("correction8").innerHTML = ""
+document.getElementById("8").value = ""
+document.getElementById("8").style.color = "black"
+
+document.getElementById("correction9").innerHTML = ""
+document.getElementById("9").value = ""
+document.getElementById("9").style.color = "black"
+
+document.getElementById("correction10").innerHTML = ""
+document.getElementById("10").value = ""
+document.getElementById("10").style.color = "black"
+
+document.getElementById("correction11").innerHTML = ""
+document.getElementById("11").value = ""
+document.getElementById("11").style.color = "black"
+
+document.getElementById("correction12").innerHTML = ""
+document.getElementById("12").value = ""
+document.getElementById("12").style.color = "black"
+
+document.getElementById("correction13").innerHTML = ""
+document.getElementById("13").value = ""
+document.getElementById("13").style.color = "black"
+
+document.getElementById("correction14").innerHTML = ""
+document.getElementById("14").value = ""
+document.getElementById("14").style.color = "black"
+
+document.getElementById("correction15").innerHTML = ""
+document.getElementById("15").value = ""
+document.getElementById("15").style.color = "black"
+
+document.getElementById("correction16").innerHTML = ""
+document.getElementById("16").value = ""
+document.getElementById("16").style.color = "black"
+
+document.getElementById("correction17").innerHTML = ""
+document.getElementById("17").value = ""
+document.getElementById("17").style.color = "black"
+
+document.getElementById("correction18").innerHTML = ""
+document.getElementById("18").value = ""
+document.getElementById("18").style.color = "black"
+
+document.getElementById("correction19").innerHTML = ""
+document.getElementById("19").value = ""
+document.getElementById("19").style.color = "black"
+
+document.getElementById("correction20").innerHTML = ""
+document.getElementById("20").value = ""
+document.getElementById("20").style.color = "black"
+
+
+document.getElementById("quiz").innerHTML = title
+}
+
+function myFunction() {
+
+document.getElementById("Terminado").style.display = "none"
+var quiz = 0
+
+const Word1 = document.getElementById("1").value
+if (Word1.toLowerCase() == Word1c.toLowerCase() || Word1.toLowerCase() == Word1c.toLowerCase() + " "){
+document.getElementById("correction1").innerHTML = "✓";
+document.getElementById("correction1").style.color = "green"
+var quiz = quiz + 1
+}
+else if (Word1 == ""){
+document.getElementById("1").value = Word1c;
+document.getElementById("1").style.color = "red"
+}
+else {
+document.getElementById("correction1").innerHTML = "✕" + Word1c;
+document.getElementById("correction1").style.color = "red"
+}
+
+const Word2 = document.getElementById("2").value
+if (Word2.toLowerCase() == Word2c.toLowerCase() || Word2.toLowerCase() == Word2c.toLowerCase() + " "){
+document.getElementById("correction2").innerHTML = "✓";
+document.getElementById("correction2").style.color = "green"
+var quiz = quiz + 1
+}
+else if (Word2 == ""){
+document.getElementById("2").value = Word2c;
+document.getElementById("2").style.color = "red"
+}
+else {
+document.getElementById("correction2").innerHTML = "✕" + Word2c;
+document.getElementById("correction2").style.color = "red"
+}
+
+const Word3 = document.getElementById("3").value
+if (Word3.toLowerCase() == Word3c.toLowerCase() || Word3.toLowerCase() == Word3c.toLowerCase() + " "){
+document.getElementById("correction3").innerHTML = "✓";
+document.getElementById("correction3").style.color = "green"
+var quiz = quiz + 1
+}
+else if (Word3 == ""){
+document.getElementById("3").value = Word3c;
+document.getElementById("3").style.color = "red"
+}
+else {
+document.getElementById("correction3").innerHTML = "✕" + Word3c;
+document.getElementById("correction3").style.color = "red"
+}
+
+const Word4 = document.getElementById("4").value
+if (Word4.toLowerCase() == Word4c.toLowerCase() || Word4.toLowerCase() == Word4c.toLowerCase() + " "){
+document.getElementById("correction4").innerHTML = "✓";
+document.getElementById("correction4").style.color = "green"
+var quiz = quiz + 1
+}
+else if (Word4 == ""){
+document.getElementById("4").value = Word4c;
+document.getElementById("4").style.color = "red"
+}
+else {
+document.getElementById("correction4").innerHTML = "✕" + Word4c;
+document.getElementById("correction4").style.color = "red"
+}
+
+const Word5 = document.getElementById("5").value
+if (Word5.toLowerCase() == Word5c.toLowerCase() || Word5.toLowerCase() == Word5c.toLowerCase() + " "){
+document.getElementById("correction5").innerHTML = "✓";
+document.getElementById("correction5").style.color = "green"
+var quiz = quiz + 1
+}
+else if (Word5 == ""){
+document.getElementById("5").value = Word5c;
+document.getElementById("5").style.color = "red"
+}
+else {
+document.getElementById("correction5").innerHTML = "✕" + Word5c;
+document.getElementById("correction5").style.color = "red"
+}
+
+const Word6 = document.getElementById("6").value
+if (Word6.toLowerCase() == Word6c.toLowerCase() || Word6.toLowerCase() == Word6c.toLowerCase() + " "){
+document.getElementById("correction6").innerHTML = "✓";
+document.getElementById("correction6").style.color = "green"
+var quiz = quiz + 1
+}
+else if (Word6 == ""){
+document.getElementById("6").value = Word6c;
+document.getElementById("6").style.color = "red"
+}
+else {
+document.getElementById("correction6").innerHTML = "✕" + Word6c;
+document.getElementById("correction6").style.color = "red"
+}
+
+const Word7 = document.getElementById("7").value
+if (Word7.toLowerCase() == Word7c.toLowerCase() || Word7.toLowerCase() == Word7c.toLowerCase() + " "){
+document.getElementById("correction7").innerHTML = "✓";
+document.getElementById("correction7").style.color = "green"
+var quiz = quiz + 1
+}
+else if (Word7 == ""){
+document.getElementById("7").value = Word7c;
+document.getElementById("7").style.color = "red"
+}
+else {
+document.getElementById("correction7").innerHTML = "✕" + Word7c;
+document.getElementById("correction7").style.color = "red"
+}
+
+const Word8 = document.getElementById("8").value
+if (Word8.toLowerCase() == Word8c.toLowerCase() || Word8.toLowerCase() == Word8c.toLowerCase() + " "){
+document.getElementById("correction8").innerHTML = "✓";
+document.getElementById("correction8").style.color = "green"
+var quiz = quiz + 1
+}
+else if (Word8 == ""){
+document.getElementById("8").value = Word8c;
+document.getElementById("8").style.color = "red"
+}
+else {
+document.getElementById("correction8").innerHTML = "✕" + Word8c;
+document.getElementById("correction8").style.color = "red"
+}
+
+const Word9 = document.getElementById("9").value
+if (Word9.toLowerCase() == Word9c.toLowerCase() || Word9.toLowerCase() == Word9c.toLowerCase() + " "){
+document.getElementById("correction9").innerHTML = "✓";
+document.getElementById("correction9").style.color = "green"
+var quiz = quiz + 1
+}
+else if (Word9 == ""){
+document.getElementById("9").value = Word9c;
+document.getElementById("9").style.color = "red"
+}
+else {
+document.getElementById("correction9").innerHTML = "✕" + Word9c;
+document.getElementById("correction9").style.color = "red"
+}
+
+const Word10 = document.getElementById("10").value
+if (Word10.toLowerCase() == Word10c.toLowerCase() || Word10.toLowerCase() == Word10c.toLowerCase() + " "){
+document.getElementById("correction10").innerHTML = "✓";
+document.getElementById("correction10").style.color = "green"
+var quiz = quiz + 1
+}
+else if (Word10 == ""){
+document.getElementById("10").value = Word10c;
+document.getElementById("10").style.color = "red"
+}
+else {
+document.getElementById("correction10").innerHTML = "✕" + Word10c;
+document.getElementById("correction10").style.color = "red"
+}
+
+const Word11 = document.getElementById("11").value
+if (Word11.toLowerCase() == Word11c.toLowerCase() || Word11.toLowerCase() == Word11c.toLowerCase() + " "){
+document.getElementById("correction11").innerHTML = "✓";
+document.getElementById("correction11").style.color = "green"
+var quiz = quiz + 1
+}
+else if (Word11 == ""){
+document.getElementById("11").value = Word11c;
+document.getElementById("11").style.color = "red"
+}
+else {
+document.getElementById("correction11").innerHTML = "✕" + Word11c;
+document.getElementById("correction11").style.color = "red"
+}
+
+const Word12 = document.getElementById("12").value
+if (Word12.toLowerCase() == Word12c.toLowerCase() || Word12.toLowerCase() == Word12c.toLowerCase() + " "){
+document.getElementById("correction12").innerHTML = "✓";
+document.getElementById("correction12").style.color = "green"
+var quiz = quiz + 1
+}
+else if (Word12 == ""){
+document.getElementById("12").value = Word12c;
+document.getElementById("12").style.color = "red"
+}
+else {
+document.getElementById("correction12").innerHTML = "✕" + Word12c;
+document.getElementById("correction12").style.color = "red"
+}
+
+const Word13 = document.getElementById("13").value
+if (Word13.toLowerCase() == Word13c.toLowerCase() || Word13.toLowerCase() == Word13c.toLowerCase() + " "){
+document.getElementById("correction13").innerHTML = "✓";
+document.getElementById("correction13").style.color = "green"
+var quiz = quiz + 1
+}
+else if (Word13 == ""){
+document.getElementById("13").value = Word13c;
+document.getElementById("13").style.color = "red"
+}
+else {
+document.getElementById("correction13").innerHTML = "✕" + Word13c;
+document.getElementById("correction13").style.color = "red"
+}
+
+const Word14 = document.getElementById("14").value
+if (Word14.toLowerCase() == Word14c.toLowerCase() || Word14.toLowerCase() == Word14c.toLowerCase() + " "){
+document.getElementById("correction14").innerHTML = "✓";
+document.getElementById("correction14").style.color = "green"
+var quiz = quiz + 1
+}
+else if (Word14 == ""){
+document.getElementById("14").value = Word14c;
+document.getElementById("14").style.color = "red"
+}
+else {
+document.getElementById("correction14").innerHTML = "✕" + Word14c;
+document.getElementById("correction14").style.color = "red"
+}
+
+const Word15 = document.getElementById("15").value
+if (Word15.toLowerCase() == Word15c.toLowerCase() || Word15.toLowerCase() == Word15c.toLowerCase() + " "){
+document.getElementById("correction15").innerHTML = "✓";
+document.getElementById("correction15").style.color = "green"
+var quiz = quiz + 1
+}
+else if (Word15 == ""){
+document.getElementById("15").value = Word15c;
+document.getElementById("15").style.color = "red"
+}
+else {
+document.getElementById("correction15").innerHTML = "✕" + Word15c;
+document.getElementById("correction15").style.color = "red"
+}
+
+const Word16 = document.getElementById("16").value
+if (Word16.toLowerCase() == Word16c.toLowerCase() || Word16.toLowerCase() == Word16c.toLowerCase() + " "){
+document.getElementById("correction16").innerHTML = "✓";
+document.getElementById("correction16").style.color = "green"
+var quiz = quiz + 1
+}
+else if (Word16 == ""){
+document.getElementById("16").value = Word16c;
+document.getElementById("16").style.color = "red"
+}
+else {
+document.getElementById("correction16").innerHTML = "✕" + Word16c;
+document.getElementById("correction16").style.color = "red"
+}
+
+const Word17 = document.getElementById("17").value
+if (Word17.toLowerCase() == Word17c.toLowerCase() || Word17.toLowerCase() == Word17c.toLowerCase() + " "){
+document.getElementById("correction17").innerHTML = "✓";
+document.getElementById("correction17").style.color = "green"
+var quiz = quiz + 1
+}
+else if (Word17 == ""){
+document.getElementById("17").value = Word17c;
+document.getElementById("17").style.color = "red"
+}
+else {
+document.getElementById("correction17").innerHTML = "✕" + Word17c;
+document.getElementById("correction17").style.color = "red"
+}
+
+const Word18 = document.getElementById("18").value
+if (Word18.toLowerCase() == Word18c.toLowerCase() || Word18.toLowerCase() == Word18c.toLowerCase() + " "){
+document.getElementById("correction18").innerHTML = "✓";
+document.getElementById("correction18").style.color = "green"
+var quiz = quiz + 1
+}
+else if (Word18 == ""){
+document.getElementById("18").value = Word18c;
+document.getElementById("18").style.color = "red"
+}
+else {
+document.getElementById("correction18").innerHTML = "✕" + Word18c;
+document.getElementById("correction18").style.color = "red"
+}
+
+const Word19 = document.getElementById("19").value
+if (Word19.toLowerCase() == Word19c.toLowerCase() || Word19.toLowerCase() == Word19c.toLowerCase() + " "){
+document.getElementById("correction19").innerHTML = "✓";
+document.getElementById("correction19").style.color = "green"
+var quiz = quiz + 1
+}
+else if (Word19 == ""){
+document.getElementById("19").value = Word19c;
+document.getElementById("19").style.color = "red"
+}
+else {
+document.getElementById("correction19").innerHTML = "✕" + Word19c;
+document.getElementById("correction19").style.color = "red"
+}
+
+const Word20 = document.getElementById("20").value
+if (Word20.toLowerCase() == Word20c.toLowerCase() || Word20.toLowerCase() == Word20c.toLowerCase() + " "){
+document.getElementById("correction20").innerHTML = "✓";
+document.getElementById("correction20").style.color = "green"
+var quiz = quiz + 1
+}
+else if (Word20 == ""){
+document.getElementById("20").value = Word20c;
+document.getElementById("20").style.color = "red"
+}
+else {
+document.getElementById("correction20").innerHTML = "✕" + Word20c;
+document.getElementById("correction20").style.color = "red"
+}
+
+
+document.getElementById("quiz").innerHTML = title + " " + quiz + slash;
+}
+</script>
+</html>

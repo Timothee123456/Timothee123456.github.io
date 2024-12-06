@@ -55,40 +55,42 @@
   <header>
     <h1>Calendrier de l'avent</h1>
   </header>
-<a class="myButton">1</a>
-<a class="myButton">2</a>
-<a class="myButton">3</a>
-<a class="myButton">4</a>
-<a class="myButton">5</a>
-<a class="myButton">6</a>
-<a class="myButton">7</a>
-<a class="myButton">8</a>
-<a class="myButton">9</a>
-<a class="myButton">10</a>
-<a class="myButton">11</a>
-<a class="myButton">12</a>
-<a class="myButton">13</a>
-<a class="myButton">14</a>
-<a class="myButton">15</a>
-<a class="myButton">16</a>
-<a class="myButton">17</a>
-<a class="myButton">18</a>
-<a class="myButton">19</a>
-<a class="myButton">20</a>
-<a class="myButton">21</a>
-<a class="myButton">22</a>
-<a class="myButton">23</a>
+<a class="myButton" onclick='day(1)'>1</a>
+<a class="myButton" onclick='day(2)'>2</a>
+<a class="myButton" onclick='day(3)'>3</a>
+<a class="myButton" onclick='day(4)'>4</a>
+<a class="myButton" onclick='day(5)'>5</a>
+<a class="myButton" onclick='day(6)'>6</a>
+<a class="myButton" onclick='day(7)'>7</a>
+<a class="myButton" onclick='day(8)'>8</a>
+<a class="myButton" onclick='day(9)'>9</a>
+<a class="myButton" onclick='day(10)'>10</a>
+<a class="myButton" onclick='day(11)'>11</a>
+<a class="myButton" onclick='day(12)'>12</a>
+<a class="myButton" onclick='day(13)'>13</a>
+<a class="myButton" onclick='day(14)'>14</a>
+<a class="myButton" onclick='day(15)'>15</a>
+<a class="myButton" onclick='day(16)'>16</a>
+<a class="myButton" onclick='day(17)'>17</a>
+<a class="myButton" onclick='day(18)'>18</a>
+<a class="myButton" onclick='day(19)'>19</a>
+<a class="myButton" onclick='day(20)'>20</a>
+<a class="myButton" onclick='day(21)'>21</a>
+<a class="myButton" onclick='day(22)'>22</a>
+<a class="myButton" onclick='day(23)'>23</a>
 <a class="myButton" onclick='day(24)'>24</a>
-<h1 id='day'>h</h1>
+<center>
+<h2 id='day'></h2>
 <p id='funfact'></p>
+</center>
 </body>
 <script>
-facts[const faits amusants = [
+let faits_amusants = [
   "Il est impossible pour la plupart des gens de se lécher le coude.",
   "Un crocodile ne peut pas tirer la langue.",
   "Le cœur d'une crevette est dans sa tête.",
   "Il est physiquement impossible pour les cochons de regarder le ciel.",
-  "Le "sixième malade du cheikh, le sixième mouton malade" est considéré comme le virelangue le plus coriace de la langue anglaise.",
+  "Le 'sixième malade du cheikh, le sixième mouton malade' est considéré comme le virelangue le plus coriace de la langue anglaise.",
   "Si vous éternuez trop fort, vous pouvez vous fracturer une côte.",
   "Le port d'écouteurs pendant seulement une heure augmentera de 700 fois le nombre de bactéries dans votre oreille.",
   "Certains rouges à lèvres contiennent des écailles de poisson.",
@@ -96,7 +98,7 @@ facts[const faits amusants = [
   "Les élastiques durent plus longtemps lorsqu'ils sont réfrigérés.",
   "Il existe deux cartes de crédit pour chaque personne aux États-Unis.",
   "C'est impossible de fredonner en gardant le nez fermé.", // Essayez-le !
-  "Les mois commençant un dimanche auront toujours un "vendredi 13".",
+  "Les mois commençant un dimanche auront toujours un 'vendredi 13'.",
   "La licorne est l'animal national de l'Écosse.",
   "Le Canada mange plus de macaroni au fromage que n'importe quel autre pays au monde.",
   "Le ketchup était autrefois vendu comme médicament.",
@@ -108,10 +110,14 @@ facts[const faits amusants = [
   "L'oiseau Twitter a un nom – Larry.",
   "Il existe un sorcier officiel de Nouvelle-Zélande.",
   "Se cogner la tête contre un mur brûle 150 calories par heure."
-];]
-day(1)
+];
+
 function day(nb) {
 document.getElementById('day').innerHTML = 'Le fait amusant du ' + nb + ' décembre est:';
+document.getElementById('funfact').innerHTML = faits_amusants[nb]
 }
+
+const date = new Date();
+
 </script>
 </html>

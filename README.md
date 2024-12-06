@@ -1,6 +1,6 @@
 # Main site
 If you wanted to access the main site here it is: 
-> [Main site](timothee123456.github.io/main)
+> [Main site](/main)
 
 # Uploading Your Module to PyPI
 

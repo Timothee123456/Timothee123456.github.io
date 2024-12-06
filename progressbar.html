@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Expressions litérales</title>
+<style>
+.progress {
+	  display: inline-block;
+      border: 5px solid #0dff00;
+      border-radius: 5px;
+      width: 0%;
+      margin-bottom: 10px;
+      margin-top: 10px;
+       
+    }
+    
+.total {
+	  display: inline-block;
+      position: absolute;
+      left: 10px;
+  	  z-index: -1;
+      border: 5px solid #edfff0;
+      border-radius: 5px;
+      width: calc(100% - 80px);
+      margin-bottom: 10px;
+      margin-top: 10px;
+    }
+    
+.percent {
+ 	  color: #067300;
+	  display: inline-block;
+      position: absolute;
+  	  right: 10px;
+      margin-bottom: 10px;
+      margin-top: 5px;
+      
+    }
+    
+    
+   main {
+      height: calc(100vh - 60px)
+    }
+    
+    
+    
+</style>
+</head>
+<body>
+
+<main>
+
+
+
+</main>
+<nobr class='progress' id='bar'></nobr>
+<nobr class='total'></nobr>
+<nobr class='percent' id='percent'>11 / 20</nobr>
+</body>
+<script>
+function bar(nb){
+	const percent = nb / 20 * 100;
+    const px = nb / 20 * 61;
+	document.getElementById("bar").style.width = 'calc('+ percent + '% - ' + px + 'px)';
+    document.getElementById("percent").innerHTML = nb + ' / 20';
+    }
+</script>
+</html>
+
+

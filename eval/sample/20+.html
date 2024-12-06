@@ -4,6 +4,70 @@
     <title>
     Sample
     </title>
+<script>
+const title = "Quiz de vocabulaire"
+const nb = 10
+
+const Word1f = ""
+const Word1c = ""
+
+const Word2f = ""
+const Word2c = ""
+
+const Word3f = ""
+const Word3c = ""
+
+const Word4f = ""
+const Word4c = ""
+
+const Word5f = ""
+const Word5c = ""
+
+const Word6f = ""
+const Word6c = ""
+
+const Word7f = ""
+const Word7c = ""
+
+const Word8f = ""
+const Word8c = ""
+
+const Word9f = ""
+const Word9c = ""
+
+const Word10f = ""
+const Word10c = ""
+
+const Word11f = ""
+const Word11c = ""
+
+const Word12f = ""
+const Word12c = ""
+
+const Word13f = ""
+const Word13c = ""
+
+const Word14f = ""
+const Word14c = ""
+
+const Word15f = ""
+const Word15c = ""
+
+const Word16f = ""
+const Word16c = ""
+
+const Word17f = ""
+const Word17c = ""
+
+const Word18f = ""
+const Word18c = ""
+
+const Word19f = ""
+const Word19c = ""
+
+const Word20f = ""
+const Word20c = ""
+</script>
 </head>
 <body>
 <ul>
@@ -101,68 +165,8 @@
 </center>
 </body>
 <script>
-const title = "Quiz de vocabulaire"
-const slash = "/20"
-
-const Word1f = ""
-const Word1c = ""
-
-const Word2f = ""
-const Word2c = ""
-
-const Word3f = ""
-const Word3c = ""
-
-const Word4f = ""
-const Word4c = ""
-
-const Word5f = ""
-const Word5c = ""
-
-const Word6f = ""
-const Word6c = ""
-
-const Word7f = ""
-const Word7c = ""
-
-const Word8f = ""
-const Word8c = ""
-
-const Word9f = ""
-const Word9c = ""
-
-const Word10f = ""
-const Word10c = ""
-
-const Word11f = ""
-const Word11c = ""
-
-const Word12f = ""
-const Word12c = ""
-
-const Word13f = ""
-const Word13c = ""
-
-const Word14f = ""
-const Word14c = ""
-
-const Word15f = ""
-const Word15c = ""
-
-const Word16f = ""
-const Word16c = ""
-
-const Word17f = ""
-const Word17c = ""
-
-const Word18f = ""
-const Word18c = ""
-
-const Word19f = ""
-const Word19c = ""
-
-const Word20f = ""
-const Word20c = ""
+const slash = "/" + nb
+document.getElementById("quiz").innerHTML = title
 
 document.getElementById("fr1").innerHTML = Word1f
 document.getElementById("fr2").innerHTML = Word2f
@@ -185,96 +189,16 @@ document.getElementById("fr18").innerHTML = Word18f
 document.getElementById("fr19").innerHTML = Word19f
 document.getElementById("fr20").innerHTML = Word20f
 
-document.getElementById("quiz").innerHTML = title
-
-
 
 function reset() {
 document.getElementById("Terminado").style.display = "inline";
 
-document.getElementById("correction1").innerHTML = ""
-document.getElementById("1").value = ""
-document.getElementById("1").style.color = "black"
+for (let i = 1; i < nb + 1; i++) {
+	document.getElementById("correction" + i).innerHTML = ""
+	document.getElementById(i).value = ""
+	document.getElementById(i).style.color = "black"
 
-document.getElementById("correction2").innerHTML = ""
-document.getElementById("2").value = ""
-document.getElementById("2").style.color = "black"
-
-document.getElementById("correction3").innerHTML = ""
-document.getElementById("3").value = ""
-document.getElementById("3").style.color = "black"
-
-document.getElementById("correction4").innerHTML = ""
-document.getElementById("4").value = ""
-document.getElementById("4").style.color = "black"
-
-document.getElementById("correction5").innerHTML = ""
-document.getElementById("5").value = ""
-document.getElementById("5").style.color = "black"
-
-document.getElementById("correction6").innerHTML = ""
-document.getElementById("6").value = ""
-document.getElementById("6").style.color = "black"
-
-document.getElementById("correction7").innerHTML = ""
-document.getElementById("7").value = ""
-document.getElementById("7").style.color = "black"
-
-document.getElementById("correction8").innerHTML = ""
-document.getElementById("8").value = ""
-document.getElementById("8").style.color = "black"
-
-document.getElementById("correction9").innerHTML = ""
-document.getElementById("9").value = ""
-document.getElementById("9").style.color = "black"
-
-document.getElementById("correction10").innerHTML = ""
-document.getElementById("10").value = ""
-document.getElementById("10").style.color = "black"
-
-document.getElementById("correction11").innerHTML = ""
-document.getElementById("11").value = ""
-document.getElementById("11").style.color = "black"
-
-document.getElementById("correction12").innerHTML = ""
-document.getElementById("12").value = ""
-document.getElementById("12").style.color = "black"
-
-document.getElementById("correction13").innerHTML = ""
-document.getElementById("13").value = ""
-document.getElementById("13").style.color = "black"
-
-document.getElementById("correction14").innerHTML = ""
-document.getElementById("14").value = ""
-document.getElementById("14").style.color = "black"
-
-document.getElementById("correction15").innerHTML = ""
-document.getElementById("15").value = ""
-document.getElementById("15").style.color = "black"
-
-document.getElementById("correction16").innerHTML = ""
-document.getElementById("16").value = ""
-document.getElementById("16").style.color = "black"
-
-document.getElementById("correction17").innerHTML = ""
-document.getElementById("17").value = ""
-document.getElementById("17").style.color = "black"
-
-document.getElementById("correction18").innerHTML = ""
-document.getElementById("18").value = ""
-document.getElementById("18").style.color = "black"
-
-document.getElementById("correction19").innerHTML = ""
-document.getElementById("19").value = ""
-document.getElementById("19").style.color = "black"
-
-document.getElementById("correction20").innerHTML = ""
-document.getElementById("20").value = ""
-document.getElementById("20").style.color = "black"
-
-
-
-
+	
 document.getElementById("quiz").innerHTML = title
 }
 
@@ -742,6 +666,5 @@ h2 {font-size:45px}
 nobr {font-size:24px}
 </style>
 </html>
-
 
 

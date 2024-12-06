@@ -1,6 +1,6 @@
 # Main site
 If you wanted to access the main site here it is: 
-> [Main site](/main)
+> [Main site](/main.html)
 
 # Uploading Your Module to PyPI
 

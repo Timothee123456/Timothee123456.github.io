@@ -112,12 +112,30 @@ let faits_amusants = [
   "Se cogner la tête contre un mur brûle 150 calories par heure."
 ];
 
-function day(nb) {
-document.getElementById('day').innerHTML = 'Le fait amusant du ' + nb + ' décembre est:';
-document.getElementById('funfact').innerHTML = faits_amusants[nb]
-}
 
+
+
+function day(nb) {
 const date = new Date();
+const day = date.getUTCDay() + 1
+const month = date.getUTCMonth() + 1
+
+if (month == 12) {
+	if (day >= nb) {
+  		document.getElementById('day').innerHTML = 'Le fait amusant du ' + nb + ' décembre est:';
+  		document.getElementById('funfact').innerHTML = faits_amusants[nb]
+  	}
+    else {
+    	document.getElementById('day').innerHTML = "Vous n'êtes pas encore le " + nb + ' décembre';
+  		document.getElementById('funfact').innerHTML = ''
+    }
+}
+else {
+  document.getElementById('day').innerHTML = "Vous n'êtes pas en décembre!!!";
+}
+  
+  
+}
 
 </script>
 </html>

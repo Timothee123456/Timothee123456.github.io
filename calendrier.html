@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Calendrier de l'avent</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      color: #333;
+      margin: 0;
+      padding: 0;
+    }
+
+    header {
+      background-image: url('https://timothee123456.github.io/christams_tree.avif');
+      background-size: cover;
+      background-position: center;
+      padding: 100px;
+      text-align: center;
+    }
+
+    h1 {
+      color: #fff;
+      font-size: 36px;
+      margin: 0;
+    }
+    
+    .myButton {
+	box-shadow: 0px 0px 6px 2px #9fb4f2;
+	background:linear-gradient(to bottom, #7892c2 5%, #476e9e 100%);
+	background-color:#7892c2;
+	border-radius:36px;
+	border:2px solid #4e6096;
+	display:inline-block;
+	cursor:pointer;
+	color:#ffffff;
+	font-family:Arial;
+	font-size:19px;
+	padding:7px 12px;
+	text-decoration:none;
+	text-shadow:2px 1px 0px #283966;
+}
+.myButton:hover {
+	background:linear-gradient(to bottom, #476e9e 5%, #7892c2 100%);
+	background-color:#476e9e;
+}
+.myButton:active {
+	position:relative;
+	top:1px;
+}
+
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Calendrier de l'avent</h1>
+  </header>
+<a class="myButton">1</a>
+<a class="myButton">2</a>
+<a class="myButton">3</a>
+<a class="myButton">4</a>
+<a class="myButton">5</a>
+<a class="myButton">6</a>
+<a class="myButton">7</a>
+<a class="myButton">8</a>
+<a class="myButton">9</a>
+<a class="myButton">10</a>
+<a class="myButton">11</a>
+<a class="myButton">12</a>
+<a class="myButton">13</a>
+<a class="myButton">14</a>
+<a class="myButton">15</a>
+<a class="myButton">16</a>
+<a class="myButton">17</a>
+<a class="myButton">18</a>
+<a class="myButton">19</a>
+<a class="myButton">20</a>
+<a class="myButton">21</a>
+<a class="myButton">22</a>
+<a class="myButton">23</a>
+<a class="myButton" onclick='day(24)'>24</a>
+<h1 id='day'>h</h1>
+<p id='funfact'></p>
+</body>
+<script>
+facts[const faits amusants = [
+  "Il est impossible pour la plupart des gens de se lécher le coude.",
+  "Un crocodile ne peut pas tirer la langue.",
+  "Le cœur d'une crevette est dans sa tête.",
+  "Il est physiquement impossible pour les cochons de regarder le ciel.",
+  "Le "sixième malade du cheikh, le sixième mouton malade" est considéré comme le virelangue le plus coriace de la langue anglaise.",
+  "Si vous éternuez trop fort, vous pouvez vous fracturer une côte.",
+  "Le port d'écouteurs pendant seulement une heure augmentera de 700 fois le nombre de bactéries dans votre oreille.",
+  "Certains rouges à lèvres contiennent des écailles de poisson.",
+  "Comme les empreintes digitales, l'empreinte de la langue de chacun est différente.",
+  "Les élastiques durent plus longtemps lorsqu'ils sont réfrigérés.",
+  "Il existe deux cartes de crédit pour chaque personne aux États-Unis.",
+  "C'est impossible de fredonner en gardant le nez fermé.", // Essayez-le !
+  "Les mois commençant un dimanche auront toujours un "vendredi 13".",
+  "La licorne est l'animal national de l'Écosse.",
+  "Le Canada mange plus de macaroni au fromage que n'importe quel autre pays au monde.",
+  "Le ketchup était autrefois vendu comme médicament.",
+  "La population du Canada est à peu près la même que celle de la Californie.",
+  "L'alphabet hawaïen ne comporte que 12 lettres.",
+  "Si vous soulevez la queue d'un kangourou du sol, il ne peut pas sauter.",
+  "Il a neigé pendant 30 minutes dans le désert du Sahara le 18 février 1979.",
+  "Il y a plus de faux flamants roses dans le monde que de vrais.",
+  "L'oiseau Twitter a un nom – Larry.",
+  "Il existe un sorcier officiel de Nouvelle-Zélande.",
+  "Se cogner la tête contre un mur brûle 150 calories par heure."
+];]
+day(1)
+function day(nb) {
+document.getElementById('day').innerHTML = 'Le fait amusant du ' + nb + ' décembre est:';
+}
+</script>
+</html>

@@ -1,0 +1,41 @@
+<!DOCTYPE html>  
+<html>  
+<head>  
+<style>  
+.div1 {  
+  transform: matrix3d( 
+    1, 0, 1, 0, 
+    0, 1, 1, 0, 
+    1, 1, 0, 0, 
+    1, 1, 0, 1 
+  ); 
+  font-size: 30px; 
+  font-weight: bold; 
+  width: 280px; 
+  padding: 10px; 
+  background: beige; 
+  font-family: verdana;
+  border: 1px solid green;
+  transition: transform 1.5s;
+}  
+
+.div1:hover,
+.div1:focus {
+  transform: rotate3d(1, 1, 1, 0deg)
+  matrix3d(
+  1, 0, 1, 0,
+  0, 1, 1, 0,
+  1, 1, 0, 0,
+  1, 50, 0, 1);
+}
+</style>  
+</head>  
+<body>  
+
+<h1>The matrix3d() function</h1>
+<center>
+<div class="div1">W3Schools.com</div>  
+</center>
+
+</body>  
+</html>

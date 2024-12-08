@@ -5,83 +5,154 @@
   <style>
     body {
       font-family: Arial, sans-serif;
-      background-color: #f4f4f4;
       color: #333;
       margin: 0;
-      padding: 0;
+      
+      background-size: cover;
+      background-image: url('https://timothee123456.github.io/christams_tree.avif');
+      background-position: center top;
+      background-repeat: no-repeat;
+      height: vh;
     }
 
     header {
-      background-image: url('https://timothee123456.github.io/christams_tree.avif');
-      background-size: cover;
-      background-position: center;
-      padding: 100px;
+      background-color: #f4f4f4;
+      padding: 10px;
       text-align: center;
     }
 
     h1 {
-      color: #fff;
       font-size: 36px;
       margin: 0;
     }
     
+    .center {
+    	visibility: hidden;
+    	background-color: white;
+        height: 50%;
+        width: 70%;
+        text-align: center;
+        border: 3px solid green;
+        
+  		position: absolute;
+  		top: 50%;
+  		left: 50%;
+		-ms-transform: translate(-50%, -50%);
+  		transform: translate(-50%, -50%);
+	}
+    
+    
     .myButton {
-	box-shadow: 0px 0px 6px 2px #9fb4f2;
-	background:linear-gradient(to bottom, #7892c2 5%, #476e9e 100%);
-	background-color:#7892c2;
-	border-radius:36px;
 	border:2px solid #4e6096;
 	display:inline-block;
 	cursor:pointer;
 	color:#ffffff;
-	font-family:Arial;
 	font-size:19px;
-	padding:7px 12px;
-	text-decoration:none;
-	text-shadow:2px 1px 0px #283966;
+    text-align: center;
+    
+    height: 50%;
+    width: 10vw;
+    
+    transform: matrix3d( 
+      1, 0, 1, 0, 
+      0, 1, 1, 0, 
+      1, 1, 0, 0, 
+      1, 0, 0, 1 
+    );
+  	transition: transform 1.5s;
+}  
+
+
+.space {
+	display:inline-block;
+    height: 50%;
+    width: 5vw;
 }
+
+.line {
+	display:inline-block;
+    height: 10vh;
+    width: 90vw;
+}
+
+
+
 .myButton:hover {
 	background:linear-gradient(to bottom, #476e9e 5%, #7892c2 100%);
-	background-color:#476e9e;
 }
 .myButton:active {
 	position:relative;
 	top:1px;
 }
 
+.myClass {
+  transform: matrix3d(0.03, 0, 1, 0.001, 0, 1, 1, 0, 1, 1, 0, 0, 36, 0, 0, 1);
+}
+
   </style>
 </head>
 <body>
+<center>
   <header>
     <h1>Calendrier de l'avent</h1>
   </header>
-<a class="myButton" onclick='day(1)'>1</a>
-<a class="myButton" onclick='day(2)'>2</a>
-<a class="myButton" onclick='day(3)'>3</a>
-<a class="myButton" onclick='day(4)'>4</a>
-<a class="myButton" onclick='day(5)'>5</a>
-<a class="myButton" onclick='day(6)'>6</a>
-<a class="myButton" onclick='day(7)'>7</a>
-<a class="myButton" onclick='day(8)'>8</a>
-<a class="myButton" onclick='day(9)'>9</a>
-<a class="myButton" onclick='day(10)'>10</a>
-<a class="myButton" onclick='day(11)'>11</a>
-<a class="myButton" onclick='day(12)'>12</a>
-<a class="myButton" onclick='day(13)'>13</a>
-<a class="myButton" onclick='day(14)'>14</a>
-<a class="myButton" onclick='day(15)'>15</a>
-<a class="myButton" onclick='day(16)'>16</a>
-<a class="myButton" onclick='day(17)'>17</a>
-<a class="myButton" onclick='day(18)'>18</a>
-<a class="myButton" onclick='day(19)'>19</a>
-<a class="myButton" onclick='day(20)'>20</a>
-<a class="myButton" onclick='day(21)'>21</a>
-<a class="myButton" onclick='day(22)'>22</a>
-<a class="myButton" onclick='day(23)'>23</a>
-<a class="myButton" onclick='day(24)'>24</a>
-<center>
-<h2 id='day'></h2>
-<p id='funfact'></p>
+<div id="1" class="myButton" onclick='day(1)'>1</div>
+<div class='space'></div>
+<div id="2" class="myButton" onclick='day(2)'>2</div>
+<div class='space'></div>
+<div id="3" class="myButton" onclick='day(3)'>3</div>
+<div class='space'></div>
+<div id="4" class="myButton" onclick='day(4)'>4</div>
+<div class='space'></div>
+<div id="5" class="myButton" onclick='day(5)'>5</div>
+<div class='space'></div>
+<div id="6" class="myButton" onclick='day(6)'>6</div>
+
+<div class='line'></div>
+
+<div id="7" class="myButton" onclick='day(7)'>7</div>
+<div class='space'></div>
+<div id="8" class="myButton" onclick='day(8)'>8</div>
+<div class='space'></div>
+<div id="9" class="myButton" onclick='day(9)'>9</div>
+<div class='space'></div>
+<div id="10" class="myButton" onclick='day(10)'>10</div>
+<div class='space'></div>
+<div id="11" class="myButton" onclick='day(11)'>11</div>
+<div class='space'></div>
+<div id="12" class="myButton" onclick='day(12)'>12</div>
+
+<div class='line'></div>
+
+<div id="13" class="myButton" onclick='day(13)'>13</div>
+<div class='space'></div>
+<div id="14" class="myButton" onclick='day(14)'>14</div>
+<div class='space'></div>
+<div id="15" class="myButton" onclick='day(15)'>15</div>
+<div class='space'></div>
+<div id="16" class="myButton" onclick='day(16)'>16</div>
+<div class='space'></div>
+<div id="17" class="myButton" onclick='day(17)'>17</div>
+<div class='space'></div>
+<div id="18" class="myButton" onclick='day(18)'>18</div>
+
+<div class='line'></div>
+
+<div id="19" class="myButton" onclick='day(19)'>19</div>
+<div class='space'></div>
+<div id="20" class="myButton" onclick='day(20)'>20</div>
+<div class='space'></div>
+<div id="21" class="myButton" onclick='day(21)'>21</div>
+<div class='space'></div>
+<div id="22" class="myButton" onclick='day(22)'>22</div>
+<div class='space'></div>
+<div id="23" class="myButton" onclick='day(23)'>23</div>
+<div class='space'></div>
+<div id="24" class="myButton" onclick='day(24)'>24</div>
+<div class='center' id='div-center'>
+	<h2 id='day'></h2>
+	<p id='funfact'></p>
+</div>
 </center>
 </body>
 <script>
@@ -116,26 +187,27 @@ let faits_amusants = [
 
 
 function day(nb) {
-const date = new Date();
-const day = date.getUTCDay() + 1
-const month = date.getUTCMonth() + 1
+  const date = new Date();
+  const day = date.getDate()
+  const month = date.getMonth() + 1
 
-if (month == 12) {
-	if (day >= nb) {
-  		document.getElementById('day').innerHTML = 'Le fait amusant du ' + nb + ' décembre est:';
-  		document.getElementById('funfact').innerHTML = faits_amusants[nb]
-  	}
-    else {
-    	document.getElementById('day').innerHTML = "Vous n'êtes pas encore le " + nb + ' décembre';
-  		document.getElementById('funfact').innerHTML = ''
-    }
-}
-else {
-  document.getElementById('day').innerHTML = "Vous n'êtes pas en décembre!!!";
-}
-  
-  
-}
 
+  if (month == 12) {
+      if (day >= nb) {
+          const div = document.getElementById(nb);
+          div.classList.add('myClass');
+          setTimeout(function(){
+              document.getElementById('div-center').style.visibility = 'visible';
+  document.getElementById('day').innerHTML = 'Le fait amusant du ' + nb + ' décembre est:';
+  document.getElementById('funfact').innerHTML = faits_amusants[nb]
+          }, 1000);
+      }
+      else {
+          document.getElementById('div-center').style.visibility = 'hidden';
+      }
+  }
+
+  
+}
 </script>
 </html>

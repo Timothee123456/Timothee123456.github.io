@@ -1,3 +1,3 @@
 var x = document.createElement("TITLE");
-x.appendChild(title);
+x.appendChild(matiere + " - " + title);
 document.head.appendChild(x);

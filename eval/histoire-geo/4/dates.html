@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>
+    Sample
+    </title>
+<script>
+const title = "Dater des évènements"
+const nb = 10
+const separation = " : "
+
+const Word1f = "Serment du jeu de paume"
+const Word1c = "20 juin 1789"
+
+const Word2f = "Prise de la bastille"
+const Word2c = "14 juillet 1789"
+
+const Word3f = "La Grande Peur dans les campagnes"
+const Word3c = "du 22 julliet au 6 août 1789"
+
+const Word4f = "L'abolition des privilèges"
+const Word4c = "4 août 1789"
+
+const Word5f = "La tentative de fuite du roi"
+const Word5c = "juin 1791"
+
+const Word6f = "La prise du Palais des Tuilleries"
+const Word6c = "10 août 1792"
+
+const Word7f = "Exécution du roi"
+const Word7c = "21 janvier 1793"
+
+const Word8f = "La terreur"
+const Word8c = "du septembre 1792 à juillet 1794"
+
+const Word9f = "Mort de Robespierre (mort guillotiné)"
+const Word9c = "9 thermidor an 2 ou 28 juillet 1794"
+
+const Word10f = "Établissement du Directoire"
+const Word10c = "octobre 1795"
+
+const Word11f = ""
+const Word11c = ""
+
+const Word12f = ""
+const Word12c = ""
+
+const Word13f = ""
+const Word13c = ""
+
+const Word14f = ""
+const Word14c = ""
+
+const Word15f = ""
+const Word15c = ""
+
+const Word16f = ""
+const Word16c = ""
+
+const Word17f = ""
+const Word17c = ""
+
+const Word18f = ""
+const Word18c = ""
+
+const Word19f = ""
+const Word19c = ""
+
+const Word20f = ""
+const Word20c = ""
+
+</script>
+</head>
+<body>
+<ul>
+  <li class="li"><a href="https://timothee123456.github.io/eval/sample/5">Sample 5</a></li>
+  <li class="li"><a href="https://timothee123456.github.io/eval/sample/10">Sample 10</a></li>
+  <li class="li"><a href="https://timothee123456.github.io/eval/sample/15">Sample 15</a></li>
+  <li class="li"><a class="active" href="https://timothee123456.github.io/eval/sample/20">Sample 20</a></li>
+  <li class="li" style="float:right"><a href="https://timothee123456.github.io/eval/leçons/...">Leçons</a></li></li>
+</ul>
+<center>
+<h2 style="color:green" id="quiz"></h2>
+<nobr id="fr1"></nobr>
+<input autocomplete="off" id="1">
+<nobr id="correction1"></nobr>
+<br>
+<nobr id="fr2"></nobr>
+<input autocomplete="off" id="2">
+<nobr id="correction2"></nobr>
+<br>
+<nobr id="fr3"></nobr>
+<input autocomplete="off" id="3">
+<nobr id="correction3"></nobr>
+<br>
+<nobr id="fr4"></nobr>
+<input autocomplete="off" id="4">
+<nobr id="correction4"></nobr>
+<br>
+<nobr id="fr5"></nobr>
+<input autocomplete="off" id="5">
+<nobr id="correction5"></nobr>
+<br>
+<nobr id="fr6"></nobr>
+<input autocomplete="off" id="6">
+<nobr id="correction6"></nobr>
+<br>
+<nobr id="fr7"></nobr>
+<input autocomplete="off" id="7">
+<nobr id="correction7"></nobr>
+<br>
+<nobr id="fr8"></nobr>
+<input autocomplete="off" id="8">
+<nobr id="correction8"></nobr>
+<br>
+<nobr id="fr9"></nobr>
+<input autocomplete="off" id="9">
+<nobr id="correction9"></nobr>
+<br>
+<nobr id="fr10"></nobr>
+<input autocomplete="off" id="10">
+<nobr id="correction10"></nobr>
+<p></p>
+<a href="#" class="myButton" onclick="myFunction()" id="Terminado">Terminer</a>
+<p></p>
+<a href="#" class="myButton2" onclick="reset()">Réinitialiser</a>
+</center>
+</body>
+<script>
+const slash = "/" + nb
+let Wordf = []
+let Wordc = []
+document.getElementById("quiz").innerHTML = title
+
+document.getElementById("fr1").innerHTML = Word1f + separation;
+Wordf.push(Word1f);
+Wordc.push(Word1c);
+
+document.getElementById("fr2").innerHTML = Word2f + separation;
+Wordf.push(Word2f);
+Wordc.push(Word2c);
+
+document.getElementById("fr3").innerHTML = Word3f + separation;
+Wordf.push(Word3f);
+Wordc.push(Word3c);
+
+document.getElementById("fr4").innerHTML = Word4f + separation;
+Wordf.push(Word4f);
+Wordc.push(Word4c);
+
+document.getElementById("fr5").innerHTML = Word5f + separation;
+Wordf.push(Word5f);
+Wordc.push(Word5c);
+
+document.getElementById("fr6").innerHTML = Word6f + separation;
+Wordf.push(Word6f);
+Wordc.push(Word6c);
+
+document.getElementById("fr7").innerHTML = Word7f + separation;
+Wordf.push(Word7f);
+Wordc.push(Word7c);
+
+document.getElementById("fr8").innerHTML = Word8f + separation;
+Wordf.push(Word8f);
+Wordc.push(Word8c);
+
+document.getElementById("fr9").innerHTML = Word9f + separation;
+Wordf.push(Word9f);
+Wordc.push(Word9c);
+
+document.getElementById("fr10").innerHTML = Word10f + separation;
+Wordf.push(Word10f);
+Wordc.push(Word10c);
+
+document.getElementById("fr11").innerHTML = Word11f + separation;
+Wordf.push(Word11f);
+Wordc.push(Word11c);
+
+document.getElementById("fr12").innerHTML = Word12f + separation;
+Wordf.push(Word12f);
+Wordc.push(Word12c);
+
+document.getElementById("fr13").innerHTML = Word13f + separation;
+Wordf.push(Word13f);
+Wordc.push(Word13c);
+
+document.getElementById("fr14").innerHTML = Word14f + separation;
+Wordf.push(Word14f);
+Wordc.push(Word14c);
+
+document.getElementById("fr15").innerHTML = Word15f + separation;
+Wordf.push(Word15f);
+Wordc.push(Word15c);
+
+document.getElementById("fr16").innerHTML = Word16f + separation;
+Wordf.push(Word16f);
+Wordc.push(Word16c);
+
+document.getElementById("fr17").innerHTML = Word17f + separation;
+Wordf.push(Word17f);
+Wordc.push(Word17c);
+
+document.getElementById("fr18").innerHTML = Word18f + separation;
+Wordf.push(Word18f);
+Wordc.push(Word18c);
+
+document.getElementById("fr19").innerHTML = Word19f + separation;
+Wordf.push(Word19f);
+Wordc.push(Word19c);
+
+document.getElementById("fr20").innerHTML = Word20f + separation;
+Wordf.push(Word20f);
+Wordc.push(Word20c);
+
+
+function reset() {
+document.getElementById("Terminado").style.display = "inline";
+
+for (let i = 1; i < nb + 1; i++) {
+	document.getElementById("correction" + i).innerHTML = ""
+	document.getElementById(i).value = ""
+	document.getElementById(i).style.color = "black"
+}
+	
+document.getElementById("quiz").innerHTML = title
+}
+
+
+
+function myFunction() {
+
+document.getElementById("Terminado").style.display = "none"
+var quiz = 0
+
+for (let i = 1; i < nb + 1; i++) {
+	
+	const Word = document.getElementById(i).value
+	if (Word.toLowerCase() == Wordc[i-1].toLowerCase() || Word.toLowerCase() == Wordc[i-1].toLowerCase() + " "){
+	document.getElementById("correction" + i).innerHTML = "✓";
+	document.getElementById("correction" + i).style.color = "green"
+	var quiz = quiz + 1
+	}
+	else if (Word == ""){
+	document.getElementById(i).value = Wordc[i-1];
+	document.getElementById(i).style.color = "red"
+	}
+	else {
+	document.getElementById("correction" + i).innerHTML = "✕" + Wordc[i-1];
+	document.getElementById("correction" + i).style.color = "red"
+	}
+}
+
+document.getElementById("quiz").innerHTML = title + " " + quiz + slash;
+}
+</script>
+
+
+
+
+
+
+
+	
+	<style>
+.active {
+  background-color: #04AA6D;
+}
+.language {
+  background-color: #1ffff4;
+}
+ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background-color: #333;
+}
+
+.li {
+  float: left;
+  border-right:1px solid #bbb;
+}
+
+li:last-child {
+  border-right: none;
+}
+
+li a {
+  display: block;
+  color: white;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+}
+
+li a:hover:not(.active) {
+  background-color: #111;
+}
+
+
+.navbar a:hover, .dropdown:hover .dropbtn {
+  background-color: #111;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color:#333 ;
+  min-width: 100px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+}
+
+.dropdown-content a {
+    display: block;
+  color: white;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+  }
+
+.dropdown-content a:hover {
+  background-color: #ddd;
+}
+
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+
+.button {
+  font-size: 16px;  
+  border: none;
+  outline: none;
+  color: white;
+  padding: 14px 16px;
+  background-color: inherit;
+  font-family: inherit;
+  margin: 0;
+}
+img {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+button a {
+  color: black;
+  text-decoration: none;
+}
+
+
+
+
+
+
+
+
+.myButton {
+	box-shadow: 2px 3px 0px 0px #8a2a21;
+	background:linear-gradient(to bottom, #c62d1f 5%, #f24437 100%);
+	background-color:#c62d1f;
+	border-radius:42px;
+	display:inline-block;
+	cursor:pointer;
+	color:#ffffff;
+	font-family:Arial;
+	font-size:22px;
+	padding:7px 18px;
+	text-decoration:none;
+	text-shadow:1px -1px 3px #810e05;
+}
+.myButton:hover {
+	background:linear-gradient(to bottom, #f24437 5%, #c62d1f 100%);
+	background-color:#f24437;
+}
+.myButton:active {
+	position:relative;
+	top:1px;
+}
+
+
+
+
+.myButton2 {
+	box-shadow: 0px 1px 0px -3px #f0f7fa;
+	background:linear-gradient(to bottom, #33bdef 5%, #019ad2 100%);
+	background-color:#33bdef;
+	border-radius:42px;
+	border:2px solid #057fd0;
+	display:inline-block;
+	cursor:pointer;
+	color:#ffffff;
+	font-family:Arial;
+	font-size:22px;
+	padding:8px 10px;
+	text-decoration:none;
+	text-shadow:3px -2px 4px #5b6178;
+}
+.myButton2:hover {
+	background:linear-gradient(to bottom, #019ad2 5%, #33bdef 100%);
+	background-color:#019ad2;
+}
+.myButton2:active {
+	position:relative;
+	top:1px;
+}
+body {
+  height:1000px;
+  background-color: 02fae; /* For browsers that do not support gradients */
+  background-image: linear-gradient(to bottom right, #02fae9, yellow);
+}
+input {font-size:21px}
+h2 {font-size:45px}
+nobr {font-size:24px}
+</style>
+</html>

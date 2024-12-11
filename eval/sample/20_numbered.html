@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>
+    Sample
+    </title>
+<script>
+const title = "Quiz de vocabulaire"
+const nb = 20
+const separation = ". "
+
+const Word1f = "1"
+const Word1c = ""
+
+const Word2f = "2"
+const Word2c = ""
+
+const Word3f = "3"
+const Word3c = ""
+
+const Word4f = "4"
+const Word4c = ""
+
+const Word5f = "5"
+const Word5c = ""
+
+const Word6f = "6"
+const Word6c = ""
+
+const Word7f = "7"
+const Word7c = ""
+
+const Word8f = "8"
+const Word8c = ""
+
+const Word9f = "9"
+const Word9c = ""
+
+const Word10f = "10"
+const Word10c = ""
+
+const Word11f = "11"
+const Word11c = ""
+
+const Word12f = "12"
+const Word12c = ""
+
+const Word13f = "13"
+const Word13c = ""
+
+const Word14f = "14"
+const Word14c = ""
+
+const Word15f = "15"
+const Word15c = ""
+
+const Word16f = "16"
+const Word16c = ""
+
+const Word17f = "17"
+const Word17c = ""
+
+const Word18f = "18"
+const Word18c = ""
+
+const Word19f = "19"
+const Word19c = ""
+
+const Word20f = "20"
+const Word20c = ""
+
+</script>
+<link rel="stylesheet" href="https://timothee123456.github.io/eval/sample/style.css">
+</head>
+<body>
+<!-- This is the div where the menu will be dynamically inserted -->
+<div id="menuContainer"></div>
+
+<!-- Link to the JavaScript file -->
+<script src="https://timothee123456.github.io/eval/sample/navigation.js"></script>
+<center>
+<h2 style="color:green" id="quiz"></h2>
+<nobr id="fr1"></nobr>
+<input autocomplete="off" id="1">
+<nobr id="correction1"></nobr>
+<br>
+<nobr id="fr2"></nobr>
+<input autocomplete="off" id="2">
+<nobr id="correction2"></nobr>
+<br>
+<nobr id="fr3"></nobr>
+<input autocomplete="off" id="3">
+<nobr id="correction3"></nobr>
+<br>
+<nobr id="fr4"></nobr>
+<input autocomplete="off" id="4">
+<nobr id="correction4"></nobr>
+<br>
+<nobr id="fr5"></nobr>
+<input autocomplete="off" id="5">
+<nobr id="correction5"></nobr>
+<br>
+<nobr id="fr6"></nobr>
+<input autocomplete="off" id="6">
+<nobr id="correction6"></nobr>
+<br>
+<nobr id="fr7"></nobr>
+<input autocomplete="off" id="7">
+<nobr id="correction7"></nobr>
+<br>
+<nobr id="fr8"></nobr>
+<input autocomplete="off" id="8">
+<nobr id="correction8"></nobr>
+<br>
+<nobr id="fr9"></nobr>
+<input autocomplete="off" id="9">
+<nobr id="correction9"></nobr>
+<br>
+<nobr id="fr10"></nobr>
+<input autocomplete="off" id="10">
+<nobr id="correction10"></nobr>
+<br>
+<nobr id="fr11"></nobr>
+<input autocomplete="off" id="11">
+<nobr id="correction11"></nobr>
+<br>
+<nobr id="fr12"></nobr>
+<input autocomplete="off" id="12">
+<nobr id="correction12"></nobr>
+<br>
+<nobr id="fr13"></nobr>
+<input autocomplete="off" id="13">
+<nobr id="correction13"></nobr>
+<br>
+<nobr id="fr14"></nobr>
+<input autocomplete="off" id="14">
+<nobr id="correction14"></nobr>
+<br>
+<nobr id="fr15"></nobr>
+<input autocomplete="off" id="15">
+<nobr id="correction15"></nobr>
+<br>
+<nobr id="fr16"></nobr>
+<input autocomplete="off" id="16">
+<nobr id="correction16"></nobr>
+<br>
+<nobr id="fr17"></nobr>
+<input autocomplete="off" id="17">
+<nobr id="correction17"></nobr>
+<br>
+<nobr id="fr18"></nobr>
+<input autocomplete="off" id="18">
+<nobr id="correction18"></nobr>
+<br>
+<nobr id="fr19"></nobr>
+<input autocomplete="off" id="19">
+<nobr id="correction19"></nobr>
+<br>
+<nobr id="fr20"></nobr>
+<input autocomplete="off" id="20">
+<nobr id="correction20"></nobr>
+<p></p>
+<a href="#" class="myButton" onclick="myFunction()" id="Terminado">Terminer</a>
+<p></p>
+<a href="#" class="myButton2" onclick="reset()">Réinitialiser</a>
+</center>
+</body>
+<script>
+const slash = "/" + nb
+let Wordf = []
+let Wordc = []
+document.getElementById("quiz").innerHTML = title
+
+document.getElementById("fr1").innerHTML = Word1f + separation;
+Wordf.push(Word1f);
+Wordc.push(Word1c);
+
+document.getElementById("fr2").innerHTML = Word2f + separation;
+Wordf.push(Word2f);
+Wordc.push(Word2c);
+
+document.getElementById("fr3").innerHTML = Word3f + separation;
+Wordf.push(Word3f);
+Wordc.push(Word3c);
+
+document.getElementById("fr4").innerHTML = Word4f + separation;
+Wordf.push(Word4f);
+Wordc.push(Word4c);
+
+document.getElementById("fr5").innerHTML = Word5f + separation;
+Wordf.push(Word5f);
+Wordc.push(Word5c);
+
+document.getElementById("fr6").innerHTML = Word6f + separation;
+Wordf.push(Word6f);
+Wordc.push(Word6c);
+
+document.getElementById("fr7").innerHTML = Word7f + separation;
+Wordf.push(Word7f);
+Wordc.push(Word7c);
+
+document.getElementById("fr8").innerHTML = Word8f + separation;
+Wordf.push(Word8f);
+Wordc.push(Word8c);
+
+document.getElementById("fr9").innerHTML = Word9f + separation;
+Wordf.push(Word9f);
+Wordc.push(Word9c);
+
+document.getElementById("fr10").innerHTML = Word10f + separation;
+Wordf.push(Word10f);
+Wordc.push(Word10c);
+
+document.getElementById("fr11").innerHTML = Word11f + separation;
+Wordf.push(Word11f);
+Wordc.push(Word11c);
+
+document.getElementById("fr12").innerHTML = Word12f + separation;
+Wordf.push(Word12f);
+Wordc.push(Word12c);
+
+document.getElementById("fr13").innerHTML = Word13f + separation;
+Wordf.push(Word13f);
+Wordc.push(Word13c);
+
+document.getElementById("fr14").innerHTML = Word14f + separation;
+Wordf.push(Word14f);
+Wordc.push(Word14c);
+
+document.getElementById("fr15").innerHTML = Word15f + separation;
+Wordf.push(Word15f);
+Wordc.push(Word15c);
+
+document.getElementById("fr16").innerHTML = Word16f + separation;
+Wordf.push(Word16f);
+Wordc.push(Word16c);
+
+document.getElementById("fr17").innerHTML = Word17f + separation;
+Wordf.push(Word17f);
+Wordc.push(Word17c);
+
+document.getElementById("fr18").innerHTML = Word18f + separation;
+Wordf.push(Word18f);
+Wordc.push(Word18c);
+
+document.getElementById("fr19").innerHTML = Word19f + separation;
+Wordf.push(Word19f);
+Wordc.push(Word19c);
+
+document.getElementById("fr20").innerHTML = Word20f + separation;
+Wordf.push(Word20f);
+Wordc.push(Word20c);
+
+
+function reset() {
+document.getElementById("Terminado").style.display = "inline";
+
+for (let i = 1; i < nb + 1; i++) {
+	document.getElementById("correction" + i).innerHTML = ""
+	document.getElementById(i).value = ""
+	document.getElementById(i).style.color = "black"
+}
+	
+document.getElementById("quiz").innerHTML = title
+}
+
+
+
+function myFunction() {
+
+document.getElementById("Terminado").style.display = "none"
+var quiz = 0
+
+for (let i = 1; i < nb + 1; i++) {
+	
+	const Word = document.getElementById(i).value
+	if (Word.toLowerCase() == Wordc[i-1].toLowerCase() || Word.toLowerCase() == Wordc[i-1].toLowerCase() + " "){
+	document.getElementById("correction" + i).innerHTML = "✓";
+	document.getElementById("correction" + i).style.color = "green"
+	var quiz = quiz + 1
+	}
+	else if (Word == ""){
+	document.getElementById(i).value = Wordc[i-1];
+	document.getElementById(i).style.color = "red"
+	}
+	else {
+	document.getElementById("correction" + i).innerHTML = "✕" + Wordc[i-1];
+	document.getElementById("correction" + i).style.color = "red"
+	}
+}
+
+document.getElementById("quiz").innerHTML = title + " " + quiz + slash;
+}
+</script>
+<link rel="stylesheet" href="https://timothee123456.github.io/eval/sample/style.css">
+</html>

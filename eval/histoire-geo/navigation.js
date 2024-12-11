@@ -17,6 +17,7 @@ function createMenu() {
             dropdown: true,
             items: [
                 { title: "Dates importantes", url: "https://timothee123456.github.io/eval/histoire-geo/4/dates" },
+                { title: "Définitions", url: "https://timothee123456.github.io/eval/histoire-geo/4/definitions" },
             ],
     
         },

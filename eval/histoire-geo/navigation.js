@@ -11,7 +11,14 @@ function createMenu() {
             items: [
                 { title: "Les villes les plus peuplées de la planète", url: "https://timothee123456.github.io/eval/histoire-geo/3/carte1" },
                 { title: "L'évolution de la population urbaine et rurale mondiale", url: "https://timothee123456.github.io/eval/histoire-geo/3/evolution-population" },
-            ]
+            ],
+                
+            title: "La Révolution française et l'Empire",
+            dropdown: true,
+            items: [
+                { title: "Dates importantes", url: "https://timothee123456.github.io/eval/histoire-geo/4/dates" },
+            ],
+    
         },
         ];
 

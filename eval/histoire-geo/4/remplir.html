@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>
+    Sample
+    </title>
+<script>
+const title = "Quiz de vocabulaire"
+const nb = 20
+
+const Word1a = "Déficit budgétaire 1788 = "
+const Word1b = "117 million"
+const Word1c = "de livres"
+
+const Word2a = "Crise des"
+const Word2b = "ciseaux"
+const Word2c = ": blé augmente ➔ famine"
+
+const Word3a = ""
+const Word3b = "Tiers-États"
+const Word3c = "en souffrance"
+
+const Word4a = "États Généraux ➔ vote par"
+const Word4b = "ordre"
+const Word4c = ""
+
+const Word5a = "Symboles : bonnet"
+const Word5b = "phrygien"
+const Word5c = ""
+
+const Word6a = "et"
+const Word6b = "cocarde tricolore"
+const Word6c = ""
+
+const Word7a = ""
+const Word7b = ""
+const Word7c = ""
+
+const Word8a = ""
+const Word8b = ""
+const Word8c = ""
+
+const Word9a = ""
+const Word9b = ""
+const Word9c = ""
+
+const Word10a = ""
+const Word10b = ""
+const Word10c = ""
+
+const Word11a = ""
+const Word11b = ""
+const Word11c = ""
+
+const Word12a = ""
+const Word12b = ""
+const Word12c = ""
+
+const Word13a = ""
+const Word13b = ""
+const Word13c = ""
+
+const Word14a = ""
+const Word14b = ""
+const Word14c = ""
+
+const Word15a = ""
+const Word15b = ""
+const Word15c = ""
+
+const Word16a = ""
+const Word16b = ""
+const Word16c = ""
+
+const Word17a = ""
+const Word17b = ""
+const Word17c = ""
+
+const Word18a = ""
+const Word18b = ""
+const Word18c = ""
+
+const Word19a = ""
+const Word19b = ""
+const Word19c = ""
+
+const Word20a = ""
+const Word20b = ""
+const Word20c = ""
+
+</script>
+<link rel="stylesheet" href="https://timothee123456.github.io/eval/sample/style.css">
+</head>
+<body>
+<!-- This is the div where the menu will be dynamically inserted -->
+<div id="menuContainer"></div>
+
+<!-- Link to the JavaScript file -->
+<script src="https://timothee123456.github.io/eval/sample/navigation.js"></script>
+<center>
+<h2 style="color:green" id="quiz"></h2>
+<nobr id="fr1"></nobr>
+<input autocomplete="off" id="1">
+<nobr id="correction1"></nobr>
+<nobr id="fr1c"></nobr>
+<br>
+<nobr id="fr2"></nobr>
+<input autocomplete="off" id="2">
+<nobr id="correction2"></nobr>
+<nobr id="fr2c"></nobr>
+<br>
+<nobr id="fr3"></nobr>
+<input autocomplete="off" id="3">
+<nobr id="correction3"></nobr>
+<nobr id="fr3c"></nobr>
+<br>
+<nobr id="fr4"></nobr>
+<input autocomplete="off" id="4">
+<nobr id="correction4"></nobr>
+<nobr id="fr4c"></nobr>
+<br>
+<nobr id="fr5"></nobr>
+<input autocomplete="off" id="5">
+<nobr id="correction5"></nobr>
+<nobr id="fr5c"></nobr>
+
+<nobr id="fr6"></nobr>
+<input autocomplete="off" id="6">
+<nobr id="correction6"></nobr>
+<nobr id="fr6c"></nobr>
+<br>
+<nobr id="fr7"></nobr>
+<input autocomplete="off" id="7">
+<nobr id="correction7"></nobr>
+<nobr id="fr7c"></nobr>
+<br>
+<nobr id="fr8"></nobr>
+<input autocomplete="off" id="8">
+<nobr id="correction8"></nobr>
+<nobr id="fr8c"></nobr>
+<br>
+<nobr id="fr9"></nobr>
+<input autocomplete="off" id="9">
+<nobr id="correction9"></nobr>
+<nobr id="fr9c"></nobr>
+<br>
+<nobr id="fr10"></nobr>
+<input autocomplete="off" id="10">
+<nobr id="correction10"></nobr>
+<nobr id="fr10c"></nobr>
+<br>
+<nobr id="fr11"></nobr>
+<input autocomplete="off" id="11">
+<nobr id="correction11"></nobr>
+<nobr id="fr11c"></nobr>
+<br>
+<nobr id="fr12"></nobr>
+<input autocomplete="off" id="12">
+<nobr id="correction12"></nobr>
+<nobr id="fr12c"></nobr>
+<br>
+<nobr id="fr13"></nobr>
+<input autocomplete="off" id="13">
+<nobr id="correction13"></nobr>
+<nobr id="fr13c"></nobr>
+<br>
+<nobr id="fr14"></nobr>
+<input autocomplete="off" id="14">
+<nobr id="correction14"></nobr>
+<nobr id="fr14c"></nobr>
+<br>
+<nobr id="fr15"></nobr>
+<input autocomplete="off" id="15">
+<nobr id="correction15"></nobr>
+<nobr id="fr15c"></nobr>
+<br>
+<nobr id="fr16"></nobr>
+<input autocomplete="off" id="16">
+<nobr id="correction16"></nobr>
+<nobr id="fr16c"></nobr>
+<br>
+<nobr id="fr17"></nobr>
+<input autocomplete="off" id="17">
+<nobr id="correction17"></nobr>
+<nobr id="fr17c"></nobr>
+<br>
+<nobr id="fr18"></nobr>
+<input autocomplete="off" id="18">
+<nobr id="correction18"></nobr>
+<nobr id="fr18c"></nobr>
+<br>
+<nobr id="fr19"></nobr>
+<input autocomplete="off" id="19">
+<nobr id="correction19"></nobr>
+<nobr id="fr19c"></nobr>
+<br>
+<nobr id="fr20"></nobr>
+<input autocomplete="off" id="20">
+<nobr id="correction20"></nobr>
+<nobr id="fr20c"></nobr>
+<p></p>
+<a href="#" class="myButton" onclick="myFunction()" id="Terminado">Terminer</a>
+<p></p>
+<a href="#" class="myButton2" onclick="reset()">Réinitialiser</a>
+</center>
+</body>
+<script>
+const slash = "/" + nb
+let Worda = []
+let Wordb = []
+document.getElementById("quiz").innerHTML = title
+
+document.getElementById("fr1").innerHTML = Word1a + " ";
+document.getElementById("fr1c").innerHTML =" " +  Word1c;
+Wordb.push(Word1b);
+
+document.getElementById("fr2").innerHTML = Word2a + " ";
+document.getElementById("fr2c").innerHTML =" " +  Word2c;
+Wordb.push(Word2b);
+
+document.getElementById("fr3").innerHTML = Word3a + " ";
+document.getElementById("fr3c").innerHTML =" " +  Word3c;
+Wordb.push(Word3b);
+
+document.getElementById("fr4").innerHTML = Word4a + " ";
+document.getElementById("fr4c").innerHTML =" " +  Word4c;
+Wordb.push(Word4b);
+
+document.getElementById("fr5").innerHTML = Word5a + " ";
+document.getElementById("fr5c").innerHTML =" " +  Word5c;
+Wordb.push(Word5b);
+
+document.getElementById("fr6").innerHTML = Word6a + " ";
+document.getElementById("fr6c").innerHTML =" " +  Word6c;
+Wordb.push(Word6b);
+
+document.getElementById("fr7").innerHTML = Word7a + " ";
+document.getElementById("fr7c").innerHTML =" " +  Word7c;
+Wordb.push(Word7b);
+
+document.getElementById("fr8").innerHTML = Word8a + " ";
+document.getElementById("fr8c").innerHTML =" " +  Word8c;
+Wordb.push(Word8b);
+
+document.getElementById("fr9").innerHTML = Word9a + " ";
+document.getElementById("fr9c").innerHTML =" " +  Word9c;
+Wordb.push(Word9b);
+
+document.getElementById("fr10").innerHTML = Word10a + " ";
+document.getElementById("fr10c").innerHTML = " " + Word10c;
+Wordb.push(Word10b);
+
+document.getElementById("fr11").innerHTML = Word11a + " ";
+document.getElementById("fr11c").innerHTML = " " + Word11c;
+Wordb.push(Word11b);
+
+document.getElementById("fr12").innerHTML = Word12a + " ";
+document.getElementById("fr12c").innerHTML = " " + Word12c;
+Wordb.push(Word12b);
+
+document.getElementById("fr13").innerHTML = Word13a + " ";
+document.getElementById("fr13c").innerHTML = " " + Word13c;
+Wordb.push(Word13b);
+
+document.getElementById("fr14").innerHTML = Word14a + " ";
+document.getElementById("fr14c").innerHTML = " " + Word14c;
+Wordb.push(Word14b);
+
+document.getElementById("fr15").innerHTML = Word15a + " ";
+document.getElementById("fr15c").innerHTML = " " + Word15c;
+Wordb.push(Word15b);
+
+document.getElementById("fr16").innerHTML = Word16a + " ";
+document.getElementById("fr16c").innerHTML = " " + Word16c;
+Wordb.push(Word16b);
+
+document.getElementById("fr17").innerHTML = Word17a + " ";
+document.getElementById("fr17c").innerHTML = " " + Word17c;
+Wordb.push(Word17b);
+
+document.getElementById("fr18").innerHTML = Word18a + " ";
+document.getElementById("fr18c").innerHTML = " " + Word18c;
+Wordb.push(Word18b);
+
+document.getElementById("fr19").innerHTML = Word19a + " ";
+document.getElementById("fr19c").innerHTML = " " + Word19c;
+Wordb.push(Word19b);
+
+document.getElementById("fr20").innerHTML = Word20a + " ";
+document.getElementById("fr20c").innerHTML = " " + Word20c;
+Wordb.push(Word20b);
+
+
+function reset() {
+document.getElementById("Terminado").style.display = "inline";
+
+for (let i = 1; i < nb + 1; i++) {
+	document.getElementById("correction" + i).innerHTML = ""
+	document.getElementById(i).value = ""
+	document.getElementById(i).style.color = "black"
+}
+	
+document.getElementById("quiz").innerHTML = title
+}
+
+
+
+function myFunction() {
+
+document.getElementById("Terminado").style.display = "none"
+var quiz = 0
+
+for (let i = 1; i < nb + 1; i++) {
+	
+	const Word = document.getElementById(i).value
+	if (Word.toLowerCase() == Wordb[i-1].toLowerCase() || Word.toLowerCase() == Wordb[i-1].toLowerCase() + " "){
+	document.getElementById("correction" + i).innerHTML = "✓";
+	document.getElementById("correction" + i).style.color = "green"
+	var quiz = quiz + 1
+	}
+	else if (Word == ""){
+	document.getElementById(i).value = Wordb[i-1];
+	document.getElementById(i).style.color = "red"
+	}
+	else {
+	document.getElementById("correction" + i).innerHTML = "✕" + Wordb[i-1];
+	document.getElementById("correction" + i).style.color = "red"
+	}
+}
+
+document.getElementById("quiz").innerHTML = title + " " + quiz + slash;
+}
+</script>
+</html>

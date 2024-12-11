@@ -2,17 +2,17 @@
 <html>
 <head>
     <title>
-    Sample
+    Histoire-géo - Dates
     </title>
 <script>
 const title = "Dater des évènements"
-const nb = 10
+const nb = 20
 const separation = " : "
 
-const Word1f = "Déficit budgétaire de l'an"
+const Word1f = "Déficit budgétaire de l'an ..."
 const Word1c = "1788"
 
-const Word2f = "Guerre d'indépendance au États-Unis"
+const Word2f = "Guerre d'indépendance au États-Unis (année)"
 const Word2c = "1776"
 
 const Word3f = "États généraux"
@@ -60,51 +60,20 @@ const Word16c = "9 novembre 1799"
 const Word17f = "Coup d'état de Napoléon" + ' - Date "Bizzare"'
 const Word17c = "18 brumaire an VIII"
 
+const Word18f = "sacre de Napoléon Ier avec Pie VII"
+const Word18c = "2 décembre 1804"
 
+const Word19f = "Révolte contre Napoléon"
+const Word19c = "3 mai 1808"
 
-const Word1?f = "Établissement du Directoire"
-const Word1?c = "octobre 1795"
-
-const Word11f = ""
-const Word11c = ""
-
-const Word12f = ""
-const Word12c = ""
-
-const Word13f = ""
-const Word13c = ""
-
-const Word14f = ""
-const Word14c = ""
-
-const Word15f = ""
-const Word15c = ""
-
-const Word16f = ""
-const Word16c = ""
-
-const Word17f = ""
-const Word17c = ""
-
-const Word18f = ""
-const Word18c = ""
-
-const Word19f = ""
-const Word19c = ""
-
-const Word20f = ""
-const Word20c = ""
+const Word20f = "chute de Napoléon (défaite Waterloo) (année)"
+const Word20c = "1815"
 
 </script>
 </head>
 <body>
-<ul>
-  <li class="li"><a href="https://timothee123456.github.io/eval/sample/5">Sample 5</a></li>
-  <li class="li"><a href="https://timothee123456.github.io/eval/sample/10">Sample 10</a></li>
-  <li class="li"><a href="https://timothee123456.github.io/eval/sample/15">Sample 15</a></li>
-  <li class="li"><a class="active" href="https://timothee123456.github.io/eval/sample/20">Sample 20</a></li>
-  <li class="li" style="float:right"><a href="https://timothee123456.github.io/eval/leçons/...">Leçons</a></li></li>
-</ul>
+<div id="menuContainer"></div>
+<script src="https://timothee123456.github.io/eval/histoire-geo/navigation.js"></script>
 <center>
 <h2 style="color:green" id="quiz"></h2>
 <nobr id="fr1"></nobr>
@@ -146,6 +115,46 @@ const Word20c = ""
 <nobr id="fr10"></nobr>
 <input autocomplete="off" id="10">
 <nobr id="correction10"></nobr>
+<br>
+<nobr id="fr11"></nobr>
+<input autocomplete="off" id="11">
+<nobr id="correction11"></nobr>
+<br>
+<nobr id="fr12"></nobr>
+<input autocomplete="off" id="12">
+<nobr id="correction12"></nobr>
+<br>
+<nobr id="fr13"></nobr>
+<input autocomplete="off" id="13">
+<nobr id="correction13"></nobr>
+<br>
+<nobr id="fr14"></nobr>
+<input autocomplete="off" id="14">
+<nobr id="correction14"></nobr>
+<br>
+<nobr id="fr15"></nobr>
+<input autocomplete="off" id="15">
+<nobr id="correction15"></nobr>
+<br>
+<nobr id="fr16"></nobr>
+<input autocomplete="off" id="16">
+<nobr id="correction16"></nobr>
+<br>
+<nobr id="fr17"></nobr>
+<input autocomplete="off" id="17">
+<nobr id="correction17"></nobr>
+<br>
+<nobr id="fr18"></nobr>
+<input autocomplete="off" id="18">
+<nobr id="correction18"></nobr>
+<br>
+<nobr id="fr19"></nobr>
+<input autocomplete="off" id="19">
+<nobr id="correction19"></nobr>
+<br>
+<nobr id="fr20"></nobr>
+<input autocomplete="off" id="20">
+<nobr id="correction20"></nobr>
 <p></p>
 <a href="#" class="myButton" onclick="myFunction()" id="Terminado">Terminer</a>
 <p></p>
@@ -281,162 +290,5 @@ document.getElementById("quiz").innerHTML = title + " " + quiz + slash;
 </script>
 
 
-
-
-
-
-
-	
-	<style>
-.active {
-  background-color: #04AA6D;
-}
-.language {
-  background-color: #1ffff4;
-}
-ul {
-  list-style-type: none;
-  margin: 0;
-  padding: 0;
-  overflow: hidden;
-  background-color: #333;
-}
-
-.li {
-  float: left;
-  border-right:1px solid #bbb;
-}
-
-li:last-child {
-  border-right: none;
-}
-
-li a {
-  display: block;
-  color: white;
-  text-align: center;
-  padding: 14px 16px;
-  text-decoration: none;
-}
-
-li a:hover:not(.active) {
-  background-color: #111;
-}
-
-
-.navbar a:hover, .dropdown:hover .dropbtn {
-  background-color: #111;
-}
-
-.dropdown-content {
-  display: none;
-  position: absolute;
-  background-color:#333 ;
-  min-width: 100px;
-  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-  z-index: 1;
-}
-
-.dropdown-content a {
-    display: block;
-  color: white;
-  text-align: center;
-  padding: 14px 16px;
-  text-decoration: none;
-  }
-
-.dropdown-content a:hover {
-  background-color: #ddd;
-}
-
-.dropdown:hover .dropdown-content {
-  display: block;
-}
-
-.button {
-  font-size: 16px;  
-  border: none;
-  outline: none;
-  color: white;
-  padding: 14px 16px;
-  background-color: inherit;
-  font-family: inherit;
-  margin: 0;
-}
-img {
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-button a {
-  color: black;
-  text-decoration: none;
-}
-
-
-
-
-
-
-
-
-.myButton {
-	box-shadow: 2px 3px 0px 0px #8a2a21;
-	background:linear-gradient(to bottom, #c62d1f 5%, #f24437 100%);
-	background-color:#c62d1f;
-	border-radius:42px;
-	display:inline-block;
-	cursor:pointer;
-	color:#ffffff;
-	font-family:Arial;
-	font-size:22px;
-	padding:7px 18px;
-	text-decoration:none;
-	text-shadow:1px -1px 3px #810e05;
-}
-.myButton:hover {
-	background:linear-gradient(to bottom, #f24437 5%, #c62d1f 100%);
-	background-color:#f24437;
-}
-.myButton:active {
-	position:relative;
-	top:1px;
-}
-
-
-
-
-.myButton2 {
-	box-shadow: 0px 1px 0px -3px #f0f7fa;
-	background:linear-gradient(to bottom, #33bdef 5%, #019ad2 100%);
-	background-color:#33bdef;
-	border-radius:42px;
-	border:2px solid #057fd0;
-	display:inline-block;
-	cursor:pointer;
-	color:#ffffff;
-	font-family:Arial;
-	font-size:22px;
-	padding:8px 10px;
-	text-decoration:none;
-	text-shadow:3px -2px 4px #5b6178;
-}
-.myButton2:hover {
-	background:linear-gradient(to bottom, #019ad2 5%, #33bdef 100%);
-	background-color:#019ad2;
-}
-.myButton2:active {
-	position:relative;
-	top:1px;
-}
-body {
-  height:1000px;
-  background-color: 02fae; /* For browsers that do not support gradients */
-  background-image: linear-gradient(to bottom right, #02fae9, yellow);
-}
-input {font-size:21px}
-h2 {font-size:45px}
-nobr {font-size:24px}
-</style>
+<link rel="stylesheet" href="https://timothee123456.github.io/eval/histoire-geo/style.css">
 </html>

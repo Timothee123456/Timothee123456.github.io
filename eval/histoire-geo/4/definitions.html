@@ -83,60 +83,60 @@ const Word20c = ""
 <nobr id="fr1"></nobr>
 <input autocomplete="off" id="1">
 <nobr id="correction1"></nobr>
-<p id="correction1.2"></p>
+<p id="correction1.2" style="color:blue"></p>
 
 <nobr id="fr2"></nobr>
 <input autocomplete="off" id="2">
 <nobr id="correction2"></nobr>
-<p id="correction2.2"></p>
+<p id="correction2.2" style="color:blue"></p>
 
 <nobr id="fr3"></nobr>
 <input autocomplete="off" id="3">
 <nobr id="correction3"></nobr>
-<p id="correction3.2"></p>
+<p id="correction3.2" style="color:blue"></p>
 
 <nobr id="fr4"></nobr>
 <input autocomplete="off" id="4">
 <nobr id="correction4"></nobr>
-<p id="correction4.2"></p>
+<p id="correction4.2" style="color:blue"></p>
 
 <nobr id="fr5"></nobr>
 <input autocomplete="off" id="5">
 <nobr id="correction5"></nobr>
-<p id="correction5.2"></p>
+<p id="correction5.2" style="color:blue"></p>
 
 <nobr id="fr6"></nobr>
 <input autocomplete="off" id="6">
 <nobr id="correction6"></nobr>
-<p id="correction6.2"></p>
+<p id="correction6.2" style="color:blue"></p>
 
 <nobr id="fr7"></nobr>
 <input autocomplete="off" id="7">
 <nobr id="correction7"></nobr>
-<p id="correction7.2"></p>
+<p id="correction7.2" style="color:blue"></p>
 
 <nobr id="fr8"></nobr>
 <input autocomplete="off" id="8">
 <nobr id="correction8"></nobr>
-<p id="correction8.2"></p>
+<p id="correction8.2" style="color:blue"></p>
 
 <nobr id="fr9"></nobr>
 <input autocomplete="off" id="9">
 <nobr id="correction9"></nobr>
-<p id="correction9.2"></p>
+<p id="correction9.2" style="color:blue"></p>
 
 <nobr id="fr10"></nobr>
 <input autocomplete="off" id="10">
 <nobr id="correction10"></nobr>
-<p id="correction10.2"></p>
+<p id="correction10.2" style="color:blue"></p>
 
 <nobr id="fr11"></nobr>
 <input autocomplete="off" id="11">
 <nobr id="correction11"></nobr>
-<p id="correction11.2"></p>
-<p></p>
+<p id="correction11.2" style="color:blue"></p>
+<br>
 <a href="#" class="myButton" onclick="myFunction()" id="Terminado">Terminer</a>
-<p></p>
+<br>
 <a href="#" class="myButton2" onclick="reset()">Réinitialiser</a>
 </center>
 </body>
@@ -232,6 +232,7 @@ document.getElementById("Terminado").style.display = "inline";
 
 for (let i = 1; i < nb + 1; i++) {
 	document.getElementById("correction" + i).innerHTML = ""
+    document.getElementById("correction" + i + ".2").innerHTML = ""
 	document.getElementById(i).value = ""
 	document.getElementById(i).style.color = "black"
 }
@@ -258,11 +259,9 @@ for (let i = 1; i < nb + 1; i++) {
 	document.getElementById("correction" + i).innerHTML = "✕";
 	document.getElementById("correction" + i).style.color = "red"
     document.getElementById("correction" + i + '.2').innerHTML = Wordc[i-1];
-    document.getElementById("correction" + i + '.2').style.color = "blue"
 	}
 	else {
 	document.getElementById("correction" + i + '.2').innerHTML = Wordc[i-1];
-    document.getElementById("correction" + i + '.2').style.color = "blue"
 	}
 }
 

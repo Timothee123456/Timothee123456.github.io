@@ -83,125 +83,105 @@ const Word20c = ""
 <nobr id="fr1"></nobr>
 <input autocomplete="off" id="1">
 <nobr id="correction1"></nobr>
-<br>
-<nobr id="correction1.2"></nobr>
-<br>
+<p id="correction1.2" style="color:blue"></p>
+
 <nobr id="fr2"></nobr>
 <input autocomplete="off" id="2">
 <nobr id="correction2"></nobr>
-<br>
-<nobr id="correction2.2"></nobr>
-<br>
+<p id="correction2.2" style="color:blue"></p>
+
 <nobr id="fr3"></nobr>
 <input autocomplete="off" id="3">
 <nobr id="correction3"></nobr>
-<br>
-<nobr id="correction3.2"></nobr>
-<br>
+<p id="correction3.2" style="color:blue"></p>
+
 <nobr id="fr4"></nobr>
 <input autocomplete="off" id="4">
 <nobr id="correction4"></nobr>
-<br>
-<nobr id="correction4.2"></nobr>
-<br>
+<p id="correction4.2" style="color:blue"></p>
+
 <nobr id="fr5"></nobr>
 <input autocomplete="off" id="5">
 <nobr id="correction5"></nobr>
-<br>
-<nobr id="correction5.2"></nobr>
-<br>
+<p id="correction5.2" style="color:blue"></p>
+
 <nobr id="fr6"></nobr>
 <input autocomplete="off" id="6">
 <nobr id="correction6"></nobr>
-<br>
-<nobr id="correction6.2"></nobr>
-<br>
+<p id="correction6.2" style="color:blue"></p>
+
 <nobr id="fr7"></nobr>
 <input autocomplete="off" id="7">
 <nobr id="correction7"></nobr>
-<br>
-<nobr id="correction7.2"></nobr>
-<br>
+<p id="correction7.2" style="color:blue"></p>
+
 <nobr id="fr8"></nobr>
 <input autocomplete="off" id="8">
 <nobr id="correction8"></nobr>
-<br>
-<nobr id="correction8.2"></nobr>
-<br>
+<p id="correction8.2" style="color:blue"></p>
+
 <nobr id="fr9"></nobr>
 <input autocomplete="off" id="9">
 <nobr id="correction9"></nobr>
-<br>
-<nobr id="correction9.2"></nobr>
-<br>
+<p id="correction9.2" style="color:blue"></p>
+
 <nobr id="fr10"></nobr>
 <input autocomplete="off" id="10">
 <nobr id="correction10"></nobr>
-<br>
-<nobr id="correction10.2"></nobr>
-<br>
+<p id="correction10.2" style="color:blue"></p>
+
 <nobr id="fr11"></nobr>
 <input autocomplete="off" id="11">
 <nobr id="correction11"></nobr>
-<br>
-<nobr id="correction11.2"></nobr>
-<br>
+<p id="correction11.2" style="color:blue"></p>
+
 <nobr id="fr12"></nobr>
 <input autocomplete="off" id="12">
 <nobr id="correction12"></nobr>
-<br>
-<nobr id="correction12.2"></nobr>
-<br>
+<p id="correction12.2" style="color:blue"></p>
+
 <nobr id="fr13"></nobr>
 <input autocomplete="off" id="13">
 <nobr id="correction13"></nobr>
-<br>
-<nobr id="correction13.2"></nobr>
-<br>
+<p id="correction13.2" style="color:blue"></p>
+
 <nobr id="fr14"></nobr>
 <input autocomplete="off" id="14">
 <nobr id="correction14"></nobr>
-<br>
-<nobr id="correction14.2"></nobr>
-<br>
+<p id="correction14.2" style="color:blue"></p>
+
 <nobr id="fr15"></nobr>
 <input autocomplete="off" id="15">
 <nobr id="correction15"></nobr>
-<br>
-<nobr id="correction15.2"></nobr>
-<br>
+<p id="correction15.2" style="color:blue"></p>
+
 <nobr id="fr16"></nobr>
 <input autocomplete="off" id="16">
 <nobr id="correction16"></nobr>
-<br>
-<nobr id="correction16.2"></nobr>
-<br>
+<p id="correction16.2" style="color:blue"></p>
+
 <nobr id="fr17"></nobr>
 <input autocomplete="off" id="17">
 <nobr id="correction17"></nobr>
-<br>
-<nobr id="correction17.2"></nobr>
-<br>
+<p id="correction17.2" style="color:blue"></p>
+
 <nobr id="fr18"></nobr>
 <input autocomplete="off" id="18">
 <nobr id="correction18"></nobr>
-<br>
-<nobr id="correction18.2"></nobr>
-<br>
+<p id="correction18.2" style="color:blue"></p>
+
 <nobr id="fr19"></nobr>
 <input autocomplete="off" id="19">
 <nobr id="correction19"></nobr>
-<br>
-<nobr id="correction19.2"></nobr>
-<br>
+<p id="correction19.2" style="color:blue"></p>
+
 <nobr id="fr20"></nobr>
 <input autocomplete="off" id="20">
 <nobr id="correction20"></nobr>
-<br>
-<nobr id="correction20.2"></nobr>
-<p></p>
+<p id="correction20.2" style="color:blue"></p>
+
 <a href="#" class="myButton" onclick="myFunction()" id="Terminado">Terminer</a>
-<p></p>
+<br>
 <a href="#" class="myButton2" onclick="reset()">Réinitialiser</a>
 </center>
 </body>
@@ -297,6 +277,7 @@ document.getElementById("Terminado").style.display = "inline";
 
 for (let i = 1; i < nb + 1; i++) {
 	document.getElementById("correction" + i).innerHTML = ""
+    document.getElementById("correction" + i + ".2").innerHTML = ""
 	document.getElementById(i).value = ""
 	document.getElementById(i).style.color = "black"
 }
@@ -320,8 +301,9 @@ for (let i = 1; i < nb + 1; i++) {
 	var quiz = quiz + 1
 	}
 	else if (Word == ""){
-	document.getElementById(i).value = Wordc[i-1];
-	document.getElementById(i).style.color = "red"
+	document.getElementById("correction" + i).innerHTML = "✕";
+	document.getElementById("correction" + i).style.color = "red"
+    document.getElementById("correction" + i + '.2').innerHTML = Wordc[i-1];
 	}
 	else {
 	document.getElementById("correction" + i + '.2').innerHTML = Wordc[i-1];

@@ -29,6 +29,20 @@ h1 {
       transition: width 1s;
        
     }
+     
+    
+.middle {
+	  display: inline-block;
+      position: absolute;
+      left: calc((100% - 64px) * 0.5);
+      bottom: 6px;
+      border: 8px solid #edfff0;
+      border-radius: 100px;
+      width: 0px;
+      margin-bottom: 10px;
+      margin-top: 10px;
+    }
+    
     
 .total {
 	  display: inline-block;
@@ -54,6 +68,136 @@ h1 {
     
     
     
+    
+    
+    
+    
+.blague.bg {
+    	background-color: white;
+        height: 70%;
+        width: 90%;
+        text-align: center;
+        border: 3px solid #8c03fc;
+        
+  		position: absolute;
+  		top: 50%;
+  		left: 50%;
+		-ms-transform: translate(-170%, -50%);
+  		transform: translate(-170%, -50%);
+        text-align: center;
+        
+        transition: 3s;
+	}
+
+.blague.center {
+        width: 90%;
+        text-align: center;
+        
+  		position: absolute;
+  		top: 50%;
+  		left: 50%;
+		-ms-transform: translate(-50%, -500%);
+  		transform: translate(-50%, -50%);
+	}
+    
+.blague.h1 {
+	font-size: 30px;
+    font-weight: bold;
+    color: #009dc4;
+}
+
+.blague.h2 {
+    font-size: 25px;
+	color: #0f00b3;
+}
+
+.blague.p {
+	line-height: 1.2;
+}
+
+.blague {
+	line-height: 0.3;
+}
+
+
+
+.blague.myButton {
+	box-shadow: 5px 7px 20px 0px #3dc21b;
+	background:linear-gradient(to bottom, #44c767 5%, #5cbf2a 100%);
+	background-color:#44c767;
+	border-radius:28px;
+	border:1px solid #18ab29;
+	display:inline-block;
+	cursor:pointer;
+	color:#ffffff;
+	font-family:Arial;
+	font-size:17px;
+	padding:16px 31px;
+	text-decoration:none;
+	text-shadow:0px 1px 0px #2f6627;
+}
+.blague.myButton:hover {
+	background:linear-gradient(to bottom, #5cbf2a 5%, #44c767 100%);
+	background-color:#5cbf2a;
+}
+.blague.myButton:active {
+	position:relative;
+	top:2px;
+}
+
+
+
+
+
+
+.image {
+	box-shadow: 5px 6px 7px 0px #f9eca0;
+	background:linear-gradient(to bottom, #f0c911 5%, #f2ab1e 100%);
+	background-color:#f0c911;
+	border-radius:42px;
+	border:1px solid #e65f44;
+	display:inline-block;
+	cursor:pointer;
+	color:#c92200;
+	font-family:Arial;
+	font-size:15px;
+	font-weight:bold;
+	padding:6px 16px;
+	text-decoration:none;
+	text-shadow:-1px 0px 0px #ded17c;
+    
+    
+    
+  display: inline-block;
+  position: absolute;
+  right: 20px;
+  margin-top: -35px;
+}
+.image:hover {
+	background:linear-gradient(to bottom, #f2ab1e 5%, #f0c911 100%);
+	background-color:#f2ab1e;
+}
+
+
+
+
+
+.div_photo {
+		background-color: white;
+        height: 70%;
+        width: 90%;
+        text-align: center;
+        border: 3px solid #00850b;
+        
+  		position: absolute;
+  		top: 50%;
+  		left: 50%;
+		-ms-transform: translate(-170%, -50%);
+  		transform: translate(-170%, -50%);
+        text-align: center;
+        
+        transition: 3s;	
+}
 </style>
 </head>
 <body>
@@ -61,136 +205,91 @@ h1 {
 <main>
 <h1>Développer et réduire l'éxpression suivante:</h1>
 <p id='p'>A = 3(x + 6) - 2</p>
+<button onclick='next()'>Done</button>
+
 
 </main>
+<a class="image" onclick="show_photo()">Image</a>
+
+
+
+<div class='blague bg' id='blague_bg'>
+	<div class='blague center'>
+      <p class='blague h1'>Il est temps de faire une pause !</p>
+      <p class='blague h2'>Voici une blague :</p>
+      <center>
+      <div style='text-align: left;  width:31%'>
+        <p class='blague p' id='blague'>En rentrant de l’école, Toto dit à son père :
+        <br>– J’ai eu 20 !
+        <br>– En quelle matière ?
+        <br>– 4 en Histoire, 7 en Français, 9 en maths.</p>
+      </div>
+      <a onclick="hide_blague()" class="blague myButton">Suite des exercices</a>
+      <center>
+	</div>
+</div>
+
+
+<div class='div_photo' id='div_photo'>
+	<image src="https://webneel.com/daily/sites/default/files/images/daily/02-2013/10-best-wildlife-photography.jpg" style='width:100%'>
+</div>
+
+
+
+
 <nobr class='progress' id='bar'></nobr>
+<nobr class='middle' id='middle'></nobr>
 <nobr class='total'></nobr>
 <nobr class='percent' id='percent'>0 / 20</nobr>
 </body>
 <script>
-function bar(nb){
+nb = 0
+
+function bar(){
 	const percent = nb / 20 * 100;
     const px = nb / 20 * 61;
 	document.getElementById("bar").style.width = 'calc('+ percent + '% - ' + px + 'px)';
     document.getElementById("percent").innerHTML = nb + ' / 20';
-    }
-    
-    
-    
-    
-
-function random_bool(){
-	return Math.random() < 0.5
-}
-
-function random_letter(){
-    let letter = Math.floor(Math.random() * 5) + 1
-    if (letter == 1) {
-      return 'x'
-    }
-    else if (letter == 2) {
-      return 'y'
-    }
-    else if (letter == 3) {
-      return 'xy'
-    }
-    else if (letter == 4) {
-      return 'x²'
-    }
-    else if (letter == 5) {
-      return 'y²'
+    if (percent == 50){
+        setTimeout(function(){
+    		document.getElementById("middle").style.border = '8px solid #0dff00';
+            show_blague()
+		}, 500);
     }
 }
-
-function random_nb2(){
-	return Math.floor(Math.random() * 10) + 1
-}
-
-function random_nb() {
-	let nb_or_letter = Math.floor(Math.random() * 3) + 1
-    if (nb_or_letter == 1) {
-    	let number = random_nb2()
-        return number
-    }
     
-    else if (nb_or_letter == 2) {
-    	let letter = random_letter()
-        return letter
-    }
     
-    else if (nb_or_letter == 3) {
-    	let number = random_nb2()
-    	let letter = random_letter()
-        return number + letter
-    }
-}
-
-function plus_minus(){
-	if (random_bool()){
-    	return ' + '
-    }
-    else {
-    	return ' - '
-    }
+function next(){
+    nb += 1
+    bar()
 }
 
 
-function generate(){
-	let str = ""
-    let result = ""
-	let plusdevant = random_bool()
-    if (plusdevant) {
-    	let rn = random_nb()
-        let pm = plus_minus()
-    	str = str + rn
-        str = str + pm
-        result = result + rn
-        result = result + pm
-    }
-    
-    let k = random_nb()
-    let a = random_nb()
-    let b = random_nb()
-    let sign = plus_minus()
-    str = str + k
-    str = str + '('
-    str = str + a
-    str = str + sign
-    str = str + b
-    str = str + ')'
-    result = result + k
-    result = result + '×'
-    result = result + a
-    result = result + sign
-    result = result + k
-    result = result + '×'
-    result = result + b
-    
-    if (plusdevant == false) {
-    	let pm = plus_minus()
-        let rn = random_nb()
-    	str = str + pm
-        str = str + rn
-        result = result + pm
-        result = result + rn
-    }
-    
-    
-    // make a better result
-    result = result.replaceAll(" ", "")
-    resultplus = result.split("+"); // return list
-    resultminus = result.split("-"); // return list
-    result = resultplus.split("-"); // return list
-    
-    for (let x in result) {
-    	for (let caracter of x){
-        	
-    }
-    
-    
-    return [str, result]
-    
+function show_blague(){
+	document.getElementById("blague_bg").style.transform = ' translate(-50%, -50%)';
 }
+
+function hide_blague(){
+	document.getElementById("blague_bg").style.transform = ' translate(70%, -50%)';
+    setTimeout(function(){
+    	document.getElementById("blague_bg").style.display = 'none'
+    }, 3000);
+}
+
+
+
+function show_photo(){
+	document.getElementById("div_photo").style.transform = 'translate(-50%, -50%)';
+}
+
+function hide_photo(){
+	document.getElementById("div_photo").style.transform = 'translate(70%, -50%)';
+    setTimeout(function(){
+    	document.getElementById("div_photo").style.display = 'none'
+    }, 3000);
+}
+    
+
 
 
 
@@ -198,5 +297,3 @@ function generate(){
 document.getElementById("p").innerHTML = generate()
 </script>
 </html>
-
-

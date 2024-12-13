@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+div {
+	font-size: 25px
+}
+
+div.ex {
+  direction: rtl;
+  unicode-bidi: bidi-override;
+}
+
+
+.myButton {
+	box-shadow: 3px 4px 0px 0px #8a2a21;
+	background:linear-gradient(to bottom, #c62d1f 5%, #f24437 100%);
+	background-color:#c62d1f;
+	border-radius:18px;
+	border:1px solid #d02718;
+	display:inline-block;
+	cursor:pointer;
+	color:#ffffff;
+	font-family:Arial;
+	font-size:17px;
+	padding:7px 25px;
+	text-decoration:none;
+	text-shadow:0px 1px 0px #810e05;
+}
+.myButton:hover {
+	background:linear-gradient(to bottom, #f24437 5%, #c62d1f 100%);
+	background-color:#f24437;
+}
+.myButton:active {
+	position:relative;
+	top:1px;
+}
+
+</style>
+</head>
+<body>
+<center>
+<h1>Nom à l'envers</h1>
+</center>
+<nobr>Entrer votre nom →</nobr>
+<input id='name'>
+<center>
+<br>
+<div><strong id='1'>timothée</strong> donne à l'envers ↓</div>
+<div class="ex"><strong id='2'>timothée</strong> donne à l'endroit ↑</div>
+<br>
+<a onclick="update()" class="myButton">Update</a>
+</center>
+</body>
+<script>
+function update(){
+  const name = document.getElementById('name').value.toLowerCase()
+  document.getElementById('1').innerHTML = name
+  document.getElementById('2').innerHTML = name
+}
+</script>
+</html>

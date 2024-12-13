@@ -182,21 +182,28 @@ h1 {
 
 
 
-.div_photo {
+.photo {
 		background-color: white;
-        height: 70%;
-        width: 90%;
-        text-align: center;
+        max-height: 70%;
+        max-width: 90%;
         border: 3px solid #00850b;
         
   		position: absolute;
   		top: 50%;
   		left: 50%;
-		-ms-transform: translate(-170%, -50%);
-  		transform: translate(-170%, -50%);
+		-ms-transform: translate(-170vw, -50%);
+  		transform: translate(-170vw, -50%);
         text-align: center;
-        
-        transition: 3s;	
+}
+
+.hide_photo {
+		background-color: white;
+  		position: absolute;
+  		top: 50%;
+  		left: 50%;
+		-ms-transform: translate(-170vw, -50%);
+  		transform: translate(-170vw, -50%);
+        text-align: center;
 }
 </style>
 </head>
@@ -210,7 +217,6 @@ h1 {
 
 </main>
 <a class="image" onclick="show_photo()">Image</a>
-
 
 
 <div class='blague bg' id='blague_bg'>
@@ -230,9 +236,8 @@ h1 {
 </div>
 
 
-<div class='div_photo' id='div_photo'>
-	<image src="https://webneel.com/daily/sites/default/files/images/daily/02-2013/10-best-wildlife-photography.jpg" style='width:100%'>
-</div>
+<image id='photo' src="https://webneel.com/daily/sites/default/files/images/daily/02-2013/10-best-wildlife-photography.jpg" class='photo'>
+<div id='hide_photo' class='hide_photo'></div>
 
 
 
@@ -243,8 +248,13 @@ h1 {
 <nobr class='percent' id='percent'>0 / 20</nobr>
 </body>
 <script>
-nb = 0
+document.getElementById("hide_photo").style.width = document.getElementById("photo").style.width
+document.getElementById("hide_photo").style.height = document.getElementById("photo").style.width
 
+
+
+
+nb = 0
 function bar(){
 	const percent = nb / 20 * 100;
     const px = nb / 20 * 61;
@@ -266,7 +276,7 @@ function next(){
 
 
 function show_blague(){
-	document.getElementById("blague_bg").style.transform = ' translate(-50%, -50%)';
+    document.getElementById("blague_bg").style.transform = ' translate(-50%, -50%)';
 }
 
 function hide_blague(){
@@ -279,13 +289,20 @@ function hide_blague(){
 
 
 function show_photo(){
-	document.getElementById("div_photo").style.transform = 'translate(-50%, -50%)';
+	
+document.getElementById("photo").style.transition = '3s';
+document.getElementById("photo").style.transform = 'translate(-50%, -50%)';
+
+document.getElementById("hide_photo").style.transition = '3s';
+document.getElementById("hide_photo").style.transform = 'translate(-50%, -50%)';
 }
 
 function hide_photo(){
-	document.getElementById("div_photo").style.transform = 'translate(70%, -50%)';
+	document.getElementById("photo").style.transform = 'translate(70%, -50%)';
+    document.getElementById("hide_photo").style.transform = 'translate(70%, -50%)';
     setTimeout(function(){
-    	document.getElementById("div_photo").style.display = 'none'
+    	document.getElementById("photo").style.display = 'none'
+        document.getElementById("hide_photo").style.display = 'none'
     }, 3000);
 }
     

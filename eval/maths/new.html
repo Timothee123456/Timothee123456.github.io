@@ -563,30 +563,29 @@ function generate(){
       }
     }
     
-    dict = {
-    nb:0,
-    x:0,
-    y:0,
-    xy:0,
+    nb = 0
+    x = 0
+    y = 0
+    xy = 0
     
-    x2:0,
-    y2:0,
-    x2y:0,
-    xy2:0,
-    x2y2:0,
+    x2 = 0
+    y2 = 0
+    x2y = 0
+    xy2 = 0
+    x2y2 = 0
     
-    x3:0,
-    y3:0,
-    x3y:0,
-    xy3:0,
-    x3y3:0,
+    x3 = 0
+    y3 = 0
+    x3y = 0
+    xy3 = 0
+    x3y3 = 0
     
-    x4:0,
-    y4:0,
-    x4y:0,
-    xy4:0,
-    x4y4:0,
-    }
+    x4 = 0
+    y4 = 0
+    x4y = 0
+    xy4 = 0
+    x4y4 = 0
+    
     
     function remove_letters(string){
     	string2 = string.replaceAll("x", "")
@@ -597,7 +596,72 @@ function generate(){
         return string2
     }
     
-    
+    for (const item in answer5){
+    	else if item.includes("x4y4"){
+        	x4y4 += remove_letters(item)
+        }
+        else if item.includes("x3y3"){
+        	x3y3 += remove_letters(item)
+        }
+        else if item.includes("x2y2"){
+        	x2y2 += remove_letters(item)
+        }
+        
+        else if item.includes("x4y"){
+        	x4y += remove_letters(item)
+        }
+        else if item.includes("xy4"){
+        	xy4 += remove_letters(item)
+        }
+        else if item.includes("x3y"){
+        	x3y += remove_letters(item)
+        }
+        else if item.includes("xy3"){
+        	xy3 += remove_letters(item)
+        }
+        else if item.includes("x2y"){
+        	x2y += remove_letters(item)
+        }
+        else if item.includes("xy2"){
+        	xy2 += remove_letters(item)
+        }
+        
+        
+        
+        
+        
+        else if item.includes("x2"){
+        	x2 += remove_letters(item)
+        }
+        else if item.includes("y2"){
+        	y2 += remove_letters(item)
+        }
+        
+        
+        else if item.includes("x3"){
+        	x3 += remove_letters(item)
+        }
+        else if item.includes("y3"){
+        	y3 += remove_letters(item)
+        }
+        
+        else if item.includes("x4"){
+        	x4 += remove_letters(item)
+        }
+        else if item.includes("y4"){
+        	y4 += remove_letters(item)
+        }
+        
+        else if item.includes("xy"){
+        	xy += remove_letters(item)
+        }
+        else if item.includes("x"){
+        	x += remove_letters(item)
+        }
+        else if item.includes("y"){
+        	y += remove_letters(item)
+        }
+    }
     
     
     return str

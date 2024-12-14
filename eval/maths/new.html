@@ -380,45 +380,62 @@ function generate(){
     let result = ""
     let counter = 0;
 	while (counter < 2) {
-	let plusdevant = random_bool()
-    if (plusdevant) {
-    	let rn = random_nb()
-        let pm = plus_minus()
-    	str = str + rn
+      let plusdevant = random_bool()
+      if (plusdevant) {
+          let rn = random_nb()
+          let pm = plus_minus()
+          str = str + rn
+          str = str + pm
+          result = result + rn
+          result = result + pm
+      }
+
+      let k = random_nb()
+      let a = random_nb()
+      let b = random_nb()
+      let sign = plus_minus()
+      str = str + k
+      str = str + '('
+      str = str + a
+      str = str + sign
+      str = str + b
+      str = str + ')'
+      result = result + k
+      result = result + '×'
+      result = result + a
+      result = result + sign
+      result = result + k
+      result = result + '×'
+      result = result + b
+
+      if (plusdevant == false) {
+          let pm = plus_minus()
+          let rn = random_nb()
+          str = str + pm
+          str = str + rn
+          result = result + pm
+          result = result + rn
+      }
+      counter++
+      if (counter ==1){
+      	let pm = plus_minus()
         str = str + pm
-        result = result + rn
         result = result + pm
+      }
     }
     
-    let k = random_nb()
-    let a = random_nb()
-    let b = random_nb()
-    let sign = plus_minus()
-    str = str + k
-    str = str + '('
-    str = str + a
-    str = str + sign
-    str = str + b
-    str = str + ')'
-    result = result + k
-    result = result + '×'
-    result = result + a
-    result = result + sign
-    result = result + k
-    result = result + '×'
-    result = result + b
     
-    if (plusdevant == false) {
-    	let pm = plus_minus()
-        let rn = random_nb()
-    	str = str + pm
-        str = str + rn
-        result = result + pm
-        result = result + rn
-    }
-    }
     
-    return [str + '------------------' + result]
+    result = result.replaceAll(" ", ""); // remove all spaces
+    const result2 = result.split("+");
+    const result3 = ""
+    for (const element of result2) {
+    	elements = element.split("-")
+    	result3.push(elements)
+	}
+    
+    
+    return [result2 + '------------------' + result3]
     
 }
 

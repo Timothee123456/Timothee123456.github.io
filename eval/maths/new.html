@@ -374,6 +374,62 @@ function plus_minus(){
     }
 }
 
+function multiply(mp){
+    mp = mp.replaceAll("x²", "xx")
+    mp = mp.replaceAll("y²", "yy")
+    mp = mp.replaceAll("x", "×x")
+    mp = mp.replaceAll("y", "×y")
+    if (mp[0] == "×"){
+    	mp = mp.replace("×", "")
+    }
+    
+    
+	mp = mp.split("×");
+    mp_nb = mp.filter(remove_letters)
+    mp_lt = mp.filter(keep_letters)
+    
+    mp_nb = mp_nb.reduce(multinbs);
+
+    function multinbs(total, num) {
+      return total * num;
+    }
+    
+    
+    
+    
+    mp_lt.forEach(xys);
+
+	const nb_x = 0
+    const nb_y = 0
+
+    function xys(value, index, array) {
+      if (value == 'x'){
+      	nb_x ++
+      }
+      else if (value == 'y'){
+      	nb_y ++
+      }
+    }
+    
+    
+    
+    return mp_nb + nb_y
+    
+    
+    
+    function remove_letters(nl){
+    	const letters = ['x', 'y']
+    	return !letters.includes(nl)
+    }
+    
+    function keep_letters(nl){
+    	const letters = ['x', 'y']
+    	return letters.includes(nl)
+    }
+}
+
+
+
 
 function generate(){
 	let str = ""
@@ -428,14 +484,15 @@ function generate(){
     
     result = result.replaceAll(" ", ""); // remove all spaces
     const result2 = result.split("+");
-    const result3 = ""
+    const result3 = []
     for (const element of result2) {
     	elements = element.split("-")
     	result3.push(elements)
 	}
     
     
-    return [result2 + '------------------' + result3]
+    
+    return [result2 + '------------------' + result3 + '-----' + multiply('6y×5y²')]
     
 }
 

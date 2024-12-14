@@ -395,12 +395,13 @@ function multiply(mp){
       mp_nb.splice(index, 1);
     }
     
-    mp_nb = mp_nb.reduce(multinbs);
+    if (mp_nb != ''){
+      mp_nb = mp_nb.reduce(multinbs);
 
-    function multinbs(total, num) {
-      return total * num;
+      function multinbs(total, num) {
+        return total * num;
+      }
     }
-    
     
     
     
@@ -492,9 +493,15 @@ function generate(){
       }
     }
     
-    
-    
     result = result.replaceAll(" ", ""); // remove all spaces
+    result_plus_minus = result.split("")
+    result_plus_minus = result_plus_minus.filter(keep_plus_minus)
+    function keep_plus_minus(nl){
+    	const signs = ['+', '-']
+    	return signs.includes(nl)
+    }
+    
+    
     const result2 = result.split("+");
     const result3 = []
     for (const element of result2){
@@ -510,8 +517,16 @@ function generate(){
     }
     
     
+    result4.forEach(addsigns);
+
+	result5 = []
+    function addsigns(value, index, array) {
+      if (result_plus_minus[index + 1] == '-'){
+      	result5.push(result_plus_minus[index + 1] + value)
+      }
+    }
     
-    return [result3 + '------------------' + result4 + '-----' + multiply('6y×y²')]
+    return [str + '------------------' + result5 + '------------------' + result_plus_minus + '-----' + multiply('6y×y²')]
     
 }
 

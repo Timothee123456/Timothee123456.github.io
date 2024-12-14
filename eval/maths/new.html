@@ -522,7 +522,10 @@ function generate(){
 	result5 = []
     function addsigns(value, index, array) {
       if (result_plus_minus[index + 1] == '-'){
-      	result5.push(result_plus_minus[index + 1] + value)
+      	result5.push('-' + value)
+      }
+      else {
+      	result5.push(value)
       }
     }
     

@@ -147,30 +147,61 @@ h1 {
 }
 
 
+.correct {
+	box-shadow: 2px 3px 6px 0px #3dc21b;
+	background:linear-gradient(to bottom, #44c767 5%, #5cbf2a 100%);
+	background-color:#44c767;
+	border-radius:28px;
+	border:3px solid #18ab29;
+	display:inline-block;
+	cursor:pointer;
+	color:#ffffff;
+	font-family:Arial;
+	font-size:17px;
+	padding:9px 17px;
+	text-decoration:none;
+	text-shadow:3px 2px 2px #2f6627;
+}
+.correct:hover {
+	background:linear-gradient(to bottom, #5cbf2a 5%, #44c767 100%);
+	background-color:#5cbf2a;
+}
+.correct:active {
+	position:relative;
+	top:1px;
+}
 
 
 
 
-.image {
+
+.next {
 	box-shadow: 5px 6px 7px 0px #f9eca0;
 	background:linear-gradient(to bottom, #f0c911 5%, #f2ab1e 100%);
 	background-color:#f0c911;
 	border-radius:42px;
-	border:1px solid #e65f44;
+	border:2px solid #e65f44;
 	display:inline-block;
 	cursor:pointer;
 	color:#c92200;
 	font-family:Arial;
-	font-size:15px;
+	font-size:17px;
 	font-weight:bold;
 	padding:6px 16px;
 	text-decoration:none;
 	text-shadow:-1px 0px 0px #ded17c;
+    
+    
+    display: none;
    
 }
-.image:hover {
+.next:hover {
 	background:linear-gradient(to bottom, #f2ab1e 5%, #f0c911 100%);
 	background-color:#f2ab1e;
+}
+.next:active {
+	position:relative;
+	top:1px;
 }
 
 
@@ -205,12 +236,15 @@ h1 {
 <body>
 
 <main>
-<h1>Développer et réduire l'éxpression suivante sur votre cahier:</h1>
+<h1>Développer et réduire l'éxpression suivante en faisant les calculs sur votre cahier:</h1>
 <p id='p'>A = 3(x + 6) - 2</p>
-<nobr>Expression simplifiée : </nobr><input id='answer'>
+<nobr>Expression simplifiée : </nobr>
+<input id='answer'>
+<nobr id="correction"></nobr>
 <br>
 <br>
-<a class="image" onclick='next()'>Terminé(e)</a>
+<a class="correct" id="correct" onclick='correct()'>Corriger</a>
+<a class="next" id="next" onclick='next()'>Suite</a>
 </main>
 
 
@@ -529,7 +563,30 @@ function generate(){
       }
     }
     
+    dict = {
+    nb:0,
+    x:0,
+    y:0,
+    xy:0,
     
+    x2:0,
+    y2:0,
+    x2y:0,
+    xy2:0,
+    x2y2:0,
+    
+    x3:0,
+    y3:0,
+    x3y:0,
+    xy3:0,
+    x3y3:0,
+    
+    x4:0,
+    y4:0,
+    x4y:0,
+    xy4:0,
+    x4y4:0,
+    }
     
     
     return str
@@ -537,17 +594,50 @@ function generate(){
 }
 
 
+function reset(){
+	document.getElementById("correction").innerHTML = ""
+	document.getElementById("answer").value = ""
+}
+
+
+
+
+function correct(){
+	if (document.getElementById("answer").value == result5){
+      document.getElementById("correction").innerHTML = "✓";
+	  document.getElementById("correction").style.color = "green"
+    }
+    else {
+      	document.getElementById("correction").innerHTML = "✕ " + result5;
+        document.getElementById("correction").style.color = "red"
+    }
+    
+    document.getElementById("correct").style.display = 'none'
+    document.getElementById("next").style.display = 'inline-block'
+}
+
+
 
 function next(){
-    nb += 1
-    if (nb < 20){
-    	bar()
-    document.getElementById("p").innerHTML = generate()
+	if (document.getElementById("correction").innerHTML == "✓"){
+      reset()
+      nb += 1
+      if (nb < 20){
+          bar()
+          document.getElementById("p").innerHTML = generate()
+      }
+      else if (nb == 20){
+          bar()
+          show_photo()
+      }
     }
-    else if (nb == 20){
-    	bar()
-    	show_photo()
+    else {
+        reset()
+		document.getElementById("p").innerHTML = generate()
     }
+    
+    document.getElementById("correct").style.display = 'inline-block'
+    document.getElementById("next").style.display = 'none'
 }
 document.getElementById("p").innerHTML = generate()
 </script>

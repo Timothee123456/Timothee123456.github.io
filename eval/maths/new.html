@@ -425,8 +425,12 @@ function multiply(mp){
     	nb_y = 'y' + superscript[nb_y]
     }
     
-    
-    return mp_nb + nb_x + nb_y
+    if (mp_nb == 1){
+  		return nb_x + nb_y
+    }
+    else {
+    	return mp_nb + nb_x + nb_y
+    }
     
     
     
@@ -517,11 +521,11 @@ function generate(){
     }
     
     
-	const result5 = []
+	let result5 = []
     result4.forEach(addsigns);
 
     function addsigns(value, index, array) {
-      if (result_plus_minus[index + 1] == '-'){
+      if (result_plus_minus[index - 1] == '-'){
       	result5.push('-' + value)
       }
       else {
@@ -529,7 +533,38 @@ function generate(){
       }
     }
     
-    return [str + '------------------' + result5 + '------------------' + result_plus_minus + '-----' + multiply('6y×y²')]
+    dict = {
+    nb : 0,
+    x : 0,
+    y : 0,
+    xy : 0,
+    x² : 0,
+    y² : 0,
+    x²y : 0,
+    xy² : 0,
+    x²y² : 0,
+    x³ : 0,
+    y³ : 0,
+    x³y : 0,
+    xy³ : 0,
+    x³y³ : 0,
+    x⁴ : 0,
+    y⁴ : 0,
+    x⁴y : 0,
+    xy⁴ : 0,
+    x⁴y⁴ : 0,
+    }
+    
+    result5.forEach(regroup);
+    
+    function regroup(value, index, array) {
+    	if (word[-2] + word[-1] == 'yx'){
+        	add 
+        }
+    }
+    
+    
+    return str + '/-----------------/' + result4 + '/-----------------/' + result5 + '/-----------------/' + result_plus_minus + '/-----' + multiply('6y×y²')
     
 }
 

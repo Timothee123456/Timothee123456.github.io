@@ -395,13 +395,12 @@ function multiply(mp){
       mp_nb.splice(index, 1);
     }
     
-    if (mp_nb.length() != 1){
-      mp_nb = mp_nb.reduce(multinbs);
+    mp_nb = mp_nb.reduce(multinbs);
 
-      function multinbs(total, num) {
-        return total * num;
-      }
+    function multinbs(total, num) {
+      return total * num;
     }
+    
     
     
     

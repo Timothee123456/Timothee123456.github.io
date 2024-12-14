@@ -396,24 +396,28 @@ function multiply(mp){
     
     
     
+	let nb_x = mp_lt.filter(value => value === 'x').length;
+    let nb_y = mp_lt.filter(value => value === 'y').length;
     
-    mp_lt.forEach(xys);
-
-	const nb_x = 0
-    const nb_y = 0
-
-    function xys(value, index, array) {
-      if (value == 'x'){
-      	nb_x ++
-      }
-      else if (value == 'y'){
-      	nb_y ++
-      }
+    const superscript = ['', '', '²', '³', '⁴', '⁵', '⁶']
+    
+    if (nb_x == 0){
+    	nb_x = ''
+    }
+    else {
+    	nb_x = 'x' + superscript[nb_x]
     }
     
     
+    if (nb_y == 0){
+    	nb_y = ''
+    }
+    else {
+    	nb_y = 'y' + superscript[nb_y]
+    }
     
-    return mp_nb + nb_y
+    
+    return mp_nb + nb_x + nb_y
     
     
     
@@ -485,14 +489,19 @@ function generate(){
     result = result.replaceAll(" ", ""); // remove all spaces
     const result2 = result.split("+");
     const result3 = []
-    for (const element of result2) {
+    for (const element of result2){
     	elements = element.split("-")
     	result3.push(elements)
 	}
     
+    const result4 = []
+ 	for (const element of result3){
+    	result4.push(multiply(element))
+    }
     
     
-    return [result2 + '------------------' + result3 + '-----' + multiply('6y×5y²')]
+    
+    return [result3 + '------------------' + result4 + '-----' + multiply('6y×5y²')]
     
 }
 

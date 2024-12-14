@@ -588,6 +588,17 @@ function generate(){
     x4y4:0,
     }
     
+    function remove_letters(string){
+    	string2 = string.replaceAll("x", "")
+        string2 = string2.replaceAll("y", "")
+        string2 = string2.replaceAll("²", "")
+        string2 = string2.replaceAll("³", "")
+        string2 = string2.replaceAll("⁴", "")
+        return string2
+    }
+    
+    
+    
     
     return str
     

@@ -395,7 +395,7 @@ function multiply(mp){
       mp_nb.splice(index, 1);
     }
     
-    if (num != 1){
+    if (mp_nb.length() != 1){
       mp_nb = mp_nb.reduce(multinbs);
 
       function multinbs(total, num) {
@@ -512,7 +512,7 @@ function generate(){
     
     
     
-    return [result3 + '------------------' + result4 + '-----' + multiply('6y×y²×6y')]
+    return [result3 + '------------------' + result4 + '-----' + multiply('6y×y²')]
     
 }
 

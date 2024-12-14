@@ -9,6 +9,7 @@ body {
     
 main {
       height: calc(100vh - 60px);
+      text-align: center;
     }
     
     
@@ -165,13 +166,7 @@ h1 {
 	padding:6px 16px;
 	text-decoration:none;
 	text-shadow:-1px 0px 0px #ded17c;
-    
-    
-    
-  display: inline-block;
-  position: absolute;
-  right: 20px;
-  margin-top: -35px;
+   
 }
 .image:hover {
 	background:linear-gradient(to bottom, #f2ab1e 5%, #f0c911 100%);
@@ -184,7 +179,7 @@ h1 {
 
 .photo {
 		background-color: white;
-        max-height: 70%;
+        max-height: 85%;
         max-width: 90%;
         border: 3px solid #00850b;
         
@@ -210,13 +205,14 @@ h1 {
 <body>
 
 <main>
-<h1>Développer et réduire l'éxpression suivante:</h1>
+<h1>Développer et réduire l'éxpression suivante sur votre cahier:</h1>
 <p id='p'>A = 3(x + 6) - 2</p>
-<button onclick='next()'>Done</button>
-
-
+<nobr>Expression simplifiée : </nobr><input id='answer'>
+<br>
+<br>
+<a class="image" onclick='next()'>Terminé(e)</a>
 </main>
-<a class="image" onclick="show_photo()">Image</a>
+
 
 
 <div class='blague bg' id='blague_bg'>
@@ -447,7 +443,7 @@ function multiply(mp){
 
 
 
-
+var answer5 = []
 function generate(){
 	let str = ""
     let result = ""
@@ -521,7 +517,7 @@ function generate(){
     }
     
     
-	let result5 = []
+	result5 = []
     result4.forEach(addsigns);
 
     function addsigns(value, index, array) {
@@ -533,38 +529,10 @@ function generate(){
       }
     }
     
-    dict = {
-    nb : 0,
-    x : 0,
-    y : 0,
-    xy : 0,
-    x² : 0,
-    y² : 0,
-    x²y : 0,
-    xy² : 0,
-    x²y² : 0,
-    x³ : 0,
-    y³ : 0,
-    x³y : 0,
-    xy³ : 0,
-    x³y³ : 0,
-    x⁴ : 0,
-    y⁴ : 0,
-    x⁴y : 0,
-    xy⁴ : 0,
-    x⁴y⁴ : 0,
-    }
-    
-    result5.forEach(regroup);
-    
-    function regroup(value, index, array) {
-    	if (word[-2] + word[-1] == 'yx'){
-        	add 
-        }
-    }
     
     
-    return str + '/-----------------/' + result4 + '/-----------------/' + result5 + '/-----------------/' + result_plus_minus + '/-----' + multiply('6y×y²')
+    
+    return str
     
 }
 
@@ -572,8 +540,15 @@ function generate(){
 
 function next(){
     nb += 1
-    bar()
+    if (nb < 20){
+    	bar()
     document.getElementById("p").innerHTML = generate()
+    }
+    else if (nb == 20){
+    	bar()
+    	show_photo()
+    }
 }
+document.getElementById("p").innerHTML = generate()
 </script>
 </html>

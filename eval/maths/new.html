@@ -495,8 +495,10 @@ function generate(){
 	}
     
     const result4 = []
- 	for (const element of result3){
-    	result4.push(multiply(element))
+ 	for (const list of result3){
+    	for (const element of list){
+    		result4.push(multiply(element))
+        }
     }
     
     

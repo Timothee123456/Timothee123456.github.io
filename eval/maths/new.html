@@ -268,11 +268,6 @@ function bar(){
     }
 }
     
-    
-function next(){
-    nb += 1
-    bar()
-}
 
 
 function show_blague(){
@@ -383,6 +378,8 @@ function plus_minus(){
 function generate(){
 	let str = ""
     let result = ""
+    let counter = 0;
+	while (counter < 2) {
 	let plusdevant = random_bool()
     if (plusdevant) {
     	let rn = random_nb()
@@ -419,27 +416,18 @@ function generate(){
         result = result + pm
         result = result + rn
     }
-    
-    
-    // make a better result
-    result = result.replaceAll(" ", "")
-    resultplus = result.split("+"); // return list
-    resultminus = result.split("-"); // return list
-    result = resultplus.split("-"); // return list
-    
-    for (let x in result) {
-    	for (let caracter of x){
-        	
     }
     
-    
-    return [str, result]
+    return [str + '------------------' + result]
     
 }
 
 
 
-
-document.getElementById("p").innerHTML = generate()
+function next(){
+    nb += 1
+    bar()
+    document.getElementById("p").innerHTML = generate()
+}
 </script>
 </html>

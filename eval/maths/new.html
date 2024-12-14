@@ -385,13 +385,22 @@ function multiply(mp){
     
     
 	mp = mp.split("×");
+
+    
     mp_nb = mp.filter(remove_letters)
     mp_lt = mp.filter(keep_letters)
     
-    mp_nb = mp_nb.reduce(multinbs);
+    let index = mp_nb.indexOf("");
+    if (index !== -1) {
+      mp_nb.splice(index, 1);
+    }
+    
+    if (num != 1){
+      mp_nb = mp_nb.reduce(multinbs);
 
-    function multinbs(total, num) {
-      return total * num;
+      function multinbs(total, num) {
+        return total * num;
+      }
     }
     
     
@@ -503,7 +512,7 @@ function generate(){
     
     
     
-    return [result3 + '------------------' + result4 + '-----' + multiply('6y×5y²')]
+    return [result3 + '------------------' + result4 + '-----' + multiply('6y×y²')]
     
 }
 

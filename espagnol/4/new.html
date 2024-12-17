@@ -46,18 +46,27 @@ const pronoms_es = ["me", "te", "le", "nos", "os", "les"]
 
 const vocabulaire_fr = ["poisson", "viande", "légumes", "fruits", "pain", "soupe", "salade", "hamburger", "'bocadillo'", "sandwich", "œuf", "café", "thé", "eau", "lait", "fromage", "pâtes", "riz", "fruits de mer", "huile d'olive", "confiture", "omlette"]
 
-const vocabulaire_es = ["pescado", "carne", ["legumbre", "verdura", "legumbres", "verduras"], ["fruta", "frutas"], "pan", "sopa", "ensalada", "hamburguesa", "bocadillo", "sándwich", "huevos", "café", "té", "agua", "leche", "queso", "pastas", "arroz", "mariscos", "aceite de oliva", "mermelada", "tortilla"]
+const vocabulaire_es = ["pescado", "carne", "verduras", "frutas", "pan", "sopa", "ensalada", "hamburguesa", "bocadillo", "sándwich", "huevos", "café", "té", "agua", "leche", "queso", "pastas", "arroz", "mariscos", "aceite de oliva", "mermelada", "tortilla"]
 
 const det_voc_fr = ["le", "la", "les", "les", "le", "la", "la", "le", "le", "le", "les", "le", "le", "l'", "le", "le", "les", "le", "les", "l'", "la", "l'"]
 
-const det_voc_es = ["el", "la", ["el", "la", "los", "las"], ["la", "las"], "el", "la", "la", "la", "el", "el", "los", "el", "el", "el", "la", "el", "las", "el", "los", "el", "la", "la"]
+const det_voc_es = ["el", "la", "las", "las", "el", "la", "la", "la", "el", "el", "los", "el", "el", "el", "la", "el", "las", "el", "los", "el", "la", "la"]
 
 const comer_voc_fr = ["poisson", "viande", "légumes", "fruits", "pain", "soupe", "salade", "hamburger", "'bocadillo'", "sandwich", "œuf", "fromage", "pâtes", "riz", "fruits de mer", "huile d'olive", "confiture", "omlette"]
 
-const comer_voc_es = ["pescado", "carne", ["legumbre", "verdura", "legumbres", "verduras"], ["fruta", "frutas"], "pan", "sopa", "ensalada", "hamburguesa", "bocadillo", "sándwich", "huevos", "queso", "pastas", "arroz", "mariscos", "aceite de oliva", "mermelada", "tortilla"]
+const comer_voc_es = ["pescado", "carne", "verduras", "frutas", "pan", "sopa", "ensalada", "hamburguesa", "bocadillo", "sándwich", "huevos", "queso", "pastas", "arroz", "mariscos", "aceite de oliva", "mermelada", "tortilla"]
 
 const beber_voc_fr = ["café", "thé", "eau", "lait"]
 const beber_voc_es = ["café", "té", "agua", "leche"]
+
+const det_comer_fr = ["le", "la", "les", "les", "le", "la", "la", "le", "le", "le", "les", "le", "les", "le", "les", "l'", "la", "l'"]
+
+const det_comer_es = ["el", "la", "las", "las", "el", "la", "la", "la", "el", "el", "los", "el", "las", "el", "los", "el", "la", "la"]
+
+const det_beber_fr = ["le", "le", "l'", "le"]
+const det_beber_fr = ["el", "el", "el", "la"]
+
+
 
 const verbes_fr = ["manger", "boire"]
 const verbes_es = ["comer", "beber"]
@@ -67,6 +76,8 @@ const verbes_es = ["comer", "beber"]
 function generate(){
 	personnes_nb = Math.floor(Math.random() * 6)
     vocabulaire_nb = Math.floor(Math.random() * vocabulaire_es.length)
+    comer_voc_nb = Math.floor(Math.random() * comer_voc_es.length)
+    beber_voc_nb = Math.floor(Math.random() * beber_voc_es.length)
     negatif = random_bool()
     verbe/nom = random_bool()
     
@@ -116,11 +127,41 @@ function generate(){
         if (verbe/verbes){
         	verbe_nb = Math.floor(Math.random() * verbos_es.length)
             
+            fr += " "
             fr += verbes_fr[verbe_nb]
+            es += " "
             es += verbes_es[verbe_nb]
+            
+            if (verbes_es[verbe_nb] == "comer"){
+            	fr += " "
+                fr += det_comer_fr[comer_voc_nb]
+                fr += " "
+                fr += comer_voc_fr[comer_voc_nb]
+                
+                es += " "
+                es += det_comer_es[comer_voc_nb]
+                es += " "
+                es += comer_voc_es[comer_voc_nb]
+            }
+            else {
+            	fr += " "
+                fr += det_beber_fr[beber_voc_nb]
+                fr += " "
+                fr += beber_voc_fr[beber_voc_nb]
+                
+                es += " "
+                es += det_beber_es[beber_voc_nb]
+                es += " "
+                es += beber_voc_es[beber_voc_nb]
+            }
         }
         else {
-        	
+        	fr += " manger "
+            es += " comer "
+            
+            
+            fr += " boire "
+            es += " beber "
         }
     }
     

@@ -19,8 +19,7 @@
 <center>
 <h2>Traduire la phrase en espagnol</h2>
 <p></p>
-<nobr id="fr_a"></nobr>
-<nobr id="fr_b"></nobr>
+<nobr id="fr"></nobr>
 <p></p>
 <input class="input" autocomplete="off" style="text-align:center;" id="1">
 <nobr id="correction_a"></nobr>
@@ -30,10 +29,6 @@
 <a href="#" class="myButton" onclick="myFunction()" id="Terminado">Terminado</a>
 <p></p>
 <a href="#" class="myButton2" onclick="reset()">Next</a>
-<p class="hidden" id="verb"></p>
-<p class="hidden" id="verb_number"></p>
-<p class="hidden" id="adj"></p>
-<p class="hidden" id="adj_number"></p>
 </center>
 <script>
 const personnes_fr = ["J'", "Tu", ["Il", "Elle"], "Nous", "Vous", ["Ils", "Elles"]];
@@ -71,6 +66,8 @@ const det_beber_fr = ["el", "el", "el", "la"]
 const verbes_fr = ["manger", "boire"]
 const verbes_es = ["comer", "beber"]
 
+let fr = ""
+let es = ""
 
 
 function generate(){
@@ -87,8 +84,8 @@ function generate(){
     
     
     // prendre les pronoms
-    let fr = personnes_fr[personnes_nb]
-    let es = personnes_es[personnes_nb]
+    fr = personnes_fr[personnes_nb]
+    es = personnes_es[personnes_nb]
     
     // ajouter la négation si nécessaire
     if (negatif){
@@ -158,13 +155,34 @@ function generate(){
         else {
         	fr += " manger "
             es += " comer "
+            fr += det_comer_fr[comer_voc_nb]
+            fr += " "
+            fr += comer_voc_fr[comer_voc_nb]
+
+            es += det_comer_es[comer_voc_nb]
+            es += " "
+            es += comer_voc_es[comer_voc_nb]
+            
             
             
             fr += " boire "
             es += " beber "
+            fr += det_beber_fr[beber_voc_nb]
+            fr += " "
+            fr += beber_voc_fr[beber_voc_nb]
+
+            es += " "
+            es += det_beber_es[beber_voc_nb]
+            es += " "
+            es += beber_voc_es[beber_voc_nb]
         }
     }
-    
+    else {
+    	fr += " "
+    	fr += vocabulaire_fr[vocabulaire_nb]
+        es += " "
+    	es += vocabulaire_es[vocabulaire_nb]
+    }
 	
 	
 	
@@ -190,38 +208,12 @@ document.getElementById("correction_b").innerHTML = ""
 document.getElementById("1").value = ""
 document.getElementById("1").style.color = "black"
 
-const verb = Math.floor(Math.random() * 2)
-const verb_number = Math.floor(Math.random() * 8)
-const adj = Math.floor(Math.random() * 2)
-const adj_number = Math.floor(Math.random() * 13)
-const comparer = Math.floor(Math.random() * 2)
-const comparer_number = Math.floor(Math.random() * 3)
+generate()
 
-document.getElementById("verb").innerHTML = verb
-document.getElementById("verb_number").innerHTML = verb_number
-document.getElementById("adj").innerHTML = adj
-document.getElementById("adj_number").innerHTML = adj_number
+document.getElementById("fr").innerHTML = fr
 
 
-if (verb == 0){
-document.getElementById("fr_a").innerHTML = etre_fr[verb_number]
-	if  (verb_number == 2 || verb_number == 6){
-    document.getElementById("fr_b").innerHTML = adj_etre_m_fr[adj_number]
-    }
-    else if  (verb_number == 3 || verb_number == 7) {
-    document.getElementById("fr_b").innerHTML = adj_etre_f_fr[adj_number]
-    }
-    else if  (adj == 0) {
-        document.getElementById("fr_b").innerHTML = adj_etre_m_fr[adj_number]
-    }
-    else {
-    document.getElementById("fr_b").innerHTML = adj_etre_f_fr[adj_number]
-    }
-}
-else {
-document.getElementById("fr_a").innerHTML = avoir_fr[verb_number]
-document.getElementById("fr_b").innerHTML = adj_avoir_fr[adj_number]
-}
+
 
 }
 
@@ -230,32 +222,7 @@ function myFunction() {
 
 document.getElementById("Terminado").style.display = "none";
 
-const verb = document.getElementById("verb").innerHTML
-const verb_number = document.getElementById("verb_number").innerHTML
-const adj = document.getElementById("adj").innerHTML
-const adj_number = document.getElementById("adj_number").innerHTML
-
-const Word1 = document.getElementById("1").value
-	if (verb == 0){
-		if  (verb_number == 2){
-        correct (etre_es[verb_number] + " " + adj_etre_m_es[adj_number])
-    	}
-    	else if  (verb_number == 3) {
-    	correct (etre_es[verb_number] + " " + adj_etre_f_es[adj_number])
-    	}
-    	else if  (adj == 0) {
-        correct (etre_es[verb_number] + " " + adj_etre_m_es[adj_number])
-    	}
-    	else {
-    	correct (etre_es[verb_number] + " " + adj_etre_f_es[adj_number])
-    	}
-	}
-    
-	else {
-    correct (avoir_es[verb_number] + " " + adj_avoir_es[adj_number])
-	}
-
-}
+correct(es)
 
 function correct (text){
 const Word1 = document.getElementById("1").value

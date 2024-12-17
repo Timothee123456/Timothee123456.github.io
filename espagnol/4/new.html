@@ -36,16 +36,74 @@
 <p class="hidden" id="adj_number"></p>
 </center>
 <script>
-const personnes_fr = ["Je", "Tu", ["Il", "Elle"], "Nous", "Vous", ["Ils", "Elles"]];
+const personnes_fr = ["J'", "Tu", ["Il", "Elle"], "Nous", "Vous", ["Ils", "Elles"]];
 const personnes_es = ["A mí", "A ti", ["A él", "A ella"], "A nosotros", "A vosotros", ["A ellos", "A ellas"]];
 
+const aimer_fr = ["aime", "aimes", "aime", "aimons", "aimez", "aiment"]
+
 const pronoms_es = ["me", "te", "le", "nos", "os", "les"]
+
 
 const vocabulaire_fr = ["poisson", "viande", "légumes", "fruits", "pain", "soupe", "salade", "hamburger", "'bocadillo'", "sandwich", "œuf", "café", "thé", "eau", "lait", "fromage", "pâtes", "riz", "fruits de mer", "huile d'olive", "confiture", "omlette"]
 
 const vocabulaire_es = ["pescado", "carne", ["legumbre", "verdura", "legumbres", "verduras"], ["fruta", "frutas"], "pan", "sopa", "ensalada", "hamburguesa", "bocadillo", "sándwich", "huevos", "café", "té", "agua", "leche", "queso", "pastas", "arroz", "mariscos", "aceite de oliva", "mermelada", "tortilla"]
 
 const det_voc_fr = ["le", "la", "les", "les", "le", "la", "la", "le", "le", "le", "les", "le", "le", "l'", "le", "le", "les", "le", "les", "l'", "la", "l'"]
+
+const det_voc_es = ["el", "la", ["el", "la", "los", "las"], ["la", "las"], "el", "la", "la", "la", "el", "el", "los", "el", "el", "el", "la", "el", "las", "el", "los", "el", "la", "la"]
+
+const beber_voc_es = ["café", "té", "agua", "leche"]
+
+
+
+
+function generate(){
+	personnes_nb = Math.floor(Math.random() * 6)
+    vocabulaire_nb = Math.floor(Math.random() * vocabulaire_es.length)
+    negatif = random_bool()
+    verbe/nom = random_bool()
+    
+    // prendre les pronoms
+    let fr = personnes_fr[personnes_nb]
+    let es = personnes_es[personnes_nb]
+    
+    // ajouter la négation si nécessaire
+    if (negatif){
+    	fr += " n'"
+        es += " no"
+    }
+    
+    fr += ""
+    
+    
+    
+    
+    
+    
+    
+    if (verbe/nom){
+    	verbe/verbes = random_bool()
+    }
+    
+    nbs = [1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 5, 5, 6]
+    nb_voc = nbs[Math.floor(Math.random() * nbs.length))]
+    for (let i = 0, i = nb_voc < 1; i++){
+
+    }
+	
+	
+	
+}
+
+
+
+
+
+function random_bool(){
+	bools = [true, false]
+    nb = Math.floor(Math.random() * 2);
+    return bools[nb]
+}
 
 
 reset()

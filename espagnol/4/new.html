@@ -54,6 +54,8 @@ const det_voc_es = ["el", "la", ["el", "la", "los", "las"], ["la", "las"], "el",
 
 const beber_voc_es = ["café", "té", "agua", "leche"]
 
+const verbes_fr = ["manger", "boire"]
+const verbes_es = ["comer", "beber"]
 
 
 
@@ -63,33 +65,60 @@ function generate(){
     negatif = random_bool()
     verbe/nom = random_bool()
     
+    /* nbs = [1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 5, 5, 6]
+    nb_voc = nbs[Math.floor(Math.random() * nbs.length))] */
+    
+    
+    
     // prendre les pronoms
     let fr = personnes_fr[personnes_nb]
     let es = personnes_es[personnes_nb]
     
     // ajouter la négation si nécessaire
     if (negatif){
-    	fr += " n'"
+      	if (fr == "J'") {fr = "Je"}
+        fr += " n'"
         es += " no"
     }
     
-    fr += ""
+    
+    // ajouter le pronom en espagnol
+    es += " "
+    es += pronoms_es[personnes_nb]
     
     
+    // ajouter le verbe aimer
+    fr += " "
+    fr += aimer_fr[personnes_nb]
+    
+    if (verbe || vocabulaire_es[vocabulaire_nb][-1] != 's'){
+    	es += " gusta"
+    }
+    else {
+    	es += " gustan"
+    }
     
     
+    // ajouter la négation en francais si nécessaire
+    if (negatif){
+        fr += " pas"
+    }
     
     
-    
+    // ajouter le verbe si il y en a un
     if (verbe/nom){
     	verbe/verbes = random_bool()
+        if (verbe/verbes){
+        	verbe_nb = Math.floor(Math.random() * verbos_es.length)
+            
+            fr += verbes_fr[verbe_nb]
+            es += verbes_es[verbe_nb]
+        }
+        else {
+        	
+        }
     }
     
-    nbs = [1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 5, 5, 6]
-    nb_voc = nbs[Math.floor(Math.random() * nbs.length))]
-    for (let i = 0, i = nb_voc < 1; i++){
-
-    }
 	
 	
 	

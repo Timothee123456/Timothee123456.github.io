@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>
+     La descriptión físca
+    </title>
+<link rel="stylesheet" href="style.css">
+<style>
+.input{font-size:25px;}
+.hidden{display: none;}
+</style>
+</head>
+<body>
+<!-- This is the div where the menu will be dynamically inserted -->
+<div id="menuContainer"></div>
+
+<!-- Link to the JavaScript file -->
+<script src="navigation.js"></script>
+<center>
+<h2>Traduire la phrase en espagnol</h2>
+<p></p>
+<nobr id="fr_a"></nobr>
+<nobr id="fr_b"></nobr>
+<p></p>
+<input class="input" autocomplete="off" style="text-align:center;" id="1">
+<nobr id="correction_a"></nobr>
+<br>
+<nobr id="correction_b" style="color:red;"></nobr>
+<p></p>
+<a href="#" class="myButton" onclick="myFunction()" id="Terminado">Terminado</a>
+<p></p>
+<a href="#" class="myButton2" onclick="reset()">Next</a>
+<p class="hidden" id="verb"></p>
+<p class="hidden" id="verb_number"></p>
+<p class="hidden" id="adj"></p>
+<p class="hidden" id="adj_number"></p>
+</center>
+<script>
+const personnes_fr = ["Je", "Tu", ["Il", "Elle"], "Nous", "Vous", ["Ils", "Elles"]];
+const personnes_es = ["A mí", "A ti", ["A él", "A ella"], "A nosotros", "A vosotros", ["A ellos", "A ellas"]];
+
+const pronoms_es = ["me", "te", "le", "nos", "os", "les"]
+
+const vocabulaire_fr = ["poisson", "viande", "légumes", "fruits", "pain", "soupe", "salade", "hamburger", "'bocadillo'", "sandwich", "œuf", "café", "thé", "eau", "lait", "fromage", "pâtes", "riz", "fruits de mer", "huile d'olive", "confiture", "omlette"]
+
+const vocabulaire_es = ["pescado", "carne", ["legumbre", "verdura", "legumbres", "verduras"], ["fruta", "frutas"], "pan", "sopa", "ensalada", "hamburguesa", "bocadillo", "sándwich", "huevos", "café", "té", "agua", "leche", "queso", "pastas", "arroz", "mariscos", "aceite de oliva", "mermelada", "tortilla"]
+
+const det_voc_fr = ["le", "la", "les", "les", "le", "la", "la", "le", "le", "le", "les", "le", "le", "l'", "le", "le", "les", "le", "les", "l'", "la", "l'"]
+
+
+reset()
+
+function reset() {
+document.getElementById("Terminado").style.display = "inline";
+document.getElementById("correction_a").innerHTML = ""
+document.getElementById("correction_b").innerHTML = ""
+document.getElementById("1").value = ""
+document.getElementById("1").style.color = "black"
+
+const verb = Math.floor(Math.random() * 2)
+const verb_number = Math.floor(Math.random() * 8)
+const adj = Math.floor(Math.random() * 2)
+const adj_number = Math.floor(Math.random() * 13)
+const comparer = Math.floor(Math.random() * 2)
+const comparer_number = Math.floor(Math.random() * 3)
+
+document.getElementById("verb").innerHTML = verb
+document.getElementById("verb_number").innerHTML = verb_number
+document.getElementById("adj").innerHTML = adj
+document.getElementById("adj_number").innerHTML = adj_number
+
+
+if (verb == 0){
+document.getElementById("fr_a").innerHTML = etre_fr[verb_number]
+	if  (verb_number == 2 || verb_number == 6){
+    document.getElementById("fr_b").innerHTML = adj_etre_m_fr[adj_number]
+    }
+    else if  (verb_number == 3 || verb_number == 7) {
+    document.getElementById("fr_b").innerHTML = adj_etre_f_fr[adj_number]
+    }
+    else if  (adj == 0) {
+        document.getElementById("fr_b").innerHTML = adj_etre_m_fr[adj_number]
+    }
+    else {
+    document.getElementById("fr_b").innerHTML = adj_etre_f_fr[adj_number]
+    }
+}
+else {
+document.getElementById("fr_a").innerHTML = avoir_fr[verb_number]
+document.getElementById("fr_b").innerHTML = adj_avoir_fr[adj_number]
+}
+
+}
+
+
+function myFunction() {
+
+document.getElementById("Terminado").style.display = "none";
+
+const verb = document.getElementById("verb").innerHTML
+const verb_number = document.getElementById("verb_number").innerHTML
+const adj = document.getElementById("adj").innerHTML
+const adj_number = document.getElementById("adj_number").innerHTML
+
+const Word1 = document.getElementById("1").value
+	if (verb == 0){
+		if  (verb_number == 2){
+        correct (etre_es[verb_number] + " " + adj_etre_m_es[adj_number])
+    	}
+    	else if  (verb_number == 3) {
+    	correct (etre_es[verb_number] + " " + adj_etre_f_es[adj_number])
+    	}
+    	else if  (adj == 0) {
+        correct (etre_es[verb_number] + " " + adj_etre_m_es[adj_number])
+    	}
+    	else {
+    	correct (etre_es[verb_number] + " " + adj_etre_f_es[adj_number])
+    	}
+	}
+    
+	else {
+    correct (avoir_es[verb_number] + " " + adj_avoir_es[adj_number])
+	}
+
+}
+
+function correct (text){
+const Word1 = document.getElementById("1").value
+
+if (Word1 == text){
+    	document.getElementById("correction_a").innerHTML = "✓";
+		document.getElementById("correction_a").style.color = "green"
+		}
+		else if (Word1 == ""){
+		document.getElementById("1").value = text;
+		document.getElementById("1").style.color = "red"
+		}
+	    else {
+	    document.getElementById("correction_a").innerHTML = "✕";
+		document.getElementById("correction_a").style.color = "red";
+	    document.getElementById("correction_b").innerHTML = text
+		}
+}
+</script>
+</body>
+</html>

@@ -106,12 +106,13 @@ document.getElementById("date").innerHTML = year;
 const bg = {
   Français: "#004164",
   SVT: "#006412ff",
-  Maths: "#004164",
+  Mathématiques: "#640000ff",
   Espagnol: "#643100ff",
   Tecnologie: "#330064ff",
   PhysiqueChimie: "#636400ff", // Attention Physique-Chimie = PhysiqueChimie
   EPS: "#070064ff",
   Artsplastique: "#540064ff", // Attention Arts plastiques = Artsplastique
+  Musique: "#540064ff", // Meme couleur qu'arts
   Histoiregéo: "#64002dff", // Attention Histoire-géo = Histoiregéo
   Anglais: "#1a6400ff",
   Autre: "#006452ff",
@@ -146,6 +147,7 @@ function getColor(subject) {
     return bg[subject]
   } else {
     return bg["Autre"]
+  }
 }
 
 
@@ -188,11 +190,11 @@ class mySubjectClass {
 
 const tagArr = {
     test: new tag("Urgent", "red"),
-    test2: new tag("Urgent2", "green"),
+    test2: new tag("Important", "green"),
 };
 const subjectArr = {
-	testing: new mySubjectClass("Maths"),
-    testing2: new mySubjectClass("Francais"),
+	testing: new mySubjectClass("Mathématiques"),
+    testing2: new mySubjectClass("Français"),
 };
 
 const reminderArr = [
@@ -234,7 +236,7 @@ reminderArr.forEach(function(element, index) {
         topic: {
             htmlType: "p",
             htmlClass: "title",
-            elemContent: element.subject.name // Corrected to display subject name
+            elemContent: element.subject.name, // Corrected to display subject name
         },
         text: {
             htmlType: "p",
@@ -247,7 +249,7 @@ reminderArr.forEach(function(element, index) {
         elem.innerHTML = elem_attributes[attr].elemContent;
         elem.className = `reminder-${elem_attributes[attr].htmlClass}`; // Made class more specific
         elem.id = `rem${elem_attributes[attr].htmlType}${index}`;
-        if (elem_attributes[attr].htmlType === "a") {
+        if (elem_attributes[attr].htmlClass === "tag") {
             elem.style.backgroundColor = elem_attributes[attr].elemBgColor;
         }
         reminder.appendChild(elem);

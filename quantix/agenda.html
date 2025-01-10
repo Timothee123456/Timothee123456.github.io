@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Agenda</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Anaheim"> <!-- google fonts -->  
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Architects%20Daughter"> <!-- google fonts -->
+  <style>
+    body {
+      margin: 0;
+    }
+
+    header {
+      background-image: url('https://ssl.gstatic.com/atari/images/aristotle-header-dark.jpg');
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+      padding: 30px;
+      text-align: center;
+    }
+
+    header h1 {
+      color: #fff;
+      font-size: 36px;
+      margin: 0;
+    }
+
+    main {
+      background-color: #1d2a35;
+      padding: 20px;
+      text-align: center;
+      min-height: calc(100vh - 225px);
+    }
+
+    footer {
+      background-color: #171921;
+      padding: 20px;
+      text-align: center;
+      color: #fff;
+      font-size: 14px;
+    }
+    
+    
+    
+    .reminder-container {
+        padding-top: 15px;
+        margin-left: 2.5vw;
+        margin-right: 2.5vw;
+        border-radius: 15px;
+        display: inline-block;
+        width: 40vw;
+        height: 102px;
+        overflow: auto;
+        color: #fff
+    }
+    
+    
+    .reminder-tag {
+        padding: 7px;
+        padding-right: 10px;
+        padding-left: 10px;
+        border-radius: 20px;
+        font-size: 13px;
+    }
+    
+    .reminder-date {
+    	font-family: "Anaheim", sans-serif;
+        font-size: 13px;
+    }
+    
+    .reminder-title {
+    	font-family: "Architects Daughter", sans-serif;
+        font-size: 23px;
+        font-weight: bold;
+        line-height: 0.1;
+    }
+    
+    .reminder-content {
+    
+    }
+  </style>
+</head>
+<body>
+<header>
+  <h1>Calendar</h1>
+</header> 
+
+<main id="main">
+
+
+</main>
+
+<footer>
+  <p>&copy; <span id=date>2025</span> Quantix. Tous droits réservés.</p>
+</footer>
+</body>
+<script>
+// change footer date
+const d = new Date();
+let year = d.getFullYear();
+document.getElementById("date").innerHTML = year;
+</script>
+  
+<script>  
+// change bg color
+
+const bg = {
+  Français: "#004164",
+  SVT: "#006412ff",
+  Maths: "#004164",
+  Espagnol: "#643100ff",
+  Tecnologie: "#330064ff",
+  PhysiqueChimie: "#636400ff", // Attention Physique-Chimie = PhysiqueChimie
+  EPS: "#070064ff",
+  Artsplastique: "#540064ff", // Attention Arts plastiques = Artsplastique
+  Histoiregéo: "#64002dff", // Attention Histoire-géo = Histoiregéo
+  Anglais: "#1a6400ff",
+  Autre: "#006452ff",
+}
+
+
+function adjustColorBrightness(color, percent) {
+    let num = parseInt(color.slice(1), 16);
+    let amt = Math.round(2.55 * percent);
+    let r = (num >> 16) + amt;
+    let g = (num >> 8 & 0x00FF) + amt;
+    let b = (num & 0x0000FF) + amt;
+
+    r = Math.max(0, Math.min(255, r));
+    g = Math.max(0, Math.min(255, g));
+    b = Math.max(0, Math.min(255, b));
+
+    return `#${(r << 16 | g << 8 | b).toString(16).padStart(6, '0')}`;
+}
+
+
+
+function removeSpaceHyphen(text) {
+  text = text.replaceAll(" ", "");
+  text = text.replaceAll("-", "");
+  return text
+}
+
+function getColor(subject) {
+  subject = removeSpaceHyphen(subject)
+  if (subject in bg) {
+    return bg[subject]
+  } else {
+    return bg["Autre"]
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+class myReminderClass {
+    constructor (content, subject, tag, date) {
+        this.content = content;
+        this.subject = subject; // Corrected
+        this.tag = tag;
+        this.date = date;
+    }
+}
+class tag {
+    constructor (content, bgColor) {
+        this.content = content;
+        this.bgColor = bgColor;
+    }
+}
+class mySubjectClass {
+	constructor (name) {
+        this.name = name;
+        this.bgColor = getColor(name);
+    }
+}
+
+const tagArr = {
+    test: new tag("Urgent", "red"),
+    test2: new tag("Urgent2", "green"),
+};
+const subjectArr = {
+	testing: new mySubjectClass("Maths"),
+    testing2: new mySubjectClass("Francais"),
+};
+
+const reminderArr = [
+    new myReminderClass(
+        "Finir de développer ce site !",
+        subjectArr.testing,
+        tagArr.test,
+        new Date("2024-01-25")
+    ),
+    
+    new myReminderClass(
+        "Finir de développer ce site !2",
+        subjectArr.testing2,
+        tagArr.test2,
+        new Date("2024-01-25")
+    ),
+];
+
+reminderArr.forEach(function(element, index) {
+    let reminder = document.createElement("div");
+    reminder.className = "reminder-container";
+    reminder.style.backgroundColor = element.subject.bgColor;
+    reminder.id = `remDiv${index}`;
+    document.getElementById("main").appendChild(reminder);
+    
+    
+    const elem_attributes = {
+        tagged: {
+            htmlType: "a",
+            htmlClass: "tag",
+            elemContent: element.tag.content,
+            elemBgColor: element.tag.bgColor
+        },
+        date: {
+            htmlType: "nobr",
+            htmlClass: "date",
+            elemContent: " Pour : " + element.date.toLocaleDateString('en-GB')
+        },
+        topic: {
+            htmlType: "p",
+            htmlClass: "title",
+            elemContent: element.subject.name // Corrected to display subject name
+        },
+        text: {
+            htmlType: "p",
+            htmlClass: "content",
+            elemContent: element.content
+        }
+    }; 
+    Object.keys(elem_attributes).forEach(function(attr){
+        let elem = document.createElement(elem_attributes[attr].htmlType);
+        elem.innerHTML = elem_attributes[attr].elemContent;
+        elem.className = `reminder-${elem_attributes[attr].htmlClass}`; // Made class more specific
+        elem.id = `rem${elem_attributes[attr].htmlType}${index}`;
+        if (elem_attributes[attr].htmlType === "a") {
+            elem.style.backgroundColor = elem_attributes[attr].elemBgColor;
+        }
+        reminder.appendChild(elem);
+    });
+});
+</script>
+</html>

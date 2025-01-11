@@ -50,7 +50,27 @@
         width: 40vw;
         height: 102px;
         overflow: auto;
-        color: #fff
+        color: #fff;
+        
+        /* Zoom */
+        transform: matrix3d( 
+          1, 0, 1, 0, 
+          0, 1, 1, 0, 
+          1, 1, 0, 0, 
+          0, 0, 0, 1 
+        );
+        transition: transform 1s;
+    }
+    
+    /* Hover = Zoom */
+    .reminder-container:hover,
+    .reminder-container:focus {
+      transform: rotate3d(1, 1, 1, 0deg)
+      matrix3d(
+      1, 0, 1, 0,
+      0, 1, 1, 0,
+      1, 1, 0, 0,
+      0, 0, 0, 0.95);
     }
     
     
@@ -103,13 +123,31 @@ document.getElementById("date").innerHTML = year;
 <script>  
 // change bg color
 
-const bg = {
+const subjectBg = {
   Français: "#004164",
   SVT: "#006412ff",
   Mathématiques: "#640000ff",
   Espagnol: "#643100ff",
   Tecnologie: "#330064ff",
   PhysiqueChimie: "#636400ff", // Attention Physique-Chimie = PhysiqueChimie
+  EPS: "#070064ff",
+  Artsplastique: "#540064ff", // Attention Arts plastiques = Artsplastique
+  Musique: "#540064ff", // Meme couleur qu'arts
+  Histoiregéo: "#64002dff", // Attention Histoire-géo = Histoiregéo
+  Anglais: "#1a6400ff",
+  Autre: "#006452ff",
+}
+
+const subjectNameColor = {
+  Français: "#ccd9e0",
+  SVT: "#cce0d0",
+  Mathématiques: "#e0cccc",
+  Espagnol: "#e0d6cc",
+  Tecnologie: "#d6cce0",
+  PhysiqueChimie: "#e0e0cc", // Attention Physique-Chimie = PhysiqueChimie
+  
+  
+  
   EPS: "#070064ff",
   Artsplastique: "#540064ff", // Attention Arts plastiques = Artsplastique
   Musique: "#540064ff", // Meme couleur qu'arts
@@ -141,12 +179,21 @@ function removeSpaceHyphen(text) {
   return text
 }
 
-function getColor(subject) {
+function getBgColor(subject) {
   subject = removeSpaceHyphen(subject)
-  if (subject in bg) {
-    return bg[subject]
+  if (subject in subjectBg) {
+    return subjectBg[subject]
   } else {
-    return bg["Autre"]
+    return subjectBg["Autre"]
+  }
+}
+
+function getSubjectColor(subject) {
+  subject = removeSpaceHyphen(subject)
+  if (subject in subjectBg) {
+    return subjectBg[subject]
+  } else {
+    return subjectBg["Autre"]
   }
 }
 
@@ -184,7 +231,8 @@ class tag {
 class mySubjectClass {
 	constructor (name) {
         this.name = name;
-        this.bgColor = getColor(name);
+        this.bgColor = getBgColor(name);
+        this.subjectColor = getSubjectColor(name);
     }
 }
 

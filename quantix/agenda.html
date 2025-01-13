@@ -145,15 +145,12 @@ const subjectNameColor = {
   Espagnol: "#e0d6cc",
   Tecnologie: "#d6cce0",
   PhysiqueChimie: "#e0e0cc", // Attention Physique-Chimie = PhysiqueChimie
-  
-  
-  
-  EPS: "#070064ff",
-  Artsplastique: "#540064ff", // Attention Arts plastiques = Artsplastique
-  Musique: "#540064ff", // Meme couleur qu'arts
-  Histoiregéo: "#64002dff", // Attention Histoire-géo = Histoiregéo
-  Anglais: "#1a6400ff",
-  Autre: "#006452ff",
+  EPS: "#cdcce0",
+  Artsplastique: "#ddcce0", // Attention Arts plastiques = Artsplastique
+  Musique: "#ddcce0", // Meme couleur qu'arts
+  Histoiregéo: "#e0ccd5", // Attention Histoire-géo = Histoiregéo
+  Anglais: "#d1e0cc",
+  Autre: "#cce0dc",
 }
 
 
@@ -190,10 +187,10 @@ function getBgColor(subject) {
 
 function getSubjectColor(subject) {
   subject = removeSpaceHyphen(subject)
-  if (subject in subjectBg) {
-    return subjectBg[subject]
+  if (subject in subjectNameColor) {
+    return subjectNameColor[subject]
   } else {
-    return subjectBg["Autre"]
+    return subjectNameColor["Autre"]
   }
 }
 
@@ -229,9 +226,9 @@ class tag {
     }
 }
 class mySubjectClass {
-	constructor (name) {
+	constructor (name, color = getBgColor(name)) {
         this.name = name;
-        this.bgColor = getBgColor(name);
+        this.bgColor = color;
         this.subjectColor = getSubjectColor(name);
     }
 }
@@ -247,14 +244,14 @@ const subjectArr = {
 
 const reminderArr = [
     new myReminderClass(
-        "Finir de développer ce site !",
+        "Apporter ses affaires de géométrie",
         subjectArr.testing,
         tagArr.test,
         new Date("2024-01-25")
     ),
     
     new myReminderClass(
-        "Finir de développer ce site !2",
+        "Lire le livre",
         subjectArr.testing2,
         tagArr.test2,
         new Date("2024-01-25")
@@ -285,6 +282,7 @@ reminderArr.forEach(function(element, index) {
             htmlType: "p",
             htmlClass: "title",
             elemContent: element.subject.name, // Corrected to display subject name
+            elemColor: element.subject.subjectColor
         },
         text: {
             htmlType: "p",
@@ -299,6 +297,9 @@ reminderArr.forEach(function(element, index) {
         elem.id = `rem${elem_attributes[attr].htmlType}${index}`;
         if (elem_attributes[attr].htmlClass === "tag") {
             elem.style.backgroundColor = elem_attributes[attr].elemBgColor;
+        }
+        if (elem_attributes[attr].htmlClass === "title") {
+            elem.style.color = elem_attributes[attr].elemColor;
         }
         reminder.appendChild(elem);
     });

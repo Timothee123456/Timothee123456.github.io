@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html>
+<style>
+body {font-family: Arial, Helvetica, sans-serif;}
+* {box-sizing: border-box;}
+
+/* Full-width input fields */
+input[type=text], input[type=date], select {
+  width: 100%;
+  padding: 15px;
+  margin: 5px 0 22px 0;
+  display: inline-block;
+  border: none;
+  background: #f1f1f1;
+}
+
+/* Add a background color when the inputs get focus */
+input[type=text]:focus, input[type=date]:focus {
+  background-color: #ddd;
+  outline: none;
+}
+
+/* Set a style for all buttons */
+button {
+  background-color: #04AA6D;
+  color: white;
+  padding: 14px 20px;
+  margin: 8px 0;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+  opacity: 0.9;
+}
+
+button:hover {
+  opacity:1;
+}
+
+/* Extra styles for the cancel button */
+.cancelbtn {
+  padding: 14px 20px;
+  background-color: #f44336;
+}
+
+/* Float cancel and signup buttons and add an equal width */
+.cancelbtn, .signupbtn {
+  float: left;
+  width: 50%;
+}
+
+/* Add padding to container elements */
+.container {
+  padding: 16px;
+}
+
+/* The Modal (background) */
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: #474e5d;
+  padding-top: 50px;
+}
+
+/* Modal Content/Box */
+.modal-content {
+  background-color: #fefefe;
+  margin: 5% auto 15% auto; /* 5% from the top, 15% from the bottom and centered */
+  border: 1px solid #888;
+  width: 80%; /* Could be more or less, depending on screen size */
+}
+
+/* Style the horizontal ruler */
+hr {
+  border: 1px solid #f1f1f1;
+  margin-bottom: 25px;
+}
+ 
+/* The Close Button (x) */
+.close {
+  position: absolute;
+  right: 35px;
+  top: 15px;
+  font-size: 40px;
+  font-weight: bold;
+  color: #f1f1f1;
+}
+
+.close:hover,
+.close:focus {
+  color: #f44336;
+  cursor: pointer;
+}
+
+/* Clear floats */
+.clearfix::after {
+  content: "";
+  clear: both;
+  display: table;
+}
+
+/* Change styles for cancel button and signup button on extra small screens */
+@media screen and (max-width: 300px) {
+  .cancelbtn, .signupbtn {
+     width: 100%;
+  }
+}
+</style>
+<body>
+
+<h2>Modal Signup Form</h2>
+
+<button onclick="document.getElementById('id01').style.display='block'" style="width:auto;">Sign Up</button>
+
+<div id="id01" class="modal">
+  <span onclick="document.getElementById('id01').style.display='none'" class="close" title="Close Modal">&times;</span>
+  <form class="modal-content" action="#" onsubmit="onsubmit()">
+    <div class="container">
+    <div style="text-align: center">
+      <h1>Ajouter un devoir / rappel</h1>
+    </div>
+      <hr>
+      <label for="matière"><b>Matière / Titre</b></label>
+      <input type="text" placeholder="Entrez la matière" name="matière" required>
+      
+      <label for="devoir"><b>Devoir / Rappel</b></label>
+      <input type="text" placeholder="Entrez le devoir" name="devoir">
+      
+      <label for="email"><b>Date</b></label>
+      <input type="date" min="2025-01-01" name="date" id="date" required>
+
+	<label for="tag"><b>Tag</b><label>
+      <select style="background-color: #42ADFF" name="tag" id="tag" required>
+          <option value="Urgent" style="background-color: red" >Urgent</option>
+          <option value="Very Important" style="background-color: orange">Très Important</option>
+          <option value="Important" style="background-color: yellow">Important</option>
+          <option value="Normal" selected style="background-color: #42ADFF">Normal</option>
+          <option value="Optionel" style="background-color: #2BFF00">Optionel</option>
+      </select>
+      
+      
+  <label for="icon"><b>Icône</b><label>
+  <select name="icon" id="icon">
+      <option value="" selected>Aucun</option>
+      <option value="Longue durée">⏰ Longue durée</option>
+      <option value="Tâche rapide">⚡ Tâche rapide</option>
+      <option value="Travail de groupe">👥 Travail de groupe</option>
+      <option value="Préparation requise">🔧 Préparation requise</option>
+      <option value="Révision">📖 Révision</option>
+      <option value="Lecture">📚 Lecture</option>
+  </select>
+  
+      <div class="clearfix">
+        <button type="button" onclick="document.getElementById('id01').style.display='none'" class="cancelbtn">Annuler</button>
+        <button type="submit" class="signupbtn">Ajouter</button>
+      </div>
+    </div>
+  </form>
+</div>
+
+<script>
+// Get the modal
+var modal = document.getElementById('id01');
+
+// When the user clicks anywhere outside of the modal, close it
+window.onclick = function(event) {
+  if (event.target == modal) {
+    modal.style.display = "none";
+  }
+}
+
+// set min date to now
+var dateElm = document.getElementById('date');
+const d = new Date();
+const year = d.getFullYear();
+const months = ['01','02','03','04','05','06','07','08','09','10','11', '12'];
+const month = months[d.getMonth()];
+const days = ['01','02','03','04','05','06','07','08','09','10','11','12','13','14','15','16','17','18','19','20','21','22','23','24','25','26','27','28','29','30','31'];
+const day = days[d.getDate() - 1];
+
+dateElm.min = year + '-' + month + '-' + day
+
+
+
+
+// Change background color when selection changes
+      const select = document.getElementById('tag');
+
+    // Set initial background color
+    select.style.backgroundColor = select.options[select.selectedIndex].style.backgroundColor;
+
+    // Change background color when selection changes
+    select.addEventListener('change', function() {
+      const selectedOption = this.options[this.selectedIndex];
+      this.style.backgroundColor = selectedOption.style.backgroundColor;
+        });
+        
+        
+
+
+</script>
+</body>
+</html>

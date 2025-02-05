@@ -70,7 +70,6 @@
         height: 102px;
         padding-top: 15px;
         border-radius: 15px;
-        display: inline-block;
         overflow: auto;
         color: #fff;
 		transform: matrix3d(
@@ -84,7 +83,8 @@
 
     /* Hover = Zoom */
     .reminder-container:hover,
-    .reminder-container:focus {
+    .reminder-container:focus,
+    .reminder-container-zoom{
       transform: rotate3d(1, 1, 1, 0deg)
       matrix3d(
       1, 0, 1, 0,
@@ -154,6 +154,7 @@
     /* overlay */
       .container {
             position: relative;
+            display: inline-block;
             /* For mobile phones: */
             width: 80vw;
             margin-left: 2.5vw;
@@ -180,6 +181,7 @@
             
             height: 117px;
             margin-bottom: 15px;
+            
         }
     
       .overlay {
@@ -188,8 +190,8 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            opacity: 0.5;
+            background-color: rgba(0, 0, 0, 0.7);
+            opacity: 0;
             transition: opacity 0.3s ease;
             /* Changed to allow pointer events when active */
             pointer-events: none;
@@ -215,6 +217,8 @@
         .disable-content {
             user-select: none;
         }
+        
+
   </style>
 </head>
 <body>
@@ -322,13 +326,26 @@ reminderArr.forEach(function(element, index) {
     reminder.style.backgroundColor = element.subject.bgColor; // Corrected typo
     reminder.id = `remDiv${index}`;
     console.log(`remDiv${index}`)
-    reminder.onclick = toggleDarkness(index)
+    reminder.addEventListener('click', () => toggleDarkness(index));
     container.appendChild(reminder);
     
     let overlay = document.createElement("div");
     overlay.className = "overlay";
     overlay.id = `overlay${index}`;
     container.appendChild(overlay);
+    
+    let edit = document.createElement("button");
+    overlay.className = "edit";
+    overlay.innerHTML = "edit";
+    overlay.id = `edit${index}`;
+    
+    let cancel = document.createElement("button");
+    overlay.className = "cancel";
+    overlay.innerHTML = "cancel";
+    overlay.id = `cancel${index}`;
+
+    overlay.appendChild(edit);
+    overlay.appendChild(cancel);
     
     
     remHTMLcontainers.push(container);
@@ -381,15 +398,12 @@ remHTMLcontainers.forEach(function(div){
 
 
 function toggleDarkness(index) {
-    const overlay = document.getElementById("overlay" + index);
+    const overlay = document.getElementById(`overlay${index}`);
     const remDiv = document.getElementById(`remDiv${index}`);
-
-    if (overlay && remDiv) {
-        overlay.classList.toggle('active');
-        remDiv.classList.toggle('disable-content');
-    } else {
-        console.error(`Elements with index ${index} not found.remDiv${index});
-    }
+    
+    overlay.classList.toggle('active');
+    remDiv.classList.toggle('disable-content');
+    remDiv.classList.toggle('reminder-container-zoom');
 }
 </script>
 </html>

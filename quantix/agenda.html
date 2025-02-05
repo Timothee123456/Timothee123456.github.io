@@ -1,8 +1,10 @@
+
 <!DOCTYPE html>
 <html>
 <head>
   <title>Agenda</title>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Anaheim"> <!-- google fonts -->  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Responsive design -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Anaheim"> <!-- google fonts -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Architects%20Daughter"> <!-- google fonts -->
   <style>
     body {
@@ -27,8 +29,14 @@
     main {
       background-color: #1d2a35;
       padding: 20px;
-      text-align: center;
       min-height: calc(100vh - 225px);
+      text-align: center;
+    }
+    
+    
+    .add-dev-div {
+    	background-color: #1d2a35;
+        text-align: center;
     }
 
     footer {
@@ -38,30 +46,50 @@
       color: #fff;
       font-size: 14px;
     }
-    
-    
-    
-    .reminder-container {
-        padding-top: 15px;
+
+
+	.reminder-container {
+        /* For mobile phones: */
+        width: 80vw;
         margin-left: 2.5vw;
         margin-right: 2.5vw;
+
+        @media only screen and (min-width: 400px) {
+          /* For tablets: */
+          width: 40vw;
+        }
+
+        @media only screen and (min-width: 730px) {
+          /* For computers: */
+          width: 28vw;
+          margin-left: 1.75vw;
+          margin-right: 1.75vw;
+        }
+
+        @media only screen and (min-width: 950px) {
+          /* For computers: */
+          width: 21vw;
+          margin-left: 1vw;
+          margin-right: 1vw;
+        }
+
+        margin-bottom: 15px;
+        padding-top: 15px;
         border-radius: 15px;
         display: inline-block;
-        width: 40vw;
         height: 102px;
         overflow: auto;
         color: #fff;
-        
-        /* Zoom */
-        transform: matrix3d( 
-          1, 0, 1, 0, 
-          0, 1, 1, 0, 
-          1, 1, 0, 0, 
-          0, 0, 0, 1 
+	    position: relative;
+		transform: matrix3d(
+          1, 0, 1, 0,
+          0, 1, 1, 0,
+          1, 1, 0, 0,
+          0, 0, 0, 1
         );
         transition: transform 1s;
     }
-    
+
     /* Hover = Zoom */
     .reminder-container:hover,
     .reminder-container:focus {
@@ -72,43 +100,99 @@
       1, 1, 0, 0,
       0, 0, 0, 0.95);
     }
-    
-    
-    .reminder-tag {
+
+    .remindera { /*TAG*/
         padding: 7px;
         padding-right: 10px;
         padding-left: 10px;
         border-radius: 20px;
         font-size: 13px;
     }
-    
-    .reminder-date {
+
+    .remindernobr { /*DATE*/
     	font-family: "Anaheim", sans-serif;
         font-size: 13px;
+        padding-left: 10px;
     }
-    
-    .reminder-title {
+
+    .reminderh2 { /*TOPIC*/
     	font-family: "Architects Daughter", sans-serif;
         font-size: 23px;
         font-weight: bold;
         line-height: 0.1;
     }
     
-    .reminder-content {
     
-    }
+    .add-dev-button {
+    	background-color: #04AA6D;
+        color: white;
+        padding: 14px 20px;
+        border: none;
+        cursor: pointer;
+        width: 90%;
+        opacity: 0.9;
+        border-radius: 10px;
+        
+        transform: matrix3d(
+          1, 0, 1, 0,
+          0, 1, 1, 0,
+          1, 1, 0, 0,
+          0, 0, 0, 1
+        );
+        transition: 1s;
+      }
+
+      .add-dev-button:hover {
+        transform: rotate3d(1, 1, 1, 0deg)
+        matrix3d(
+        1, 0, 1, 0,
+        0, 1, 1, 0,
+        1, 1, 0, 0,
+        0, 0, 0, 0.95);
+      }
+    
+    
+    
+    
+      .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            opacity: 1;
+            transition: opacity 0.3s ease;
+            /* Changed to allow pointer events when active */
+            pointer-events: none;
+        }
+
+        .overlay.active {
+            opacity: 1;
+            /* This makes the overlay block all interactions */
+            pointer-events: all;
+        }
+        
+
+        /* Disable text selection when overlay is active */
+        .disable-content {
+            user-select: none;
+        }
   </style>
 </head>
 <body>
 <header>
-  <h1>Calendar</h1>
-</header> 
-
+  <h1>Agenda personnel</h1>
+</header>
 <main id="main">
 
 
-</main>
 
+
+</main>
+<div class="add-dev-div">
+<button class="add-dev-button" id="">Ajouter un devoir/rappel</button>
+</div>
 <footer>
   <p>&copy; <span id=date>2025</span> Quantix. Tous droits réservés.</p>
 </footer>
@@ -119,41 +203,8 @@ const d = new Date();
 let year = d.getFullYear();
 document.getElementById("date").innerHTML = year;
 </script>
-  
-<script>  
-// change bg color
 
-const subjectBg = {
-  Français: "#004164",
-  SVT: "#006412ff",
-  Mathématiques: "#640000ff",
-  Espagnol: "#643100ff",
-  Tecnologie: "#330064ff",
-  PhysiqueChimie: "#636400ff", // Attention Physique-Chimie = PhysiqueChimie
-  EPS: "#070064ff",
-  Artsplastique: "#540064ff", // Attention Arts plastiques = Artsplastique
-  Musique: "#540064ff", // Meme couleur qu'arts
-  Histoiregéo: "#64002dff", // Attention Histoire-géo = Histoiregéo
-  Anglais: "#1a6400ff",
-  Autre: "#006452ff",
-}
-
-const subjectNameColor = {
-  Français: "#ccd9e0",
-  SVT: "#cce0d0",
-  Mathématiques: "#e0cccc",
-  Espagnol: "#e0d6cc",
-  Tecnologie: "#d6cce0",
-  PhysiqueChimie: "#e0e0cc", // Attention Physique-Chimie = PhysiqueChimie
-  EPS: "#cdcce0",
-  Artsplastique: "#ddcce0", // Attention Arts plastiques = Artsplastique
-  Musique: "#ddcce0", // Meme couleur qu'arts
-  Histoiregéo: "#e0ccd5", // Attention Histoire-géo = Histoiregéo
-  Anglais: "#d1e0cc",
-  Autre: "#cce0dc",
-}
-
-
+<script>
 function adjustColorBrightness(color, percent) {
     let num = parseInt(color.slice(1), 16);
     let amt = Math.round(2.55 * percent);
@@ -167,49 +218,6 @@ function adjustColorBrightness(color, percent) {
 
     return `#${(r << 16 | g << 8 | b).toString(16).padStart(6, '0')}`;
 }
-
-
-
-function removeSpaceHyphen(text) {
-  text = text.replaceAll(" ", "");
-  text = text.replaceAll("-", "");
-  return text
-}
-
-function getBgColor(subject) {
-  subject = removeSpaceHyphen(subject)
-  if (subject in subjectBg) {
-    return subjectBg[subject]
-  } else {
-    return subjectBg["Autre"]
-  }
-}
-
-function getSubjectColor(subject) {
-  subject = removeSpaceHyphen(subject)
-  if (subject in subjectNameColor) {
-    return subjectNameColor[subject]
-  } else {
-    return subjectNameColor["Autre"]
-  }
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 class myReminderClass {
     constructor (content, subject, tag, date) {
@@ -226,83 +234,92 @@ class tag {
     }
 }
 class mySubjectClass {
-	constructor (name, color = getBgColor(name)) {
+	constructor (name, bgColor) {
         this.name = name;
-        this.bgColor = color;
-        this.subjectColor = getSubjectColor(name);
+        this.bgColor = bgColor;
     }
 }
 
 const tagArr = {
-    test: new tag("Urgent", "red"),
-    test2: new tag("Important", "green"),
+    test: new tag("Urgent", "red")
 };
 const subjectArr = {
-	testing: new mySubjectClass("Mathématiques"),
-    testing2: new mySubjectClass("Français"),
+	testing: new mySubjectClass("Coding", "#0A79BC")
 };
 
 const reminderArr = [
     new myReminderClass(
-        "Apporter ses affaires de géométrie",
+        "Finir de développer ce site ! C'est important !",
         subjectArr.testing,
         tagArr.test,
         new Date("2024-01-25")
     ),
-    
     new myReminderClass(
-        "Lire le livre",
-        subjectArr.testing2,
-        tagArr.test2,
+        "Code!",
+        subjectArr.testing,
+        tagArr.test,
+        new Date("2024-01-25")
+    ),
+    new myReminderClass(
+        "Code!",
+        subjectArr.testing,
+        tagArr.test,
+        new Date("2024-01-25")
+    ),new myReminderClass(
+        "Code!",
+        subjectArr.testing,
+        tagArr.test,
         new Date("2024-01-25")
     ),
 ];
 
+const remHTMLcontainers = []; // Array for all reminder Divs before being added
+
 reminderArr.forEach(function(element, index) {
+	let overlay = document.createElement("div");
+    overlay.className = "overlay";
+    reminder.id = `overlay${index}`;
+    remHTMLcontainers.push(overlay);
+    
     let reminder = document.createElement("div");
-    reminder.className = "reminder-container";
-    reminder.style.backgroundColor = element.subject.bgColor;
+    reminder.className = "reminder-container"; // Renamed for clarity
+    reminder.style.backgroundColor = element.subject.bgColor; // Corrected typo
     reminder.id = `remDiv${index}`;
-    document.getElementById("main").appendChild(reminder);
-    
-    
+    remHTMLcontainers.push(reminder);
     const elem_attributes = {
         tagged: {
             htmlType: "a",
-            htmlClass: "tag",
             elemContent: element.tag.content,
             elemBgColor: element.tag.bgColor
         },
         date: {
             htmlType: "nobr",
-            htmlClass: "date",
-            elemContent: " Pour : " + element.date.toLocaleDateString('en-GB')
+            elemContent: "For : " + element.date.toLocaleDateString('en-GB')
         },
         topic: {
-            htmlType: "p",
-            htmlClass: "title",
-            elemContent: element.subject.name, // Corrected to display subject name
-            elemColor: element.subject.subjectColor
+            htmlType: "h2",
+            elemContent: element.subject.name // Corrected to display subject name
         },
         text: {
             htmlType: "p",
-            htmlClass: "content",
             elemContent: element.content
         }
-    }; 
+    };
     Object.keys(elem_attributes).forEach(function(attr){
         let elem = document.createElement(elem_attributes[attr].htmlType);
         elem.innerHTML = elem_attributes[attr].elemContent;
-        elem.className = `reminder-${elem_attributes[attr].htmlClass}`; // Made class more specific
+        elem.className =  `reminder${elem_attributes[attr].htmlType}`; // Made class more specific
         elem.id = `rem${elem_attributes[attr].htmlType}${index}`;
-        if (elem_attributes[attr].htmlClass === "tag") {
+        if (elem_attributes[attr].htmlType === "a") {
             elem.style.backgroundColor = elem_attributes[attr].elemBgColor;
-        }
-        if (elem_attributes[attr].htmlClass === "title") {
-            elem.style.color = elem_attributes[attr].elemColor;
+        } else if (elem_attributes[attr].htmlType === "h2") {
+            elem.style.color = adjustColorBrightness(element.subject.bgColor, 70);
         }
         reminder.appendChild(elem);
     });
+});
+remHTMLcontainers.forEach(function(div){
+	document.getElementById("main").appendChild(div);
 });
 </script>
 </html>

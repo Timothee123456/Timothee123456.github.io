@@ -50,37 +50,29 @@
 
 	.reminder-container {
         /* For mobile phones: */
-        width: 80vw;
-        margin-left: 2.5vw;
-        margin-right: 2.5vw;
+            width: 80vw;
 
-        @media only screen and (min-width: 400px) {
-          /* For tablets: */
-          width: 40vw;
-        }
+            @media only screen and (min-width: 400px) {
+              /* For tablets: */
+              width: 40vw;
+            }
 
-        @media only screen and (min-width: 730px) {
-          /* For computers: */
-          width: 28vw;
-          margin-left: 1.75vw;
-          margin-right: 1.75vw;
-        }
+            @media only screen and (min-width: 730px) {
+              /* For computers: */
+              width: 28vw;
+            }
 
-        @media only screen and (min-width: 950px) {
-          /* For computers: */
-          width: 21vw;
-          margin-left: 1vw;
-          margin-right: 1vw;
-        }
-
-        margin-bottom: 15px;
+            @media only screen and (min-width: 950px) {
+              /* For computers: */
+              width: 21vw;
+            }
+            
+        height: 102px;
         padding-top: 15px;
         border-radius: 15px;
         display: inline-block;
-        height: 102px;
         overflow: auto;
         color: #fff;
-	    position: relative;
 		transform: matrix3d(
           1, 0, 1, 0,
           0, 1, 1, 0,
@@ -154,6 +146,42 @@
     
     
     
+    
+    
+    
+    
+    
+    /* overlay */
+      .container {
+            position: relative;
+            /* For mobile phones: */
+            width: 80vw;
+            margin-left: 2.5vw;
+            margin-right: 2.5vw;
+
+            @media only screen and (min-width: 400px) {
+              /* For tablets: */
+              width: 40vw;
+            }
+
+            @media only screen and (min-width: 730px) {
+              /* For computers: */
+              width: 28vw;
+              margin-left: 1.75vw;
+              margin-right: 1.75vw;
+            }
+
+            @media only screen and (min-width: 950px) {
+              /* For computers: */
+              width: 21vw;
+              margin-left: 1vw;
+              margin-right: 1vw;
+            }
+            
+            height: 117px;
+            margin-bottom: 15px;
+        }
+    
       .overlay {
             position: absolute;
             top: 0;
@@ -165,6 +193,15 @@
             transition: opacity 0.3s ease;
             /* Changed to allow pointer events when active */
             pointer-events: none;
+            
+            border-radius: 15px;
+            z-index: 1;
+            transform: rotate3d(1, 1, 1, 0deg)
+                matrix3d(
+                1, 0, 1, 0,
+                0, 1, 1, 0,
+                1, 1, 0, 0,
+                0, 0, 0, 0.95);
         }
 
         .overlay.active {
@@ -276,16 +313,25 @@ const reminderArr = [
 const remHTMLcontainers = []; // Array for all reminder Divs before being added
 
 reminderArr.forEach(function(element, index) {
-	let overlay = document.createElement("div");
-    overlay.className = "overlay";
-    reminder.id = `overlay${index}`;
-    remHTMLcontainers.push(overlay);
+	let container = document.createElement("div");
+    container.className = "container";
+    container.id = `container${index}`;
     
-    let reminder = document.createElement("div");
+	let reminder = document.createElement("div");
     reminder.className = "reminder-container"; // Renamed for clarity
     reminder.style.backgroundColor = element.subject.bgColor; // Corrected typo
     reminder.id = `remDiv${index}`;
-    remHTMLcontainers.push(reminder);
+    container.appendChild(reminder);
+    elemm.onclick = toggleDarkness()
+    
+    let overlay = document.createElement("div");
+    overlay.className = "overlay";
+    overlay.id = `overlay${index}`;
+    container.appendChild(overlay);
+    
+    
+    remHTMLcontainers.push(container);
+    
     const elem_attributes = {
         tagged: {
             htmlType: "a",
@@ -321,5 +367,24 @@ reminderArr.forEach(function(element, index) {
 remHTMLcontainers.forEach(function(div){
 	document.getElementById("main").appendChild(div);
 });
+
+
+
+
+
+
+
+
+
+
+
+
+function toggleDarkness() {
+            const overlay = document.getElementById('overlay');
+            const content = document.getElementById('content');
+            
+            overlay.classList.toggle('active');
+            content.classList.toggle('disable-content');
+        }
 </script>
 </html>

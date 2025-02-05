@@ -321,6 +321,7 @@ reminderArr.forEach(function(element, index) {
     reminder.className = "reminder-container"; // Renamed for clarity
     reminder.style.backgroundColor = element.subject.bgColor; // Corrected typo
     reminder.id = `remDiv${index}`;
+    console.log(`remDiv${index}`)
     reminder.onclick = toggleDarkness(index)
     container.appendChild(reminder);
     
@@ -380,7 +381,7 @@ remHTMLcontainers.forEach(function(div){
 
 
 function toggleDarkness(index) {
-    const overlay = document.getElementById(`overlay${index}`);
+    const overlay = document.getElementById("overlay" + index);
     const remDiv = document.getElementById(`remDiv${index}`);
 
     if (overlay && remDiv) {

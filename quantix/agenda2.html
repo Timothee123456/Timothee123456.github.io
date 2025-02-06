@@ -1,0 +1,317 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Agenda</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Responsive design -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Anaheim"> <!-- google fonts -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Architects%20Daughter"> <!-- google fonts -->
+  <style>
+    body {
+      margin: 0;
+    }
+
+    header {
+      background-image: url('https://ssl.gstatic.com/atari/images/aristotle-header-dark.jpg');
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+      padding: 30px;
+      text-align: center;
+    }
+
+    header h1 {
+      color: #fff;
+      font-size: 36px;
+      margin: 0;
+    }
+
+    main {
+      background-color: #1d2a35;
+      padding: 20px;
+      min-height: calc(100vh - 225px);
+      text-align: center;
+    }
+    
+    
+    .add-dev-div {
+    	background-color: #1d2a35;
+        text-align: center;
+    }
+
+    footer {
+      background-color: #171921;
+      padding: 20px;
+      text-align: center;
+      color: #fff;
+      font-size: 14px;
+    }
+
+
+	.reminder-container {
+        /* For mobile phones: */
+        width: 80vw;
+        margin-left: 2.5vw;
+        margin-right: 2.5vw;
+
+        @media only screen and (min-width: 400px) {
+          /* For tablets: */
+          width: 40vw;
+        }
+
+        @media only screen and (min-width: 730px) {
+          /* For computers: */
+          width: 28vw;
+          margin-left: 1.75vw;
+          margin-right: 1.75vw;
+        }
+
+        @media only screen and (min-width: 950px) {
+          /* For computers: */
+          width: 21vw;
+          margin-left: 1vw;
+          margin-right: 1vw;
+        }
+
+        margin-bottom: 15px;
+        padding-top: 15px;
+        border-radius: 15px;
+        display: inline-block;
+        height: 102px;
+        overflow: auto;
+        color: #fff;
+
+		transform: matrix3d(
+          1, 0, 1, 0,
+          0, 1, 1, 0,
+          1, 1, 0, 0,
+          0, 0, 0, 1
+        );
+        transition: transform 1s;
+    }
+
+    /* Hover = Zoom */
+    .reminder-container:hover,
+    .reminder-container:focus {
+      transform: rotate3d(1, 1, 1, 0deg)
+      matrix3d(
+      1, 0, 1, 0,
+      0, 1, 1, 0,
+      1, 1, 0, 0,
+      0, 0, 0, 0.95);
+    }
+
+    .remindera { /*TAG*/
+        padding: 7px;
+        padding-right: 10px;
+        padding-left: 10px;
+        border-radius: 20px;
+        font-size: 13px;
+    }
+
+    .remindernobr { /*DATE*/
+    	font-family: "Anaheim", sans-serif;
+        font-size: 13px;
+        padding-left: 10px;
+    }
+
+    .reminderh2 { /*TOPIC*/
+    	font-family: "Architects Daughter", sans-serif;
+        font-size: 23px;
+        font-weight: bold;
+        line-height: 0.1;
+    }
+    
+    
+    .add-dev-button {
+    	background-color: #04AA6D;
+        color: white;
+        padding: 14px 20px;
+        border: none;
+        cursor: pointer;
+        width: 90%;
+        opacity: 0.9;
+        border-radius: 10px;
+        
+        transform: matrix3d(
+          1, 0, 1, 0,
+          0, 1, 1, 0,
+          1, 1, 0, 0,
+          0, 0, 0, 1
+        );
+        transition: 1s;
+      }
+
+      .add-dev-button:hover {
+        transform: rotate3d(1, 1, 1, 0deg)
+        matrix3d(
+        1, 0, 1, 0,
+        0, 1, 1, 0,
+        1, 1, 0, 0,
+        0, 0, 0, 0.95);
+      }
+    }
+  </style>
+</head>
+<body>
+<header>
+  <h1>Agenda personnel</h1>
+</header>
+<main id="main">
+
+
+
+
+</main>
+<div class="add-dev-div">
+<button class="add-dev-button" id="">Ajouter un devoir/rappel</button>
+</div>
+<footer>
+  <p>&copy; <span id=date>2025</span> Quantix. Tous droits réservés.</p>
+</footer>
+</body>
+<script>
+// change footer date
+const d = new Date();
+let year = d.getFullYear();
+document.getElementById("date").innerHTML = year;
+</script>
+
+<script>
+function find_date_name(date){
+	const today = new Date();
+    const tomorrow = new Date();
+    tomorrow.setDate(today.getDate() + 1);
+    console.log(today)
+    console.log(tomorrow)
+    console.log(date.getDate())
+    console.log(today.getDate())
+    console.log(date.getMonth())
+    console.log(today.getMonth())
+    if (date.getDate() == today.getDate() && date.getMonth() == today.getMonth() && date.getFullYear() == today.getFullYear()){
+       return "today"
+    }
+    else if (date.getDate() == tomorrow.getDate() && date.getMonth() == tomorrow.getMonth() && date.getFullYear() == tomorrow.getFullYear()) {
+       return "tomorrow"
+    }
+    else {
+       return date.toLocaleDateString('en-GB')
+    }
+}
+
+
+
+
+function adjustColorBrightness(color, percent) {
+    let num = parseInt(color.slice(1), 16);
+    let amt = Math.round(2.55 * percent);
+    let r = (num >> 16) + amt;
+    let g = (num >> 8 & 0x00FF) + amt;
+    let b = (num & 0x0000FF) + amt;
+
+    r = Math.max(0, Math.min(255, r));
+    g = Math.max(0, Math.min(255, g));
+    b = Math.max(0, Math.min(255, b));
+
+    return `#${(r << 16 | g << 8 | b).toString(16).padStart(6, '0')}`;
+}
+
+class myReminderClass {
+    constructor (content, subject, tag, date) {
+        this.content = content;
+        this.subject = subject; // Corrected
+        this.tag = tag;
+        this.date = date;
+    }
+}
+class tag {
+    constructor (content, bgColor) {
+        this.content = content;
+        this.bgColor = bgColor;
+    }
+}
+class mySubjectClass {
+	constructor (name, bgColor) {
+        this.name = name;
+        this.bgColor = bgColor;
+    }
+}
+
+const tagArr = {
+    test: new tag("Urgent", "red")
+};
+const subjectArr = {
+	testing: new mySubjectClass("Coding", "#0A79BC")
+};
+
+const reminderArr = [
+    new myReminderClass(
+        "Finir de développer ce site ! C'est important !",
+        subjectArr.testing,
+        tagArr.test,
+        new Date("2024-02-06")
+    ),
+    new myReminderClass(
+        "Code!",
+        subjectArr.testing,
+        tagArr.test,
+        new Date("2024-02-07")
+    ),
+    new myReminderClass(
+        "Code!",
+        subjectArr.testing,
+        tagArr.test,
+        new Date("2024-01-25")
+    ),new myReminderClass(
+        "Code!",
+        subjectArr.testing,
+        tagArr.test,
+        new Date("2024-01-25")
+    ),
+];
+
+const remHTMLcontainers = []; // Array for all reminder Divs before being added
+
+reminderArr.forEach(function(element, index) {
+    let reminder = document.createElement("div");
+    reminder.className = "reminder-container"; // Renamed for clarity
+    reminder.style.backgroundColor = element.subject.bgColor; // Corrected typo
+    reminder.id = `remDiv${index}`;
+    remHTMLcontainers.push(reminder);
+    const elem_attributes = {
+        tagged: {
+            htmlType: "a",
+            elemContent: element.tag.content,
+            elemBgColor: element.tag.bgColor
+        },
+        date: {
+            htmlType: "nobr",
+            elemContent: "Pour : " + find_date_name(element.date)
+        },
+        topic: {
+            htmlType: "h2",
+            elemContent: element.subject.name // Corrected to display subject name
+        },
+        text: {
+            htmlType: "p",
+            elemContent: element.content
+        }
+    };
+    Object.keys(elem_attributes).forEach(function(attr){
+        let elem = document.createElement(elem_attributes[attr].htmlType);
+        elem.innerHTML = elem_attributes[attr].elemContent;
+        elem.className =  `reminder${elem_attributes[attr].htmlType}`; // Made class more specific
+        elem.id = `rem${elem_attributes[attr].htmlType}${index}`;
+        if (elem_attributes[attr].htmlType === "a") {
+            elem.style.backgroundColor = elem_attributes[attr].elemBgColor;
+        } else if (elem_attributes[attr].htmlType === "h2") {
+            elem.style.color = adjustColorBrightness(element.subject.bgColor, 70);
+        }
+        reminder.appendChild(elem);
+    });
+});
+remHTMLcontainers.forEach(function(div){
+	document.getElementById("main").appendChild(div);
+});
+</script>
+</html>

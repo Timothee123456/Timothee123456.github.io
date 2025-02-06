@@ -72,12 +72,6 @@
         border-radius: 15px;
         overflow: auto;
         color: #fff;
-		transform: matrix3d(
-          1, 0, 1, 0,
-          0, 1, 1, 0,
-          1, 1, 0, 0,
-          0, 0, 0, 1
-        );
         transition: transform 1s;
     }
 
@@ -85,12 +79,7 @@
     .reminder-container:hover,
     .reminder-container:focus,
     .reminder-container-zoom{
-      transform: rotate3d(1, 1, 1, 0deg)
-      matrix3d(
-      1, 0, 1, 0,
-      0, 1, 1, 0,
-      1, 1, 0, 0,
-      0, 0, 0, 0.95);
+      transform: scale(1.05);
     }
 
     .remindera { /*TAG*/

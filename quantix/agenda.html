@@ -352,7 +352,6 @@ reminderArr.forEach(function(element, index) {
     reminder.className = "reminder-container"; // Renamed for clarity
     reminder.style.backgroundColor = element.subject.bgColor; // Corrected typo
     reminder.id = `remDiv${index}`;
-    console.log(`remDiv${index}`)
     reminder.addEventListener('click', () => toggleDarkness(index));
     container.appendChild(reminder);
     
@@ -366,14 +365,14 @@ reminderArr.forEach(function(element, index) {
     edit.innerHTML = "Modifier";
     edit.id = `edit${index}`;
     
-    let cancel = document.createElement("button");
-    cancel.className = "cancel";
-    cancel.innerHTML = "Annuler";
-    cancel.addEventListener('click', () => toggleDarkness(index));
-    cancel.id = `cancel${index}`;
+    let del = document.createElement("button");
+    del.className = "del";
+    del.innerHTML = "Effacer";
+    del.addEventListener('click', () => toggleDarkness(index));
+    del.id = `del${index}`;
 
     overlay.appendChild(edit);
-    overlay.appendChild(cancel);
+    overlay.appendChild(del);
     
     
     remHTMLcontainers.push(container);
@@ -428,10 +427,6 @@ remHTMLcontainers.forEach(function(div){
 function toggleDarkness(index) {
     const overlay = document.getElementById(`overlay${index}`);
     const remDiv = document.getElementById(`remDiv${index}`);
-    
-    for (let i = 0; i < max_index; i++) {
-    	
-    }
     
     overlay.classList.toggle('active');
     remDiv.classList.toggle('disable-content');

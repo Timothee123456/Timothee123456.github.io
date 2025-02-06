@@ -186,8 +186,14 @@ function find_date_name(date){
     console.log(tomorrow)
     console.log(date.getDate())
     console.log(today.getDate())
+    console.log(date.getDate() == today.getDate())
     console.log(date.getMonth())
     console.log(today.getMonth())
+    console.log(date.getMonth() == today.getMonth())
+    console.log(date.getFullYear())
+    console.log(today.getFullYear())
+    console.log(date.getFullYear() == today.getFullYear())
+    console.log(date.getDate() == today.getDate() && date.getMonth() == today.getMonth() && date.getFullYear() == today.getFullYear())
     if (date.getDate() == today.getDate() && date.getMonth() == today.getMonth() && date.getFullYear() == today.getFullYear()){
        return "today"
     }

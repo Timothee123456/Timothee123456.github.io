@@ -40,13 +40,13 @@ CTRL + Z = Undo
 `ALT` + `SHIFT` + `B` = Select the first item in the favorites bar (then press TAB to navigate)
 
 ## How to change sign out shortcut:
-Open settings
-Go on device > keyboard and inputs > view keyboard shortcuts
-Go on General
-Put your cursor on “Sign out”
-Press edit (pen) icon
-Press delete (bin) icon
-DONE!
+1. Open settings
+2. Go on device > keyboard and inputs > view keyboard shortcuts
+3. Go on General
+4. Put your cursor on “Sign out”
+5. Press edit (pen) icon
+6. Press delete (bin) icon
+7. DONE!
 
 ## Google docs shortcuts:
 ### Most useful
@@ -110,13 +110,13 @@ DONE!
 
 
 ## Chromebook shortcuts:
-`CTRL` + `SHIFT` + `F5` <img src="/F5.png" alt="F5" width="20"/> = Partial screen capture
+`CTRL` + `SHIFT` + `F5` <img src="https://timothee123456.github.io/shortcuts/F5.png" width="20"/> = Partial screen capture
 
 `CTRL` + `SPACE` = Changes language of keyboard
 
-`CTRL` + `SHIFT` + `F3`<img src="/F3.png" alt="F3" width="20"/> = Change orientation of screen
+`CTRL` + `SHIFT` + `F3`<img src="https://timothee123456.github.io/shortcuts/F3.png" width="20"/> = Change orientation of screen
 
-<img src="/Search.png" alt="Chromebook key" width="20"/> + `V` = Shows everything you've copied **recently**
+<img src="https://timothee123456.github.io/shortcuts/Search.png" width="20"/> + `V` = Shows everything you've copied **recently**
 
 ## More shortcuts
 

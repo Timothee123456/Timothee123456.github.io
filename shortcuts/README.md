@@ -1,5 +1,3 @@
-Basic writing and formatting syntax - GitHub Docs
-Timothee123456.github.io/shortcuts/
 #  Keyboard  shortcuts
 
 ## MUST KNOW SHORTCUTS:
@@ -121,6 +119,6 @@ DONE!
 () + `V` = Shows everything you've copied **recently**
 
 > You can find find more Shortcuts in your settings
-
+>
 > For chromebook, just search for the app Shortcuts
 

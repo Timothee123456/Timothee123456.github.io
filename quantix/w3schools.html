@@ -1,0 +1,360 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Agenda</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Responsive design -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Anaheim"> <!-- google fonts -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Architects%20Daughter"> <!-- google fonts -->
+  <style>
+
+
+	.reminder-container {
+        /* For mobile phones: */
+            width: 80vw;
+
+            @media only screen and (min-width: 400px) {
+              /* For tablets: */
+              width: 40vw;
+            }
+
+            @media only screen and (min-width: 730px) {
+              /* For computers: */
+              width: 28vw;
+            }
+
+            @media only screen and (min-width: 950px) {
+              /* For computers: */
+              width: 21vw;
+            }
+            
+        height: 102px;
+        padding-top: 15px;
+        border-radius: 15px;
+        overflow: auto;
+        color: #fff;
+        transition: transform 1s;
+    }
+
+    /* Hover = Zoom */
+    .reminder-container:hover,
+    .reminder-container:focus,
+    .reminder-container-zoom{
+      transform: scale(1.05);
+    }
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    /* overlay */
+      .container {
+            position: relative;
+            display: inline-block;
+            /* For mobile phones: */
+            width: 80vw;
+            margin-left: 2.5vw;
+            margin-right: 2.5vw;
+
+            @media only screen and (min-width: 400px) {
+              /* For tablets: */
+              width: 40vw;
+            }
+
+            @media only screen and (min-width: 730px) {
+              /* For computers: */
+              width: 28vw;
+              margin-left: 1.75vw;
+              margin-right: 1.75vw;
+            }
+
+            @media only screen and (min-width: 950px) {
+              /* For computers: */
+              width: 21vw;
+              margin-left: 1vw;
+              margin-right: 1vw;
+            }
+            
+            height: 117px;
+            margin-bottom: 15px;
+            
+        }
+    
+      .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            /* Changed to allow pointer events when active */
+            pointer-events: none;
+            
+            border-radius: 15px;
+            z-index: 1;
+            transform: rotate3d(1, 1, 1, 0deg)
+                matrix3d(
+                1, 0, 1, 0,
+                0, 1, 1, 0,
+                1, 1, 0, 0,
+                0, 0, 0, 0.95);
+        }
+
+        .overlay.active {
+            opacity: 1;
+            /* This makes the overlay block all interactions */
+            pointer-events: all;
+        }
+        
+
+        /* Disable text selection when overlay is active */
+        .disable-content {
+            user-select: none;
+        }
+        
+        
+  
+        .edit,.del{
+            color: white;
+            padding: 14px 20px;
+            margin: 8px 0;
+            border: none;
+            cursor: pointer;
+            width: 90%;
+            opacity: 0.9;
+            border-radius: 15px;
+        }
+        
+   		 .edit:hover,
+         .del:hover {
+           opacity:1;
+    	}
+        
+        .edit {
+           background-color: #04AA6D;
+        }
+
+        .del {
+           background-color: #f44336;
+        }
+
+  </style>
+</head>
+<body onclick="removeDarknessAll()">
+<header>
+  <h1>Agenda personnel</h1>
+</header>
+<main id="main">
+
+
+
+
+</main>
+<div class="add-dev-div">
+<button class="add-dev-button" id="">Ajouter un devoir/rappel</button>
+</div>
+<footer>
+  <p>&copy; <span id=date>2025</span> Quantix. Tous droits réservés.</p>
+</footer>
+</body>
+<script>
+// change footer date
+const d = new Date();
+let year = d.getFullYear();
+document.getElementById("date").innerHTML = year;
+</script>
+
+<script>
+function adjustColorBrightness(color, percent) {
+    let num = parseInt(color.slice(1), 16);
+    let amt = Math.round(2.55 * percent);
+    let r = (num >> 16) + amt;
+    let g = (num >> 8 & 0x00FF) + amt;
+    let b = (num & 0x0000FF) + amt;
+
+    r = Math.max(0, Math.min(255, r));
+    g = Math.max(0, Math.min(255, g));
+    b = Math.max(0, Math.min(255, b));
+
+    return `#${(r << 16 | g << 8 | b).toString(16).padStart(6, '0')}`;
+}
+
+class myReminderClass {
+    constructor (content, subject, tag, date) {
+        this.content = content;
+        this.subject = subject; // Corrected
+        this.tag = tag;
+        this.date = date;
+    }
+}
+class tag {
+    constructor (content, bgColor) {
+        this.content = content;
+        this.bgColor = bgColor;
+    }
+}
+class mySubjectClass {
+	constructor (name, bgColor) {
+        this.name = name;
+        this.bgColor = bgColor;
+    }
+}
+
+const tagArr = {
+    test: new tag("Urgent", "red")
+};
+const subjectArr = {
+	testing: new mySubjectClass("Coding", "")
+};
+
+const reminderArr = [
+    new myReminderClass(
+        "Finir de développer ce site ! C'est important !",
+        subjectArr.testing,
+        tagArr.test,
+        new Date("2024-01-25")
+    ),
+    new myReminderClass(
+        "Code!",
+        subjectArr.testing,
+        tagArr.test,
+        new Date("2024-01-25")
+    ),
+    new myReminderClass(
+        "Code!",
+        subjectArr.testing,
+        tagArr.test,
+        new Date("2024-01-25")
+    ),new myReminderClass(
+        "Code!",
+        subjectArr.testing,
+        tagArr.test,
+        new Date("2024-01-25")
+    ),
+];
+
+const remHTMLcontainers = []; // Array for all reminder Divs before being added
+
+max_index = reminderArr.length
+
+reminderArr.forEach(function(element, index) {
+	let container = document.createElement("div");
+    container.className = "container";
+    container.id = `container${index}`;
+    
+	let reminder = document.createElement("div");
+    reminder.className = "reminder-container"; // Renamed for clarity
+    reminder.style.backgroundColor = element.subject.bgColor; // Corrected typo
+    reminder.id = `remDiv${index}`;
+    reminder.addEventListener('click', (event) => {
+        // Close other overlays
+        removeDarknessAll(index); // Pass the current index to exclude it
+
+        // Toggle the current overlay
+        toggleDarkness(index);
+        event.stopPropagation();
+      });
+    container.appendChild(reminder);
+    
+    let overlay = document.createElement("div");
+    overlay.className = "overlay";
+    overlay.id = `overlay${index}`;
+    container.appendChild(overlay);
+    
+    let edit = document.createElement("button");
+    edit.className = "edit";
+    edit.innerHTML = "Modifier";
+    edit.id = `edit${index}`;
+    
+    let form = document.createElement("form");
+    form.method = "post"
+    
+    let del = document.createElement("button");
+    del.className = "del";
+    del.innerHTML = "Effacer";
+    del.addEventListener('click', () => toggleDarkness(index));
+    del.id = `del${index}`;
+    del.type = "submit"
+    
+    overlay.appendChild(edit);
+    overlay.appendChild(form);
+    form.appendChild(del);
+    
+    
+    remHTMLcontainers.push(container);
+    
+    const elem_attributes = {
+        tagged: {
+            htmlType: "a",
+            elemContent: element.tag.content,
+            elemBgColor: element.tag.bgColor
+        },
+        date: {
+            htmlType: "nobr",
+            elemContent: "For : " + element.date.toLocaleDateString('en-GB')
+        },
+        topic: {
+            htmlType: "h2",
+            elemContent: element.subject.name // Corrected to display subject name
+        },
+        text: {
+            htmlType: "p",
+            elemContent: element.content
+        }
+    };
+    Object.keys(elem_attributes).forEach(function(attr){
+        let elem = document.createElement(elem_attributes[attr].htmlType);
+        elem.innerHTML = elem_attributes[attr].elemContent;
+        elem.className =  `reminder${elem_attributes[attr].htmlType}`; // Made class more specific
+        elem.id = `rem${elem_attributes[attr].htmlType}${index}`;
+        if (elem_attributes[attr].htmlType === "a") {
+            elem.style.backgroundColor = elem_attributes[attr].elemBgColor;
+        } else if (elem_attributes[attr].htmlType === "h2") {
+            elem.style.color = adjustColorBrightness(element.subject.bgColor, 70);
+        }
+        reminder.appendChild(elem);
+    });
+});
+remHTMLcontainers.forEach(function(div){
+	document.getElementById("main").appendChild(div);
+});
+
+
+
+
+
+
+
+
+function removeDarknessAll(excludeIndex = -1) { // Parameter to exclude an index
+	for (let i = 0; i < reminderArr.length; i++){ // Use reminderArr.length for dynamic number of reminders
+      if (i !== excludeIndex) { // Skip the excluded index
+          const overlay = document.getElementById(`overlay${i}`);
+          const remDiv = document.getElementById(`remDiv${i}`);
+
+          overlay.classList.remove('active');
+          remDiv.classList.remove('disable-content');
+          remDiv.classList.remove('reminder-container-zoom');
+        }
+   }
+}
+
+
+
+function toggleDarkness(index) {
+    const overlay = document.getElementById(`overlay${index}`);
+    const remDiv = document.getElementById(`remDiv${index}`);
+    
+    overlay.classList.toggle('active');
+    remDiv.classList.toggle('disable-content');
+    remDiv.classList.toggle('reminder-container-zoom');
+}
+</script>
+</html>

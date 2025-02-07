@@ -35,7 +35,7 @@ CTRL + Z = Undo
 
 `CTRL` + `L` ou `ALT` + `D` = Put the cursor on the search bar
 
-`CTRL` + `ENTER` = adds _www._ at the beginning and _.com_ at the end of a link in the search bar
+`CTRL` + `ENTER` = adds `www.` at the beginning and `.com` at the end of a link in the search bar
 
 `ALT` + `SHIFT` + `B` = Select the first item in the favorites bar (then press TAB to navigate)
 
@@ -49,14 +49,14 @@ Press delete (bin) icon
 DONE!
 
 ## Google docs shortcuts:
-
+### Most useful
 `CTRL` + `C` = copy
 
 `CTRL` + `V` = paste
 
 `CTRL` +`A` = select all
 
-
+### Format
 `CTRL` + `B` = **bold**
 
 `CTRL` + `U` = <ins>underline</ins>
@@ -77,7 +77,9 @@ DONE!
 
 `CTRL` + `SHIFT` + `8` = bullet point list
 
+`CTRL` + `ENTER` = page break (new page)
 
+### Align format
 `CTRL` + `SHIFT` + `L` = Left Align (does not work on chromebook)
 
 `CTRL` + `SHIFT` + `E` = Center Align
@@ -90,7 +92,7 @@ DONE!
 
 `CTRL` + `[` = Decrease Indent
 
-
+### Tools
 `CTRL` + `SHIFT` + `C` = Word Count
 
 `CTRL` + `SHIFT` + `S` = Voice typing
@@ -101,8 +103,6 @@ DONE!
 
 
 `CTRL` + `O` = open file
-
-`CTRL` + `ENTER` = page break (new page)
 
 `CTRL` + `ALT` + `SHIFT` + `H` = See version history
 
@@ -118,7 +118,9 @@ DONE!
 
 () + `V` = Shows everything you've copied **recently**
 
+## More shortcuts
+
 > You can find find more Shortcuts in your settings
->
+
 > For chromebook, just search for the app Shortcuts
 

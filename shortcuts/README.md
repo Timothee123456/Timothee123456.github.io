@@ -1,4 +1,3 @@
-Basic writing and formatting syntax - GitHub Docs
 #  Keyboard  shortcuts
 
 ## MUST KNOW SHORTCUTS:

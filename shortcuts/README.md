@@ -110,17 +110,17 @@ DONE!
 
 
 ## Chromebook shortcuts:
-`CTRL` + `SHIFT` + `F5` ()= Partial screen capture
+`CTRL` + `SHIFT` + `F5` <img src="/F5.png" alt="F5" width="20"/> = Partial screen capture
 
 `CTRL` + `SPACE` = Changes language of keyboard
 
-`CTRL` + `SHIFT` + `F3` () = Change orientation of screen
+`CTRL` + `SHIFT` + `F3`<img src="/F3.png" alt="F3" width="20"/> = Change orientation of screen
 
-() + `V` = Shows everything you've copied **recently**
+<img src="/Search.png" alt="Chromebook key" width="20"/> + `V` = Shows everything you've copied **recently**
 
 ## More shortcuts
 
 > You can find find more Shortcuts in your settings
-
+>
 > For chromebook, just search for the app Shortcuts
 

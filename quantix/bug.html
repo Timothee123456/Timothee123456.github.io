@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>{% block title %} {% endblock %}</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Responsive design -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Anaheim"> <!-- google fonts -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Architects%20Daughter"> <!-- google fonts -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"> <!-- Edit icon -->
+  <style>
+    body {
+      margin: 0;
+    }
+
+    header {
+      background-image: url('{% block header_bg_image %} {% endblock %}');
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+      padding: 30px;
+      text-align: center;
+    }
+
+    header h1 {
+      color: #fff;
+      font-size: 36px;
+      margin: 0;
+    }
+
+    main {
+      background-color: #1d2a35;
+      padding: 20px;
+      min-height: calc(100vh - 225px);
+      text-align: center;
+    }
+
+    footer {
+      background-color: #171921;
+      padding: 20px;
+      text-align: center;
+      color: #fff;
+      font-size: 14px;
+    }
+
+
+	.reminder-container {
+        /* For mobile phones: */
+            width: 80vw;
+
+            @media only screen and (min-width: 400px) {
+              /* For tablets: */
+              width: 40vw;
+            }
+
+            @media only screen and (min-width: 730px) {
+              /* For computers: */
+              width: 28vw;
+            }
+
+            @media only screen and (min-width: 950px) {
+              /* For computers: */
+              width: 21vw;
+            }
+            
+        height: 102px;
+        padding-top: 15px;
+        border-radius: 15px;
+        overflow: auto;
+        color: #fff;
+	cursor: pointer;
+	vertical-align: middle;
+        transition: transform 1s;
+    }
+
+    /* Hover = Zoom */
+    .reminder-container:hover,
+    .reminder-container:focus,
+    .reminder-container-zoom{
+      transform: scale(1.05);
+    }
+
+    .remindera { /*TAG*/
+        padding: 7px;
+        padding-right: 10px;
+        padding-left: 10px;
+        border-radius: 20px;
+        font-size: 13px;
+    }
+
+    .remindernobr { /*DATE*/
+    	font-family: "Anaheim", sans-serif;
+        font-size: 13px;
+        padding-left: 10px;
+    }
+
+    .reminderh2 { /*TOPIC*/
+    	font-family: "Architects Daughter", sans-serif;
+        font-size: 23px;
+        font-weight: bold;
+        line-height: 0.1;
+    }
+	  
+
+    .add-dev-button {
+        width: 102px;
+        height: 102px;
+        line-height: 1;
+        margin-top: 15px;
+        display: inline-block;
+        background-color: #04AA6D;
+        border-radius: 15px;
+        color: #fff;
+        font-size: 100px;
+        text-decoration: none;
+        border-width: 0px;
+        
+        transform: matrix3d(
+          1, 0, 1, 0,
+          0, 1, 1, 0,
+          1, 1, 0, 0,
+          0, 0, 0, 1
+        );
+        transition: transform 1s;
+      }
+
+      .add-dev-button:hover {
+        transform: rotate3d(1, 1, 1, 0deg)
+        matrix3d(
+        1, 0, 1, 0,
+        0, 1, 1, 0,
+        1, 1, 0, 0,
+        0, 0, 0, 0.95);
+      }
+
+
+
+
+
+
+      /* Sidenav menu */
+    .menu_icon {
+    	font-size: 30px;
+        color: #fff;
+        cursor: pointer;
+        
+        position: absolute;
+        top: 30px;
+        left: 20px;
+    }
+
+.sidenav {
+  height: 100%;
+  width: 0;
+  position: fixed;
+  z-index: 100;
+  top: 0;
+  left: 0;
+  background-color: #111;
+  overflow-x: hidden;
+  transition: 0.5s;
+  padding-top: 60px;
+}
+
+.sidenav a {
+  padding: 8px 8px 8px 32px;
+  text-decoration: none;
+  font-size: 25px;
+  color: #818181;
+  display: block;
+  font-family: "Lato", sans-serif;
+  transition: 0.3s;
+}
+
+.sidenav a:hover {
+  color: #f1f1f1;
+}
+
+.sidenav textarea {
+  margin: 8px 8px 8px 32px;
+  display: block;
+  width: 70%;
+}
+
+.sidenav .closebtn {
+  position: absolute;
+  top: 0;
+  right: 25px;
+  font-size: 36px;
+  margin-left: 50px;
+}
+
+@media screen and (max-height: 450px) {
+  .sidenav {padding-top: 15px;}
+  .sidenav a {font-size: 18px;}
+}
+
+
+
+
+
+/* overlay */
+      .container {
+            position: relative;
+            display: inline-block;
+            /* For mobile phones: */
+            width: 80vw;
+            margin-left: 2.5vw;
+            margin-right: 2.5vw;
+
+            @media only screen and (min-width: 400px) {
+              /* For tablets: */
+              width: 40vw;
+            }
+
+            @media only screen and (min-width: 730px) {
+              /* For computers: */
+              width: 28vw;
+              margin-left: 1.75vw;
+              margin-right: 1.75vw;
+            }
+
+            @media only screen and (min-width: 950px) {
+              /* For computers: */
+              width: 21vw;
+              margin-left: 1vw;
+              margin-right: 1vw;
+            }
+            
+            height: 117px;
+	    vertical-align: middle;
+            margin-bottom: 15px;
+            
+        }
+    
+      .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            /* Changed to allow pointer events when active */
+            pointer-events: none;
+            
+            border-radius: 15px;
+            z-index: 1;
+            transform: rotate3d(1, 1, 1, 0deg)
+                matrix3d(
+                1, 0, 1, 0,
+                0, 1, 1, 0,
+                1, 1, 0, 0,
+                0, 0, 0, 0.95);
+        }
+
+        .overlay.active {
+            opacity: 1;
+            /* This makes the overlay block all interactions */
+            pointer-events: all;
+        }
+        
+
+        /* Disable text selection when overlay is active */
+        .disable-content {
+            user-select: none;
+        }
+        
+        
+  
+        .edit,.del{
+            color: white;
+            padding: 14px 20px;
+            margin: 8px 0;
+            border: none;
+            cursor: pointer;
+            width: 90%;
+            opacity: 0.9;
+            border-radius: 15px;
+        }
+        
+   		 .edit:hover,
+         .del:hover {
+           opacity:1;
+    	}
+        
+        .edit {
+           background-color: #04AA6D;
+        }
+
+        .del {
+           background-color: #f44336;
+        }
+
+
+
+	  
+ /* Loading ring */	  
+	 .lds-ring {
+	  /* change color here */
+	  color: #001adb
+	}
+	.lds-ring,
+	.lds-ring div {
+	  box-sizing: border-box;
+	}
+	.lds-ring {
+	  display: inline-block;
+	  position: relative;
+	  width: 80px;
+	  height: 80px;
+	}
+	.lds-ring div {
+	  box-sizing: border-box;
+	  display: block;
+	  position: absolute;
+	  width: 94px;
+	  height: 94px;
+	  margin: 8px;
+	  border: 8px solid currentColor;
+	  border-radius: 50%;
+	  animation: lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+	  border-color: currentColor transparent transparent transparent;
+		
+	  cursor: progress;
+	}
+	.lds-ring div:nth-child(1) {
+	  animation-delay: -0.45s;
+	}
+	.lds-ring div:nth-child(2) {
+	  animation-delay: -0.3s;
+	}
+	.lds-ring div:nth-child(3) {
+	  animation-delay: -0.15s;
+	}
+	@keyframes lds-ring {
+	  0% {
+	    transform: rotate(0deg);
+	  }
+	  100% {
+	    transform: rotate(360deg);
+	  }
+	}
+
+
+
+	  
+	  
+	  
+	  
+	/* Confirmation modal */  
+/* Set a style for all buttons */
+.my_modal_button {
+  background-color: #04AA6D;
+  color: white;
+  padding: 14px 20px;
+  margin: 8px 0;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+  opacity: 0.9;
+}
+
+.my_modal_button:hover {
+  opacity:1;
+}
+
+/* Extra styles for the cancel button */
+.my_cancelbtn {
+  padding: 14px 20px;
+  background-color: #ccc;
+  color: black;
+}
+
+/* Extra styles for the signup button */
+.my_signupbtn {
+  padding: 14px 20px;
+  background-color: #f44336;
+}
+
+/* Float cancel and signup buttons and add an equal width */
+.my_cancelbtn, .my_signupbtn {
+  float: left;
+  width: 50%;
+}
+
+/* Add padding to container elements */
+.my_container {
+  padding: 16px;
+}
+
+/* The Modal (background) */
+.my_modal {
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgba(0, 0, 0, 0.34);
+  padding-top: 50px;
+  display: none;
+}
+
+/* Modal Content/Box */
+.my_modal-content {
+  background-color: #fefefe;
+  margin: 5% auto 15% auto; /* 5% from the top, 15% from the bottom and centered */
+  border: none;
+  width: 80%; /* Could be more or less, depending on screen size */
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Style the horizontal ruler */
+hr {
+  border: 1px solid #f1f1f1;
+  margin-bottom: 25px;
+}
+ 
+/* The my_close Button (x) */
+.my_close {
+  position: absolute;
+  right: 35px;
+  top: 15px;
+  font-size: 40px;
+  font-weight: bold;
+  color: #f1f1f1;
+}
+
+.my_close:hover,
+.my_close:focus {
+  color: #f44336;
+  cursor: pointer;
+}
+
+
+/* Clear floats */
+.my_clearfix::after {
+  content: "";
+  clear: both;
+  display: table;
+}
+
+
+/* Change styles for cancel button and signup button on extra small screens */
+@media screen and (max-width: 300px) {
+  .my_my_cancelbtn, .my_signupbtn {
+     width: 100%;
+  }
+}
+</style>
+</head>
+<body id="body">
+<header>
+  <h1>{% block header %} {% endblock %}</h1>
+  {% block menu_icon %} {% endblock %}
+</header>
+<main id="main">
+    {% block content %} {% endblock %}
+</main>
+    {% block after_content %} {% endblock %}
+<footer>
+  <p>&copy; <span id=date>2024-2025</span> <span onclick="openNav2()">Quantix</span>. Tous droits réservés.</p>
+</footer>
+<div id="mySidenav" class="sidenav">
+  <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+  <a href="/home">Accueil</a>
+  <a href="/logout">Se déconnecter</a>
+  <a onclick="open_bug()">Signaler un bug</a>
+  <form>
+	  <textarea name="bug_textarea" rows="5"></textarea>
+	  <br><br>
+	  <input type="submit">  
+  </form>
+</div>
+<div id="mySecretSidenav" class="sidenav">
+  <a href="javascript:void(0)" class="closebtn" onclick="closeNav2()">&times;</a>
+  <a href="/api/reminder">Rappels</a>
+  <a href="/api/subject">Matières</a>
+  <a href="/api/tag">Tags</a>
+</div>
+
+<!-- Confirmation modal -->
+<div id="id01" class="my_modal">
+  <span onclick="close_modal()" class="my_close" title="my_close Modal">&times;</span>
+  <form class="my_modal-content  my_animate">
+    <div class="my_container">
+      <h1>Effacer le rappel</h1>
+      <p>Êtes-vous sûr de vouloir effacer ce rappel ?</p>
+   
+      <div class="my_clearfix">
+        <button type="button" onclick="close_modal()" class="my_cancelbtn my_modal_button" >Annuler</button>
+        <button type="submit" class="my_signupbtn my_modal_button">Effacer</button>
+      </div>
+    </div>
+  </form>
+</div>
+<script>
+    {% block script %} {% endblock %}
+</script>
+<script>
+// change footer date
+    const d = new Date();
+    let year = d.getFullYear();
+    document.getElementById("date").innerHTML = `2024-${year}`;
+
+// Sidenav menu
+openNav()
+   function openNav() {
+     document.getElementById("mySidenav").style.width = "250px";
+   }
+
+   function closeNav() {
+     document.getElementById("mySidenav").style.width = "0";
+   }
+	
+// Secret Sidenav menu
+   function openNav2() {
+     document.getElementById("mySecretSidenav").style.width = "250px";
+   }
+
+   function closeNav2() {
+     document.getElementById("mySecretSidenav").style.width = "0";
+   }
+
+
+	
+
+
+function find_date_name(date){
+    const today = new Date();
+    const tomorrow = new Date();
+    tomorrow.setDate(today.getDate() + 1);
+    if (date.getDate() == today.getDate() && date.getMonth() == today.getMonth() && date.getFullYear() == today.getFullYear()){
+       return "Aujourd'hui"
+    }
+    else if (date.getDate() == tomorrow.getDate() && date.getMonth() == tomorrow.getMonth() && date.getFullYear() == tomorrow.getFullYear()) {
+       return "Demain"
+    }
+    else {
+       return date.toLocaleDateString('en-GB')
+    }
+}
+
+	
+function removeDarknessAll(excludeIndex = -1, reminderArr) { // Parameter to exclude an index
+	for (let i = 0; i < reminderArr.length; i++){ // Use reminderArr.length for dynamic number of reminders
+      if (i !== excludeIndex) { // Skip the excluded index
+          const overlay = document.getElementById(`overlay${i}`);
+          const remDiv = document.getElementById(`remDiv${i}`);
+
+          overlay.classList.remove('active');
+          remDiv.classList.remove('disable-content');
+          remDiv.classList.remove('reminder-container-zoom');
+        }
+   }
+}
+
+function removeDarknessALL(reminderArr) {
+	for (let i = 0; i < reminderArr.length; i++){ // Use reminderArr.length for dynamic number of reminders
+          const overlay = document.getElementById(`overlay${i}`);
+          const remDiv = document.getElementById(`remDiv${i}`);
+
+          overlay.classList.remove('active');
+          remDiv.classList.remove('disable-content');
+          remDiv.classList.remove('reminder-container-zoom');
+        }
+   }
+
+function toggleDarkness(index) {
+    const overlay = document.getElementById(`overlay${index}`);
+    const remDiv = document.getElementById(`remDiv${index}`);
+    
+    overlay.classList.toggle('active');
+    remDiv.classList.toggle('disable-content');
+    remDiv.classList.toggle('reminder-container-zoom');
+}
+</script>
+<script>
+
+async function confirmAction(ressourceLink, reminder) {
+  let response = await fetch(ressourceLink, {method: 'DELETE'});
+  let result = await response.json();
+  if (response.ok) {
+    console.log(result.message);
+    close_modal();
+    const element = document.getElementById(reminder);
+    element.remove();
+  }
+  // Implement error logic here
+}  
+
+// Confirmation modal
+let modal = document.getElementById('id01');
+// When the user clicks anywhere outside of the modal, close it
+window.onclick = function(event) {
+  if (event.target == modal) {
+    close_modal();
+  }
+}
+
+function close_modal() {
+	modal.style.display = "none";
+}
+
+function open_modal(fetchRoute, reminder) {
+	modal.style.display = "block";
+  let confirm_form = modal.querySelector("form");
+  confirm_form.addEventListener("submit", function (event) {
+    event.preventDefault();
+    confirmAction(fetchRoute, reminder);
+  })
+}
+</script>
+</body>
+</html>

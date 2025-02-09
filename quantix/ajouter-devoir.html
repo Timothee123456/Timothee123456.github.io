@@ -497,15 +497,15 @@ subject_modal.querySelector("form").addEventListener("submit", function(event){
 function show_icons_subject(){
 	let icons = document.getElementsByClassName("icon_subject");
     for (let i = 0; i < icons.length; i++) {
-        icon.style.display = "block !important";
+        icons[i].style.display = "block";
     }
 }
 
 function show_icons_tag(){
 	let icons = document.getElementsByClassName("icon_tag");
-    icons.forEach((icon) => {
-    	icon.style.display = "block !important";
-	});
+    for (let i = 0; i < icons.length; i++) {
+    	icons[i].style.display = "block";
+	}
 }
 
 </script>

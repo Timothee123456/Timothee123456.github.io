@@ -178,6 +178,20 @@ select {
   cursor: pointer;
   display: none;
 }
+
+
+.password_div{
+  position: relative;
+  width: 100%;
+}
+
+.view_icon {
+  cursor: pointer;
+  position: absolute;
+  font-size: 17px;
+  top: 25px;
+  right: 20px;
+}
 </style>
 </head>
 <body>
@@ -191,10 +205,15 @@ select {
       <label for="email"><b> Entrer votre adresse email </b></label>
 <input type="email" placeholder="Email" name="email" required>
 <label for="password1"><b> Choisissez un mot de passe </b></label>
-<input lang="fr" type="password" placeholder="Mot de passe" name="password1" pattern=".{4,}" title="Must be at least 4 or more characters" required>
-<span class="view_icon fas fa-eye" id="view_password"></span>
+<div class="password_div">
+	<input lang="fr" type="password" placeholder="Mot de passe" name="password1" pattern=".{4,}" title="Must be at least 4 or more characters" required>
+	<span class="view_icon fas fa-eye" id="view_password1"></span>
+</div>
 <label for="password2"><b> Confirmez votre mot de passe </b></label>
-<input type="password" placeholder="Mot de passe" name="password2" required>
+<div class="password_div">
+	<input type="password" placeholder="Mot de passe" name="password2" required>
+	<span class="view_icon fas fa-eye" id="view_password2"></span>
+</div>
         <div class=" alert alert-danger" id="alert" style="display: none;">
             <strong>Erreur! </strong> <span id="alert_text"></span> <a class="alert-link" id="alert_link"></a>
           </div>

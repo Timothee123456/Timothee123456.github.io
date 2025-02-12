@@ -189,7 +189,7 @@ select {
   cursor: pointer;
   position: absolute;
   font-size: 17px;
-  top: 25px;
+  top: 24px;
   right: 20px;
 }
 </style>
@@ -207,12 +207,12 @@ select {
 <label for="password1"><b> Choisissez un mot de passe </b></label>
 <div class="password_div">
 	<input lang="fr" type="password" placeholder="Mot de passe" name="password1" pattern=".{4,}" title="Must be at least 4 or more characters" required>
-	<span class="view_icon fas fa-eye" id="view_password1"></span>
+	<span class="view_icon fas fa-eye" id="view_password1" onclick="toggle_password_visibility(1)"></span>
 </div>
 <label for="password2"><b> Confirmez votre mot de passe </b></label>
 <div class="password_div">
 	<input type="password" placeholder="Mot de passe" name="password2" required>
-	<span class="view_icon fas fa-eye" id="view_password2"></span>
+	<span class="view_icon fas fa-eye" id="view_password2" onclick="toggle_password_visibility(2)"></span>
 </div>
         <div class=" alert alert-danger" id="alert" style="display: none;">
             <strong>Erreur! </strong> <span id="alert_text"></span> <a class="alert-link" id="alert_link"></a>
@@ -315,6 +315,21 @@ function show_icons_tag(){
 	}
 }
 </script>
-{% block script %} {% endblock %}
+
+
+<script>
+// function toggle passwords visibility
+function toggle_password_visibility(id){
+  var x = document.getElementById("password" + id);
+  var icon = "view_password" + id
+  icon.classList.toggle("fas fa-eye");
+  icon.classList.toggle("fas fa-eye-slash");
+  if (x.type === "password") {
+    x.type = "text";
+  } else {
+    x.type = "password";
+  }
+}
+</script>
 </body>
 </html>

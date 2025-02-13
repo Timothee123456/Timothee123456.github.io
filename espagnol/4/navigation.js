@@ -60,7 +60,7 @@ function createMenu() {
             a.textContent = item.title;
 
             // Set the active class if the page title matches the item title
-            if (removeHyphen(currentPageTitle) === item.title) {
+            if (removePrefix(currentPageTitle) === item.title) {
                 a.className = 'active';
             }
 

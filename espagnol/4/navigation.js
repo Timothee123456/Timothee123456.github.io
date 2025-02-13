@@ -79,7 +79,7 @@ function createMenu() {
 
 
 function removePrefix(str) {
-    const prefix = "SVT - ";
+    const prefix = "Espagnol - ";
     if (str.startsWith(prefix)) {
         return str.substring(prefix.length);
     } else {

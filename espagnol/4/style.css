@@ -143,8 +143,31 @@ button a {
 body {
   min-height: 100vh; /* Ensure the body takes up at least the full viewport height */
   background-color: 02fae; /* For browsers that do not support gradients */
-  background-image: linear-gradient(to bottom right, #02fae9, yellow);
+  background-image: linear-gradient(to bottom right, #002fff, #42f5ef);
 }
+
+
+.accents {
+	background:linear-gradient(to bottom, #599bb3 5%, #408c99 100%);
+	background-color:#599bb3;
+	border-radius:8px;
+	display:inline-block;
+	cursor:pointer;
+	color:#ffffff;
+	font-family:Arial;
+	font-size:20px;
+	padding:7px 10px;
+	text-decoration:none;
+}
+.accents:hover {
+	background:linear-gradient(to bottom, #408c99 5%, #599bb3 100%);
+	background-color:#408c99;
+}
+.accents:active {
+	position:relative;
+	top:1px;
+}
+
 input {font-size:21px}
 h2 {font-size:45px}
 nobr {font-size:24px}

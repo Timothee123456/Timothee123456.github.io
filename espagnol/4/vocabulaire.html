@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>
+     Tous mots
+    </title>
+<style>
+.active {
+  background-color: #04AA6D;
+}
+.language {
+  background-color: #1ffff4;
+}
+ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background-color: #333;
+}
+
+.li {
+  float: left;
+  border-right:1px solid #bbb;
+  width: 49%;
+}
+
+li:last-child {
+  border-right: none;
+}
+
+li a {
+  display: block;
+  color: white;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+}
+
+li a:hover:not(.active) {
+  background-color: #111;
+}
+
+
+.navbar a:hover, .dropdown:hover .dropbtn {
+  background-color: #111;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color:#333 ;
+  min-width: 100px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+}
+
+.dropdown-content a {
+    display: block;
+  color: white;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+  }
+
+.dropdown-content a:hover {
+  background-color: #ddd;
+}
+
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+
+.button {
+  font-size: 16px;  
+  border: none;
+  outline: none;
+  color: white;
+  padding: 14px 16px;
+  background-color: inherit;
+  font-family: inherit;
+  margin: 0;
+}
+img {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+button a {
+  color: black;
+  text-decoration: none;
+}
+
+
+.myButton {
+	box-shadow: 2px 3px 0px 0px #8a2a21;
+	background:linear-gradient(to bottom, #c62d1f 5%, #f24437 100%);
+	background-color:#c62d1f;
+	border-radius:42px;
+	display:inline-block;
+	cursor:pointer;
+	color:#ffffff;
+	font-family:Arial;
+	font-size:22px;
+	padding:7px 18px;
+	text-decoration:none;
+	text-shadow:1px -1px 3px #810e05;
+}
+.myButton:hover {
+	background:linear-gradient(to bottom, #f24437 5%, #c62d1f 100%);
+	background-color:#f24437;
+}
+.myButton:active {
+	position:relative;
+	top:1px;
+}
+
+
+
+
+.myButton2 {
+	box-shadow: 0px 1px 0px -3px #f0f7fa;
+	background:linear-gradient(to bottom, #33bdef 5%, #019ad2 100%);
+	background-color:#33bdef;
+	border-radius:42px;
+	border:2px solid #057fd0;
+	display:inline-block;
+	cursor:pointer;
+	color:#ffffff;
+	font-family:Arial;
+	font-size:22px;
+	padding:8px 10px;
+	text-decoration:none;
+	text-shadow:3px -2px 4px #5b6178;
+}
+.myButton2:hover {
+	background:linear-gradient(to bottom, #019ad2 5%, #33bdef 100%);
+	background-color:#019ad2;
+}
+.myButton2:active {
+	position:relative;
+	top:1px;
+}
+body {
+  height: 1000px;
+  background-color: 02fae; /* For browsers that do not support gradients */
+  background-image: linear-gradient(to bottom right, #02fae9, yellow);
+}
+
+
+
+.accents {
+	background:linear-gradient(to bottom, #599bb3 5%, #408c99 100%);
+	background-color:#599bb3;
+	border-radius:8px;
+	display:inline-block;
+	cursor:pointer;
+	color:#ffffff;
+	font-family:Arial;
+	font-size:20px;
+	padding:7px 10px;
+	text-decoration:none;
+}
+.accents:hover {
+	background:linear-gradient(to bottom, #408c99 5%, #599bb3 100%);
+	background-color:#408c99;
+}
+.accents:active {
+	position:relative;
+	top:1px;
+}
+
+
+
+input {font-size:21px}
+h2 {font-size:45px}
+nobr {font-size:24px}
+img {width:100}
+
+
+.input{font-size:25px;}
+.hidden{display: none;}
+</style>
+</head>
+<body>
+<center>
+<h2>Traduire le mot en mandarin</h2>
+<p></p>
+</center>
+<center>
+<nobr id="fr"></nobr>
+<p></p>
+<input class="input" autocomplete="off" style="text-align:center;" id="1">
+<nobr id="correction_a"></nobr>
+<p></p>
+<nobr id="correction_b" style="color:red;"></nobr>
+<p></p>
+<a href="#" class="accents" onclick="accent('á')">á</a>
+<a href="#" class="accents" onclick="accent('é')">é</a>
+<a href="#" class="accents" onclick="accent('í')">í</a>
+<a href="#" class="accents" onclick="accent('ó')">ó</a>
+<a href="#" class="accents" onclick="accent('ú')">ú</a>
+<a href="#" class="accents" onclick="accent('ñ')">ñ</a>
+<p></p>
+<a href="#" class="myButton" onclick="myFunction()" id="Terminado">Terminado</a>
+<p></p>
+<a href="#" class="myButton2" onclick="reset()">Next</a>
+</center>
+<script>
+/* Mots */
+const estar_fr = ["Je suis en train de", "Tu es en train de", "Il/Elle est en train de", "Nous sommes en train de", "Vous êtes en train de", "Ils/Elles sont en train de"]
+const estar_es = ["estoy", "estás", "está", "estamos", "estáis", "están"]
+
+const verbos
+
+
+
+const mots_fr = estar_fr
+const mots_es = estar_es
+
+
+
+
+const categorie_base = [[mots_fr, mots_es]];
+
+categorieName_base = ['mots'];
+
+
+const categorie = [[mots_fr, mots_es]];
+
+categorieName = ['mots'];
+
+
+
+reset()
+
+function reset() {
+document.getElementById("Terminado").style.display = "inline";
+document.getElementById("correction_a").innerHTML = ""
+document.getElementById("correction_b").innerHTML = ""
+document.getElementById("1").value = ""
+document.getElementById("1").style.color = "black"
+
+
+categorie_nb = Math.floor(Math.random() * categorieName.length)
+list_fr = categorie[categorie_nb][0]
+list_es = categorie[categorie_nb][1]
+nb = Math.floor(Math.random() * list_fr.length)
+
+document.getElementById("fr").innerHTML = list_fr[nb]
+
+
+}
+
+function checkbox(name) {
+	var checkBox = document.getElementById(name);
+    if (checkBox.checked == true){
+	categorieName.push(name);
+    categorie.push(categorie_base[categorieName_base.indexOf(name)]);
+    }
+    else {
+    var index = categorieName.indexOf(name)
+	categorieName.splice(index, 1);
+    categorie.splice(index, 1);
+  	}
+}
+
+
+// myFunction
+function myFunction() {
+
+document.getElementById("Terminado").style.display = "none";
+
+if (Array.isArray(list_es[nb])){ 
+	correct (list_es[nb][0], list_es[nb][1])
+}
+else{
+}
+	correct (list_es[nb], false)
+}
+
+function correct (answer1, answer2){
+const Word1 = document.getElementById("1").value
+
+if (answer2 == false){
+    if (Word1 == answer1){
+            document.getElementById("correction_a").innerHTML = "✓";
+            document.getElementById("correction_a").style.color = "green"
+            }
+            else if (Word1 == ""){
+            document.getElementById("1").value = answer1;
+            document.getElementById("1").style.color = "red"
+            }
+            else {
+            document.getElementById("correction_a").innerHTML = "✕";
+            document.getElementById("correction_a").style.color = "red";
+            document.getElementById("correction_b").innerHTML = answer1
+            }
+	}
+    
+else {
+    if (Word1 == answer1 || Word1 == answer2){
+            document.getElementById("correction_a").innerHTML = "✓";
+            document.getElementById("correction_a").style.color = "green"
+            }
+            else if (Word1 == ""){
+            document.getElementById("1").value = answer1 + ' / ' + answer2;
+            document.getElementById("1").style.color = "red"
+            }
+            else {
+            document.getElementById("correction_a").innerHTML = "✕";
+            document.getElementById("correction_a").style.color = "red";
+            document.getElementById("correction_b").innerHTML = answer1 + ' / ' + answer2
+            }
+	}
+}
+
+function accent (lettre){
+const Word1 = document.getElementById("1").value;
+document.getElementById("1").value = Word1 + lettre;
+}
+</script>
+</body>
+</html>
+</html>

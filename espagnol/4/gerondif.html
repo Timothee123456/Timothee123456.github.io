@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>
+     Gérondifs
+    </title>
+<link rel="stylesheet" href="style.css">
+<style>
+.accents {
+	background:linear-gradient(to bottom, #599bb3 5%, #408c99 100%);
+	background-color:#599bb3;
+	border-radius:8px;
+	display:inline-block;
+	cursor:pointer;
+	color:#ffffff;
+	font-family:Arial;
+	font-size:20px;
+	padding:7px 10px;
+	text-decoration:none;
+}
+.accents:hover {
+	background:linear-gradient(to bottom, #408c99 5%, #599bb3 100%);
+	background-color:#408c99;
+}
+.accents:active {
+	position:relative;
+	top:1px;
+}
+
+</style>
+</head>
+<body>
+<!-- This is the div where the menu will be dynamically inserted -->
+<div id="menuContainer"></div>
+
+<!-- Link to the JavaScript file -->
+<script src="navigation.js"></script>
+
+
+<center>
+<h2>Traduire la phrase en espagnol (sans les pronoms personels)</h2>
+<p></p>
+<nobr id="fr"></nobr>
+<p></p>
+<input autocomplete="off" style="text-align:center;" id="1">
+<nobr id="correction_a"></nobr>
+<p></p>
+<nobr id="correction_b" style="color:red;"></nobr>
+<p></p>
+<a href="#" class="accents" onclick="accent('á')">á</a>
+<a href="#" class="accents" onclick="accent('é')">é</a>
+<a href="#" class="accents" onclick="accent('í')">í</a>
+<a href="#" class="accents" onclick="accent('ó')">ó</a>
+<a href="#" class="accents" onclick="accent('ú')">ú</a>
+<a href="#" class="accents" onclick="accent('ñ')">ñ</a>
+<p></p>
+<a href="#" class="myButton" onclick="myFunction()" id="Terminado">Terminado</a>
+<p></p>
+<a href="#" class="myButton2" onclick="reset()">Next</a>
+</center>
+<script>
+/* Mots */
+const estar_fr = ["Je suis en train", "Tu es en train", "Il/Elle est en train", "Nous sommes en train", "Vous êtes en train", "Ils/Elles sont en train"];
+const estar_es = ["Estoy", "Estás", "Está", "Estamos", "Estáis", "Están"];
+
+const voc_es = ["Ir al cine", "Ir a la playa", "Salir con amigos", "Ir de tiendas", "Hacer los deberes", "Hacer deporte", "Hacer “scrolling”", "Leer libros", "Leer revistas", "Ser castigado", "Dormir la siesta", "Escuchar música", "Ver películas", "Ver series", "Jugar con videojuegos", "Ver Youtube", "congugar verbos"];
+const voc_fr = ["Aller au cinéma", "Aller à la plage", "Sortir avec des amis", "Faire du shopping", "Faire les devoirs", "Faire du sport", "Scroller", "Lire des livres", "Lire des magazines", "Être puni(e)", "Faire la sieste", "Écouter de la musique", "Regarder des films", "Regarder des séries", "Jouer aux jeux vidéo", "Regarder Youtube", "Conjuguer des verbes"];
+
+
+const gérondif_es = ["yendo al cine", "yendo a la playa", "saliendo con amigos", "yendo de tiendas", "haciendo los deberes", "haciendo deporte", "haciendo scrolling", "leyendo libros", "leyendo revistas", "durmiendo la siesta", "escuchando música", "viendo películas", "viendo series", "jugando con videojuegos", "viendo youtube", "conjugando verbos"];
+const gérondif_fr = ["d'aller au cinéma", "d'aller à la plage", "de sortir avec des amis", "de faire du shopping", "de faire les devoirs", "de faire du sport", "de scroller", "de lire des livres", "de lire des magazines", "de faire la sieste", "d'écouter de la musique", "de regarder des films", "de regarder des séries", "de jouer aux jeux vidéo", "de regarder youtube", "de conjuguer des verbes"];
+
+
+
+
+var estar_nb = 0
+var gérondif_nb = 0
+
+
+reset()
+
+function reset() {
+document.getElementById("Terminado").style.display = "inline";
+document.getElementById("correction_a").innerHTML = ""
+document.getElementById("correction_b").innerHTML = ""
+document.getElementById("1").value = ""
+document.getElementById("1").style.color = "black"
+
+
+// create fr
+estar_nb = Math.floor(Math.random() * estar_fr.length)
+gérondif_nb = Math.floor(Math.random() * gérondif_fr.length)
+
+fr = estar_fr[estar_nb] + " " + gérondif_fr[gérondif_nb] + "."
+
+document.getElementById("fr").innerHTML = fr
+
+
+}
+
+// myFunction
+function myFunction() {
+
+document.getElementById("Terminado").style.display = "none";
+let Word1 = document.getElementById("1").value
+Word1 = Word1.toLowerCase()
+Word1 = Word1.replace(/[!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~]/g, '');
+
+let answer1 = estar_es[estar_nb] + " " + gérondif_es[gérondif_nb]
+
+if (Word1 == answer1.toLowerCase()){
+            document.getElementById("correction_a").innerHTML = "✓";
+            document.getElementById("correction_a").style.color = "green"
+            }
+            else if (Word1 == ""){
+            document.getElementById("1").value = answer1;
+            document.getElementById("1").style.color = "red"
+            }
+            else {
+            document.getElementById("correction_a").innerHTML = "✕";
+            document.getElementById("correction_a").style.color = "red";
+            document.getElementById("correction_b").innerHTML = answer1;
+      
+	}
+}
+
+function accent (lettre){
+document.getElementById("1").focus();
+const Word1 = document.getElementById("1").value;
+document.getElementById("1").value = Word1 + lettre;
+}
+</script>
+</body>
+</html>
+</html>

@@ -5,7 +5,8 @@ function createMenu() {
 
     // Define the menu items as an array of objects
     var menuItems = [
-        { title: "Évaluation 1", url: "https://timothee123456.github.io/espagnol/4/eval1" },
+        { title: "Estar", url: "https://timothee123456.github.io/espagnol/4/estar.html" },
+        { title: "Gérondif", url: "https://timothee123456.github.io/espagnol/4/gerondif.html" },
         { title: "5ème", url: "https://timothee123456.github.io/espagnol/jours-de-la-semaine", floatRight: true }
     ];
 

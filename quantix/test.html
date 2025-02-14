@@ -1,0 +1,1278 @@
+
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <title> Agenda Personnel </title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Responsive design -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Anaheim"> <!-- google fonts -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Architects%20Daughter"> <!-- google fonts -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"> <!-- Edit icon -->
+  <style>
+    body {
+      margin: 0;
+    }
+
+    header {
+      background-image: url(' https://ssl.gstatic.com/atari/images/aristotle-header-dark.jpg  ');
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+      padding: 30px;
+      text-align: center;
+    }
+
+    header h1 {
+      color: #fff;
+      font-size: 36px;
+      margin: 0;
+    }
+
+    main {
+      background-color: #1d2a35;
+      padding: 20px;
+      min-height: calc(100vh - 225px);
+      text-align: center;
+    }
+
+    footer {
+      background-color: #171921;
+      padding: 20px;
+      text-align: center;
+      color: #fff;
+      font-size: 14px;
+    }
+
+
+	.myreminder-container {
+        /* For mobile phones: */
+            width: 80vw;
+
+            @media only screen and (min-width: 400px) {
+              /* For tablets: */
+              width: 40vw;
+            }
+
+            @media only screen and (min-width: 730px) {
+              /* For computers: */
+              width: 28vw;
+            }
+
+            @media only screen and (min-width: 950px) {
+              /* For computers: */
+              width: 21vw;
+            }
+            
+        height: 102px;
+        padding-top: 15px;
+        border-radius: 15px;
+        overflow: auto;
+        color: #fff;
+	cursor: pointer;
+	vertical-align: middle;
+        transition: transform 1s;
+    }
+
+    /* Hover = Zoom */
+    .myreminder-container:hover,
+    .myreminder-container:focus,
+    .myreminder-container-zoom{
+      transform: scale(1.05);
+    }
+
+    .myremindera { /*TAG*/
+        padding: 7px;
+        padding-right: 10px;
+        padding-left: 10px;
+        border-radius: 20px;
+        font-size: 13px;
+    }
+
+    .myremindernobr { /*DATE*/
+    	font-family: "Anaheim", sans-serif;
+        font-size: 13px;
+        padding-left: 10px;
+    }
+
+    .myreminderh2 { /*TOPIC*/
+    	font-family: "Architects Daughter", sans-serif;
+        font-size: 23px;
+        font-weight: bold;
+        line-height: 0.1;
+    }
+	  
+
+    .myadd-dev-button {
+        width: 102px;
+        height: 102px;
+        line-height: 1;
+        margin-top: 15px;
+        display: inline-block;
+        background-color: #04AA6D;
+        border-radius: 15px;
+        color: #fff;
+        font-size: 100px;
+        text-decoration: none;
+        border-width: 0px;
+        
+        transform: matrix3d(
+          1, 0, 1, 0,
+          0, 1, 1, 0,
+          1, 1, 0, 0,
+          0, 0, 0, 1
+        );
+        transition: transform 1s;
+      }
+
+      .myadd-dev-button:hover {
+        transform: rotate3d(1, 1, 1, 0deg)
+        matrix3d(
+        1, 0, 1, 0,
+        0, 1, 1, 0,
+        1, 1, 0, 0,
+        0, 0, 0, 0.95);
+      }
+
+
+
+
+
+
+      /* Sidenav menu */
+    .mymenu_icon {
+    	font-size: 30px;
+        color: #fff;
+        cursor: pointer;
+        
+        position: absolute;
+        top: 30px;
+        left: 20px;
+    }
+
+.mysidenav {
+  height: 100%;
+  width: 0;
+  position: fixed;
+  z-index: 100;
+  top: 0;
+  left: 0;
+  background-color: #111;
+  overflow-x: hidden;
+  transition: 0.5s;
+  padding-top: 60px;
+}
+
+.mysidenav a {
+  padding: 8px 8px 8px 32px;
+  text-decoration: none;
+  font-size: 25px;
+  color: #818181;
+  display: block;
+  font-family: "Lato", sans-serif;
+  transition: 0.3s;
+}
+
+.mysidenav a:hover {
+  color: #f1f1f1;
+}
+
+.mysidenav .myclosebtn {
+  position: absolute;
+  top: 0;
+  right: 25px;
+  font-size: 36px;
+  margin-left: 50px;
+}
+
+@media screen and (max-height: 450px) {
+  .mysidenav {padding-top: 15px;}
+  .mysidenav a {font-size: 18px;}
+}
+
+
+
+
+
+/* overlay */
+      .mycontainer {
+            position: relative;
+            display: inline-block;
+            /* For mobile phones: */
+            width: 80vw;
+            margin-left: 2.5vw;
+            margin-right: 2.5vw;
+
+            @media only screen and (min-width: 400px) {
+              /* For tablets: */
+              width: 40vw;
+            }
+
+            @media only screen and (min-width: 730px) {
+              /* For computers: */
+              width: 28vw;
+              margin-left: 1.75vw;
+              margin-right: 1.75vw;
+            }
+
+            @media only screen and (min-width: 950px) {
+              /* For computers: */
+              width: 21vw;
+              margin-left: 1vw;
+              margin-right: 1vw;
+            }
+            
+            height: 117px;
+	    vertical-align: middle;
+            margin-bottom: 15px;
+            
+        }
+    
+      .myoverlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            /* Changed to allow pointer events when active */
+            pointer-events: none;
+            
+            border-radius: 15px;
+            z-index: 1;
+            transform: rotate3d(1, 1, 1, 0deg)
+                matrix3d(
+                1, 0, 1, 0,
+                0, 1, 1, 0,
+                1, 1, 0, 0,
+                0, 0, 0, 0.95);
+        }
+
+        .myoverlay.active {
+            opacity: 1;
+            /* This makes the overlay block all interactions */
+            pointer-events: all;
+        }
+        
+
+        /* Disable text selection when overlay is active */
+        .mydisable-content {
+            user-select: none;
+        }
+        
+        
+  
+        .myedit,.mydel{
+            color: white;
+            padding: 14px 20px;
+            margin: 8px 0;
+            border: none;
+            cursor: pointer;
+            width: 90%;
+            opacity: 0.9;
+            border-radius: 15px;
+        }
+        
+   		 .myedit:hover,
+         .mydel:hover {
+           opacity:1;
+    	}
+        
+        .myedit {
+           background-color: #04AA6D;
+        }
+
+        .mydel {
+           background-color: #f44336;
+        }
+
+
+
+	  
+ /* Loading ring */	  
+	 .mylds-ring {
+	  /* change color here */
+	  color: #001adb
+	}
+	.mylds-ring,
+	.mylds-ring div {
+	  box-sizing: border-box;
+	}
+	.mylds-ring {
+	  display: inline-block;
+	  position: relative;
+	  width: 80px;
+	  height: 80px;
+	}
+	.mylds-ring div {
+	  box-sizing: border-box;
+	  display: block;
+	  position: absolute;
+	  width: 94px;
+	  height: 94px;
+	  margin: 8px;
+	  border: 8px solid currentColor;
+	  border-radius: 50%;
+	  animation: lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+	  border-color: currentColor transparent transparent transparent;
+		
+	  cursor: progress;
+	}
+	.mylds-ring div:nth-child(1) {
+	  animation-delay: -0.45s;
+	}
+	.mylds-ring div:nth-child(2) {
+	  animation-delay: -0.3s;
+	}
+	.mylds-ring div:nth-child(3) {
+	  animation-delay: -0.15s;
+	}
+	@keyframes lds-ring {
+	  0% {
+	    transform: rotate(0deg);
+	  }
+	  100% {
+	    transform: rotate(360deg);
+	  }
+	}
+
+
+
+	  
+	  
+	  
+	  
+	/* Confirmation modal */  
+/* Set a style for all buttons */
+.my_modal_button {
+  background-color: #04AA6D;
+  color: white;
+  padding: 14px 20px;
+  margin: 8px 0;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+  opacity: 0.9;
+}
+
+.my_modal_button:hover {
+  opacity:1;
+}
+
+/* Extra styles for the cancel button */
+.my_cancelbtn {
+  padding: 14px 20px;
+  background-color: #ccc;
+  color: black;
+}
+
+/* Extra styles for the signup button */
+.my_signupbtn {
+  padding: 14px 20px;
+  background-color: #f44336;
+}
+
+/* Float cancel and signup buttons and add an equal width */
+.my_cancelbtn, .my_signupbtn {
+  float: left;
+  width: 50%;
+}
+
+/* Add padding to container elements */
+.my_container {
+  padding: 16px;
+}
+
+/* The Modal (background) */
+.my_modal {
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgba(0, 0, 0, 0.34);
+  padding-top: 50px;
+  display: none;
+}
+
+/* Modal Content/Box */
+.my_modal-content {
+  background-color: #fefefe;
+  margin: 5% auto 15% auto; /* 5% from the top, 15% from the bottom and centered */
+  border: none;
+  width: 80%; /* Could be more or less, depending on screen size */
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Style the horizontal ruler */
+hr {
+  border: 1px solid #f1f1f1;
+  margin-bottom: 25px;
+}
+ 
+/* The my_close Button (x) */
+.my_close {
+  position: absolute;
+  right: 35px;
+  top: 15px;
+  font-size: 40px;
+  font-weight: bold;
+  color: #f1f1f1;
+}
+
+.my_close:hover,
+.my_close:focus {
+  color: #f44336;
+  cursor: pointer;
+}
+
+
+/* Clear floats */
+.my_clearfix::after {
+  content: "";
+  clear: both;
+  display: table;
+}
+
+
+/* Change styles for cancel button and signup button on extra small screens */
+@media screen and (max-width: 300px) {
+  .my_my_cancelbtn, .my_signupbtn {
+     width: 100%;
+  }
+}
+</style>
+
+
+
+
+
+
+
+
+
+
+<!-- Edit modal styling -->
+
+
+
+
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"> <!-- Delete icon -->
+	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"><!-- Edit icon -->
+	<!-- script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script -->
+<style>
+.editmodal body {
+  font-family: Arial, Helvetica, sans-serif;
+}
+.editmodal * {
+  box-sizing: border-box;
+}
+
+/* Full-width input fields */
+.editmodal input[type=email], .editmodal input[type=password], .editmodal input[type=text], .editmodal input[type=date]{
+  width: 100%;
+  padding: 15px;
+  margin: 5px 0 22px 0;
+  display: inline-block;
+  border: none;
+  background: #f1f1f1;
+}
+
+/* Add a background color when the inputs get focus */
+.editmodal input[type=email]:focus, .editmodal input[type=password]:focus, .editmodal input[type=text]:focus, .editmodal input[type=date]:focus{
+  background-color: #ddd;
+  outline: none;
+}
+
+/* Set a style for all buttons */
+.editmodal button {
+  background-color: #04AA6D;
+  color: white;
+  padding: 14px 20px;
+  margin: 8px 0;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+  opacity: 0.9;
+}
+
+.editmodal button:hover {
+  opacity:1;
+}
+
+/* Extra styles for the cancel button */
+.editmodal .my_cancelbtn {
+  padding: 14px 20px;
+  background-color: #f44336;
+}
+
+/* Float cancel and signup buttons and add an equal width */
+.editmodal .my_cancelbtn, .editmodal .my_signupbtn {
+  float: left;
+  width: 50%;
+}
+
+/* Add padding to container elements */
+.editmodal .my_container {
+  padding: 16px;
+}
+
+/* The Modal (background) */
+.editmodal .my_modal {
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: #474e5d;
+  padding-top: 50px;
+}
+
+/* Modal Content/Box */
+.editmodal .my_modal-content {
+  background-color: #fefefe;
+  margin: 5% auto 15% auto; /* 5% from the top, 15% from the bottom and centered */
+  border: 1px solid #888;
+  width: 80%; /* Could be more or less, depending on screen size */
+}
+
+/* Style the horizontal ruler */
+.editmodal hr {
+  border: 1px solid #f1f1f1;
+  margin-bottom: 25px;
+}
+
+/* The my_close Button (x) */
+.editmodal .my_close {
+  position: absolute;
+  right: 35px;
+  top: 15px;
+  font-size: 40px;
+  font-weight: bold;
+  color: #f1f1f1;
+}
+
+.editmodal .my_close:hover,
+.editmodal .my_close:focus {
+  color: #f44336;
+  cursor: pointer;
+}
+
+.editmodal span.psw {
+  float: right;
+}
+
+/* Clear floats */
+.editmodal .my_clearfix::after {
+  content: "";
+  clear: both;
+  display: table;
+}
+
+/* Add Zoom Animation */
+.editmodal .my_animate {
+  -webkit-animation: my_animatezoom 0.6s;
+  animation: my_animatezoom 0.6s
+}
+
+/* Change styles for cancel button and signup button on extra small screens */
+@media screen and (max-width: 300px) {
+  .editmodal .my_my_cancelbtn, .editmodal .my_signupbtn {
+     width: 100%;
+  }
+}
+
+.editmodal input[type="color" i] {
+  border-radius: 50%;
+  inline-size: 30px;
+  block-size: 30px;
+  padding: 3px;
+  border-width: 1px;
+  border-style: solid;
+  border-color: rgb(153, 153, 153);
+}
+
+.editmodal input[type="color" i]::-webkit-color-swatch-wrapper {
+  padding: 1px;
+}
+
+.editmodal input[type="color" i]::-webkit-color-swatch {
+  border-radius: 50%;
+}
+
+.editmodal input[type="color" i]::-moz-color-swatch {
+  border-radius: 50%;
+}
+
+.editmodal select {
+  margin-bottom: 10px;
+}
+
+.editmodal .select_icon_container {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.editmodal .icon {
+  margin-left: 7px;
+  margin-right: -2px;
+  margin-bottom: 11px;
+  font-size: 24px;
+  cursor: pointer;
+  display: none;
+}
+</style>
+</head>
+<body id="body">
+<header>
+  <h1> Agenda Personnel </h1>
+  <span class="mymenu_icon" onclick="openNav()">&#9776;</span>
+</header>
+<main id="main">
+    
+<a class="myadd-dev-button" href="/add_reminder">+</a>
+<div class="mylds-ring" id="loading" style="text-align: middle;"><div></div><div></div><div></div><div></div></div>
+
+</main>
+    
+<footer>
+  <p>&copy; <span id=date>2024-2025</span> <span onclick="openNav2()">Quantix</span>. Tous droits réservés.</p>
+</footer>
+<div id="mySidenav" class="mysidenav">
+  <a href="javascript:void(0)" class="myclosebtn" onclick="closeNav()">&times;</a>
+  <a href="/home">Accueil</a>
+  <a href="/logout">Se déconnecter</a>
+</div>
+<div id="mySecretSidenav" class="mysidenav">
+  <a href="javascript:void(0)" class="myclosebtn" onclick="closeNav2()">&times;</a>
+  <a href="/api/reminder">Rappels</a>
+  <a href="/api/subject">Matières</a>
+  <a href="/api/tag">Tags</a>
+</div>
+
+<!-- Confirmation modal -->
+<div id="close_modal" class="my_modal">
+  <span onclick="close_modal()" class="my_close" title="my_close Modal">&times;</span>
+  <form class="my_modal-content  my_animate">
+    <div class="my_container">
+      <h1>Effacer le rappel</h1>
+      <p>Êtes-vous sûr de vouloir effacer ce rappel ?</p>
+   
+      <div class="my_clearfix">
+        <button type="button" onclick="close_modal()" class="my_cancelbtn my_modal_button" >Annuler</button>
+        <button type="submit" class="my_signupbtn my_modal_button">Effacer</button>
+      </div>
+    </div>
+  </form>
+</div>
+
+
+
+
+
+
+<!-- Edit modal -->
+
+
+
+
+<div id="id01" class="editmodal my_modal">
+  <span onclick="close_modal()" class="my_close" title="my_close Modal">&times;</span>
+  <form class="my_modal-content my_animate" id="form">
+    <div class="my_container">
+      <h1>Créer un rappel</h1>
+      <hr>
+       
+<label for="subject_id"><b>Matière</b></label>
+<div class="select_icon_container">
+  <select class="form-select" name="subject_id" id="subject_select" onchange="changeSelect('subject', 'subject_select')" required>
+      <option value="" hidden disabled selected>Choisissez une matière</option>
+      <optgroup id="optionGroup" style="display: none;" label="Matières">
+      </optgroup>
+      <option value="new">+ Plus</option>
+  </select>
+  <span class="material-icons icon icon_subject" onclick="">&#xe254;</span>
+  <span class="material-icons icon icon_subject">&#xe872;</span>
+</div>
+<label for="tag_id"><b>Tag</b></label>
+<div class="select_icon_container">
+<select class="form-select" name="tag_id" id="tag_select" onchange="changeSelect('tag', 'tag_select')" required>
+    <option value="" hidden disabled selected>Choisissez un tag</option>
+    <optgroup id="optionGroup2" style="display: none;" label="Tags">
+    </optgroup>
+    <option value="new">+ Plus</option>
+</select>
+  <span class="material-icons icon icon_tag" onclick="">&#xe254;</span>
+  <span class="material-icons icon icon_tag">&#xe872;</span>
+</div>
+<label for="date"><b>Date</b></label>
+<input type="date" name="date" id="datePicker" required>
+<br>
+<label for="content"><b>Contenu du rappel</b></label>
+<input type="text" placeholder="Contenu" name="content" id="Contenu" required>
+
+        <div class=" alert alert-danger" id="alert" style="display: none;">
+            <strong>Erreur! </strong> <span id="alert_text"></span> <a class="alert-link" id="alert_link"></a>
+          </div>
+	<div style="display:none">
+      <label>
+        <!--input type="checkbox" checked="checked" name="remember" style="margin-bottom:15px"--> Se souvenir de moi
+      </label>
+		<span class="psw"><a href="#">Mot de pass oublié ?</a></span>
+        
+        </div>
+      <div class="my_clearfix">
+        <button type="button" onclick="close_modal()" class="my_cancelbtn">Annuler</button>
+        <button type="submit" class="my_signupbtn">Valider</button>
+      </div>
+    </div>
+  </form>
+</div>
+
+ 
+<div id="tag_modal" class="editmodal my_modal" style="display: none;">
+    <span onclick="close_a_modal(tag_modal, 'tag_select')" class="my_close" title="my_close Modal">&times;</span>
+    <form class="my_modal-content my_animate" id="form">
+      <div class="my_container">
+        <h1>Nouveau Tag</h1>
+        <hr>
+        <label for="content"><b>Nom du tag</b></label>
+        <input type="text" placeholder="Nom" name="content" id="Nom_tag" required>
+        <br>
+        <label for="bg_color"><b>Couleur</b></label>
+        <input type="color" name="bg_color" required>
+          <div class=" alert alert-danger" style="display: none;">
+              <strong>Erreur! </strong> <span></span> <a class="alert-link"></a>
+            </div>
+        <div class="my_clearfix">
+          <button type="button" onclick="close_a_modal(tag_modal, 'tag_select')" class="my_cancelbtn">Annuler</button>
+          <button type="submit" class="my_signupbtn">Valider</button>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <div id="subject_modal" class="editmodal my_modal" style="display: none;">
+    <span onclick="close_a_modal(subject_modal, 'subject_select')" class="my_close" title="my_close Modal">&times;</span>
+    <form class="my_modal-content my_animate" id="form">
+      <div class="my_container">
+        <h1>Nouvelle Matière</h1>
+        <hr>
+        <label for="content"><b>Matière</b></label>
+        <input type="text" placeholder="Nom" name="content" id="Nom_subject" required>
+        <br>
+        <label for="bg_color"><b>Couleur</b></label>
+        <input type="color" name="bg_color" required>
+          <div class=" alert alert-danger" style="display: none;">
+              <strong>Erreur! </strong> <span></span> <a class="alert-link"></a>
+            </div>
+        <div class="my_clearfix">
+          <button type="button" onclick="close_a_modal(subject_modal, 'subject_select')" class="my_cancelbtn">Annuler</button>
+          <button type="submit" class="my_signupbtn">Valider</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</body>
+<script>
+    
+
+    function adjustColorBrightness(color, percent) {
+        let num = parseInt(color.slice(1), 16);
+        let amt = Math.round(2.55 * percent);
+        let r = (num >> 16) + amt;
+        let g = (num >> 8 & 0x00FF) + amt;
+        let b = (num & 0x0000FF) + amt;
+    
+        r = Math.max(0, Math.min(255, r));
+        g = Math.max(0, Math.min(255, g));
+        b = Math.max(0, Math.min(255, b));
+    
+        return `#${(r << 16 | g << 8 | b).toString(16).padStart(6, '0')}`;
+    }
+
+
+    async function loadRessource (ressource_route) {
+            const ressource = await fetch(ressource_route);
+            const response = await ressource.json();
+            return response;
+    } 
+          
+async function fetchData () {
+    const tagArr = await loadRessource("/api/tag");
+    const subjectArr = await loadRessource("/api/subject"); 
+    let reminderArr = await loadRessource("/api/reminder");
+    loading = document.getElementById("loading")
+    
+    // sort reminderArr by date
+    reminderArr = reminderArr.sort((a, b) => new Date(a.date) - new Date(b.date));
+
+    // remove expired reminders
+    const removeExpiredObjects = (array) => {
+	    const currentDate = new Date();
+	    currentDate.setDate(currentDate.getDate() - 1);
+	    return array.filter(item => new Date(item.date) >= currentDate);
+     };
+    reminderArr = removeExpiredObjects(reminderArr);
+
+		
+    if (Array.isArray(reminderArr)) {
+        loading.style.display = "block";
+    
+        reminderArr.forEach(function(element, index) {
+            let container = document.createElement("div");
+    container.className = "mycontainer";
+    container.id = `container${index}`;
+    
+	let reminder = document.createElement("div");
+		let subject = subjectArr.find(mySubject => mySubject.id === element.subject_id);
+            let tag = tagArr.find(myTag => myTag.id === element.tag_id);
+            element.date = new Date(element.date)
+    reminder.className = "myreminder-container"; // Renamed for clarity
+    reminder.style.backgroundColor = subject.bg_color; // Corrected typo
+    reminder.id = `remDiv${index}`;
+    reminder.addEventListener('click', (event) => {
+        // Close other overlays
+        removeDarknessAll(index, reminderArr); // Pass the current index to exclude it
+
+        // Toggle the current overlay
+        toggleDarkness(index);
+        event.stopPropagation();
+      });
+	    container.appendChild(reminder);
+	    
+	    let overlay = document.createElement("div");
+	    overlay.className = "myoverlay";
+	    overlay.id = `overlay${index}`;
+	    container.appendChild(overlay);
+	    
+	    let edit = document.createElement("button");
+	    edit.className = "myedit";
+	    edit.innerHTML = "Modifier";
+	    edit.id = `edit${index}`;
+	    
+	    let del = document.createElement("button");
+	    del.className = "mydel";
+	    del.innerHTML = "Effacer";
+	    del.addEventListener('click', () => {
+		toggleDarkness(index);
+		open_modal(`/api/reminder/${element.id}`, `container${index}`);
+        });
+	    del.id = `del${index}`;
+	    
+	    overlay.appendChild(edit);
+	    overlay.appendChild(del);
+	    
+	    document.getElementById("main").appendChild(container);
+    
+            const elem_attributes = {
+                tagged: {
+                    htmlType: "a",
+                    elemContent: tag.content,
+                    elemBgColor: tag.bg_color
+                },
+                date: {
+                    htmlType: "nobr",
+                    elemContent: "Pour : " + find_date_name(element.date)
+                },
+                topic: {
+                    htmlType: "h2",
+                    elemContent: subject.content // Corrected to display subject name
+                },
+                text: {
+                    htmlType: "p",
+                    elemContent: element.content
+                }
+            };
+            Object.keys(elem_attributes).forEach(function(attr){
+                let elem = document.createElement(elem_attributes[attr].htmlType);
+                elem.innerHTML = elem_attributes[attr].elemContent;
+                elem.className =  `reminder${elem_attributes[attr].htmlType}`; // Made class more specific
+                elem.id = `rem${elem_attributes[attr].htmlType}${index}`;
+                if (elem_attributes[attr].htmlType === "a") {
+                    elem.style.backgroundColor = elem_attributes[attr].elemBgColor;
+                } else if (elem_attributes[attr].htmlType === "h2") {
+                    elem.style.color = adjustColorBrightness(subject.bg_color, 70);
+                }
+                reminder.appendChild(elem);
+            });
+        });
+	loading.style.display = "none";
+	// add removeDarknessAll onclick to the body
+	const body = document.getElementById("body");
+	body.addEventListener('click', (event) => {removeDarknessALL(reminderArr);});
+    } else {
+        console.error("Data fetched is not an array");
+    }
+}
+
+
+fetchData();
+    
+    
+</script>
+<script>
+// change footer date
+    const d = new Date();
+    let year = d.getFullYear();
+    document.getElementById("date").innerHTML = `2024-${year}`;
+
+// Sidenav menu
+   let mySidenav = document.getElementById('mySidenav');
+   function openNav() {
+     mySidenav.style.width = "250px";
+   }
+
+   function closeNav() {
+     mySidenav.style.width = "0";
+   }
+
+  // When the user clicks anywhere outside of the modal, close it
+  window.onclick = function(event) {
+    if (event.target == mySidenav) {
+      close_modal();
+    }
+  }
+
+	
+// Secret Sidenav menu
+   function openNav2() {
+     document.getElementById("mySecretSidenav").style.width = "250px";
+   }
+
+   function closeNav2() {
+     document.getElementById("mySecretSidenav").style.width = "0";
+   }
+
+
+	
+
+
+function find_date_name(date){
+    const today = new Date();
+    const tomorrow = new Date();
+    tomorrow.setDate(today.getDate() + 1);
+    if (date.getDate() == today.getDate() && date.getMonth() == today.getMonth() && date.getFullYear() == today.getFullYear()){
+       return "Aujourd'hui"
+    }
+    else if (date.getDate() == tomorrow.getDate() && date.getMonth() == tomorrow.getMonth() && date.getFullYear() == tomorrow.getFullYear()) {
+       return "Demain"
+    }
+    else {
+       return date.toLocaleDateString('en-GB')
+    }
+}
+
+	
+function removeDarknessAll(excludeIndex = -1, reminderArr) { // Parameter to exclude an index
+	for (let i = 0; i < reminderArr.length; i++){ // Use reminderArr.length for dynamic number of reminders
+      if (i !== excludeIndex) { // Skip the excluded index
+          const overlay = document.getElementById(`overlay${i}`);
+          const remDiv = document.getElementById(`remDiv${i}`);
+
+          overlay.classList.remove('active');
+          remDiv.classList.remove('disable-content');
+          remDiv.classList.remove('reminder-container-zoom');
+        }
+   }
+}
+
+function removeDarknessALL(reminderArr) {
+	for (let i = 0; i < reminderArr.length; i++){ // Use reminderArr.length for dynamic number of reminders
+          const overlay = document.getElementById(`overlay${i}`);
+          const remDiv = document.getElementById(`remDiv${i}`);
+
+          overlay.classList.remove('active');
+          remDiv.classList.remove('disable-content');
+          remDiv.classList.remove('reminder-container-zoom');
+        }
+   }
+
+function toggleDarkness(index) {
+    const overlay = document.getElementById(`overlay${index}`);
+    const remDiv = document.getElementById(`remDiv${index}`);
+    
+    overlay.classList.toggle('active');
+    remDiv.classList.toggle('disable-content');
+    remDiv.classList.toggle('reminder-container-zoom');
+}
+</script>
+<script>
+
+async function confirmAction(ressourceLink, reminder) {
+  let response = await fetch(ressourceLink, {method: 'DELETE'});
+  let result = await response.json();
+  if (response.ok) {
+    console.log(result.message);
+    close_modal();
+    const element = document.getElementById(reminder);
+    element.remove();
+  }
+  // Implement error logic here
+}  
+
+
+
+// Confirmation modal
+// When the user clicks anywhere outside of the modal, close it
+let closemodal = document.getElementById('close_modal');
+  window.onclick = function(event) {
+  if (event.target == closemodal) {
+    close_modal();
+  }
+}
+
+function close_modal() {
+	closemodal.style.display = "none";
+}
+
+function open_modal(fetchRoute, reminder) {
+	closemodal.style.display = "block";
+  let confirm_form = modal.querySelector("form");
+  confirm_form.addEventListener("submit", function (event) {
+    event.preventDefault();
+    confirmAction(fetchRoute, reminder);
+  })
+}
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- Edit modal -->
+
+
+
+
+
+<script>
+// Get the modal
+var modal = document.getElementById('id01');
+
+function close_modal () {
+    history.back();
+}
+
+
+// When the user clicks anywhere outside of the modal2, close it, if clicked and modal 2 closed, redirect
+window.onclick = function(event) {
+  if (event.target == modal) {
+    close_modal();
+  }
+}
+
+const form = document.getElementById("form");
+form.addEventListener('submit',  async (event) => {
+    event.preventDefault();  // Prevent the default form submission
+
+    // Get elements
+    const formChildren = form.elements;
+    const alertDiv = document.getElementById("alert")
+    const alertText = document.getElementById("alert_text");
+    const alertLink = document.getElementById("alert_link");
+
+    alertDiv.style.display = "none";
+
+    const userAnswers = {};
+    for (let i = 0; i < formChildren.length; i++) {
+        if (["INPUT", "SELECT"].includes(formChildren[i].tagName)) {
+            	userAnswers[formChildren[i].name] = formChildren[i].value;
+        }
+    }
+
+    // Make a POST request to the server
+    let result = await fetch("/api/reminder", {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(userAnswers)
+    });
+    const response = await result.json();
+    if (result.ok) {
+        console.log(response["message"])
+        location.replace("/agenda");
+    } else if (result.status === 400) {
+        alertText.innerHTML = response["message"];
+        if (response["link_display"]) {
+            alertLink.innerHTML = response["link_display"];
+            alertLink.href = response["link_href"];
+        } else {
+            alertLink.innerHTML = "";
+        }
+        alertDiv.style.display = "block";
+    }
+});
+
+
+
+
+
+
+
+
+// Show icons functions
+function show_icons_subject(){
+	let icons = document.getElementsByClassName("icon_subject");
+    for (let i = 0; i < icons.length; i++) {
+        icons[i].style.display = "block";
+    }
+}
+
+function show_icons_tag(){
+	let icons = document.getElementsByClassName("icon_tag");
+    for (let i = 0; i < icons.length; i++) {
+    	icons[i].style.display = "block";
+	}
+}
+
+
+
+
+// function toggle passwords visibility
+function toggle_password_visibility(id){
+  var x = document.getElementById("id");
+  if (x.type === "password") {
+    x.type = "text";
+  } else {
+    x.type = "password";
+  }
+}
+</script>
+ 
+<script>
+function findIndexfromOptionName( select, optionName ) {
+    let options = Array.from( select.options );
+    return options.findIndex( (opt) => opt.value == optionName );
+}
+const tag_modal = document.getElementById("tag_modal")
+const subject_modal = document.getElementById("subject_modal")
+
+function close_a_modal (the_modal, selectId) {
+    the_modal.style.display = "none";
+    const select = document.getElementById(selectId)
+    select.selectedIndex = "0";
+}
+
+const datePicker = document.getElementById("datePicker");
+datePicker.min = new Date().toISOString().split("T")[0];
+
+async function dynamic_options(fetch_route, optgroup_id){
+    let optionGroup = document.getElementById(optgroup_id);
+    let result = await fetch(fetch_route)
+    const response = await result.json();
+    if (response !== "") {
+        response.forEach(element => {
+            let option = document.createElement("option");
+            option.value = element.id;
+            option.innerHTML = element.content;
+            optionGroup.appendChild(option);
+        });
+        optionGroup.style.display = "block";
+    }
+};
+
+dynamic_options("/api/tag", "optionGroup2");
+dynamic_options("/api/subject", "optionGroup");
+
+function changeSelect(elem, elemId) {
+    if (document.getElementById(elemId).value ===  "new") {
+        switch (elem) {
+            case "tag" :
+                tag_modal.style.display = "block";
+                break;
+            case "subject" :
+                subject_modal.style.display = "block";
+                break;
+        }
+    }
+}
+
+async function secondary_modal(event, post_link, modalElem, select_id) {
+    event.preventDefault();  // Prevent the default form submission
+
+    // Get elements
+    const formElem = modalElem.querySelector("form")
+    const formChildren = formElem.elements;
+    const alertDiv = formElem.querySelector(".alert.alert-danger");
+    const alertText = alertDiv.querySelector("span")
+    const alertLink = alertDiv.querySelector("a");
+
+    alertDiv.style.display = "none";
+
+    const userAnswers = {};
+    for (let i = 0; i < formChildren.length; i++) {
+        if (["INPUT", "SELECT"].includes(formChildren[i].tagName)) {
+            	userAnswers[formChildren[i].name] = formChildren[i].value;
+        }
+    }
+
+    // Make a POST request to the server
+    let result = await fetch(post_link, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(userAnswers)
+    });
+    const response = await result.json();
+    if (result.ok) {
+        console.log(response["content"])
+        let selectElem = document.getElementById(select_id);
+        let optionGroup = selectElem.querySelector('optgroup');
+        let option = document.createElement("option");
+        option.value = response.id;
+        option.innerHTML = response.content;
+        optionGroup.appendChild(option);
+        close_a_modal(modalElem, select_id)
+        let created_index = findIndexfromOptionName(selectElem, option.value)
+        selectElem.selectedIndex = created_index;
+    } else if (result.status === 400) {
+        alertText.innerHTML = response["message"];
+        if (response["link_display"]) {
+            alertLink.innerHTML = response["link_display"];
+            alertLink.href = response["link_href"];
+        } else {
+            alertLink.innerHTML = "";
+        }
+        alertDiv.style.display = "block";
+    }
+}
+
+tag_modal.querySelector("form").addEventListener("submit", function(event){
+    secondary_modal(event, "/api/tag", tag_modal, "tag_select");
+    document.getElementById("Nom_tag").innerHTML = "";
+});
+subject_modal.querySelector("form").addEventListener("submit", function(event){
+    secondary_modal(event, "/api/subject", subject_modal, "subject_select");
+    document.getElementById("Nom_subject").innerHTML = "";
+});
+</script>
+</body>
+</html>
+
+
+

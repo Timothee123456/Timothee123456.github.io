@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+h2 {
+  color: green;
+  text-align: center;
+}
+
+div {
+  width: 100%;
+}
+
+button {
+  margin-left:10px
+}
+
+nobr {
+  font-size: 20px;
+}
+
+textarea {
+  width: 99%;
+  display: none;
+}
+</style>
+</head>
+<body>
+<h2 id="title">Quiz de vocabulaire</h2>
+<main id="main">
+<div>
+<input>
+<nobr> : </nobr>
+<input>
+<button>Ajouter une solution</button>
+</div>
+
+</main>
+<button style="margin-top:10px; margin-bottom:10px" onclick="ligne()">Ajouter une ligne</button>
+<button onclick="html()">Get HTML code</button>
+
+<textarea id="textarea" rows=10>This is the HTML code</textarea>
+
+</body>
+<script>
+var nb = 0
+
+function ligne(){
+  nb++
+  let div = document.createElement("div");   div.id = "div" + nb;  document.getElementById("main").appendChild(div);
+  
+  let input1 = document.createElement("input");
+  input1.id = "input1" + nb;
+  div.appendChild(input1);
+  
+  let nobr = document.createElement("nobr");
+  nobr.innerHTML = " : ";
+  nobr.id = "nobr" + nb;
+  div.appendChild(nobr);
+  
+  let input2 = document.createElement("input");
+  input2.id = "input2" + nb;
+  div.appendChild(input2);
+  
+  let button = document.createElement("button");
+  button.innerHTML = "Ajouter une solution";
+  button.id = "button" + nb;
+  div.appendChild(button);
+}
+
+
+
+function html(){  document.getElementById("textarea").style.display = "block";
+}
+</script>
+</html>
+
+

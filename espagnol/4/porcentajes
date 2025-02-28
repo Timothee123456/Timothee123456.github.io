@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Porcentajes</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- This is the div where the menu will be dynamically inserted -->
+    <div id="menuContainer"></div>
+
+    <!-- Link to the JavaScript file -->
+    <script src="https://timothee123456.github.io/espagnol/4/navigation.js"></script>
+
+    <center>
+        <h2>Mettre "al" ou "el" devant la phrase</h2>
+        
+        <div>
+            <select id="1">
+                <option value=""></option>
+                <option value="Al">Al</option>
+                <option value="El">El</option>
+            </select>
+            <span> 90% le gusta ir a la playa.</span>
+            <span id="correction_1" class="result"></span>
+        </div>
+
+        <div>
+            <select id="2">
+                <option value=""></option>
+                <option value="Al">Al</option>
+                <option value="El">El</option>
+            </select>
+            <span> 90% le gusta ir a la playa.</span>
+            <span id="correction_2" class="result"></span>
+        </div>
+
+        <div>
+            <select id="3">
+                <option value=""></option>
+                <option value="Al">Al</option>
+                <option value="El">El</option>
+            </select>
+            <span> 90% le gusta ir a la playa.</span>
+            <span id="correction_3" class="result"></span>
+        </div>
+
+        <div>
+            <select id="4">
+                <option value=""></option>
+                <option value="Al">Al</option>
+                <option value="El">El</option>
+            </select>
+            <span> 90% le gusta ir a la playa.</span>
+            <span id="correction_4" class="result"></span>
+        </div>
+
+        <div>
+            <select id="5">
+                <option value=""></option>
+                <option value="Al">Al</option>
+                <option value="El">El</option>
+            </select>
+            <span> 90% le gusta ir a la playa.</span>
+            <span id="correction_5" class="result"></span>
+        </div>
+
+        <div>
+            <select id="6">
+                <option value=""></option>
+                <option value="Al">Al</option>
+                <option value="El">El</option>
+            </select>
+            <span> 90% le gusta ir a la playa.</span>
+            <span id="correction_6" class="result"></span>
+        </div>
+
+        <div>
+            <select id="7">
+                <option value=""></option>
+                <option value="Al">Al</option>
+                <option value="El">El</option>
+            </select>
+            <span> 90% le gusta ir a la playa.</span>
+            <span id="correction_7" class="result"></span>
+        </div>
+
+        <div>
+            <select id="8">
+                <option value=""></option>
+                <option value="Al">Al</option>
+                <option value="El">El</option>
+            </select>
+            <span> 90% le gusta ir a la playa.</span>
+            <span id="correction_8" class="result"></span>
+        </div>
+
+        <div>
+            <select id="9">
+                <option value=""></option>
+                <option value="Al">Al</option>
+                <option value="El">El</option>
+            </select>
+            <span> 90% le gusta ir a la playa.</span>
+            <span id="correction_9" class="result"></span>
+        </div>
+
+        <div>
+            <select id="10">
+                <option value=""></option>
+                <option value="Al">Al</option>
+                <option value="El">El</option>
+            </select>
+            <span> 90% le gusta ir a la playa.</span>
+            <span id="correction_10" class="result"></span>
+        </div>
+
+        <div>
+            <a href="#" class="myButton" onclick="checkAnswers()" id="Terminado">Terminado</a>
+            <a href="#" class="myButton2" onclick="reset()">Réinitialiser</a>
+        </div>
+    </center>
+
+    <script>
+        // Correct answers
+        var respuestas = ["Al", "El", "El", "Al", "El", "Al", "El", "Al", "Al", "El"];
+        var totalQuestions = 10;
+
+        // Initialize the form
+        reset();
+
+        // Reset function
+        function reset() {
+            document.getElementById("Terminado").style.display = "inline";
+
+            // Reset all select elements and correction spans
+            for (let i = 1; i <= totalQuestions; i++) {
+                document.getElementById(i).value = "";
+                document.getElementById(i).style.color = "black";
+                
+                var correctionElement = document.getElementById("correction_" + i);
+                if (correctionElement) {
+                    correctionElement.innerHTML = "";
+                }
+            }
+        }
+
+        // Check answers function
+        function checkAnswers() {
+            document.getElementById("Terminado").style.display = "none";
+            
+            // Check each answer
+            for (let i = 1; i <= totalQuestions; i++) {
+                var userAnswer = document.getElementById(i).value;
+                var correctAnswer = respuestas[i-1];
+                var correctionElement = document.getElementById("correction_" + i);
+                
+                if (userAnswer === correctAnswer) {
+                    correctionElement.innerHTML = "✓";
+                    correctionElement.className = "result correct";
+                } else if (userAnswer === "") {
+                    document.getElementById(i).value = correctAnswer;
+                    document.getElementById(i).style.color = "red";
+                } else {
+                    correctionElement.innerHTML = "✕";
+                    correctionElement.className = "result incorrect";
+                }
+            }
+        }
+
+    </script>
+</body>
+</html>

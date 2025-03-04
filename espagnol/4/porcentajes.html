@@ -98,7 +98,7 @@
             <select id="9">
                 <option value=""></option>
                 <option value="Al">Al/A un</option>
-            <option value="El">El/Un</option>
+                <option value="El">El/Un</option>
             </select>
             <span> 30% les encanta hacer los deberes.</span>
             <span id="correction_9" class="result"></span>
@@ -170,7 +170,7 @@
                     correctAnswers++; // Increment the score
                 } else if (userAnswer === "") {
                     document.getElementById(i).style.color = "red";
-                    correctionElement.innerHTML = "✕";
+                    correctionElement.innerHTML = "✕ " + correctAnswer;
                     correctionElement.className = "result incorrect";
                 }
                  else {

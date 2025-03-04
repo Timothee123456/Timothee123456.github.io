@@ -12,8 +12,8 @@
     <script src="https://timothee123456.github.io/espagnol/4/navigation.js"></script>
 
     <center>
-        <h2>Mettre "al" ou "el" devant la phrase</h2>
-        
+        <h2>Mettre "al" ou "el" devant la phrase <span id="score"></span></h2>
+
         <div style="margin-bottom: 5px; font-size: 20px;">
             <select id="1">
                 <option value=""></option>
@@ -98,7 +98,7 @@
             <select id="9">
                 <option value=""></option>
                 <option value="Al">Al/A un</option>
-                <option value="El">El/Un</option>
+            <option value="El">El/Un</option>
             </select>
             <span> 30% les encanta hacer los deberes.</span>
             <span id="correction_9" class="result"></span>
@@ -124,6 +124,7 @@
         // Correct answers
         var respuestas = ["Al", "Al", "Al", "Al", "Al", "El", "El", "Al", "Al", "Al"];
         var totalQuestions = 10;
+        var correctAnswers = 0;
 
         // Initialize the form
         reset();
@@ -131,6 +132,8 @@
         // Reset function
         function reset() {
             document.getElementById("Terminado").style.display = "inline";
+            correctAnswers = 0; // Reset the score
+            updateScore();
 
             // Reset all select elements and correction spans
             for (let i = 1; i <= totalQuestions; i++) {
@@ -143,12 +146,18 @@
                     correctionElement.className = "result"; // Reset class
                 }
             }
+             document.getElementById("score").innerText = ""; // Clear the score
+        }
+
+        function updateScore() {
+            document.getElementById("score").innerText = "Score: " + correctAnswers + " / " + totalQuestions;
         }
 
         // Check answers function
         function checkAnswers() {
             document.getElementById("Terminado").style.display = "none";
-            
+            correctAnswers = 0; // Reset correct answers count
+
             // Check each answer
             for (let i = 1; i <= totalQuestions; i++) {
                 var userAnswer = document.getElementById(i).value;
@@ -158,16 +167,18 @@
                 if (userAnswer === correctAnswer) {
                     correctionElement.innerHTML = "✓";
                     correctionElement.className = "result correct";
+                    correctAnswers++; // Increment the score
                 } else if (userAnswer === "") {
-                    document.getElementById(i).value = correctAnswer;
                     document.getElementById(i).style.color = "red";
-                     correctionElement.innerHTML = correctAnswer;
+                    correctionElement.innerHTML = "✕";
+                    correctionElement.className = "result incorrect";
                 }
                  else {
-                    correctionElement.innerHTML = "✕ " + correctAnswer;
+                    correctionElement.innerHTML = correctAnswer;
                     correctionElement.className = "result incorrect";
                 }
             }
+            updateScore(); // Update the score after checking answers
         }
 
     </script>

@@ -161,8 +161,10 @@
                 } else if (userAnswer === "") {
                     document.getElementById(i).value = correctAnswer;
                     document.getElementById(i).style.color = "red";
-                } else {
-                    correctionElement.innerHTML = "✕";
+                     correctionElement.innerHTML = correctAnswer;
+                }
+                 else {
+                    correctionElement.innerHTML = "✕ " + correctAnswer;
                     correctionElement.className = "result incorrect";
                 }
             }

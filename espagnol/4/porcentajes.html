@@ -140,6 +140,7 @@
                 var correctionElement = document.getElementById("correction_" + i);
                 if (correctionElement) {
                     correctionElement.innerHTML = "";
+                    correctionElement.className = "result"; // Reset class
                 }
             }
         }
@@ -168,5 +169,19 @@
         }
 
     </script>
+    
+    <style>
+        .correct {
+            color: green;
+        }
+        .incorrect {
+            color: red;
+        }
+        .result {
+            display: inline-block;
+            margin-left: 10px;
+            font-size: 1.2em;
+        }
+    </style>
 </body>
 </html>

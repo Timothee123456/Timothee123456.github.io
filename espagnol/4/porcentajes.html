@@ -17,8 +17,8 @@
         <div style="margin-bottom: 5px; font-size: 20px;">
             <select id="1">
                 <option value=""></option>
-                <option value="Al">Al/A un</option>
-                <option value="El">El/Un</option>
+                <option value="Al/A un">Al/A un</option>
+                <option value="El/Un">El/Un</option>
             </select>
             <span> 90% les gusta ir al cine.</span>
             <span id="correction_1" class="result"></span>
@@ -27,8 +27,8 @@
         <div style="margin-bottom: 5px; font-size: 20px;">
             <select id="2">
                 <option value=""></option>
-                <option value="Al">Al/A un</option>
-                <option value="El">El/Un</option>
+                <option value="Al/A un">Al/A un</option>
+                <option value="El/Un">El/Un</option>
             </select>
             <span> 95% les encanta ir a la playa.</span>
             <span id="correction_2" class="result"></span>
@@ -37,8 +37,8 @@
         <div style="margin-bottom: 5px; font-size: 20px;">
             <select id="3">
                 <option value=""></option>
-                <option value="Al">Al/A un</option>
-                <option value="El">El/Un</option>
+                <option value="Al/A un">Al/A un</option>
+                <option value="El/Un">El/Un</option>
             </select>
             <span> 80% les chifla salir con amigos.</span>
             <span id="correction_3" class="result"></span>
@@ -47,8 +47,8 @@
         <div style="margin-bottom: 5px; font-size: 20px;">
             <select id="4">
                 <option value=""></option>
-                <option value="Al">Al/A un</option>
-                <option value="El">El/Un</option>
+                <option value="Al/A un">Al/A un</option>
+                <option value="El/Un">El/Un</option>
             </select>
             <span> 60% les gusta ir de tiendas.</span>
             <span id="correction_4" class="result"></span>
@@ -57,8 +57,8 @@
         <div style="margin-bottom: 5px; font-size: 20px;">
             <select id="5">
                 <option value=""></option>
-                <option value="Al">Al/A un</option>
-                <option value="El">El/Un</option>
+                <option value="Al/A un">Al/A un</option>
+                <option value="El/Un">El/Un</option>
             </select>
             <span> 70% les encanta leer libros.</span>
             <span id="correction_5" class="result"></span>
@@ -67,8 +67,8 @@
         <div style="margin-bottom: 5px; font-size: 20px;">
             <select id="6">
                 <option value=""></option>
-                <option value="Al">Al/A un</option>
-                <option value="El">El/Un</option>
+                <option value="Al/A un">Al/A un</option>
+                <option value="El/Un">El/Un</option>
             </select>
             <span> 20% detestamos leer revistas.</span>
             <span id="correction_6" class="result"></span>
@@ -77,8 +77,8 @@
         <div style="margin-bottom: 5px; font-size: 20px;">
             <select id="7">
                 <option value=""></option>
-                <option value="Al">Al/A un</option>
-                <option value="El">El/Un</option>
+                <option value="Al/A un">Al/A un</option>
+                <option value="El/Un">El/Un</option>
             </select>
             <span> 5% odiamos ser castigados.</span>
             <span id="correction_7" class="result"></span>
@@ -87,8 +87,8 @@
         <div style="margin-bottom: 5px; font-size: 20px;">
             <select id="8">
                 <option value=""></option>
-                <option value="Al">Al/A un</option>
-                <option value="El">El/Un</option>
+                <option value="Al/A un">Al/A un</option>
+                <option value="El/Un">El/Un</option>
             </select>
             <span> 40% les gusta dormir la siesta.</span>
             <span id="correction_8" class="result"></span>
@@ -97,8 +97,8 @@
         <div style="margin-bottom: 5px; font-size: 20px;">
             <select id="9">
                 <option value=""></option>
-                <option value="Al">Al/A un</option>
-                <option value="El">El/Un</option>
+                <option value="Al/A un">Al/A un</option>
+                <option value="El/Un">El/Un</option>
             </select>
             <span> 30% les encanta hacer los deberes.</span>
             <span id="correction_9" class="result"></span>
@@ -107,8 +107,8 @@
         <div style="margin-bottom: 10px; font-size: 20px;">
             <select id="10">
                 <option value=""></option>
-                <option value="Al">Al/A un</option>
-                <option value="El">El/Un</option>
+                <option value="Al/A un">Al/A un</option>
+                <option value="El/Un">El/Un</option>
             </select>
             <span> 50% les chifla hacer deporte.</span>
             <span id="correction_10" class="result"></span>
@@ -122,7 +122,7 @@
 
     <script>
         // Correct answers
-        var respuestas = ["Al", "Al", "Al", "Al", "Al", "El", "El", "Al", "Al", "Al"];
+        var respuestas = ["Al/A un", "Al/A un", "Al/A un", "Al/A un", "Al/A un", "El/Un", "El/Un", "Al/A un", "Al/A un", "Al/A un"];
         var totalQuestions = 10;
         var correctAnswers = 0;
 
@@ -139,14 +139,14 @@
             for (let i = 1; i <= totalQuestions; i++) {
                 document.getElementById(i).value = "";
                 document.getElementById(i).style.color = "black";
-                
+
                 var correctionElement = document.getElementById("correction_" + i);
                 if (correctionElement) {
                     correctionElement.innerHTML = "";
                     correctionElement.className = "result"; // Reset class
                 }
             }
-             document.getElementById("score").innerText = ""; // Clear the score
+            document.getElementById("score").innerText = ""; // Clear the score
         }
 
         function updateScore() {
@@ -161,35 +161,33 @@
             // Check each answer
             for (let i = 1; i <= totalQuestions; i++) {
                 var userAnswer = document.getElementById(i).value;
-                var correctAnswer = respuestas[i-1];
+                var correctAnswer = respuestas[i - 1];
                 var correctionElement = document.getElementById("correction_" + i);
-                
+
                 if (userAnswer === correctAnswer) {
                     correctionElement.innerHTML = "✓";
                     correctionElement.className = "result correct";
                     correctAnswers++; // Increment the score
-                } else if (userAnswer === "") {
-                    document.getElementById(i).style.color = "red";
+                } else {
                     correctionElement.innerHTML = "✕ " + correctAnswer;
                     correctionElement.className = "result incorrect";
-                }
-                 else {
-                    correctionElement.innerHTML = correctAnswer;
-                    correctionElement.className = "result incorrect";
+                    document.getElementById(i).style.color = "red"; // Make the text red if it's wrong or empty
                 }
             }
             updateScore(); // Update the score after checking answers
         }
 
     </script>
-    
+
     <style>
         .correct {
             color: green;
         }
+
         .incorrect {
             color: red;
         }
+
         .result {
             display: inline-block;
             margin-left: 10px;
@@ -197,4 +195,5 @@
         }
     </style>
 </body>
+
 </html>

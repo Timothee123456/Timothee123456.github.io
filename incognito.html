@@ -76,20 +76,20 @@ iframe {
 <body>
     <div class="search-container" id="search-container">
         <input  id="search" type="text" placeholder="Search...">
-        <button type="submit"  onclick="navigate()">Search</button>
+        <button type="submit" onclick="navigate()">Search</button>
     </div>
 <iframe id="website-frame" src="https://timothee123456.github.io/main" class="iframe-container"></iframe>
 <script>
         function navigate() {
             let url = document.getElementById("search").value;
+            if (url == "titi") {
+                url = "https://eaglercraft.com/mc/1.8.8/";
+                document.getElementById("search-container").style.display = "none";
+            }
             if (!url.startsWith("http://") && !url.startsWith("https://")) {
                 url = "https://" + url;
             }
-            if (url == "titi") {
-                url = "https://eaglercraft.com/mc/1.8.8/"
-                document.getElementById("search-container").display = "none"
-            }
-            document.getElementById("search").InnerHTML = url
+            document.getElementById("search").value = url
             document.getElementById("website-frame").src = url;
         }
 

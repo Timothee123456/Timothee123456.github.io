@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulation d'Attaque Hacker</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        :root {
+            --text-color: #00ff00;
+            --bg-color: #000000;
+            --alert-color: #ff0000;
+            --blur-color: rgba(0, 255, 0, 0.2);
+        }
+        
+        .dark {
+            --text-color: #00ff00;
+            --bg-color: #000000;
+            --alert-color: #ff0000;
+            --blur-color: rgba(0, 255, 0, 0.2);
+        }
+        
+        @keyframes glitch {
+            0% {
+                transform: translate(0);
+                text-shadow: 0 0 5px var(--text-color);
+            }
+            20% {
+                transform: translate(-2px, 2px);
+                text-shadow: 2px 2px 5px var(--text-color);
+            }
+            40% {
+                transform: translate(-2px, -2px);
+                text-shadow: 2px -2px 5px var(--text-color);
+            }
+            60% {
+                transform: translate(2px, 2px);
+                text-shadow: -2px 2px 5px var(--text-color);
+            }
+            80% {
+                transform: translate(2px, -2px);
+                text-shadow: -2px -2px 5px var(--text-color);
+            }
+            100% {
+                transform: translate(0);
+                text-shadow: 0 0 5px var(--text-color);
+            }
+        }
+        
+        @keyframes scan {
+            0% {
+                background-position: 0% -100%;
+            }
+            100% {
+                background-position: 0% 200%;
+            }
+        }
+        
+        @keyframes blink {
+            0%, 49% {
+                opacity: 1;
+            }
+            50%, 100% {
+                opacity: 0;
+            }
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+        
+        .terminal {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Courier New', monospace;
+            position: relative;
+            overflow: hidden;
+            text-shadow: 0 0 5px var(--text-color);
+        }
+        
+        .terminal::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(transparent 50%, var(--blur-color) 51%, transparent 52%);
+            background-size: 100% 4px;
+            animation: scan 6s linear infinite;
+            pointer-events: none;
+            z-index: 1;
+        }
+        
+        .cursor {
+            display: inline-block;
+            width: 10px;
+            height: 20px;
+            background-color: var(--text-color);
+            animation: blink 1s step-end infinite;
+            vertical-align: middle;
+        }
+        
+        .glitch {
+            animation: glitch 0.3s ease-in-out infinite;
+            display: inline-block;
+        }
+        
+        .alert {
+            color: var(--alert-color);
+            font-weight: bold;
+            animation: glitch 0.2s ease-in-out infinite;
+        }
+        
+        .loading-bar {
+            height: 20px;
+            width: 100%;
+            background-color: #111;
+            border: 1px solid var(--text-color);
+            box-shadow: 0 0 5px var(--text-color);
+            margin: 10px 0;
+        }
+        
+        .progress {
+            height: 100%;
+            background-color: var(--text-color);
+            width: 0%;
+            transition: width 0.5s;
+            box-shadow: 0 0 10px var(--text-color);
+        }
+        
+        .fade-in {
+            opacity: 0;
+            animation: fadeIn 2s forwards;
+        }
+        
+        #map-container {
+            position: relative;
+            width: 100%;
+            height: 200px;
+            border: 1px solid var(--text-color);
+            margin-top: 20px;
+            overflow: hidden;
+        }
+        
+        .map-point {
+            position: absolute;
+            width: 5px;
+            height: 5px;
+            background-color: var(--text-color);
+            border-radius: 50%;
+            box-shadow: 0 0 5px var(--text-color);
+        }
+        
+        .map-target {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            border: 2px solid var(--alert-color);
+            border-radius: 50%;
+            animation: glitch 1s ease-in-out infinite;
+        }
+
+        button {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            border: 1px solid var(--text-color);
+            padding: 8px 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-shadow: 0 0 5px var(--text-color);
+            box-shadow: 0 0 5px var(--text-color);
+        }
+        
+        button:hover {
+            background-color: var(--text-color);
+            color: var(--bg-color);
+        }
+    </style>
+</head>
+<body class="dark bg-black min-h-screen">
+    <div class="container mx-auto p-4">
+        <div class="terminal border border-green-500 p-4 rounded shadow-lg min-h-[80vh] overflow-y-auto" id="terminal">
+            <div class="mb-4 flex justify-between">
+                <span class="text-green-500 font-bold">[root@darkserver]# </span>
+                <button id="startAttack" class="px-3 py-1 rounded text-sm">COMMENCER L'ATTAQUE</button>
+            </div>
+            <div id="output"></div>
+            <div id="progress-section" class="mt-6 hidden">
+                <div class="text-white">Progression de l'intrusion:</div>
+                <div class="loading-bar">
+                    <div class="progress" id="hack-progress"></div>
+                </div>
+            </div>
+            <div id="map-container" class="hidden">
+                <div class="map-target" id="target"></div>
+            </div>
+            <div class="mt-4">
+                <span id="current-line"></span><span class="cursor"></span>
+            </div>
+        </div>
+    </div>
+
+    <audio id="keyboardSound" preload="auto">
+        <source src="data:audio/wav;base64,UklGRigAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQQAAAAoAAAA" type="audio/wav">
+    </audio>
+    <audio id="alertSound" preload="auto">
+        <source src="data:audio/wav;base64,UklGRigAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQQAAAAnAAAA" type="audio/wav">
+    </audio>
+
+    <script>
+        // Détecter le mode sombre
+        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            document.documentElement.classList.add('dark');
+        }
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
+            if (event.matches) {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+        });
+
+        const startAttackBtn = document.getElementById('startAttack');
+        const output = document.getElementById('output');
+        const currentLine = document.getElementById('current-line');
+        const progressSection = document.getElementById('progress-section');
+        const hackProgress = document.getElementById('hack-progress');
+        const mapContainer = document.getElementById('map-container');
+        const target = document.getElementById('target');
+        
+        const keyboardSound = document.getElementById('keyboardSound');
+        const alertSound = document.getElementById('alertSound');
+        
+        // Liste de messages pour simuler une attaque
+        const hackingMessages = [
+            "Initialisation du système d'attaque...",
+            "Connexion aux serveurs anonymes...",
+            "Masquage de l'adresse IP...",
+            "Scan des ports vulnérables...",
+            "Détection du pare-feu...",
+            "Recherche de vulnérabilités...",
+            "Vulnérabilité SQL trouvée sur le port 3306!",
+            "Préparation de l'injection SQL...",
+            "Contournement de l'authentification...",
+            "Accès à la base de données réussi!",
+            "Extraction des informations utilisateurs...",
+            "Déchiffrement des mots de passe en cours...",
+            "Élévation des privilèges...",
+            "Création d'un compte administrateur fantôme...",
+            "Installation d'une porte dérobée...",
+            "Effacement des journaux système...",
+            "Téléchargement des données sensibles...",
+            "Installation du rootkit persistant...",
+            "Attaque réussie! Système compromis."
+        ];
+        
+        // Liste de faux code pour l'affichage
+        const fakeCode = [
+            "const target = new Target('192.168.1.1', 'port:3306');",
+            "target.scanVulnerabilities();",
+            "const exploit = new SQLInjection(target);",
+            "exploit.bypassLogin('admin', payload);",
+            "const backdoor = new Backdoor('shell.php');",
+            "backdoor.obfuscate();",
+            "backdoor.upload(target);",
+            "const rootkit = new Rootkit('kernel_level');",
+            "rootkit.install();",
+            "const logs = target.getLogs();",
+            "logs.clear();",
+            "const userCredentials = database.getTable('user_credentials');",
+            "const encryptedData = userCredentials.getData();",
+            "const decryptor = new Decryptor(encryptedData);",
+            "const plainTextData = decryptor.bruteForce();"
+        ];
+
+        // Fonction pour simuler le son de frappe
+        function playKeySound() {
+            // Simulation de son avec une petite pause
+            setTimeout(() => {}, 10);
+        }
+
+        // Fonction pour afficher les caractères un par un
+        function typeWriter(text, element, callback) {
+            let i = 0;
+            element.textContent = '';
+            
+            function type() {
+                if (i < text.length) {
+                    element.textContent += text.charAt(i);
+                    playKeySound();
+                    i++;
+                    setTimeout(type, Math.random() * 50 + 20);
+                } else {
+                    if (callback) callback();
+                }
+            }
+            
+            type();
+        }
+
+        // Fonction pour ajouter un message au terminal
+        function addMessage(message, isAlert = false, isCode = false) {
+            const p = document.createElement('p');
+            p.className = 'my-1';
+            
+            if (isAlert) {
+                p.classList.add('alert');
+                try {
+                    // Essayez de jouer un son d'alerte
+                    setTimeout(() => {}, 300);
+                } catch (e) {
+                    console.log("Impossible de jouer le son");
+                }
+            }
+            
+            if (isCode) {
+                p.style.marginLeft = '20px';
+                p.textContent = '> ';
+                
+                const code = document.createElement('span');
+                p.appendChild(code);
+                
+                output.appendChild(p);
+                typeWriter(message, code, () => {
+                    const br = document.createElement('br');
+                    output.appendChild(br);
+                    window.scrollTo(0, document.body.scrollHeight);
+                });
+            } else {
+                output.appendChild(p);
+                typeWriter(message, p, () => {
+                    window.scrollTo(0, document.body.scrollHeight);
+                });
+            }
+        }
+
+        // Fonction pour mettre à jour la barre de progression
+        function updateProgress(percent) {
+            hackProgress.style.width = percent + '%';
+        }
+
+        // Fonction pour ajouter un point sur la carte
+        function addMapPoint() {
+            const point = document.createElement('div');
+            point.className = 'map-point';
+            point.style.left = Math.random() * 100 + '%';
+            point.style.top = Math.random() * 100 + '%';
+            mapContainer.appendChild(point);
+        }
+
+        // Fonction pour animer la cible sur la carte
+        function moveTarget() {
+            target.style.left = Math.random() * (mapContainer.offsetWidth - 30) + 'px';
+            target.style.top = Math.random() * (mapContainer.offsetHeight - 30) + 'px';
+        }
+
+        // Fonction pour lancer une attaque simulée
+        function startAttack() {
+            startAttackBtn.disabled = true;
+            startAttackBtn.textContent = "ATTAQUE EN COURS...";
+            
+            // Afficher la section de progression
+            progressSection.classList.remove('hidden');
+            
+            // Initialiser l'attaque
+            let messageIndex = 0;
+            let codeIndex = 0;
+            let progress = 0;
+            
+            // Fonction récursive pour afficher les messages
+            function showNextMessage() {
+                if (messageIndex < hackingMessages.length) {
+                    const isAlert = messageIndex === 6 || messageIndex === 8 || messageIndex === 18;
+                    addMessage(hackingMessages[messageIndex], isAlert);
+                    
+                    // Mettre à jour la progression
+                    progress = (messageIndex / (hackingMessages.length - 1)) * 100;
+                    updateProgress(progress);
+                    
+                    // Afficher du faux code après certains messages
+                    if (messageIndex > 2 && messageIndex < hackingMessages.length - 1 && Math.random() > 0.3 && codeIndex < fakeCode.length) {
+                        setTimeout(() => {
+                            addMessage(fakeCode[codeIndex], false, true);
+                            codeIndex++;
+                            
+                            // Afficher le message suivant
+                            setTimeout(showNextMessage, Math.random() * 1000 + 500);
+                        }, Math.random() * 800 + 200);
+                    } else {
+                        // Afficher le message suivant
+                        setTimeout(showNextMessage, Math.random() * 1000 + 500);
+                    }
+                    
+                    messageIndex++;
+                    
+                    // Afficher la carte après un certain point
+                    if (messageIndex === 10) {
+                        mapContainer.classList.remove('hidden');
+                        
+                        // Créer des points aléatoires sur la carte
+                        for (let i = 0; i < 20; i++) {
+                            setTimeout(() => {
+                                addMapPoint();
+                            }, i * 100);
+                        }
+                        
+                        // Animer la cible
+                        moveTarget();
+                        setInterval(moveTarget, 2000);
+                    }
+                } else {
+                    // Fin de l'attaque
+                    startAttackBtn.textContent = "ATTAQUE TERMINÉE";
+                    
+                    // Ajouter un message final avec effet glitch
+                    const finalMessage = document.createElement('div');
+                    finalMessage.className = 'alert text-xl mt-6 text-center fade-in';
+                    finalMessage.innerHTML = "SYSTÈME COMPROMIS";
+                    output.appendChild(finalMessage);
+                    
+                    // Ajouter des éléments glitch pour l'effet final
+                    for (let i = 0; i < 5; i++) {
+                        const glitchElement = document.createElement('span');
+                        glitchElement.className = 'glitch text-xl mt-2 block text-center';
+                        glitchElement.textContent = "ACCÈS TOTAL OBTENU";
+                        setTimeout(() => {
+                            output.appendChild(glitchElement);
+                        }, i * 500);
+                    }
+                }
+            }
+            
+            // Commencer à afficher les messages
+            showNextMessage();
+        }
+        
+        // Gestionnaire d'événement pour le bouton de démarrage
+        startAttackBtn.addEventListener('click', startAttack);
+        
+        // Ajouter un message initial
+        setTimeout(() => {
+            typeWriter("Système prêt. Veuillez commencer l'attaque...", currentLine);
+        }, 500);
+    </script>
+</body>
+</html>

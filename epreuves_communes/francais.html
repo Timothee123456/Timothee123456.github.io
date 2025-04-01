@@ -17,6 +17,8 @@
       font-family: Arial, sans-serif;
       background-color: black;
       color: #333;
+      background-color: #6acaf2;
+      text-align: center;
     }
     .title {
       color: #4353ef;
@@ -40,13 +42,13 @@
       background-image: url(https://timothee123456.github.io/wooden_table_textbook.jpg);
       background-size: cover;
       background-position: center;
-      padding: 50px;
+      padding: 20px;
       text-align: center;
     }
 
     .head {
       color: #fff;
-      font-size: 50px;
+      font-size: 40px;
       margin: 0;
 		}
    
@@ -87,72 +89,23 @@
 	height:30px;
 	}
     
-    
-    
-    footer {
-      background-color: #1565c0;
-      padding: 20px;
-      text-align: center;
-      color: #fff;
-      font-size: 14px;
-    }
+   
 	  
     main {
       flex: 1; /* Allow the main content to grow and take up available space */
       padding: 20px;
+      
     }
     
-    .matiere {
-      height: 200px;
-      text-align: center;
-      padding: 15px;
-    }
-    
-    .francais {
-      background-color: #6acaf2;
-    }
-    
-    .maths {
-      background-color: #e73a1f;
-    }
-    
-    .histoire {
-      background-color: #ff0080;
-    }
-    
-    .sciences {
-      background-color: #75b951;
-    }
 </style>
 </head>
 <body>
-<header>
-  <a href="https://pronote.fis.edu.hk/eleve.html"><h1 class="head">Épreuves communes</h1></a>
+<header><h1 class="head" style="color:#3a6f85">Français</h1>
 </header>
-<div class="matiere francais">
-<h1 style="color:#3a6f85">Français</h1>
+<main class="matiere francais">
 <div id="flipdown" class="flipdown flipdown__theme-dark"></div>
 
-</div>
-
-
-<div class="matiere maths">
-<h1 style="color:#7f2011">Mathématiques</h1>
-</div>
-
-<div class="matiere histoire">
-<h1 style="color:#8c0046">Histoire-géographie</h1>
-</div>
-
-<div class="matiere sciences">
-<h1 style="color:#40662d">Sciences</h1>
-</div>
-
-
-  
-<footer>
-  <p>&copy; 2024 Timothee123456. Tous droits réservés. Les sites pour réviser sont une aide, et non une révision complète.</p>
-</footer>
+</main>
 <script>
 
 </script>
@@ -165,33 +118,6 @@ jQuery( document ).ready(function() {
 
     if (jQuery("#flipdown").length) {
         new FlipDown(Date.parse(date_fr)  / 1000 ).start();
-    }
-   
-});
-
-const date_ma = "Mar 07, 2025 10:40:00"
-jQuery( document ).ready(function() {
-
-    if (jQuery("#flipdown_ma").length) {
-        new FlipDown(Date.parse(date_ma)  / 1000 ).start();
-    }
-   
-});
-
-const date_hg = "Mar 07, 2025 10:40:00"
-jQuery( document ).ready(function() {
-
-    if (jQuery("#flipdown_hg").length) {
-        new FlipDown(Date.parse(date_hg)  / 1000 ).start();
-    }
-   
-});
-
-const date_sc = "Mar 07, 2025 10:40:00"
-jQuery( document ).ready(function() {
-
-    if (jQuery("#flipdown_sc").length) {
-        new FlipDown(Date.parse(date_sc)  / 1000 ).start();
     }
    
 });

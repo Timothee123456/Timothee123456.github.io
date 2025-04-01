@@ -21,6 +21,14 @@
             text-align: center;
         }
         
+        #initial-screen {
+            cursor: pointer;
+        }
+        
+        #fullscreen-content {
+            display: none;
+        }
+        
         h1 {
             font-size: 2.5rem;
             margin-bottom: 2rem;
@@ -41,23 +49,57 @@
             font-weight: bold;
         }
         
+        button {
+            background-color: white;
+            color: #5D5CDE;
+            border: none;
+            border-radius: 4px;
+            padding: 1rem 2rem;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-top: 2rem;
+        }
+        
+        button:hover {
+            background-color: #f0f0f0;
+        }
+        
         /* Dark mode support */
         @media (prefers-color-scheme: dark) {
             body {
                 background-color: #181818;
                 color: white;
             }
+            
+            button {
+                color: #181818;
+            }
         }
     </style>
 </head>
 <body>
-    <h1>Fullscreen App</h1>
-    <p>You are now in fullscreen mode.</p>
-    <p>Press <span class="key">F</span> to exit fullscreen.</p>
-    <p>Note: <span class="key">Esc</span> and <span class="key">F11</span> keys won't work to exit.</p>
+    <div id="initial-screen">
+        <h1>Fullscreen App</h1>
+        <p>Click the button below to enter fullscreen mode.</p>
+        <button id="fullscreen-btn">Enter Fullscreen</button>
+    </div>
+    
+    <div id="fullscreen-content">
+        <h1>You're in Fullscreen Mode</h1>
+        <p>This page is now in fullscreen mode.</p>
+        <p>Press <span class="key">F</span> to exit fullscreen.</p>
+        <p>Note: <span class="key">Esc</span> and <span class="key">F11</span> keys won't work to exit, but the browser might still respond to them.</p>
+    </div>
     
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+            const initialScreen = document.getElementById('initial-screen');
+            const fullscreenContent = document.getElementById('fullscreen-content');
+            const fullscreenBtn = document.getElementById('fullscreen-btn');
+            
+            let allowExitFullscreen = false;
+            
             // Function to enter fullscreen
             const enterFullscreen = () => {
                 const element = document.documentElement;
@@ -73,12 +115,35 @@
                 }
             };
             
-            // Request fullscreen when the page loads
-            enterFullscreen();
+            // Function to exit fullscreen
+            const exitFullscreen = () => {
+                allowExitFullscreen = true;
+                
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                } else if (document.mozCancelFullScreen) { // Firefox
+                    document.mozCancelFullScreen();
+                } else if (document.webkitExitFullscreen) { // Chrome, Safari and Opera
+                    document.webkitExitFullscreen();
+                } else if (document.msExitFullscreen) { // IE/Edge
+                    document.msExitFullscreen();
+                }
+            };
+            
+            // Request fullscreen when the button is clicked
+            fullscreenBtn.addEventListener('click', () => {
+                enterFullscreen();
+                initialScreen.style.display = 'none';
+                fullscreenContent.style.display = 'flex';
+                fullscreenContent.style.flexDirection = 'column';
+                fullscreenContent.style.justifyContent = 'center';
+                fullscreenContent.style.alignItems = 'center';
+                fullscreenContent.style.height = '100vh';
+            });
             
             // Handle keydown events
             document.addEventListener('keydown', (event) => {
-                // Prevent default behavior for Escape and F11 keys
+                // Try to prevent default behavior for Escape and F11 keys
                 if (event.key === 'Escape' || event.key === 'F11') {
                     event.preventDefault();
                     return false;
@@ -86,45 +151,43 @@
                 
                 // Exit fullscreen only when F key is pressed
                 if (event.key === 'f' || event.key === 'F') {
-                    if (document.exitFullscreen) {
-                        document.exitFullscreen();
-                    } else if (document.mozCancelFullScreen) { // Firefox
-                        document.mozCancelFullScreen();
-                    } else if (document.webkitExitFullscreen) { // Chrome, Safari and Opera
-                        document.webkitExitFullscreen();
-                    } else if (document.msExitFullscreen) { // IE/Edge
-                        document.msExitFullscreen();
-                    }
+                    exitFullscreen();
+                    initialScreen.style.display = 'flex';
+                    initialScreen.style.flexDirection = 'column';
+                    initialScreen.style.justifyContent = 'center';
+                    initialScreen.style.alignItems = 'center';
+                    initialScreen.style.height = '100vh';
+                    fullscreenContent.style.display = 'none';
                 }
             });
             
-            // Try to re-enter fullscreen if the user exits using browser UI
-            document.addEventListener('fullscreenchange', () => {
-                if (!document.fullscreenElement) {
-                    // The page is no longer in fullscreen mode
-                    // Wait a moment before trying to re-enter fullscreen
+            // Try to re-enter fullscreen if the user exits using browser UI (like Esc)
+            const handleFullscreenChange = () => {
+                const isFullscreen = document.fullscreenElement || 
+                                    document.webkitFullscreenElement || 
+                                    document.mozFullScreenElement || 
+                                    document.msFullscreenElement;
+                
+                if (!isFullscreen && !allowExitFullscreen) {
+                    // Only attempt to re-enter if we didn't explicitly exit
                     setTimeout(enterFullscreen, 100);
+                } else if (!isFullscreen && allowExitFullscreen) {
+                    // Reset flag if we explicitly exited
+                    allowExitFullscreen = false;
+                    initialScreen.style.display = 'flex';
+                    initialScreen.style.flexDirection = 'column';
+                    initialScreen.style.justifyContent = 'center';
+                    initialScreen.style.alignItems = 'center';
+                    initialScreen.style.height = '100vh';
+                    fullscreenContent.style.display = 'none';
                 }
-            });
+            };
             
-            // Same for vendor prefixed versions
-            document.addEventListener('webkitfullscreenchange', () => {
-                if (!document.webkitFullscreenElement) {
-                    setTimeout(enterFullscreen, 100);
-                }
-            });
-            
-            document.addEventListener('mozfullscreenchange', () => {
-                if (!document.mozFullScreenElement) {
-                    setTimeout(enterFullscreen, 100);
-                }
-            });
-            
-            document.addEventListener('MSFullscreenChange', () => {
-                if (!document.msFullscreenElement) {
-                    setTimeout(enterFullscreen, 100);
-                }
-            });
+            // Listen for fullscreen changes with all vendor prefixes
+            document.addEventListener('fullscreenchange', handleFullscreenChange);
+            document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
+            document.addEventListener('mozfullscreenchange', handleFullscreenChange);
+            document.addEventListener('MSFullscreenChange', handleFullscreenChange);
         });
     </script>
 </body>

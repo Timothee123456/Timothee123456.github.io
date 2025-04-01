@@ -1,0 +1,871 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>System Update</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @keyframes glitch {
+            0% {
+                transform: translate(0);
+                text-shadow: 0 0 10px #00ff00;
+            }
+            20% {
+                transform: translate(-3px, 3px);
+                text-shadow: 3px 3px 10px #ff0000;
+            }
+            40% {
+                transform: translate(-3px, -3px);
+                text-shadow: -3px -5px 10px #00ff00;
+            }
+            60% {
+                transform: translate(3px, 3px);
+                text-shadow: 4px -4px 10px #ff0000;
+            }
+            80% {
+                transform: translate(3px, -3px);
+                text-shadow: -5px 3px 10px #00ff00;
+            }
+            100% {
+                transform: translate(0);
+                text-shadow: 0 0 10px #00ff00;
+            }
+        }
+        
+        @keyframes flicker {
+            0%, 19.999%, 22%, 62.999%, 64%, 64.999%, 70%, 100% {
+                opacity: 1;
+            }
+            20%, 21.999%, 63%, 63.999%, 65%, 69.999% {
+                opacity: 0.33;
+            }
+        }
+        
+        @keyframes screenGlitch {
+            0% {
+                transform: scale(1) skew(0deg);
+                filter: brightness(1) hue-rotate(0deg);
+            }
+            2% {
+                transform: scale(1.03) skew(5deg);
+                filter: brightness(1.3) hue-rotate(90deg);
+            }
+            4% {
+                transform: scale(0.97) skew(-5deg);
+                filter: brightness(0.8) hue-rotate(-90deg);
+            }
+            6% {
+                transform: scale(1) skew(0deg);
+                filter: brightness(1) hue-rotate(0deg);
+            }
+            80% {
+                transform: scale(1) skew(0deg);
+                filter: brightness(1) hue-rotate(0deg);
+            }
+            82% {
+                transform: scale(1.02) skew(3deg);
+                filter: brightness(1.2) hue-rotate(180deg);
+            }
+            84% {
+                transform: scale(0.98) skew(-3deg);
+                filter: brightness(0.9) hue-rotate(0deg);
+            }
+            86% {
+                transform: scale(1) skew(0deg);
+                filter: brightness(1) hue-rotate(0deg);
+            }
+            100% {
+                transform: scale(1) skew(0deg);
+                filter: brightness(1) hue-rotate(0deg);
+            }
+        }
+        
+        @keyframes type {
+            from { width: 0; }
+            to { width: 100%; }
+        }
+        
+        @keyframes cursor-blink {
+            0%, 49% { border-right-color: #0f0; }
+            50%, 100% { border-right-color: transparent; }
+        }
+        
+        @keyframes scan {
+            0% {
+                top: 0%;
+                background-position: 0% 0%;
+            }
+            50% {
+                top: 100%;
+                background-position: 0% 100%;
+            }
+            100% {
+                top: 0%;
+                background-position: 0% 0%;
+            }
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-10px); }
+            20%, 40%, 60%, 80% { transform: translateX(10px); }
+        }
+        
+        @keyframes corruptText {
+            0% { content: attr(data-text); }
+            25% { content: attr(data-corrupt1); }
+            50% { content: attr(data-corrupt2); }
+            75% { content: attr(data-corrupt3); }
+            100% { content: attr(data-text); }
+        }
+        
+        @keyframes rotateHue {
+            0% { filter: hue-rotate(0deg); }
+            100% { filter: hue-rotate(360deg); }
+        }
+        
+        @keyframes webcamScan {
+            0% { transform: translateY(-100%); }
+            100% { transform: translateY(100%); }
+        }
+        
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .glitch {
+            animation: glitch 0.4s linear infinite;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .extreme-glitch {
+            animation: glitch 0.2s linear infinite;
+        }
+        
+        .flicker {
+            animation: flicker 1.5s linear infinite;
+        }
+        
+        .screen-glitch {
+            animation: screenGlitch 8s infinite;
+        }
+        
+        .typing {
+            overflow: hidden;
+            white-space: nowrap;
+            border-right: 2px solid #0f0;
+            animation: 
+                type 3.5s steps(50, end),
+                cursor-blink 0.75s step-end infinite;
+        }
+        
+        .scan-line {
+            position: absolute;
+            height: 5px;
+            width: 100%;
+            background: linear-gradient(to right, transparent, rgba(0, 255, 0, 0.5), transparent);
+            animation: scan 4s linear infinite;
+            pointer-events: none;
+            z-index: 50;
+        }
+        
+        .scan-line-red {
+            position: absolute;
+            height: 3px;
+            width: 100%;
+            background: linear-gradient(to right, transparent, rgba(255, 0, 0, 0.5), transparent);
+            animation: scan 3s linear infinite;
+            animation-delay: 1s;
+            pointer-events: none;
+            z-index: 50;
+        }
+        
+        .matrix-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300' viewBox='0 0 300 300'%3E%3Cstyle%3E text %7B font-family: monospace; font-size: 18px; fill: %2300ff00; opacity: 0.3; %7D %3C/style%3E%3Ctext x='10' y='20'%3E01011010101010%3C/text%3E%3Ctext x='50' y='40'%3E11010101010101%3C/text%3E%3Ctext x='30' y='60'%3E01010101011010%3C/text%3E%3Ctext x='70' y='80'%3E10101010101010%3C/text%3E%3Ctext x='90' y='100'%3E01100110011001%3C/text%3E%3Ctext x='50' y='120'%3E10011001100110%3C/text%3E%3Ctext x='10' y='140'%3E01010010001001%3C/text%3E%3Ctext x='30' y='160'%3E10110101001011%3C/text%3E%3Ctext x='90' y='180'%3E01010101010101%3C/text%3E%3Ctext x='150' y='200'%3E10101010101010%3C/text%3E%3Ctext x='130' y='220'%3E01011010101010%3C/text%3E%3C/svg%3E");
+            opacity: 0.15;
+            z-index: -1;
+            pointer-events: none;
+            animation: rotateHue 60s linear infinite;
+        }
+        
+        .escape-btn {
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+            background-color: transparent;
+            color: #333;
+            border: none;
+            font-size: 12px;
+            opacity: 0.3;
+            cursor: pointer;
+            z-index: 2000;
+        }
+        
+        .escape-btn:hover {
+            opacity: 0.8;
+        }
+        
+        #countdown {
+            font-family: 'Courier New', monospace;
+            font-size: 2rem;
+            color: #f00;
+            text-shadow: 0 0 5px #f00;
+            margin-top: 0.5rem;
+        }
+        
+        .popup-error {
+            position: fixed;
+            background-color: #f0f0f0;
+            border: 1px solid #888;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            animation: shake 0.5s;
+            max-width: 300px;
+            display: none;
+        }
+        
+        .popup-header {
+            background-color: #0055e5;
+            color: white;
+            padding: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .popup-content {
+            padding: 12px;
+        }
+        
+        .popup-icon {
+            margin-right: 10px;
+        }
+        
+        .webcam-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 200px;
+            height: 150px;
+            border: 2px solid #f00;
+            background-color: #000;
+            display: none;
+            overflow: hidden;
+            z-index: 1200;
+            box-shadow: 0 0 15px rgba(255, 0, 0, 0.7);
+        }
+        
+        .webcam-scan {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 30px;
+            background-color: rgba(255, 0, 0, 0.3);
+            animation: webcamScan 3s linear infinite;
+        }
+        
+        .webcam-text {
+            position: absolute;
+            bottom: 5px;
+            left: 0;
+            width: 100%;
+            text-align: center;
+            color: #f00;
+            font-size: 0.8rem;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .corrupt-text::before {
+            content: attr(data-text);
+            animation: corruptText 2s infinite;
+        }
+        
+        .typing-cursor::after {
+            content: '|';
+            animation: cursor-blink 0.7s infinite;
+        }
+        
+        .bsod {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #0000aa;
+            color: white;
+            padding: 50px 20px;
+            font-family: 'Courier New', monospace;
+            display: none;
+            z-index: 2000;
+            text-align: center;
+        }
+        
+        /* Dark mode */
+        .dark {
+            color-scheme: dark;
+        }
+
+        body {
+            transition: background-color 0.3s;
+            overflow: hidden;
+        }
+        
+        .rotate {
+            animation: rotate 1s linear infinite;
+        }
+        
+        .fake-terminal {
+            background-color: rgba(0, 0, 0, 0.9);
+            color: #0f0;
+            font-family: 'Courier New', monospace;
+            padding: 10px;
+            border-radius: 3px;
+            border: 1px solid #0f0;
+            max-width: 600px;
+            margin: 0 auto 0.5rem auto;
+            display: none;
+            overflow: hidden;
+            height: 150px;
+            position: relative;
+            font-size: 0.75rem;
+        }
+        
+        .terminal-text {
+            position: absolute;
+            bottom: 10px;
+            width: calc(100% - 20px);
+            max-height: 130px;
+            overflow-y: hidden;
+        }
+        
+        .blinking-cursor::after {
+            content: '_';
+            animation: cursor-blink 0.7s infinite;
+        }
+        
+        .data-theft {
+            display: none;
+            max-width: 500px;
+            margin: 0 auto 0.5rem auto;
+            text-align: left;
+            font-size: 0.75rem;
+        }
+        
+        .file-item {
+            display: flex;
+            align-items: center;
+            padding: 3px;
+            margin: 2px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .file-status {
+            margin-left: auto;
+            color: #0f0;
+        }
+        
+        .upload-icon {
+            color: #f00;
+            margin-left: 5px;
+            animation: flicker 1s infinite;
+        }
+
+        .compact-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.5rem;
+            margin: 0 auto;
+            max-width: 900px;
+        }
+
+        @media (max-width: 768px) {
+            .compact-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        #main-content {
+            max-height: 90vh;
+            overflow: hidden;
+        }
+
+        .joke-message {
+            font-size: 2rem;
+            color: #ffff00;
+            text-shadow: 0 0 10px #ffaa00;
+            margin-bottom: 1rem;
+            animation: flicker 2s infinite;
+        }
+    </style>
+</head>
+<body class="bg-black h-screen overflow-hidden">
+    <div class="matrix-background"></div>
+    <div class="scan-line"></div>
+    <div class="scan-line-red"></div>
+    
+    <div id="initialScreen" class="text-center p-4 h-screen flex items-center justify-center flex-col">
+        <div class="text-xl text-green-500 mb-4">Loading Chromebook update...</div>
+        <div class="w-64 h-4 bg-gray-800 rounded overflow-hidden mx-auto">
+            <div id="fakeProgress" class="h-full bg-green-500" style="width: 0%"></div>
+        </div>
+        <div class="text-sm text-gray-400 mt-2">Do not turn off your device</div>
+    </div>
+    
+    <!-- Main hack screen -->
+    <div id="hackerScreen" class="hidden p-4 screen-glitch">
+        <div id="main-content">
+            <h1 class="text-4xl font-bold text-red-600 mb-2 glitch flicker text-center">SYSTEM COMPROMISED</h1>
+            
+            <div class="text-xl text-green-500 font-mono mb-2 typing text-center">Total system access obtained.</div>
+            
+            <div class="flex justify-center mb-3">
+                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' width='80' height='80'%3E%3Cpath fill='%23ff0000' d='M50 10 C30 10, 15 25, 15 45 C15 60, 25 70, 35 75 L35 85 L40 85 L40 90 L60 90 L60 85 L65 85 L65 75 C75 70, 85 60, 85 45 C85 25, 70 10, 50 10 z M35 55 A5 5 0 1 0 35 65 A5 5 0 1 0 35 55 z M65 55 A5 5 0 1 0 65 65 A5 5 0 1 0 65 55 z'/%3E%3C/svg%3E" 
+                     alt="Skull" class="inline-block flicker" width="80">
+            </div>
+            
+            <div id="countdown" class="opacity-0 text-center mb-2">20</div>
+            
+            <!-- Simulated terminal -->
+            <div id="fakeTerminal" class="fake-terminal">
+                <div id="terminalText" class="terminal-text">
+                    <div>> Initializing access...</div>
+                    <div>> Connecting to C&C servers...</div>
+                    <div>> Loading exploit modules...</div>
+                    <div class="blinking-cursor">> </div>
+                </div>
+            </div>
+            
+            <div class="compact-layout">
+                <!-- File theft list -->
+                <div id="dataTheft" class="data-theft bg-black bg-opacity-70 border border-red-500 rounded-lg p-3">
+                    <div class="text-red-500 font-bold mb-2">Data exfiltration in progress:</div>
+                    <div id="filesList" style="max-height: 120px; overflow-y: auto;"></div>
+                    <div class="mt-1 text-xs text-gray-500">Connection: <span class="text-green-500">57.3 Mbps</span> | Server: <span class="text-green-500">darknet-drop-837.onion</span></div>
+                </div>
+                
+                <div class="bg-black bg-opacity-70 border border-green-500 rounded-lg p-3 text-left">
+                    <p class="text-green-400 font-mono mb-1 text-sm" id="message1">System analysis in progress...</p>
+                    <p class="text-green-400 font-mono mb-1 text-sm opacity-0" id="message2">Personal data retrieval: <span class="text-red-500">SUCCESS</span></p>
+                    <p class="text-green-400 font-mono mb-1 text-sm opacity-0" id="message3">Password extraction: <span class="text-red-500">SUCCESS</span></p>
+                    <p class="text-green-400 font-mono mb-1 text-sm opacity-0" id="message4">Banking data download: <span class="text-red-500">IN PROGRESS</span></p>
+                    <p class="text-green-400 font-mono mb-1 text-sm opacity-0" id="message5">Backdoor installation: <span class="text-red-500">COMPLETE</span></p>
+                    <p class="text-green-400 font-mono mb-2 text-sm opacity-0" id="message6">Trace removal: <span class="text-red-500">IN PROGRESS</span></p>
+                    
+                    <div class="w-full h-3 bg-gray-800 rounded overflow-hidden opacity-0" id="progressBar">
+                        <div id="hackProgress" class="h-full bg-red-500" style="width: 0%"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="compact-layout mt-2">
+                <div id="capturedInfo" class="bg-black bg-opacity-70 border border-yellow-500 rounded-lg p-3 opacity-0">
+                    <div class="text-yellow-500 font-bold mb-1 text-sm">Captured information:</div>
+                    <div class="grid grid-cols-2 gap-1 text-left text-xs">
+                        <div class="text-gray-400">System:</div>
+                        <div class="text-yellow-300 corrupt-text" data-text="Chromebook" data-corrupt1="Chr0m3book" data-corrupt2="Chr0m3b00k" data-corrupt3="Chr*m*book"></div>
+                        
+                        <div class="text-gray-400">IP Address:</div>
+                        <div class="text-yellow-300 corrupt-text" id="userIP" data-text="192.168.1.1" data-corrupt1="192.168.1.x" data-corrupt2="192.168.x.1" data-corrupt3="19x.16x.1.1"></div>
+                        
+                        <div class="text-gray-400">Username:</div>
+                        <div class="text-yellow-300 corrupt-text" id="username" data-text="USER" data-corrupt1="US3R" data-corrupt2="U$ER" data-corrupt3="US*R"></div>
+                        
+                        <div class="text-gray-400">Browser:</div>
+                        <div class="text-yellow-300 corrupt-text" id="userBrowser" data-text="Chrome" data-corrupt1="Chr0m3" data-corrupt2="Chr*me" data-corrupt3="Chr0m€"></div>
+                    </div>
+                </div>
+                
+                <div class="mt-0 bg-red-900 bg-opacity-50 border border-red-500 rounded-lg p-3 opacity-0" id="ransomMessage">
+                    <p class="text-white font-mono mb-1 text-sm">Your files have been encrypted.</p>
+                    <p class="text-white font-mono mb-1 text-sm">Send $500 in Bitcoin to recover the decryption key.</p>
+                    <p class="text-white font-mono text-sm">Bitcoin address: 1A2B3C4D5E6F7G8H9I0J1K2L3M4N</p>
+                </div>
+            </div>
+            
+            <div class="text-sm font-bold text-white mb-1 opacity-0 text-center mt-2" id="warningMessage">WARNING: ALL YOUR DATA IS NOW ACCESSIBLE</div>
+        </div>
+    </div>
+    
+    <!-- Webcam window -->
+    <div id="webcamContainer" class="webcam-container">
+        <div class="webcam-scan"></div>
+        <div class="webcam-text extreme-glitch">WEBCAM CAPTURED</div>
+    </div>
+    
+    <!-- Error popups -->
+    <div id="errorPopup1" class="popup-error">
+        <div class="popup-header">
+            <span>Critical Error</span>
+            <button onclick="closePopup('errorPopup1')">×</button>
+        </div>
+        <div class="popup-content flex items-center">
+            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='32' height='32'%3E%3Ccircle cx='12' cy='12' r='10' fill='%23ff0000'/%3E%3Cpath d='M12 6v8M12 16v2' stroke='%23ffffff' stroke-width='2'/%3E%3C/svg%3E" class="popup-icon">
+            <div>
+                <div>System memory violation.</div>
+                <div class="text-sm text-gray-600">0x80070057</div>
+            </div>
+        </div>
+    </div>
+    
+    <div id="errorPopup2" class="popup-error">
+        <div class="popup-header">
+            <span>Security Alert</span>
+            <button onclick="closePopup('errorPopup2')">×</button>
+        </div>
+        <div class="popup-content flex items-center">
+            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='32' height='32'%3E%3Cpath d='M12 2L2 6v5c0 5.5 3.8 10.7 9 12 5.2-1.3 9-6.5 9-12V6l-10-4z' fill='%23ffcc00'/%3E%3Cpath d='M12 8v4M12 14v2' stroke='%23000000' stroke-width='2'/%3E%3C/svg%3E" class="popup-icon">
+            <div>
+                <div>Chromebook security disabled.</div>
+                <div>Your device is vulnerable.</div>
+            </div>
+        </div>
+    </div>
+    
+    <div id="errorPopup3" class="popup-error">
+        <div class="popup-header">
+            <span>Antivirus</span>
+            <button onclick="closePopup('errorPopup3')">×</button>
+        </div>
+        <div class="popup-content flex items-center">
+            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='32' height='32'%3E%3Cpath d='M12 2L2 6v5c0 5.5 3.8 10.7 9 12 5.2-1.3 9-6.5 9-12V6l-10-4z' fill='%23cc0000'/%3E%3Cpath d='M8 8l8 8M16 8l-8 8' stroke='%23ffffff' stroke-width='2'/%3E%3C/svg%3E" class="popup-icon">
+            <div>
+                <div>Malware detected!</div>
+                <div>Trojan.Ransomware.CryptoLocker</div>
+                <div class="text-xs text-gray-600">Blocking action: Failed</div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Blue screen with joke message -->
+    <div id="bsod" class="bsod">
+        <div class="joke-message mt-4">IT WAS JUST A PRANK!</div>
+        <div class="text-lg mb-6">Don't worry, your computer is perfectly fine.</div>
+        <p class="mb-3">This simulation is just a visual joke with no real effect on your system.</p>
+        <p class="mb-3">No data has been collected, deleted, or modified.</p>
+        <p class="mb-6">To exit this simulation, simply press the ESC key or click the small "Exit" button at the bottom right of the screen.</p>
+        
+        <div class="text-sm text-gray-300 mt-4">This prank was created by a friend who wanted to scare you for a moment.</div>
+        <div class="text-sm text-gray-300">(Share it with other friends to surprise them too!)</div>
+    </div>
+    
+    <button id="escapeBtn" class="escape-btn" onclick="resetPage()">Exit (ESC)</button>
+    
+    <script>
+        // Detect dark mode
+        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            document.documentElement.classList.add('dark');
+        }
+        
+        // Variables
+        let countdown = 20; // 20 seconds
+        let progress = 0;
+        let progressInterval;
+        let countdownInterval;
+        let messageIndex = 0;
+        let terminalLinesCount = 3;
+        let popupTimeout;
+        
+        // Fake files to simulate data theft
+        const fakeFiles = [
+            { name: "Documents/Personal/ID_Scan.jpg", size: "1.2 MB" },
+            { name: "Documents/Financial/bank_statement.pdf", size: "428 KB" },
+            { name: "Images/Photos/Vacation", size: "243 MB" },
+            { name: "Documents/Work/Confidential.doc", size: "3.4 MB" },
+            { name: "Downloads/invoice.pdf", size: "112 KB" },
+            { name: "Documents/medical/analysis.pdf", size: "567 KB" },
+            { name: "Documents/Personal/Resume.docx", size: "254 KB" },
+            { name: "Desktop/passwords.txt", size: "2 KB" },
+            { name: "Chrome/Cookies", size: "4.3 MB" },
+            { name: "Google/Passwords", size: "1.1 MB" }
+        ];
+        
+        // Get browser information
+        function getBrowserInfo() {
+            const userAgent = navigator.userAgent;
+            let browserName = "Unknown browser";
+            
+            if (userAgent.indexOf("Chrome") > -1) {
+                browserName = "Chrome";
+            } else if (userAgent.indexOf("Safari") > -1) {
+                browserName = "Safari";
+            } else if (userAgent.indexOf("Firefox") > -1) {
+                browserName = "Firefox";
+            } else if (userAgent.indexOf("MSIE") > -1 || userAgent.indexOf("Trident") > -1) {
+                browserName = "Internet Explorer";
+            } else if (userAgent.indexOf("Edge") > -1) {
+                browserName = "Edge";
+            }
+            
+            return browserName;
+        }
+        
+        // Function to update countdown
+        function updateCountdown() {
+            countdown--;
+            document.getElementById('countdown').textContent = countdown;
+            
+            if (countdown <= 0) {
+                clearInterval(countdownInterval);
+                showBSOD();
+            }
+        }
+        
+        // Function to simulate update progress
+        function updateFakeProgress() {
+            progress += Math.random() * 5;
+            
+            if (progress >= 100) {
+                progress = 100;
+                clearInterval(progressInterval);
+                
+                // Wait a moment, then show the hacked screen
+                setTimeout(() => {
+                    document.getElementById('initialScreen').classList.add('hidden');
+                    document.getElementById('hackerScreen').classList.remove('hidden');
+                    
+                    // Add shake animation
+                    document.body.classList.add('shake');
+                    setTimeout(() => {
+                        document.body.classList.remove('shake');
+                    }, 1000);
+                    
+                    // Show terminal
+                    setTimeout(() => {
+                        document.getElementById('fakeTerminal').style.display = 'block';
+                        addTerminalMessages();
+                    }, 500);
+                    
+                    // Start message animations
+                    showNextMessage();
+                    
+                    // Trigger error popup quickly
+                    setTimeout(() => {
+                        showRandomPopup();
+                    }, 1500);
+                    
+                    // Show webcam window after delay
+                    setTimeout(() => {
+                        document.getElementById('webcamContainer').style.display = 'block';
+                    }, 3000);
+                    
+                    // Start countdown
+                    setTimeout(() => {
+                        document.getElementById('countdown').classList.remove('opacity-0');
+                        countdownInterval = setInterval(updateCountdown, 1000);
+                    }, 2000);
+                }, 500);
+            }
+            
+            document.getElementById('fakeProgress').style.width = progress + '%';
+        }
+        
+        // Function to progressively show messages
+        function showNextMessage() {
+            if (messageIndex < 6) {
+                const messageElement = document.getElementById('message' + (messageIndex + 1));
+                messageElement.classList.remove('opacity-0');
+                messageElement.classList.add('typing');
+                
+                messageIndex++;
+                
+                // Show progress bar after 3rd message
+                if (messageIndex === 3) {
+                    setTimeout(() => {
+                        document.getElementById('progressBar').classList.remove('opacity-0');
+                        
+                        // Animate progress bar
+                        let hackProgress = 0;
+                        const hackProgressInterval = setInterval(() => {
+                            hackProgress += 5;
+                            document.getElementById('hackProgress').style.width = hackProgress + '%';
+                            
+                            if (hackProgress >= 100) {
+                                clearInterval(hackProgressInterval);
+                            }
+                        }, 150);
+                    }, 300);
+                }
+                
+                // Show captured info after 4th message
+                if (messageIndex === 4) {
+                    setTimeout(() => {
+                        document.getElementById('capturedInfo').classList.remove('opacity-0');
+                        
+                        // Set real user info
+                        document.getElementById('userBrowser').setAttribute('data-text', getBrowserInfo());
+                        document.getElementById('username').setAttribute('data-text', navigator.platform || "User");
+                        
+                        // Generate fake IP
+                        const fakeIP = `192.168.${Math.floor(Math.random() * 255)}.${Math.floor(Math.random() * 255)}`;
+                        document.getElementById('userIP').setAttribute('data-text', fakeIP);
+                    }, 500);
+                    
+                    // Show data theft after delay
+                    setTimeout(() => {
+                        document.getElementById('dataTheft').style.display = 'block';
+                        simulateFileTheft();
+                    }, 1000);
+                }
+                
+                // Show warning message after all messages
+                if (messageIndex === 6) {
+                    setTimeout(() => {
+                        document.getElementById('warningMessage').classList.remove('opacity-0');
+                        document.getElementById('warningMessage').classList.add('flicker');
+                        
+                        // Show ransom message
+                        setTimeout(() => {
+                            document.getElementById('ransomMessage').classList.remove('opacity-0');
+                            // Trigger intense screen glitch
+                            document.getElementById('hackerScreen').classList.add('extreme-glitch');
+                            setTimeout(() => {
+                                document.getElementById('hackerScreen').classList.remove('extreme-glitch');
+                            }, 1000);
+                        }, 500);
+                    }, 300);
+                }
+                
+                // Show next message after delay
+                const delay = messageIndex < 3 ? 1000 : 500;
+                setTimeout(showNextMessage, delay);
+            }
+        }
+        
+        // Function to simulate file theft
+        function simulateFileTheft() {
+            const filesList = document.getElementById('filesList');
+            filesList.innerHTML = '';
+            
+            fakeFiles.forEach((file, index) => {
+                setTimeout(() => {
+                    const fileElement = document.createElement('div');
+                    fileElement.className = 'file-item';
+                    fileElement.innerHTML = `
+                        <div>${file.name}</div>
+                        <div class="text-gray-400">${file.size}</div>
+                        <div class="file-status">Exfiltrated <span class="upload-icon">↑</span></div>
+                    `;
+                    filesList.appendChild(fileElement);
+                    
+                    // Scroll down if many files
+                    filesList.scrollTop = filesList.scrollHeight;
+                    
+                    // Trigger random error popup during theft
+                    if (Math.random() > 0.8 && index > 1) {
+                        showRandomPopup();
+                    }
+                }, index * 400);
+            });
+        }
+        
+        // Function to add terminal messages
+        function addTerminalMessages() {
+            const terminalCommands = [
+                "Scanning open ports... RESULT: 24 ports open",
+                "Exploiting CVE-2023-38831...",
+                "Bypassing UAC in progress...",
+                "Privilege escalation -> SUCCESS",
+                "Deploying malware payload...",
+                "Injecting malicious DLL",
+                "Disabling security system",
+                "Removing system logs",
+                "Creating scheduled task",
+                "AES-256 encryption activated",
+                "Installing keylogger module",
+                "Connecting to C2 server",
+                "Ransomware module ready"
+            ];
+            
+            const terminalText = document.getElementById('terminalText');
+            let i = 0;
+            
+            function addNextCommand() {
+                if (i < terminalCommands.length) {
+                    const commandElem = document.createElement('div');
+                    commandElem.textContent = "> " + terminalCommands[i];
+                    
+                    // Replace blinking cursor
+                    const cursorElem = terminalText.querySelector('.blinking-cursor');
+                    if (cursorElem) {
+                        terminalText.removeChild(cursorElem);
+                    }
+                    
+                    terminalText.appendChild(commandElem);
+                    
+                    // Add new blinking cursor
+                    const newCursor = document.createElement('div');
+                    newCursor.className = 'blinking-cursor';
+                    newCursor.textContent = "> ";
+                    terminalText.appendChild(newCursor);
+                    
+                    // Scroll down
+                    terminalText.scrollTop = terminalText.scrollHeight;
+                    
+                    i++;
+                    // Schedule next command
+                    setTimeout(addNextCommand, Math.random() * 400 + 200);
+                }
+            }
+            
+            // Start adding commands
+            addNextCommand();
+        }
+        
+        // Function to show random error popup
+        function showRandomPopup() {
+            // Choose random popup
+            const popups = ['errorPopup1', 'errorPopup2', 'errorPopup3'];
+            const randomPopup = popups[Math.floor(Math.random() * popups.length)];
+            
+            // Random position
+            const popup = document.getElementById(randomPopup);
+            popup.style.left = Math.floor(Math.random() * (window.innerWidth - 300)) + 'px';
+            popup.style.top = Math.floor(Math.random() * (window.innerHeight - 150)) + 'px';
+            
+            // Show popup
+            popup.style.display = 'block';
+            
+            // Schedule next popup
+            popupTimeout = setTimeout(() => {
+                if (Math.random() > 0.5) { // 50% chance of another popup
+                    showRandomPopup();
+                }
+            }, Math.random() * 3000 + 1000);
+        }
+        
+        // Function to close popup
+        function closePopup(popupId) {
+            document.getElementById(popupId).style.display = 'none';
+        }
+        
+        // Function to show blue screen with joke message
+        function showBSOD() {
+            document.getElementById('bsod').style.display = 'block';
+        }
+        
+        // Function to reset page
+        function resetPage() {
+            clearTimeout(popupTimeout);
+            window.location.reload();
+        }
+        
+        // Escape key detector
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                resetPage();
+            }
+        });
+        
+        // Start progress simulation
+        progressInterval = setInterval(updateFakeProgress, 50);
+    </script>
+</body>
+</html>

@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fullscreen App</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden;
+            background-color: #5D5CDE;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        p {
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin-bottom: 1rem;
+        }
+        
+        .key {
+            display: inline-block;
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
+            padding: 0.3rem 0.8rem;
+            margin: 0 0.2rem;
+            font-weight: bold;
+        }
+        
+        /* Dark mode support */
+        @media (prefers-color-scheme: dark) {
+            body {
+                background-color: #181818;
+                color: white;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Fullscreen App</h1>
+    <p>You are now in fullscreen mode.</p>
+    <p>Press <span class="key">F</span> to exit fullscreen.</p>
+    <p>Note: <span class="key">Esc</span> and <span class="key">F11</span> keys won't work to exit.</p>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Function to enter fullscreen
+            const enterFullscreen = () => {
+                const element = document.documentElement;
+                
+                if (element.requestFullscreen) {
+                    element.requestFullscreen();
+                } else if (element.mozRequestFullScreen) { // Firefox
+                    element.mozRequestFullScreen();
+                } else if (element.webkitRequestFullscreen) { // Chrome, Safari and Opera
+                    element.webkitRequestFullscreen();
+                } else if (element.msRequestFullscreen) { // IE/Edge
+                    element.msRequestFullscreen();
+                }
+            };
+            
+            // Request fullscreen when the page loads
+            enterFullscreen();
+            
+            // Handle keydown events
+            document.addEventListener('keydown', (event) => {
+                // Prevent default behavior for Escape and F11 keys
+                if (event.key === 'Escape' || event.key === 'F11') {
+                    event.preventDefault();
+                    return false;
+                }
+                
+                // Exit fullscreen only when F key is pressed
+                if (event.key === 'f' || event.key === 'F') {
+                    if (document.exitFullscreen) {
+                        document.exitFullscreen();
+                    } else if (document.mozCancelFullScreen) { // Firefox
+                        document.mozCancelFullScreen();
+                    } else if (document.webkitExitFullscreen) { // Chrome, Safari and Opera
+                        document.webkitExitFullscreen();
+                    } else if (document.msExitFullscreen) { // IE/Edge
+                        document.msExitFullscreen();
+                    }
+                }
+            });
+            
+            // Try to re-enter fullscreen if the user exits using browser UI
+            document.addEventListener('fullscreenchange', () => {
+                if (!document.fullscreenElement) {
+                    // The page is no longer in fullscreen mode
+                    // Wait a moment before trying to re-enter fullscreen
+                    setTimeout(enterFullscreen, 100);
+                }
+            });
+            
+            // Same for vendor prefixed versions
+            document.addEventListener('webkitfullscreenchange', () => {
+                if (!document.webkitFullscreenElement) {
+                    setTimeout(enterFullscreen, 100);
+                }
+            });
+            
+            document.addEventListener('mozfullscreenchange', () => {
+                if (!document.mozFullScreenElement) {
+                    setTimeout(enterFullscreen, 100);
+                }
+            });
+            
+            document.addEventListener('MSFullscreenChange', () => {
+                if (!document.msFullscreenElement) {
+                    setTimeout(enterFullscreen, 100);
+                }
+            });
+        });
+    </script>
+</body>
+</html>

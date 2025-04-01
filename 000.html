@@ -1,189 +1,164 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fullscreen App</title>
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: Arial, sans-serif;
-            height: 100vh;
-            width: 100vw;
-            overflow: hidden;
-            background-color: #5D5CDE;
-            color: white;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-        }
-        
-        #initial-screen {
-            cursor: pointer;
-        }
-        
-        #fullscreen-content {
-            display: none;
-        }
-        
-        h1 {
-            font-size: 2.5rem;
-            margin-bottom: 2rem;
-        }
-        
-        p {
-            font-size: 1.2rem;
-            max-width: 600px;
-            margin-bottom: 1rem;
-        }
-        
-        .key {
-            display: inline-block;
-            background-color: rgba(255, 255, 255, 0.2);
-            border-radius: 4px;
-            padding: 0.3rem 0.8rem;
-            margin: 0 0.2rem;
-            font-weight: bold;
-        }
-        
-        button {
-            background-color: white;
-            color: #5D5CDE;
-            border: none;
-            border-radius: 4px;
-            padding: 1rem 2rem;
-            font-size: 1.2rem;
-            cursor: pointer;
-            transition: background-color 0.3s;
-            margin-top: 2rem;
-        }
-        
-        button:hover {
-            background-color: #f0f0f0;
-        }
-        
-        /* Dark mode support */
-        @media (prefers-color-scheme: dark) {
-            body {
-                background-color: #181818;
-                color: white;
-            }
-            
-            button {
-                color: #181818;
+    <title>Application Plein Écran</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#5D5CDE',
+                    }
+                }
             }
         }
-    </style>
+        
+        // Détection du mode sombre
+        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            document.documentElement.classList.add('dark');
+        }
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
+            if (event.matches) {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+        });
+    </script>
 </head>
-<body>
-    <div id="initial-screen">
-        <h1>Fullscreen App</h1>
-        <p>Click the button below to enter fullscreen mode.</p>
-        <button id="fullscreen-btn">Enter Fullscreen</button>
+<body class="bg-white dark:bg-[#181818] text-gray-900 dark:text-white min-h-screen flex flex-col items-center justify-center p-4">
+    <!-- Écran initial avec bouton -->
+    <div id="initialScreen" class="text-center">
+        <h1 class="text-4xl font-bold mb-8 text-primary">Application Plein Écran</h1>
+        <p class="text-xl mb-8">Cliquez sur le bouton ci-dessous pour entrer en mode plein écran</p>
+        <button id="enterFullscreenBtn" class="bg-primary hover:bg-primary/90 text-white font-bold py-3 px-6 rounded-lg text-xl transition-all">
+            Entrer en Plein Écran
+        </button>
     </div>
-    
-    <div id="fullscreen-content">
-        <h1>You're in Fullscreen Mode</h1>
-        <p>This page is now in fullscreen mode.</p>
-        <p>Press <span class="key">F</span> to exit fullscreen.</p>
-        <p>Note: <span class="key">Esc</span> and <span class="key">F11</span> keys won't work to exit, but the browser might still respond to them.</p>
+
+    <!-- Contenu affiché en plein écran -->
+    <div id="fullscreenContent" class="hidden text-center">
+        <h1 class="text-4xl font-bold mb-8 text-primary">Vous êtes en Mode Plein Écran</h1>
+        <p class="text-xl mb-4">Pour quitter ce mode, appuyez sur la touche <span class="px-3 py-1 bg-primary/20 rounded">F</span> ou <span class="px-3 py-1 bg-primary/20 rounded">Esc</span></p>
+        <p class="text-xl mb-4">La touche <span class="px-3 py-1 bg-primary/20 rounded">F11</span> est bloquée</p>
+        <div id="timer" class="text-6xl font-bold mt-10">00:00:00</div>
     </div>
-    
+
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const initialScreen = document.getElementById('initial-screen');
-            const fullscreenContent = document.getElementById('fullscreen-content');
-            const fullscreenBtn = document.getElementById('fullscreen-btn');
+            const initialScreen = document.getElementById('initialScreen');
+            const fullscreenContent = document.getElementById('fullscreenContent');
+            const enterFullscreenBtn = document.getElementById('enterFullscreenBtn');
+            const timerElement = document.getElementById('timer');
             
-            let allowExitFullscreen = false;
+            let fullscreenActive = false;
+            let allowExit = false;
+            let startTime;
+            let timerInterval;
             
-            // Function to enter fullscreen
+            // Fonction pour entrer en plein écran
             const enterFullscreen = () => {
                 const element = document.documentElement;
                 
                 if (element.requestFullscreen) {
                     element.requestFullscreen();
-                } else if (element.mozRequestFullScreen) { // Firefox
+                } else if (element.mozRequestFullScreen) {
                     element.mozRequestFullScreen();
-                } else if (element.webkitRequestFullscreen) { // Chrome, Safari and Opera
+                } else if (element.webkitRequestFullscreen) {
                     element.webkitRequestFullscreen();
-                } else if (element.msRequestFullscreen) { // IE/Edge
+                } else if (element.msRequestFullscreen) {
                     element.msRequestFullscreen();
                 }
             };
             
-            // Function to exit fullscreen
+            // Fonction pour quitter le plein écran
             const exitFullscreen = () => {
-                allowExitFullscreen = true;
+                allowExit = true;
                 
                 if (document.exitFullscreen) {
                     document.exitFullscreen();
-                } else if (document.mozCancelFullScreen) { // Firefox
+                } else if (document.mozCancelFullScreen) {
                     document.mozCancelFullScreen();
-                } else if (document.webkitExitFullscreen) { // Chrome, Safari and Opera
+                } else if (document.webkitExitFullscreen) {
                     document.webkitExitFullscreen();
-                } else if (document.msExitFullscreen) { // IE/Edge
+                } else if (document.msExitFullscreen) {
                     document.msExitFullscreen();
                 }
             };
             
-            // Request fullscreen when the button is clicked
-            fullscreenBtn.addEventListener('click', () => {
+            // Mise à jour du timer
+            const updateTimer = () => {
+                const now = new Date();
+                const elapsedTime = now - startTime;
+                
+                const hours = Math.floor(elapsedTime / 3600000).toString().padStart(2, '0');
+                const minutes = Math.floor((elapsedTime % 3600000) / 60000).toString().padStart(2, '0');
+                const seconds = Math.floor((elapsedTime % 60000) / 1000).toString().padStart(2, '0');
+                
+                timerElement.textContent = `${hours}:${minutes}:${seconds}`;
+            };
+            
+            // Activer le plein écran au clic sur le bouton
+            enterFullscreenBtn.addEventListener('click', () => {
                 enterFullscreen();
-                initialScreen.style.display = 'none';
-                fullscreenContent.style.display = 'flex';
-                fullscreenContent.style.flexDirection = 'column';
-                fullscreenContent.style.justifyContent = 'center';
-                fullscreenContent.style.alignItems = 'center';
-                fullscreenContent.style.height = '100vh';
+                startTime = new Date();
+                timerInterval = setInterval(updateTimer, 1000);
+                
+                // Cacher l'écran initial et montrer le contenu plein écran
+                initialScreen.classList.add('hidden');
+                fullscreenContent.classList.remove('hidden');
+                fullscreenContent.classList.add('flex', 'flex-col', 'items-center', 'justify-center', 'min-h-screen');
+                
+                fullscreenActive = true;
             });
             
-            // Handle keydown events
+            // Gérer les appuis de touches
             document.addEventListener('keydown', (event) => {
-                // Try to prevent default behavior for Escape and F11 keys
-                if (event.key === 'Escape' || event.key === 'F11') {
-                    event.preventDefault();
-                    return false;
-                }
-                
-                // Exit fullscreen only when F key is pressed
-                if (event.key === 'f' || event.key === 'F') {
-                    exitFullscreen();
-                    initialScreen.style.display = 'flex';
-                    initialScreen.style.flexDirection = 'column';
-                    initialScreen.style.justifyContent = 'center';
-                    initialScreen.style.alignItems = 'center';
-                    initialScreen.style.height = '100vh';
-                    fullscreenContent.style.display = 'none';
+                if (fullscreenActive) {
+                    // Bloquer uniquement F11
+                    if (event.key === 'F11') {
+                        event.preventDefault();
+                        return false;
+                    }
+                    
+                    // Sortir du plein écran avec la touche F
+                    if (event.key === 'f' || event.key === 'F') {
+                        exitFullscreen();
+                        clearInterval(timerInterval);
+                        
+                        // Rétablir l'affichage normal
+                        initialScreen.classList.remove('hidden');
+                        fullscreenContent.classList.add('hidden');
+                        fullscreenActive = false;
+                    }
                 }
             });
             
-            // Try to re-enter fullscreen if the user exits using browser UI (like Esc)
+            // Gérer les changements d'état du plein écran
             const handleFullscreenChange = () => {
-                const isFullscreen = document.fullscreenElement || 
-                                    document.webkitFullscreenElement || 
-                                    document.mozFullScreenElement || 
-                                    document.msFullscreenElement;
+                const isInFullscreen = document.fullscreenElement || 
+                                      document.webkitFullscreenElement || 
+                                      document.mozFullScreenElement || 
+                                      document.msFullscreenElement;
                 
-                if (!isFullscreen && !allowExitFullscreen) {
-                    // Only attempt to re-enter if we didn't explicitly exit
-                    setTimeout(enterFullscreen, 100);
-                } else if (!isFullscreen && allowExitFullscreen) {
-                    // Reset flag if we explicitly exited
-                    allowExitFullscreen = false;
-                    initialScreen.style.display = 'flex';
-                    initialScreen.style.flexDirection = 'column';
-                    initialScreen.style.justifyContent = 'center';
-                    initialScreen.style.alignItems = 'center';
-                    initialScreen.style.height = '100vh';
-                    fullscreenContent.style.display = 'none';
+                if (!isInFullscreen) {
+                    if (allowExit) {
+                        // Si on a explicitement demandé de quitter avec F
+                        allowExit = false;
+                    }
+                    // Dans tous les cas (F ou Esc), retourner à l'affichage normal
+                    initialScreen.classList.remove('hidden');
+                    fullscreenContent.classList.add('hidden');
+                    fullscreenActive = false;
+                    clearInterval(timerInterval);
                 }
             };
             
-            // Listen for fullscreen changes with all vendor prefixes
+            // Écouteurs pour les changements de plein écran
             document.addEventListener('fullscreenchange', handleFullscreenChange);
             document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
             document.addEventListener('mozfullscreenchange', handleFullscreenChange);

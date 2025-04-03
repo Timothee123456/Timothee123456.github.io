@@ -134,6 +134,12 @@
         }
     }
     
+      /* Add a darker background on hover and active (pressed) state */
+    .open-iframe:hover,
+    .open-iframe:active {
+      background-color: rgba(0, 0, 0, 0.8); /* Darker background */
+    }
+    
     
       /* Modal Styles */
   .modal {
@@ -150,9 +156,9 @@
 
   .modal-content {
     position: relative;
-    margin: 0 auto; /* ..% from the top and centered */
+    margin: calc((100vh - 84vh) / 2) auto; /* ..% from the top and centered */
     width: 80%; /* Could be more or less, depending on screen size */
-    height: 100vh;
+    height: 84vh;
   }
 
   .modal-iframe {
@@ -165,19 +171,16 @@
     position: absolute;
     top: 10px;
     right: 15px;
-    color: #aaa;
+    color: rgba(0, 0, 0, 0.5);
     font-size: 28px;
     font-weight: bold;
     cursor: pointer;
   }
 
-  .close:hover,
-  .close:focus {
-    color: white;
-    text-decoration: none;
-    cursor: pointer;
-  }
-  }
+    .close:hover,
+    .close:active {
+      color: rgba(0, 0, 0, 0.3); /* Darker background */
+    }
 </style>
 </head>
 <body>

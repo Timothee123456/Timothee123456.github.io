@@ -134,6 +134,50 @@
         }
     }
     
+    
+      /* Modal Styles */
+  .modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgba(0, 0, 0, 0.8); /* Black w/ opacity */
+  }
+
+  .modal-content {
+    position: relative;
+    margin: 0 auto; /* ..% from the top and centered */
+    width: 80%; /* Could be more or less, depending on screen size */
+    height: 100vh;
+  }
+
+  .modal-iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+  }
+
+  .close {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    color: #aaa;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+
+  .close:hover,
+  .close:focus {
+    color: white;
+    text-decoration: none;
+    cursor: pointer;
+  }
+  }
 </style>
 </head>
 <body>
@@ -147,34 +191,69 @@
 <!-- Leçons -->
 <div class="container-iframe">
   <iframe id="lecon1" class="pdf-iframe" src="https://timothee123456.github.io/epreuves_communes/sciences/physique_chimie/lecon/1.pdf"></iframe>
-  <i class="material-icons open-iframe">launch</i>
+  <i class="material-icons open-iframe" onclick="openModal('lecon1')">launch</i>
 </div>
 
 <div class="container-iframe">
   <iframe id="lecon2" class="pdf-iframe" src="https://timothee123456.github.io/epreuves_communes/sciences/physique_chimie/lecon/1.pdf"></iframe>
-  <i class="material-icons open-iframe">launch</i>
+  <i class="material-icons open-iframe" onclick="openModal('lecon2')">launch</i>
 </div>
 
 <div class="container-iframe">
   <iframe id="lecon3" class="pdf-iframe" src="https://timothee123456.github.io/epreuves_communes/sciences/physique_chimie/lecon/1.pdf"></iframe>
-  <i class="material-icons open-iframe">launch</i>
+  <i class="material-icons open-iframe" onclick="openModal('lecon3')">launch</i>
 </div>
 
 <div class="container-iframe">
   <iframe id="lecon4" class="pdf-iframe" src="https://timothee123456.github.io/epreuves_communes/sciences/physique_chimie/lecon/1.pdf"></iframe>
-  <i class="material-icons open-iframe">launch</i>
+  <i class="material-icons open-iframe" onclick="openModal('lecon4')">launch</i>
 </div>
 
 <div class="container-iframe">
   <iframe id="lecon5" class="pdf-iframe" src="https://timothee123456.github.io/epreuves_communes/sciences/physique_chimie/lecon/1.pdf"></iframe>
-  <i class="material-icons open-iframe">launch</i>
+  <i class="material-icons open-iframe" onclick="openModal('lecon5')">launch</i>
 </div>
 <!-- Exercices -->
 </main>
+  <!-- The Modal -->
+  <div id="myModal" class="modal">
+
+    <!-- Modal content -->
+    <div class="modal-content">
+      <span class="close" onclick="closeModal()">&times;</span>
+      <iframe id="modalIframe" class="modal-iframe" src=""></iframe>
+    </div>
+
+  </div>
 <script>
-function zoom_lecon(leconId){
-	document.getElementById(leconId).style.visibility = "hidden";
-}	
+    // Get the modal
+    var modal = document.getElementById("myModal");
+
+    // Get the <span> element that closes the modal
+    var span = document.getElementsByClassName("close")[0];
+
+    // Function to open the modal
+    function openModal(leconId) {
+      var lecon = document.getElementById(leconId);
+      var modalIframe = document.getElementById("modalIframe");
+
+      modalIframe.src = lecon.src; // Set the modal iframe source to the clicked lesson
+
+      modal.style.display = "block";
+    }
+
+    // Function to close the modal
+    function closeModal() {
+      modal.style.display = "none";
+      document.getElementById("modalIframe").src = ""; // Clear the iframe source when closing
+    }
+
+    // When the user clicks anywhere outside of the modal, close it
+    window.onclick = function(event) {
+      if (event.target == modal) {
+        closeModal();
+      }
+    }
 </script>
 
 

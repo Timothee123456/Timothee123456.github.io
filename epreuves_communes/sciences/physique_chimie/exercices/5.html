@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Révision Chimie et Physique</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#5D5CDE',
+                        acidic: '#f87171',
+                        neutral: '#fbbf24',
+                        basic: '#22c55e'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            background: #5D5CDE;
+            cursor: pointer;
+        }
+        .slider::-moz-range-thumb {
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            background: #5D5CDE;
+            cursor: pointer;
+        }
+        
+        .dark .ph-scale-gradient {
+            background: linear-gradient(to right, #ef4444, #f87171, #fbbf24, #22c55e, #3b82f6);
+        }
+        
+        .ph-scale-gradient {
+            background: linear-gradient(to right, #ef4444, #f87171, #fbbf24, #22c55e, #3b82f6);
+        }
+        
+        @keyframes boil {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+        
+        .boiling .bubble {
+            animation: boil 0.6s infinite;
+            animation-delay: calc(var(--i) * 0.1s);
+        }
+    </style>
+</head>
+<body class="bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200 min-h-screen transition-colors duration-300">
+    <div class="container mx-auto px-4 py-8">
+        <header class="text-center mb-8">
+            <h1 class="text-3xl md:text-4xl font-bold text-primary mb-2">Révision Chimie et Physique</h1>
+            <p class="text-lg text-gray-600 dark:text-gray-400">Exercices interactifs pour renforcer vos connaissances</p>
+        </header>
+        
+        <div class="max-w-4xl mx-auto">
+            <div class="flex flex-wrap md:flex-nowrap gap-4 mb-6">
+                <button id="tab-ph" class="tab-btn flex-1 py-3 px-4 bg-primary text-white rounded-lg font-semibold hover:bg-opacity-90 transition-all">pH et Acidité</button>
+                <button id="tab-density" class="tab-btn flex-1 py-3 px-4 bg-gray-200 dark:bg-gray-800 rounded-lg font-semibold hover:bg-gray-300 dark:hover:bg-gray-700 transition-all">Masse Volumique</button>
+                <button id="tab-temp" class="tab-btn flex-1 py-3 px-4 bg-gray-200 dark:bg-gray-800 rounded-lg font-semibold hover:bg-gray-300 dark:hover:bg-gray-700 transition-all">Températures de Changement d'État</button>
+            </div>
+            
+            <!-- pH Section -->
+            <section id="section-ph" class="section-content bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md mb-8">
+                <h2 class="text-2xl font-bold mb-4">Exercice sur le pH et l'Acidité</h2>
+                
+                <div class="mb-6">
+                    <p class="mb-4">Observez la couleur des solutions et identifiez si elles sont acides, neutres ou basiques.</p>
+                    
+                    <div class="w-full h-8 ph-scale-gradient rounded-md mb-2"></div>
+                    <div class="flex justify-between text-sm mb-2">
+                        <span>1</span>
+                        <span>7</span>
+                        <span>14</span>
+                    </div>
+                    
+                    <div class="mb-6">
+                        <p class="mb-2">Essayez d'identifier ces solutions:</p>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="bg-gray-100 dark:bg-gray-700 p-4 rounded-lg">
+                                <p class="mb-2">Solution A: pH = 2.5</p>
+                                <select id="solution-a" class="w-full p-2 rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800">
+                                    <option value="">Sélectionnez...</option>
+                                    <option value="acid">Acide</option>
+                                    <option value="neutral">Neutre</option>
+                                    <option value="basic">Basique</option>
+                                </select>
+                            </div>
+                            <div class="bg-gray-100 dark:bg-gray-700 p-4 rounded-lg">
+                                <p class="mb-2">Solution B: couleur jaune sur le papier pH</p>
+                                <select id="solution-b" class="w-full p-2 rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800">
+                                    <option value="">Sélectionnez...</option>
+                                    <option value="acid">Acide</option>
+                                    <option value="neutral">Neutre</option>
+                                    <option value="basic">Basique</option>
+                                </select>
+                            </div>
+                            <div class="bg-gray-100 dark:bg-gray-700 p-4 rounded-lg">
+                                <p class="mb-2">Solution C: pH = 10.2</p>
+                                <select id="solution-c" class="w-full p-2 rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800">
+                                    <option value="">Sélectionnez...</option>
+                                    <option value="acid">Acide</option>
+                                    <option value="neutral">Neutre</option>
+                                    <option value="basic">Basique</option>
+                                </select>
+                            </div>
+                            <div class="bg-gray-100 dark:bg-gray-700 p-4 rounded-lg">
+                                <p class="mb-2">Solution D: couleur verte sur le papier pH</p>
+                                <select id="solution-d" class="w-full p-2 rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800">
+                                    <option value="">Sélectionnez...</option>
+                                    <option value="acid">Acide</option>
+                                    <option value="neutral">Neutre</option>
+                                    <option value="basic">Basique</option>
+                                </select>
+                            </div>
+                            <div class="bg-gray-100 dark:bg-gray-700 p-4 rounded-lg">
+                                <p class="mb-2">Solution E: pH = 7.0</p>
+                                <select id="solution-e" class="w-full p-2 rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800">
+                                    <option value="">Sélectionnez...</option>
+                                    <option value="acid">Acide</option>
+                                    <option value="neutral">Neutre</option>
+                                    <option value="basic">Basique</option>
+                                </select>
+                            </div>
+                            <div class="bg-gray-100 dark:bg-gray-700 p-4 rounded-lg">
+                                <p class="mb-2">Le vinaigre et le jus de citron ont le même pH. Que peut-on conclure?</p>
+                                <select id="solution-f" class="w-full p-2 rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800">
+                                    <option value="">Sélectionnez...</option>
+                                    <option value="correct">Ils ont la même acidité mais peuvent être des solutions différentes</option>
+                                    <option value="wrong1">Ils sont exactement la même solution</option>
+                                    <option value="wrong2">Ils contiennent exactement les mêmes ions</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button id="check-ph" class="w-full py-3 bg-primary text-white rounded-lg font-semibold hover:bg-opacity-90 transition-all">Vérifier les réponses</button>
+                    <div id="ph-result" class="mt-4 p-4 hidden"></div>
+                </div>
+            </section>
+            
+            <!-- Density Section -->
+            <section id="section-density" class="section-content hidden bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md mb-8">
+                <h2 class="text-2xl font-bold mb-4">Exercice sur la Masse Volumique</h2>
+                
+                <div class="mb-6">
+                    <p class="mb-4">Calculez la masse volumique et identifiez la substance correspondante.</p>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                        <div class="bg-gray-100 dark:bg-gray-700 p-4 rounded-lg">
+                            <h3 class="text-lg font-semibold mb-2">Exercice 1</h3>
+                            <p>Un cylindre de masse m = <span id="object-mass">25.4</span> g est placé dans un bécher contenant <span id="initial-water">50</span> mL d'eau.</p>
+                            <p class="mt-2">Le volume d'eau après immersion est de <span id="final-water">59.4</span> mL.</p>
+                            
+                            <div class="mt-4">
+                                <label class="block mb-2">Volume du cylindre (mL):</label>
+                                <input type="number" id="cylinder-volume" placeholder="Entrez le volume" step="0.1" class="w-full p-2 text-base rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-800 dark:text-white">
+                            </div>
+                            
+                            <div class="mt-4">
+                                <label class="block mb-2">Masse volumique (g/cm³):</label>
+                                <input type="number" id="density-result" placeholder="Entrez la masse volumique" step="0.1" class="w-full p-2 text-base rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-800 dark:text-white">
+                            </div>
+                            
+                            <div class="mt-4">
+                                <label class="block mb-2">De quel matériau est fait le cylindre?</label>
+                                <select id="material-selection" class="w-full p-2 rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800">
+                                    <option value="">Sélectionnez...</option>
+                                    <option value="water">Eau (1 g/cm³)</option>
+                                    <option value="aluminum">Aluminium (2.7 g/cm³)</option>
+                                    <option value="zinc">Zinc (7.2 g/cm³)</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-center justify-center">
+                            <div class="relative h-64 w-32 border-2 border-gray-400 dark:border-gray-600 rounded-lg overflow-hidden bg-blue-100 dark:bg-blue-900 flex flex-col justify-end items-center">
+                                <div id="water-level-initial" class="absolute w-full bg-blue-300 dark:bg-blue-600 bottom-0 left-0 transition-all duration-500" style="height: 50%;"></div>
+                                <div id="water-level-final" class="absolute w-full bg-blue-400 dark:bg-blue-700 bottom-0 left-0 transition-all duration-500 opacity-0" style="height: 59.4%;"></div>
+                                <div id="cylinder-object" class="absolute w-12 h-16 bg-gray-400 dark:bg-gray-500 rounded-lg z-10 opacity-0 transition-all duration-500" style="bottom: 30%;"></div>
+                                
+                                <div class="absolute right-0 h-full w-6 bg-white/80 dark:bg-gray-800/80 flex flex-col justify-between text-xs py-2">
+                                    <span>100</span>
+                                    <span>75</span>
+                                    <span>50</span>
+                                    <span>25</span>
+                                    <span>0</span>
+                                </div>
+                                
+                                <button id="show-simulation" class="absolute bottom-2 left-2 z-20 bg-primary text-white text-xs py-1 px-2 rounded">Simuler</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button id="check-density" class="w-full py-3 bg-primary text-white rounded-lg font-semibold hover:bg-opacity-90 transition-all">Vérifier les réponses</button>
+                    <div id="density-feedback" class="mt-4 p-4 hidden"></div>
+                </div>
+                
+
+            </section>
+            
+            <!-- Temperature Section -->
+            <section id="section-temp" class="section-content hidden bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md mb-8">
+                <h2 class="text-2xl font-bold mb-4">Exercice sur les Températures de Changement d'État</h2>
+                
+                <div class="mb-6">
+                    <p class="mb-4">Explorez les températures de changement d'état et identifiez les substances pures.</p>
+                    
+    
+                    
+                    <div class="mt-6">
+                        <h3 class="text-lg font-semibold mb-4">Quiz sur les changements d'état</h3>
+                        
+                        <div class="space-y-4">
+                            <div class="bg-gray-100 dark:bg-gray-700 p-4 rounded-lg">
+                                <p class="mb-2">1. Si lors du chauffage, la température reste constante pendant un moment, cela indique:</p>
+                                <select id="temp-question1" class="w-full p-2 rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800">
+                                    <option value="">Sélectionnez...</option>
+                                    <option value="correct">Un changement d'état</option>
+                                    <option value="wrong1">Un problème avec le thermomètre</option>
+                                    <option value="wrong2">Un refroidissement temporaire</option>
+                                </select>
+                            </div>
+                            
+                            <div class="bg-gray-100 dark:bg-gray-700 p-4 rounded-lg">
+                                <p class="mb-2">2. Les mélangages (comme l'eau salée):</p>
+                                <select id="temp-question2" class="w-full p-2 rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800">
+                                    <option value="">Sélectionnez...</option>
+                                    <option value="wrong1">Ont des températures de changement d'état bien définies</option>
+                                    <option value="correct">Ne présentent pas de palier de température durant les changements d'état</option>
+                                    <option value="wrong2">Changent d'état à la même température que leurs composants purs</option>
+                                </select>
+                            </div>
+                            
+                            <div class="bg-gray-100 dark:bg-gray-700 p-4 rounded-lg">
+                                <p class="mb-2">3. Identifiez la substance dont les températures de fusion et d'ébullition sont 0°C et 100°C:</p>
+                                <select id="temp-question3" class="w-full p-2 rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800">
+                                    <option value="">Sélectionnez...</option>
+                                    <option value="correct">Eau</option>
+                                    <option value="wrong1">Zinc</option>
+                                    <option value="wrong2">Aluminium</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <button id="check-temp" class="mt-4 w-full py-3 bg-primary text-white rounded-lg font-semibold hover:bg-opacity-90 transition-all">Vérifier les réponses</button>
+                        <div id="temp-feedback" class="mt-4 p-4 hidden"></div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+    
+    <script>
+        // Dark mode detection
+        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            document.documentElement.classList.add('dark');
+        }
+        
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
+            if (event.matches) {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+        });
+        
+        // Tab switching functionality
+        document.querySelectorAll('.tab-btn').forEach(tab => {
+            tab.addEventListener('click', () => {
+                // Reset all tabs
+                document.querySelectorAll('.tab-btn').forEach(t => {
+                    t.classList.remove('bg-primary', 'text-white');
+                    t.classList.add('bg-gray-200', 'dark:bg-gray-800');
+                });
+                
+                // Reset all sections
+                document.querySelectorAll('.section-content').forEach(s => {
+                    s.classList.add('hidden');
+                });
+                
+                // Activate clicked tab
+                tab.classList.remove('bg-gray-200', 'dark:bg-gray-800');
+                tab.classList.add('bg-primary', 'text-white');
+                
+                // Show corresponding section
+                const sectionId = 'section-' + tab.id.split('-')[1];
+                document.getElementById(sectionId).classList.remove('hidden');
+            });
+        });
+        
+        // No need for pH slider functionality as it's been removed
+        
+        // pH quiz validation
+        document.getElementById('check-ph').addEventListener('click', () => {
+            const solutionA = document.getElementById('solution-a').value;
+            const solutionB = document.getElementById('solution-b').value;
+            const solutionC = document.getElementById('solution-c').value;
+            const solutionD = document.getElementById('solution-d').value;
+            const solutionE = document.getElementById('solution-e').value;
+            const solutionF = document.getElementById('solution-f').value;
+            
+            const resultDiv = document.getElementById('ph-result');
+            resultDiv.innerHTML = '';
+            resultDiv.className = 'mt-4 p-4 rounded-lg';
+            
+            let correct = 0;
+            let messages = [];
+            
+            if (solutionA === 'acid') {
+                correct++;
+                messages.push('<p class="text-green-500">✓ Solution A: Correct! pH = 2.5 est acide.</p>');
+            } else if (solutionA) {
+                messages.push('<p class="text-red-500">✗ Solution A: Incorrect. pH = 2.5 est acide (pH < 7).</p>');
+            }
+            
+            if (solutionB === 'neutral') {
+                correct++;
+                messages.push('<p class="text-green-500">✓ Solution B: Correct! La couleur jaune sur le papier pH indique une solution neutre.</p>');
+            } else if (solutionB) {
+                messages.push('<p class="text-red-500">✗ Solution B: Incorrect. La couleur jaune sur le papier pH indique une solution neutre.</p>');
+            }
+            
+            if (solutionC === 'basic') {
+                correct++;
+                messages.push('<p class="text-green-500">✓ Solution C: Correct! pH = 10.2 est basique.</p>');
+            } else if (solutionC) {
+                messages.push('<p class="text-red-500">✗ Solution C: Incorrect. pH = 10.2 est basique (pH > 7).</p>');
+            }
+            
+            if (solutionD === 'basic') {
+                correct++;
+                messages.push('<p class="text-green-500">✓ Solution D: Correct! La couleur verte sur le papier pH indique une solution basique.</p>');
+            } else if (solutionD) {
+                messages.push('<p class="text-red-500">✗ Solution D: Incorrect. La couleur verte sur le papier pH indique une solution basique.</p>');
+            }
+            
+            if (solutionE === 'neutral') {
+                correct++;
+                messages.push('<p class="text-green-500">✓ Solution E: Correct! pH = 7.0 est neutre.</p>');
+            } else if (solutionE) {
+                messages.push('<p class="text-red-500">✗ Solution E: Incorrect. pH = 7.0 est neutre.</p>');
+            }
+            
+            if (solutionF === 'correct') {
+                correct++;
+                messages.push('<p class="text-green-500">✓ Vinaigre et citron: Correct! Ils ont la même acidité mais peuvent être des solutions différentes.</p>');
+            } else if (solutionF) {
+                messages.push('<p class="text-red-500">✗ Vinaigre et citron: Incorrect. Deux solutions différentes peuvent avoir le même pH sans contenir les mêmes ions.</p>');
+            }
+            
+            if (messages.length > 0) {
+                resultDiv.innerHTML = `<h3 class="font-bold mb-2">Résultats: ${correct}/6</h3>` + messages.join('');
+                
+                if (correct === 6) {
+                    resultDiv.classList.add('bg-green-100', 'dark:bg-green-900', 'text-green-800', 'dark:text-green-200');
+                } else {
+                    resultDiv.classList.add('bg-amber-100', 'dark:bg-amber-900', 'text-amber-800', 'dark:text-amber-200');
+                }
+                
+                resultDiv.classList.remove('hidden');
+            }
+        });
+        
+        // Density exercise functionality
+        document.getElementById('show-simulation').addEventListener('click', () => {
+            const cylinderObject = document.getElementById('cylinder-object');
+            const waterLevelInitial = document.getElementById('water-level-initial');
+            const waterLevelFinal = document.getElementById('water-level-final');
+            
+            // Reset animation
+            cylinderObject.style.bottom = '100%';
+            cylinderObject.style.opacity = '1';
+            waterLevelFinal.style.opacity = '0';
+            
+            // Animate cylinder immersion
+            setTimeout(() => {
+                cylinderObject.style.bottom = '30%';
+                setTimeout(() => {
+                    waterLevelInitial.style.opacity = '0';
+                    waterLevelFinal.style.opacity = '1';
+                }, 500);
+            }, 100);
+        });
+        
+        document.getElementById('check-density').addEventListener('click', () => {
+            const cylinderVolume = parseFloat(document.getElementById('cylinder-volume').value) || 0;
+            const densityResult = parseFloat(document.getElementById('density-result').value) || 0;
+            const materialSelection = document.getElementById('material-selection').value;
+            
+            const initialWater = parseFloat(document.getElementById('initial-water').textContent);
+            const finalWater = parseFloat(document.getElementById('final-water').textContent);
+            const objectMass = parseFloat(document.getElementById('object-mass').textContent);
+            
+            const correctVolume = finalWater - initialWater;
+            const correctDensity = objectMass / correctVolume;
+            
+            const feedbackDiv = document.getElementById('density-feedback');
+            feedbackDiv.innerHTML = '';
+            feedbackDiv.className = 'mt-4 p-4 rounded-lg';
+            
+            let volumeCorrect = Math.abs(cylinderVolume - correctVolume) < 0.1;
+            let densityCorrect = Math.abs(densityResult - correctDensity) < 0.1;
+            let materialCorrect = false;
+            
+            if (correctDensity > 2.5 && correctDensity < 2.9) {
+                materialCorrect = materialSelection === 'aluminum';
+            } else if (correctDensity > 7.0 && correctDensity < 7.4) {
+                materialCorrect = materialSelection === 'zinc';
+            } else if (correctDensity > 0.9 && correctDensity < 1.1) {
+                materialCorrect = materialSelection === 'water';
+            }
+            
+            let messages = [];
+            
+            if (volumeCorrect) {
+                messages.push(`<p class="text-green-500">✓ Volume correct: ${correctVolume.toFixed(1)} mL</p>`);
+            } else {
+                messages.push(`<p class="text-red-500">✗ Volume incorrect. Correct: ${correctVolume.toFixed(1)} mL (Vfinal - Vinitial)</p>`);
+            }
+            
+            if (densityCorrect) {
+                messages.push(`<p class="text-green-500">✓ Masse volumique correcte: ${correctDensity.toFixed(1)} g/cm³</p>`);
+            } else {
+                messages.push(`<p class="text-red-500">✗ Masse volumique incorrecte. Correct: ${correctDensity.toFixed(1)} g/cm³ (m/V)</p>`);
+            }
+            
+            if (materialCorrect) {
+                let material = materialSelection === 'aluminum' ? 'Aluminium' : (materialSelection === 'zinc' ? 'Zinc' : 'Eau');
+                messages.push(`<p class="text-green-500">✓ Matériau correct: ${material}</p>`);
+            } else if (materialSelection) {
+                let correctMaterial = 'Aluminium';
+                if (correctDensity > 7.0) correctMaterial = 'Zinc';
+                else if (correctDensity < 1.1) correctMaterial = 'Eau';
+                messages.push(`<p class="text-red-500">✗ Matériau incorrect. Correct: ${correctMaterial}</p>`);
+            }
+            
+            if (messages.length > 0) {
+                feedbackDiv.innerHTML = `<h3 class="font-bold mb-2">Résultats:</h3>` + messages.join('');
+                
+                if (volumeCorrect && densityCorrect && materialCorrect) {
+                    feedbackDiv.classList.add('bg-green-100', 'dark:bg-green-900', 'text-green-800', 'dark:text-green-200');
+                } else {
+                    feedbackDiv.classList.add('bg-amber-100', 'dark:bg-amber-900', 'text-amber-800', 'dark:text-amber-200');
+                }
+                
+                feedbackDiv.classList.remove('hidden');
+            }
+        });
+        
+        // Temperature quiz functionality only
+        
+        document.getElementById('check-temp').addEventListener('click', () => {
+            const question1 = document.getElementById('temp-question1').value;
+            const question2 = document.getElementById('temp-question2').value;
+            const question3 = document.getElementById('temp-question3').value;
+            
+            const feedbackDiv = document.getElementById('temp-feedback');
+            feedbackDiv.innerHTML = '';
+            feedbackDiv.className = 'mt-4 p-4 rounded-lg';
+            
+            let correct = 0;
+            let messages = [];
+            
+            if (question1 === 'correct') {
+                correct++;
+                messages.push('<p class="text-green-500">✓ Question 1: Correct! Un palier de température indique un changement d\'état.</p>');
+            } else if (question1) {
+                messages.push('<p class="text-red-500">✗ Question 1: Incorrect. Pendant un changement d\'état, la température reste constante.</p>');
+            }
+            
+            if (question2 === 'correct') {
+                correct++;
+                messages.push('<p class="text-green-500">✓ Question 2: Correct! Les mélanges n\'ont pas de palier de température bien défini.</p>');
+            } else if (question2) {
+                messages.push('<p class="text-red-500">✗ Question 2: Incorrect. Les mélanges ne présentent pas de palier de température durant les changements d\'état.</p>');
+            }
+            
+            if (question3 === 'correct') {
+                correct++;
+                messages.push('<p class="text-green-500">✓ Question 3: Correct! L\'eau a un point de fusion de 0°C et d\'ébullition de 100°C.</p>');
+            } else if (question3) {
+                messages.push('<p class="text-red-500">✗ Question 3: Incorrect. L\'eau pure a un point de fusion de 0°C et d\'ébullition de 100°C.</p>');
+            }
+            
+            if (messages.length > 0) {
+                feedbackDiv.innerHTML = `<h3 class="font-bold mb-2">Résultats: ${correct}/3</h3>` + messages.join('');
+                
+                if (correct === 3) {
+                    feedbackDiv.classList.add('bg-green-100', 'dark:bg-green-900', 'text-green-800', 'dark:text-green-200');
+                } else {
+                    feedbackDiv.classList.add('bg-amber-100', 'dark:bg-amber-900', 'text-amber-800', 'dark:text-amber-200');
+                }
+                
+                feedbackDiv.classList.remove('hidden');
+            }
+        });
+    </script>
+</body>
+</html>

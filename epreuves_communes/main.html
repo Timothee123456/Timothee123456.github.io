@@ -170,6 +170,10 @@ function removeHeader(html) {
   // Return the modified HTML string
   return tempElement.innerHTML;
 }
+
+
+loadMainContent('/epreuves_communes/maths/main.html', 'i2')
+loadMainContent('/epreuves_communes/histoire-geo/main.html', 'i3')
 </script>
 </head>
 <body>
@@ -178,21 +182,21 @@ function removeHeader(html) {
 </header>
 
 <div class="matiere francais">
-<h1 style="color:#3a6f85">Français</h1>
+<h1><a style="color:#3a6f85">Français</a></h1>
 </div>
 
 <div class="matiere maths">
-<h1 style="color:#7f2011">Mathématiques</h1>
+<h1><a href="https://timothee123456.github.io/epreuves_communes/maths/main" style="color:#7f2011">Mathématiques</a></h1>
 </div>
-<iframe src="https://timothee123456.github.io/epreuves_communes/maths/main" onload="scrollIframe('i2')" id="i2"></iframe>
+<iframe id="i2" srcdoc=""></iframe>
 
 <div class="matiere histoire">
-<h1 style="color:#8c0046">Histoire-géographie</h1>
+<h1><a href="https://timothee123456.github.io/epreuves_communes/histoire-geo/main" style="color:#8c0046">Histoire-géographie</a></h1>
 </div>
-<iframe id="1" srcdoc="" onload="loadMainContent('/epreuves_communes/histoire-geo/main.html', '1')"></iframe>
+<iframe id="i3" srcdoc=""></iframe>
 
 <div class="matiere sciences">
-<h1 style="color:#40662d">Sciences</h1>
+<h1><a style="color:#40662d">Sciences</a></h1>
 </div>
 
 

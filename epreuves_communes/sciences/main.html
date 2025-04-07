@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html>
+<title>Sciences</title>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<link rel="stylesheet" id="flipdown-css" href="https://timothee123456.github.io/countdown/blue.css?ver=6.6.2" type="text/css" media="all">
+<script type="text/javascript" src="https://timothee123456.github.io/countdown/file2.js?ver=6.6.2?ver=6.6.2" id="jquery-core-js"></script>
+<script type="text/javascript" src="https://timothee123456.github.io/countdown/file1.js?ver=6.6.2?ver=6.6.2" id="flipdown-js"></script>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh; /* Ensure the body takes up at least the full viewport height */
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: black;
+      color: #333;
+      background-color: #75b951;
+      text-align: center;
+    }
+    .title {
+      color: #4353ef;
+      text-align: center;
+      font-size: 60px;
+      position: relative;
+      z-index: 10;
+    }
+	a {
+    	text-decoration: none;
+    }
+
+    header {
+      background-image: url(https://timothee123456.github.io/wooden_table_textbook.jpg);
+      background-size: cover;
+      background-position: center;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .head {
+      color: #fff;
+      font-size: 40px;
+      margin: 0;
+		}
+   main {
+      flex: 1; /* Allow the main content to grow and take up available space */
+      padding: 20px;
+   }
+        
+    h2 {
+      color: #4CAF50;
+      font-size: 30px;
+        }
+        
+    .seperation {
+      border-top: 3px solid #1565c0;
+      width: 100%;
+      margin-bottom: 10px;
+      margin-top: 10px;
+    }    
+    
+    
+    
+    
+    .open-iframe {
+        position: absolute;
+        top: 1vw;  /* Distance from the top */
+        right: 1vw; /* Distance from the right */
+        background-color: rgba(0, 0, 0, 0.5);
+        color: white;
+        padding: 0.9vw 0.9vw;
+        cursor: pointer;
+        border-radius: 3px;
+        font-size: 12px;
+        @media only screen and (min-width: 500px) {
+          /* For tablets: */
+          font-size: 14px;
+          padding: 0.7vw 0.7vw;
+        }
+        @media only screen and (min-width: 730px) {
+          /* For computers: */
+          font-size: 15px;
+          padding: 0.5vw 0.5vw;
+        }
+    }
+    
+      /* Add a darker background on hover and active (pressed) state */
+    .open-iframe:hover,
+    .open-iframe:active {
+      background-color: rgba(0, 0, 0, 0.8); /* Darker background */
+    }
+    
+    
+    iframe {
+    	width: calc(100vw / 3);
+    }
+</style>
+<script>
+async function loadMainContent(url, iframeId) {
+  try {
+    const response = await fetch(url);
+    const html = await response.text();
+
+    // Remove the header and sections from the HTML string *before* setting srcdoc
+    const htmlWithoutHeaderAndSections = removeHeaderAndSections(html);
+
+    // Get a reference to the iframe
+    const iframe = document.getElementById(iframeId);
+
+    // Set the iframe's srcdoc to the modified HTML
+    iframe.srcdoc = htmlWithoutHeaderAndSections;
+
+  } catch (error) {
+    console.error('Error loading content:', error);
+    const iframe = document.getElementById(iframeId);
+    iframe.srcdoc = "Error loading content.";
+  }
+}
+
+function removeHeaderAndSections(html) {
+  // Create a temporary DOM element to parse the HTML string
+  const tempElement = document.createElement('div');
+  tempElement.innerHTML = html;
+
+  // Find and remove the header element
+  const header = tempElement.querySelector('header'); // Adjust the selector if needed
+  if (header) {
+    header.remove();
+  }
+
+  // Find and remove all section elements
+  const sections = tempElement.querySelectorAll('section');
+  sections.forEach(section => {
+    section.remove();
+  });
+
+  // Return the modified HTML string
+  return tempElement.innerHTML;
+}
+
+
+loadMainContent('/epreuves_communes/sciences/physique_chimie/main.html', 'i1')
+</script>
+</head>
+<body>
+<header><h1 class="head" style="color:#40662d">Sciences</h1>
+</header>
+<section>
+<!-- Temps restant pour reviser -->
+<h2>Pour réviser, il vous reste:</h2>
+<div id="flipdown" class="flipdown flipdown__theme-dark"></div>
+<p class="seperation"><p>
+</section>
+
+<main>
+<div class="matiere">
+<h1><a href="https://timothee123456.github.io/epreuves_communes/sciences/physique_chimie/main" style="color:#8c8200">Physique-Chimie</a></h1>
+<a class="material-icons open-iframe" href="https://timothee123456.github.io/epreuves_communes/sciences/physique_chimie/main">launch</a>
+</div>
+<iframe id="i1" srcdoc=""></iframe>
+
+</main>
+<script type="text/javascript">
+const date_fr = "May 09, 2025 14:30:00"
+jQuery( document ).ready(function() {
+
+    if (jQuery("#flipdown").length) {
+        new FlipDown(Date.parse(date_fr)  / 1000 ).start();
+    }
+   
+});
+</script>
+
+</body>
+</html>

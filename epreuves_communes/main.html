@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<html>
 <title>Épreuves communes</title>
 <link rel="stylesheet" id="flipdown-css" href="https://timothee123456.github.io/countdown/blue.css?ver=6.6.2" type="text/css" media="all">
 <script type="text/javascript" src="https://timothee123456.github.io/countdown/file2.js?ver=6.6.2?ver=6.6.2" id="jquery-core-js"></script>
@@ -150,7 +151,7 @@
 <div class="matiere histoire">
 <h1 style="color:#8c0046">Histoire-géographie</h1>
 </div>
-<iframe src="https://timothee123456.github.io/epreuves_communes/histoire-geo/main"></iframe>
+<iframe id="1" srcdoc="" onload="loadMainContent('/histoire-geo/main.html', '1')"></iframe>
 
 <div class="matiere sciences">
 <h1 style="color:#40662d">Sciences</h1>
@@ -170,6 +171,26 @@ function scrollIframe(id) {
       iframe.contentWindow.scrollTo(0, 100); // Scroll down 10 pixels
     }
   }
+  
+  
+<script>
+    async function loadMainContent(url, iframeId) {
+      try {
+        const response = await fetch(url);
+        const html = await response.text();
+
+        // Get a reference to the iframe
+        const iframe = document.getElementById(iframeId);
+
+        // Set the iframe's srcdoc to the fetched HTML
+        iframe.srcdoc = html;
+
+      } catch (error) {
+        console.error('Error loading content:', error);
+        const iframe = document.getElementById(iframeId);
+        iframe.srcdoc = "Error loading content.";
+      }
+    }
 </script>
 </body>
 </html>

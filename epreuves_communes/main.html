@@ -134,23 +134,42 @@
     
 </style>
 <script>
-    async function loadMainContent(url, iframeId) {
-      try {
-        const response = await fetch(url);
-        const html = await response.text();
+async function loadMainContent(url, iframeId) {
+  try {
+    const response = await fetch(url);
+    const html = await response.text();
 
-        // Get a reference to the iframe
-        const iframe = document.getElementById(iframeId);
+    // Remove the header from the HTML string *before* setting srcdoc
+    const htmlWithoutHeader = removeHeader(html);
 
-        // Set the iframe's srcdoc to the fetched HTML
-        iframe.srcdoc = html;
+    // Get a reference to the iframe
+    const iframe = document.getElementById(iframeId);
 
-      } catch (error) {
-        console.error('Error loading content:', error);
-        const iframe = document.getElementById(iframeId);
-        iframe.srcdoc = "Error loading content.";
-      }
-    }
+    // Set the iframe's srcdoc to the modified HTML
+    iframe.srcdoc = htmlWithoutHeader;
+
+  } catch (error) {
+    console.error('Error loading content:', error);
+    const iframe = document.getElementById(iframeId);
+    iframe.srcdoc = "Error loading content.";
+  }
+}
+
+function removeHeader(html) {
+  // Create a temporary DOM element to parse the HTML string
+  const tempElement = document.createElement('div');
+  tempElement.innerHTML = html;
+
+  // Find the header element (adjust the selector if needed)
+  const header = tempElement.querySelector('header'); // Or 'h1', 'div.header', etc.
+
+  if (header) {
+    header.remove(); // Remove the header element
+  }
+
+  // Return the modified HTML string
+  return tempElement.innerHTML;
+}
 </script>
 </head>
 <body>

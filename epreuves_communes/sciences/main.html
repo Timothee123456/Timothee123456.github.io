@@ -32,7 +32,7 @@
       z-index: 10;
     }
 	a {
-    	text-decoration: none;
+	text-decoration: none;
     }
 
     header {
@@ -52,12 +52,12 @@
       flex: 1; /* Allow the main content to grow and take up available space */
       padding: 20px;
    }
-        
+	
     h2 {
       color: #39833c;
       font-size: 30px;
-        }
-        
+	}
+	
     .seperation {
       border-top: 3px solid #1565c0;
       width: 100%;
@@ -69,25 +69,25 @@
     
     
     .open-iframe {
-        position: absolute;
-        top: 1vw;  /* Distance from the top */
-        right: 1vw; /* Distance from the right */
-        background-color: rgba(0, 0, 0, 0.5);
-        color: white;
-        padding: 0.9vw 0.9vw;
-        cursor: pointer;
-        border-radius: 3px;
-        font-size: 12px;
-        @media only screen and (min-width: 500px) {
-          /* For tablets: */
-          font-size: 14px;
-          padding: 0.7vw 0.7vw;
-        }
-        @media only screen and (min-width: 730px) {
-          /* For computers: */
-          font-size: 15px;
-          padding: 0.5vw 0.5vw;
-        }
+	position: absolute;
+	top: 1vw;  /* Distance from the top */
+	right: 1vw; /* Distance from the right */
+	background-color: rgba(0, 0, 0, 0.5);
+	color: white;
+	padding: 0.9vw 0.9vw;
+	cursor: pointer;
+	border-radius: 3px;
+	font-size: 12px;
+	@media only screen and (min-width: 500px) {
+	  /* For tablets: */
+	  font-size: 14px;
+	  padding: 0.7vw 0.7vw;
+	}
+	@media only screen and (min-width: 730px) {
+	  /* For computers: */
+	  font-size: 15px;
+	  padding: 0.5vw 0.5vw;
+	}
     }
     
       /* Add a darker background on hover and active (pressed) state */
@@ -104,10 +104,7 @@
     
     .matiere {
       display: inline-block;
-    }
-    
-    .list {
-      
+      height: 100vh;
     }
     
 </style>
@@ -196,7 +193,7 @@ const date_fr = "May 09, 2025 14:30:00"
 jQuery( document ).ready(function() {
 
     if (jQuery("#flipdown").length) {
-        new FlipDown(Date.parse(date_fr)  / 1000 ).start();
+	new FlipDown(Date.parse(date_fr)  / 1000 ).start();
     }
    
 });

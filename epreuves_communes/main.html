@@ -167,14 +167,14 @@ async function loadMainContent(url, iframeId) {
     const response = await fetch(url);
     const html = await response.text();
 
-    // Remove the header from the HTML string *before* setting srcdoc
-    const htmlWithoutHeader = removeHeader(html);
+    // Remove the header and sections from the HTML string *before* setting srcdoc
+    const htmlWithoutHeaderAndSections = removeHeaderAndSections(html);
 
     // Get a reference to the iframe
     const iframe = document.getElementById(iframeId);
 
     // Set the iframe's srcdoc to the modified HTML
-    iframe.srcdoc = htmlWithoutHeader;
+    iframe.srcdoc = htmlWithoutHeaderAndSections;
 
   } catch (error) {
     console.error('Error loading content:', error);
@@ -183,17 +183,22 @@ async function loadMainContent(url, iframeId) {
   }
 }
 
-function removeHeader(html) {
+function removeHeaderAndSections(html) {
   // Create a temporary DOM element to parse the HTML string
   const tempElement = document.createElement('div');
   tempElement.innerHTML = html;
 
-  // Find the header element (adjust the selector if needed)
-  const header = tempElement.querySelector('header'); // Or 'h1', 'div.header', etc.
-
+  // Find and remove the header element
+  const header = tempElement.querySelector('header'); // Adjust the selector if needed
   if (header) {
-    header.remove(); // Remove the header element
+    header.remove();
   }
+
+  // Find and remove all section elements
+  const sections = tempElement.querySelectorAll('section');
+  sections.forEach(section => {
+    section.remove();
+  });
 
   // Return the modified HTML string
   return tempElement.innerHTML;

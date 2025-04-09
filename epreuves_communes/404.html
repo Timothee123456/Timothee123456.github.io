@@ -1,0 +1,29 @@
+<!DOCTYPE html> <html> <head> <title>Redirection</title> <script> var countdown = 3; var redirectTimer;
+function startRedirect() {
+  redirectTimer = setInterval(function() {
+    countdown--;
+    document.getElementById("countdown").textContent = countdown;
+    if (countdown === 0) {
+      clearInterval(redirectTimer);
+      window.location.href = "https://timothee123456.github.io/main";
+    }
+  }, 1000);
+}
+</script> </head>
+<style type="text/css" media="screen">
+  body {
+    margin: 50px auto;
+    text-align: center;
+    background-color: #dadee8;
+  }
+  h1 {
+    margin: 30px 0;
+    font-size: 3em;
+    line-height: 1;
+    color: #003d0b;
+  }
+</style>
+<body>
+<h1>Cette leçon n'est malheureusement pas encore téléversée :(</h1>
+</body>
+</html>

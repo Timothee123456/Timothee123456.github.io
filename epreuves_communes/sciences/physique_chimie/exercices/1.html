@@ -1,0 +1,1600 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Révision Physique - Étude du mouvement</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/11.8.0/math.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700&display=swap');
+        
+        :root {
+            --primary-color: #5D5CDE;
+            --secondary-color: #4a4aad;
+            --text-color: #333;
+            --bg-color: #fff;
+            --card-bg: #f5f7ff;
+            --card-border: #e0e4f5;
+            --correct-color: #4CAF50;
+            --incorrect-color: #F44336;
+        }
+        
+        .dark {
+            --text-color: #e0e0e0;
+            --bg-color: #181818;
+            --card-bg: #252525;
+            --card-border: #333;
+        }
+        
+        body {
+            font-family: 'Nunito', sans-serif;
+            color: var(--text-color);
+            background-color: var(--bg-color);
+            transition: background-color 0.3s, color 0.3s;
+        }
+        
+        .card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--card-border);
+            transition: background-color 0.3s, border 0.3s;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-color);
+            transition: background-color 0.3s;
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--secondary-color);
+        }
+        
+        .btn-secondary {
+            background-color: transparent;
+            border: 1px solid var(--primary-color);
+            color: var(--primary-color);
+            transition: background-color 0.3s, color 0.3s;
+        }
+        
+        .btn-secondary:hover {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        /* Animation pour les trajectoires */
+        @keyframes moveRectiligne {
+            from { left: 0; }
+            to { left: calc(100% - 20px); }
+        }
+        
+        @keyframes moveCirculaire {
+            0% { transform: rotate(0deg) translateX(50px) rotate(0deg); }
+            100% { transform: rotate(360deg) translateX(50px) rotate(-360deg); }
+        }
+        
+        @keyframes moveCurviligne {
+            0% { left: 0; top: 0; }
+            25% { left: 25%; top: 50px; }
+            50% { left: 50%; top: 0; }
+            75% { left: 75%; top: 50px; }
+            100% { left: 100%; top: 0; }
+        }
+        
+        /* Styles pour la chronophotographie */
+        .chrono-container {
+            position: relative;
+            height: 80px;
+            width: 100%;
+            overflow: hidden;
+        }
+        
+        .chrono-dot {
+            position: absolute;
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            background-color: var(--primary-color);
+        }
+        
+        /* Styles pour le vecteur vitesse */
+        .vector {
+            position: absolute;
+            height: 2px;
+            background-color: var(--primary-color);
+            transform-origin: left center;
+        }
+        
+        .vector:after {
+            content: '';
+            position: absolute;
+            right: -5px;
+            top: -4px;
+            width: 0;
+            height: 0;
+            border-left: 8px solid var(--primary-color);
+            border-top: 5px solid transparent;
+            border-bottom: 5px solid transparent;
+        }
+        
+        /* Canvas animation styles */
+        #animationCanvas {
+            border: 1px solid var(--card-border);
+            background-color: var(--card-bg);
+        }
+        
+        /* Quiz styles */
+        .quiz-option {
+            border: 1px solid var(--card-border);
+            transition: background-color 0.2s;
+        }
+        
+        .quiz-option:hover {
+            background-color: rgba(93, 92, 222, 0.1);
+        }
+        
+        .quiz-option.selected {
+            border-color: var(--primary-color);
+            background-color: rgba(93, 92, 222, 0.2);
+        }
+        
+        .quiz-option.correct {
+            border-color: var(--correct-color);
+            background-color: rgba(76, 175, 80, 0.2);
+        }
+        
+        .quiz-option.incorrect {
+            border-color: var(--incorrect-color);
+            background-color: rgba(244, 67, 54, 0.2);
+        }
+        
+        /* Responsive table styles */
+        .responsive-table {
+            overflow-x: auto;
+        }
+        
+        /* Dark mode toggle styles */
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 48px;
+            height: 24px;
+        }
+        
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 24px;
+        }
+        
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        
+        input:checked + .toggle-slider {
+            background-color: var(--primary-color);
+        }
+        
+        input:checked + .toggle-slider:before {
+            transform: translateX(24px);
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+    <header class="bg-[#5D5CDE] text-white p-4 shadow-md">
+        <div class="container mx-auto flex justify-between items-center">
+            <h1 class="text-xl md:text-2xl font-bold">Révision Physique</h1>
+            <div class="flex items-center gap-3">
+                <span class="hidden md:inline-block">Mode sombre</span>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="darkModeToggle">
+                    <span class="toggle-slider"></span>
+                </label>
+            </div>
+        </div>
+    </header>
+
+    <nav class="bg-gray-100 dark:bg-gray-800 shadow-sm">
+        <div class="container mx-auto px-4 py-2">
+            <ul class="flex flex-wrap gap-2 md:gap-6 text-sm md:text-base">
+                <li><a href="#introduction" class="hover:text-[#5D5CDE] transition-colors">Introduction</a></li>
+                <li><a href="#systeme" class="hover:text-[#5D5CDE] transition-colors">Système Étudié</a></li>
+                <li><a href="#referentiel" class="hover:text-[#5D5CDE] transition-colors">Référentiel</a></li>
+                <li><a href="#trajectoire" class="hover:text-[#5D5CDE] transition-colors">Trajectoire</a></li>
+                <li><a href="#vitesse" class="hover:text-[#5D5CDE] transition-colors">Vitesse</a></li>
+                <li><a href="#exercices" class="hover:text-[#5D5CDE] transition-colors">Exercices</a></li>
+                <li><a href="#quiz" class="hover:text-[#5D5CDE] transition-colors">Quiz</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="container mx-auto px-4 py-8">
+        <section id="introduction" class="mb-12">
+            <h2 class="text-2xl font-bold mb-4 text-[#5D5CDE]">Chapitre 1 : Étude du mouvement</h2>
+            <p class="mb-4">Avant d'étudier un mouvement il est important de donner des informations sur le système étudié et le référentiel de l'étude.</p>
+            <div class="card rounded-lg p-6 shadow-md mb-6">
+                <p>Ce site web vous aidera à réviser les concepts fondamentaux de l'étude du mouvement en physique. Vous pourrez explorer les différentes notions, tester vos connaissances et visualiser les concepts à travers des animations interactives.</p>
+            </div>
+        </section>
+
+        <section id="systeme" class="mb-12">
+            <h2 class="text-2xl font-bold mb-4 text-[#5D5CDE]">1. Le système étudié</h2>
+            <div class="card rounded-lg p-6 shadow-md mb-6">
+                <p class="font-bold mb-2">Pour décrire un mouvement, il est nécessaire de définir précisément le corps que l'on étudie.</p>
+                <p>Ce corps s'appelle <span class="font-bold text-[#5D5CDE]">le système</span> en mécanique.</p>
+            </div>
+            
+            <div class="card rounded-lg p-6 shadow-md mb-6">
+                <h3 class="text-lg font-semibold mb-2">Exemple :</h3>
+                <p>Si on veut décrire le mouvement d'une voiture, on peut choisir d'étudier :</p>
+                <ul class="list-disc pl-6 mt-2">
+                    <li>Le mouvement d'une roue (système = la roue)</li>
+                    <li>Le mouvement de la voiture entière (système = la voiture)</li>
+                    <li>Le mouvement de la carrosserie (système = la carrosserie)</li>
+                </ul>
+            </div>
+            
+            <div class="mt-8">
+                <h3 class="text-lg font-semibold mb-4">Exercice interactif 1 : Identifier le système</h3>
+                <p class="mb-2">Associez chaque situation au système étudié approprié :</p>
+                
+                <div class="card rounded-lg p-4 shadow-md mb-4">
+                    <div class="flex flex-col md:flex-row md:items-center mb-4 gap-4">
+                        <div class="flex-1">
+                            <p class="font-semibold">Une balle de tennis lors d'un service</p>
+                        </div>
+                        <div class="flex-1">
+                            <select id="systeme-ex1" class="w-full p-2 border rounded text-base">
+                                <option value="">Choisissez...</option>
+                                <option value="correct">La balle de tennis</option>
+                                <option value="incorrect">Le joueur de tennis</option>
+                                <option value="incorrect">Le terrain de tennis</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div id="feedback-ex1" class="hidden p-2 rounded mt-2"></div>
+                </div>
+                
+                <div class="card rounded-lg p-4 shadow-md mb-4">
+                    <div class="flex flex-col md:flex-row md:items-center mb-4 gap-4">
+                        <div class="flex-1">
+                            <p class="font-semibold">Un avion qui vole</p>
+                        </div>
+                        <div class="flex-1">
+                            <select id="systeme-ex2" class="w-full p-2 border rounded text-base">
+                                <option value="">Choisissez...</option>
+                                <option value="incorrect">Les nuages</option>
+                                <option value="correct">L'avion entier</option>
+                                <option value="incorrect">L'aéroport</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div id="feedback-ex2" class="hidden p-2 rounded mt-2"></div>
+                </div>
+                
+                <button id="check-systeme" class="btn-primary text-white px-4 py-2 rounded mt-4">Vérifier mes réponses</button>
+            </div>
+        </section>
+
+        <section id="referentiel" class="mb-12">
+            <h2 class="text-2xl font-bold mb-4 text-[#5D5CDE]">2. Le référentiel et la relativité</h2>
+            
+            <div class="card rounded-lg p-6 shadow-md mb-6">
+                <h3 class="text-lg font-semibold mb-2">2.1 Les référentiels</h3>
+                <p class="mb-4">Le mouvement d'un objet ne peut être étudié que par rapport à un solide de référence appelé <span class="font-bold text-[#5D5CDE]">référentiel</span>.</p>
+                <p class="mb-4">Pour que la description du mouvement soit précise, il faut indiquer la position du point considéré et choisir le référentiel.</p>
+                <p>Les référentiels les plus utilisés en physique sont :</p>
+                <ul class="list-disc pl-6 mt-2">
+                    <li>Le référentiel terrestre (par rapport au sol)</li>
+                    <li>Le référentiel géocentrique (par rapport au centre de la Terre)</li>
+                    <li>Le référentiel héliocentrique (par rapport au centre du soleil)</li>
+                </ul>
+            </div>
+            
+            <div class="card rounded-lg p-6 shadow-md mb-6">
+                <h3 class="text-lg font-semibold mb-2">2.2 La relativité</h3>
+                <p>L'état de mouvement ou de repos d'un corps dépend du référentiel choisi. On dit que le mouvement d'un système est <span class="font-bold text-[#5D5CDE]">relatif</span> au référentiel choisi.</p>
+            </div>
+            
+            <div class="card rounded-lg p-6 shadow-md mb-6">
+                <h3 class="text-lg font-semibold mb-4">Exemple visuel : Trajectoire de Mars</h3>
+                <div class="flex flex-col md:flex-row gap-4">
+                    <div class="flex-1 text-center">
+                        <div class="card p-4 h-64 relative overflow-hidden">
+                            <div id="geocentriqueDemo" class="w-full h-full relative">
+                                <!-- Animation générée par JavaScript -->
+                            </div>
+                        </div>
+                        <p class="mt-2">Trajectoire de Mars dans le référentiel géocentrique</p>
+                    </div>
+                    <div class="flex-1 text-center">
+                        <div class="card p-4 h-64 relative overflow-hidden">
+                            <div id="heliocentriqueDemo" class="w-full h-full relative">
+                                <!-- Animation générée par JavaScript -->
+                            </div>
+                        </div>
+                        <p class="mt-2">Trajectoire de Mars dans le référentiel héliocentrique</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-8">
+                <h3 class="text-lg font-semibold mb-4">Exercice interactif 2 : Comprendre la relativité du mouvement</h3>
+                
+                <div class="card rounded-lg p-6 shadow-md mb-6">
+                    <p class="mb-4">Un train roule à vitesse constante. Un passager lâche une balle verticalement.</p>
+                    <p class="font-semibold mb-2">Comment décririez-vous la trajectoire de la balle pour :</p>
+                    
+                    <div class="mb-4">
+                        <p class="mb-2">a) Pour le passager dans le train (référentiel du train) :</p>
+                        <div class="flex gap-4 flex-wrap">
+                            <button class="ref-option p-2 border rounded" data-correct="true" data-question="a">Rectiligne verticale</button>
+                            <button class="ref-option p-2 border rounded" data-correct="false" data-question="a">Parabolique</button>
+                            <button class="ref-option p-2 border rounded" data-correct="false" data-question="a">Horizontale</button>
+                        </div>
+                        <div id="feedback-ref-a" class="hidden p-2 rounded mt-2"></div>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <p class="mb-2">b) Pour une personne sur le quai (référentiel terrestre) :</p>
+                        <div class="flex gap-4 flex-wrap">
+                            <button class="ref-option p-2 border rounded" data-correct="false" data-question="b">Rectiligne verticale</button>
+                            <button class="ref-option p-2 border rounded" data-correct="true" data-question="b">Parabolique</button>
+                            <button class="ref-option p-2 border rounded" data-correct="false" data-question="b">Horizontale</button>
+                        </div>
+                        <div id="feedback-ref-b" class="hidden p-2 rounded mt-2"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="trajectoire" class="mb-12">
+            <h2 class="text-2xl font-bold mb-4 text-[#5D5CDE]">3. La Trajectoire</h2>
+            
+            <div class="card rounded-lg p-6 shadow-md mb-6">
+                <p class="mb-4">Pour étudier le mouvement d'un corps, il faut tout d'abord déterminer sa trajectoire.</p>
+                <p class="font-semibold mb-2">La trajectoire d'un point d'un corps mobile est <span class="text-[#5D5CDE]">l'ensemble des positions</span> qu'il occupe durant son mouvement.</p>
+                <p>Il existe plusieurs types de trajectoires.</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                <div class="card rounded-lg p-4 shadow-md">
+                    <h3 class="text-lg font-semibold mb-2">3.1 Trajectoire rectiligne</h3>
+                    <p class="mb-4">Un mouvement rectiligne est un mouvement qui s'effectue <span class="text-[#5D5CDE]">le long d'une ligne droite</span>.</p>
+                    <div class="h-32 relative overflow-hidden border rounded p-2">
+                        <div id="rectiligneDemo" class="absolute w-5 h-5 bg-[#5D5CDE] rounded-full" style="top: 50%; transform: translateY(-50%);"></div>
+                    </div>
+                    <p class="mt-2 text-sm italic">Exemple : Une moto qui se déplace en ligne droite</p>
+                </div>
+                
+                <div class="card rounded-lg p-4 shadow-md">
+                    <h3 class="text-lg font-semibold mb-2">3.2 Trajectoire circulaire</h3>
+                    <p class="mb-4">Un mouvement circulaire est un mouvement qui s'effectue <span class="text-[#5D5CDE]">le long d'un cercle</span>.</p>
+                    <div class="h-32 relative overflow-hidden border rounded p-2">
+                        <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-24 h-24 rounded-full border border-gray-300 border-dashed"></div>
+                        <div id="circulaireDemo" class="absolute w-5 h-5 bg-[#5D5CDE] rounded-full"></div>
+                    </div>
+                    <p class="mt-2 text-sm italic">Exemple : Une grande roue</p>
+                </div>
+                
+                <div class="card rounded-lg p-4 shadow-md">
+                    <h3 class="text-lg font-semibold mb-2">3.3 Trajectoire curviligne</h3>
+                    <p class="mb-4">Une trajectoire curviligne est une trajectoire correspondant à une courbe qui n'est pas un cercle.</p>
+                    <div class="h-32 relative overflow-hidden border rounded p-2">
+                        <div id="curviligneDemo" class="absolute w-5 h-5 bg-[#5D5CDE] rounded-full"></div>
+                    </div>
+                    <p class="mt-2 text-sm italic">Exemple : Un skieur</p>
+                </div>
+            </div>
+            
+            <div class="card rounded-lg p-6 shadow-md mb-6">
+                <h3 class="text-lg font-semibold mb-2">3.4 Autres trajectoires</h3>
+                <p>Il existe aussi des trajectoires qui s'effectuent selon des figures géométriques plus complexes (les trajectoires elliptiques ou paraboliques par exemple).</p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                    <div class="text-center">
+                        <canvas id="ellipseCanvas" width="200" height="150" class="mx-auto"></canvas>
+                        <p class="mt-2">Trajectoire elliptique</p>
+                    </div>
+                    <div class="text-center">
+                        <canvas id="parabolaCanvas" width="200" height="150" class="mx-auto"></canvas>
+                        <p class="mt-2">Trajectoire parabolique</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-8">
+                <h3 class="text-lg font-semibold mb-4">Exercice interactif 3 : Identifier les trajectoires</h3>
+                
+                <div class="card rounded-lg p-6 shadow-md mb-6">
+                    <p class="mb-4">Associez chaque mouvement à sa trajectoire :</p>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <p class="font-semibold mb-2">1. Une voiture qui roule en ligne droite</p>
+                            <select id="traj-ex1" class="w-full p-2 border rounded text-base">
+                                <option value="">Choisissez...</option>
+                                <option value="correct">Rectiligne</option>
+                                <option value="incorrect">Circulaire</option>
+                                <option value="incorrect">Curviligne</option>
+                                <option value="incorrect">Parabolique</option>
+                            </select>
+                            <div id="feedback-traj-1" class="hidden p-2 rounded mt-2"></div>
+                        </div>
+                        
+                        <div>
+                            <p class="font-semibold mb-2">2. Une aiguille d'une montre</p>
+                            <select id="traj-ex2" class="w-full p-2 border rounded text-base">
+                                <option value="">Choisissez...</option>
+                                <option value="incorrect">Rectiligne</option>
+                                <option value="correct">Circulaire</option>
+                                <option value="incorrect">Curviligne</option>
+                                <option value="incorrect">Parabolique</option>
+                            </select>
+                            <div id="feedback-traj-2" class="hidden p-2 rounded mt-2"></div>
+                        </div>
+                        
+                        <div>
+                            <p class="font-semibold mb-2">3. Un ballon lancé en l'air</p>
+                            <select id="traj-ex3" class="w-full p-2 border rounded text-base">
+                                <option value="">Choisissez...</option>
+                                <option value="incorrect">Rectiligne</option>
+                                <option value="incorrect">Circulaire</option>
+                                <option value="incorrect">Curviligne</option>
+                                <option value="correct">Parabolique</option>
+                            </select>
+                            <div id="feedback-traj-3" class="hidden p-2 rounded mt-2"></div>
+                        </div>
+                        
+                        <div>
+                            <p class="font-semibold mb-2">4. Une voiture qui tourne sur une route sinueuse</p>
+                            <select id="traj-ex4" class="w-full p-2 border rounded text-base">
+                                <option value="">Choisissez...</option>
+                                <option value="incorrect">Rectiligne</option>
+                                <option value="incorrect">Circulaire</option>
+                                <option value="correct">Curviligne</option>
+                                <option value="incorrect">Parabolique</option>
+                            </select>
+                            <div id="feedback-traj-4" class="hidden p-2 rounded mt-2"></div>
+                        </div>
+                    </div>
+                    
+                    <button id="check-trajectoires" class="btn-primary text-white px-4 py-2 rounded mt-6">Vérifier mes réponses</button>
+                </div>
+            </div>
+        </section>
+
+        <section id="vitesse" class="mb-12">
+            <h2 class="text-2xl font-bold mb-4 text-[#5D5CDE]">4. La Vitesse</h2>
+            
+            <div class="card rounded-lg p-6 shadow-md mb-6">
+                <h3 class="text-lg font-semibold mb-2">4.1 Calcul de la vitesse</h3>
+                <p class="mb-4">La vitesse v d'un objet par rapport au sol (c'est notre référence) est obtenue en calculant le rapport entre la distance d parcourue et la durée Δt du parcours.</p>
+                
+                <div class="bg-gray-100 dark:bg-gray-700 p-4 rounded-lg text-center mb-4">
+                    <p class="text-2xl text-[#5D5CDE] font-bold">v = d / Δt</p>
+                </div>
+                
+                <p class="mb-2">Unités choisies :</p>
+                <ul class="list-disc pl-6 mb-4">
+                    <li>d en mètre (m)</li>
+                    <li>Δt en secondes (s)</li>
+                    <li>v en mètre par seconde (m/s)</li>
+                </ul>
+                
+                <p class="mb-4">Il est possible d'utiliser d'autres combinaisons d'unités pour exprimer une vitesse. Par exemple, si le temps est en minutes et la distance en centimètres alors la vitesse est en centimètres par minute.</p>
+            </div>
+            
+            <div class="card rounded-lg p-6 shadow-md mb-6">
+                <h3 class="text-lg font-semibold mb-2">Exemple :</h3>
+                <p class="mb-2">Un cycliste parcourt 12 km en 26 min.</p>
+                <p class="mb-2">Pour calculer sa vitesse moyenne, il faut tout d'abord convertir la distance en m :</p>
+                <p class="mb-2">d = 12 km = 12 000 m.</p>
+                <p class="mb-2">puis convertir le temps du parcours en secondes, soit : t = 26 × 60 = 1560 s.</p>
+                <p class="mb-2">On calcule alors la vitesse moyenne du cycliste : v = d/t = 12000 m / 1560 s = 7,7 m/s.</p>
+                
+                <div class="mt-6">
+                    <h4 class="font-semibold mb-2">Calculateur de vitesse</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div>
+                            <label for="distance" class="block mb-1">Distance :</label>
+                            <input type="number" id="distance" placeholder="Distance" class="w-full p-2 border rounded text-base">
+                            <select id="distance-unit" class="w-full p-2 border rounded mt-2 text-base">
+                                <option value="m">mètres (m)</option>
+                                <option value="km">kilomètres (km)</option>
+                                <option value="cm">centimètres (cm)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="time" class="block mb-1">Temps :</label>
+                            <input type="number" id="time" placeholder="Temps" class="w-full p-2 border rounded text-base">
+                            <select id="time-unit" class="w-full p-2 border rounded mt-2 text-base">
+                                <option value="s">secondes (s)</option>
+                                <option value="min">minutes (min)</option>
+                                <option value="h">heures (h)</option>
+                            </select>
+                        </div>
+                        <div class="flex flex-col justify-end">
+                            <button id="calculate-speed" class="btn-primary text-white px-4 py-2 rounded mb-2">Calculer</button>
+                            <div id="speed-result" class="p-2 border rounded bg-gray-50 dark:bg-gray-700 h-10 flex items-center justify-center">Résultat</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card rounded-lg p-6 shadow-md mb-6">
+                <h3 class="text-lg font-semibold mb-2">4.2 Mesure de la vitesse</h3>
+                <p class="mb-4">La <span class="font-bold">chronophotographie</span> est une technique qui consiste à <span class="text-[#5D5CDE]">prendre des photos à intervalles de temps réguliers</span> pour permettre de mieux identifier la nature du mouvement d'un objet. Il s'agit alors de repérer un point sur la photo et de suivre son évolution au cours du mouvement (exemple : point du casque du motard).</p>
+                <p class="mb-2">À partir de ces clichés on peut définir si le mouvement est accéléré, uniforme ou ralenti.</p>
+                
+                <ul class="mb-4 mt-4">
+                    <li class="mb-2">- Si la vitesse augmente, on dit que le mouvement est <span class="text-[#5D5CDE] font-bold">accéléré</span>.</li>
+                    <li class="mb-2">- Si la vitesse diminue, on dit que le mouvement est <span class="text-[#5D5CDE] font-bold">ralenti</span>.</li>
+                    <li>- Si la vitesse est constante, on dit que le mouvement est <span class="text-[#5D5CDE] font-bold">uniforme</span>.</li>
+                </ul>
+                
+                <div class="mt-6">
+                    <h4 class="font-semibold mb-4">Simulation de chronophotographie</h4>
+                    <div class="mb-4">
+                        <div class="flex items-center gap-2 mb-2">
+                            <p>Type de mouvement :</p>
+                            <select id="chrono-type" class="p-2 border rounded text-base">
+                                <option value="accelere">Accéléré</option>
+                                <option value="uniforme">Uniforme</option>
+                                <option value="ralenti">Ralenti</option>
+                            </select>
+                            <button id="start-chrono" class="btn-primary text-white px-4 py-2 rounded">Démarrer</button>
+                        </div>
+                    </div>
+                    <div class="border rounded p-4 relative h-20 mb-4">
+                        <div id="chrono-container" class="w-full h-full relative">
+                            <!-- Les points seront générés par JavaScript -->
+                        </div>
+                    </div>
+                    <p class="text-sm italic">Note : Observez la distance entre les points. Si la distance augmente, le mouvement est accéléré. Si elle diminue, il est ralenti. Si elle reste constante, le mouvement est uniforme.</p>
+                </div>
+            </div>
+            
+            <div class="card rounded-lg p-6 shadow-md mb-6">
+                <h3 class="text-lg font-semibold mb-2">4.3 Représentation de la vitesse</h3>
+                <p class="mb-4">Pour représenter toutes les caractéristiques de la vitesse en un point, on utilise un <span class="font-bold">segment fléché</span>.</p>
+                
+                <ul class="mb-4">
+                    <li class="mb-2">- La <span class="font-bold">longueur</span> du segment est proportionnelle à la valeur de la vitesse.</li>
+                    <li class="mb-2">- La <span class="font-bold">direction</span> du segment indique la direction du mouvement. Elle est tangente à la trajectoire de l'objet au point considéré.</li>
+                    <li>- La <span class="font-bold">flèche</span> du segment est orientée dans le sens du déplacement au point considéré.</li>
+                </ul>
+                
+                <div class="mt-6">
+                    <h4 class="font-semibold mb-4">Représentation du vecteur vitesse</h4>
+                    <div class="border rounded p-4 h-64 relative">
+                        <canvas id="vectorCanvas" width="600" height="200" class="w-full h-full"></canvas>
+                    </div>
+                    <div class="mt-4 flex flex-wrap gap-4">
+                        <div>
+                            <label for="vector-speed" class="block mb-1">Vitesse (m/s) :</label>
+                            <input type="range" id="vector-speed" min="1" max="10" value="5" class="w-full">
+                            <span id="speed-value">5 m/s</span>
+                        </div>
+                        <div>
+                            <label for="trajectory-type" class="block mb-1">Type de trajectoire :</label>
+                            <select id="trajectory-type" class="p-2 border rounded text-base">
+                                <option value="linear">Rectiligne</option>
+                                <option value="circular">Circulaire</option>
+                                <option value="parabolic">Parabolique</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="exercices" class="mb-12">
+            <h2 class="text-2xl font-bold mb-4 text-[#5D5CDE]">Exercices d'application</h2>
+            
+            <div class="card rounded-lg p-6 shadow-md mb-6">
+                <h3 class="text-lg font-semibold mb-4">Exercice 1.3 : Analyse d'une chronophotographie</h3>
+                <div class="mb-4 p-4 bg-gray-100 dark:bg-gray-700 rounded">
+                    <p class="mb-2">Léo fait tomber, par inadvertance, une bille en acier dans de l'huile. Il la regarde descendre et affirme que le mouvement de la bille est accéléré alors que Lina a tout vu et dit qu'il est, au contraire, ralenti. Pour répondre à leur interrogation, Lilou réalise l'enregistrement ci-contre.</p>
+                    <div class="flex flex-col md:flex-row gap-4 items-center">
+                        <div class="flex-1">
+                            <ol class="list-decimal pl-6">
+                                <li class="mb-2">Comment s'appelle cette technique qui consiste à prendre des photos à intervalles de temps réguliers ?</li>
+                                <li class="mb-2">Chaque photo est prise toutes les Δt = 5 ms. En utilisant cet enregistrement et vos connaissances, quelle est l'évolution de la vitesse de la bille en fonction du temps et en déduire qui a raison.</li>
+                            </ol>
+                        </div>
+                        <div class="flex-1">
+                            <div id="bille-container" class="border rounded p-2 h-64 bg-white dark:bg-gray-800 relative">
+                                <!-- Les points seront générés par JavaScript -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mt-4">
+                    <h4 class="font-semibold mb-2">Réponses :</h4>
+                    <div class="mb-4">
+                        <p class="mb-2">1. Cette technique s'appelle :</p>
+                        <input type="text" id="chrono-answer" class="w-full p-2 border rounded text-base" placeholder="Votre réponse">
+                        <div id="feedback-chrono" class="hidden p-2 rounded mt-2"></div>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <p class="mb-2">2. L'évolution de la vitesse et qui a raison :</p>
+                        <div class="flex gap-4 flex-wrap">
+                            <button class="bille-option p-2 border rounded" data-correct="false">Le mouvement est accéléré, Léo a raison</button>
+                            <button class="bille-option p-2 border rounded" data-correct="true">Le mouvement est ralenti, Lina a raison</button>
+                            <button class="bille-option p-2 border rounded" data-correct="false">Le mouvement est uniforme, aucun des deux n'a raison</button>
+                        </div>
+                        <div id="feedback-bille" class="hidden p-2 rounded mt-2"></div>
+                    </div>
+                    
+                    <button id="check-exercice" class="btn-primary text-white px-4 py-2 rounded mt-4">Vérifier mes réponses</button>
+                </div>
+            </div>
+            
+            <div class="card rounded-lg p-6 shadow-md mb-6">
+                <h3 class="text-lg font-semibold mb-4">Exercice 6 : Calcul de vitesse</h3>
+                <p class="mb-4">Un coureur parcourt 100 mètres en 10 secondes. Calculez sa vitesse moyenne en m/s et en km/h.</p>
+                
+                <div class="mt-4">
+                    <div class="mb-4">
+                        <p class="mb-2">Vitesse en m/s :</p>
+                        <input type="text" id="vitesse-ms" class="w-full p-2 border rounded text-base" placeholder="Votre réponse">
+                        <div id="feedback-ms" class="hidden p-2 rounded mt-2"></div>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <p class="mb-2">Vitesse en km/h :</p>
+                        <input type="text" id="vitesse-kmh" class="w-full p-2 border rounded text-base" placeholder="Votre réponse">
+                        <div id="feedback-kmh" class="hidden p-2 rounded mt-2"></div>
+                    </div>
+                    
+                    <button id="check-vitesse" class="btn-primary text-white px-4 py-2 rounded mt-4">Vérifier mes réponses</button>
+                    <button id="solution-vitesse" class="btn-secondary px-4 py-2 rounded mt-4 ml-2">Voir la solution</button>
+                    
+                    <div id="solution-vitesse-content" class="hidden mt-4 p-4 bg-gray-50 dark:bg-gray-700 rounded">
+                        <h4 class="font-semibold mb-2">Solution :</h4>
+                        <p class="mb-2">Données : d = 100 m, t = 10 s</p>
+                        <p class="mb-2">Formule : v = d / t</p>
+                        <p class="mb-2">Vitesse en m/s : v = 100 / 10 = 10 m/s</p>
+                        <p class="mb-2">Conversion en km/h : v = 10 m/s = 10 × 3,6 = 36 km/h</p>
+                        <p class="italic text-sm mt-2">Note : Pour convertir de m/s en km/h, on multiplie par 3,6 (car 1 m/s = 3,6 km/h)</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="quiz" class="mb-12">
+            <h2 class="text-2xl font-bold mb-4 text-[#5D5CDE]">Quiz Récapitulatif</h2>
+            
+            <div class="card rounded-lg p-6 shadow-md">
+                <div id="quiz-container">
+                    <div class="mb-6">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-lg font-semibold">Test vos connaissances</h3>
+                            <span id="quiz-score" class="bg-[#5D5CDE] text-white px-3 py-1 rounded-full">0/0</span>
+                        </div>
+                        <p class="mb-2">Répondez aux questions suivantes pour tester votre compréhension des concepts de cette leçon.</p>
+                    </div>
+                    
+                    <div id="quiz-questions">
+                        <!-- Questions générées par JavaScript -->
+                    </div>
+                    
+                    <div class="mt-6">
+                        <button id="check-quiz" class="btn-primary text-white px-4 py-2 rounded">Vérifier mes réponses</button>
+                        <button id="reset-quiz" class="btn-secondary px-4 py-2 rounded ml-2">Recommencer</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-gray-100 dark:bg-gray-800 py-6">
+        <div class="container mx-auto px-4">
+            <p class="text-center">Site de révision pour le Chapitre 1 : Étude du mouvement</p>
+        </div>
+    </footer>
+
+    <script>
+        // Dark mode toggle
+        const darkModeToggle = document.getElementById('darkModeToggle');
+        
+        // Check for user preference
+        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            document.documentElement.classList.add('dark');
+            darkModeToggle.checked = true;
+        }
+        
+        // Toggle dark mode
+        darkModeToggle.addEventListener('change', () => {
+            document.documentElement.classList.toggle('dark');
+        });
+        
+        // Listen for system preference changes
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
+            if (event.matches) {
+                document.documentElement.classList.add('dark');
+                darkModeToggle.checked = true;
+            } else {
+                document.documentElement.classList.remove('dark');
+                darkModeToggle.checked = false;
+            }
+        });
+
+        // Système étudié - exercice
+        document.getElementById('check-systeme').addEventListener('click', function() {
+            const ex1 = document.getElementById('systeme-ex1');
+            const ex2 = document.getElementById('systeme-ex2');
+            const feedback1 = document.getElementById('feedback-ex1');
+            const feedback2 = document.getElementById('feedback-ex2');
+            
+            // Vérifier la réponse 1
+            if (ex1.value === 'correct') {
+                feedback1.textContent = 'Correct ! La balle de tennis est le système étudié.';
+                feedback1.classList.add('bg-green-100', 'text-green-800');
+                feedback1.classList.remove('bg-red-100', 'text-red-800');
+            } else if (ex1.value === 'incorrect') {
+                feedback1.textContent = 'Incorrect. Le système étudié est la balle de tennis, pas le joueur ou le terrain.';
+                feedback1.classList.add('bg-red-100', 'text-red-800');
+                feedback1.classList.remove('bg-green-100', 'text-green-800');
+            } else {
+                feedback1.textContent = 'Veuillez sélectionner une réponse.';
+                feedback1.classList.add('bg-yellow-100', 'text-yellow-800');
+                feedback1.classList.remove('bg-green-100', 'text-green-800', 'bg-red-100', 'text-red-800');
+            }
+            
+            // Vérifier la réponse 2
+            if (ex2.value === 'correct') {
+                feedback2.textContent = 'Correct ! L\'avion entier est le système étudié.';
+                feedback2.classList.add('bg-green-100', 'text-green-800');
+                feedback2.classList.remove('bg-red-100', 'text-red-800');
+            } else if (ex2.value === 'incorrect') {
+                feedback2.textContent = 'Incorrect. Le système étudié est l\'avion entier, pas les nuages ou l\'aéroport.';
+                feedback2.classList.add('bg-red-100', 'text-red-800');
+                feedback2.classList.remove('bg-green-100', 'text-green-800');
+            } else {
+                feedback2.textContent = 'Veuillez sélectionner une réponse.';
+                feedback2.classList.add('bg-yellow-100', 'text-yellow-800');
+                feedback2.classList.remove('bg-green-100', 'text-green-800', 'bg-red-100', 'text-red-800');
+            }
+            
+            feedback1.classList.remove('hidden');
+            feedback2.classList.remove('hidden');
+        });
+
+        // Référentiel - exercice
+        document.querySelectorAll('.ref-option').forEach(button => {
+            button.addEventListener('click', function() {
+                const question = this.dataset.question;
+                const isCorrect = this.dataset.correct === 'true';
+                
+                // Retirer les sélections précédentes pour cette question
+                document.querySelectorAll(`.ref-option[data-question="${question}"]`).forEach(btn => {
+                    btn.classList.remove('bg-blue-100', 'border-blue-500');
+                });
+                
+                // Marquer cette option comme sélectionnée
+                this.classList.add('bg-blue-100', 'border-blue-500');
+                
+                const feedback = document.getElementById(`feedback-ref-${question}`);
+                
+                if (isCorrect) {
+                    feedback.textContent = 'Correct !';
+                    feedback.classList.add('bg-green-100', 'text-green-800');
+                    feedback.classList.remove('bg-red-100', 'text-red-800', 'hidden');
+                } else {
+                    feedback.textContent = 'Incorrect. Essayez une autre option.';
+                    feedback.classList.add('bg-red-100', 'text-red-800');
+                    feedback.classList.remove('bg-green-100', 'text-green-800', 'hidden');
+                }
+            });
+        });
+
+        // Animation des trajectoires
+        function startTrajectoryAnimations() {
+            // Animation rectiligne
+            const rectiligneDemo = document.getElementById('rectiligneDemo');
+            rectiligneDemo.style.animation = 'moveRectiligne 4s linear infinite';
+            
+            // Animation circulaire
+            const circulaireDemo = document.getElementById('circulaireDemo');
+            circulaireDemo.style.position = 'absolute';
+            circulaireDemo.style.top = '50%';
+            circulaireDemo.style.left = '50%';
+            circulaireDemo.style.animation = 'moveCirculaire 4s linear infinite';
+            
+            // Animation curviligne
+            const curviligneDemo = document.getElementById('curviligneDemo');
+            curviligneDemo.style.animation = 'moveCurviligne 4s ease-in-out infinite alternate';
+        }
+        
+        // Démarrer les animations au chargement de la page
+        document.addEventListener('DOMContentLoaded', startTrajectoryAnimations);
+
+        // Trajectoires - exercice
+        document.getElementById('check-trajectoires').addEventListener('click', function() {
+            const ex1 = document.getElementById('traj-ex1');
+            const ex2 = document.getElementById('traj-ex2');
+            const ex3 = document.getElementById('traj-ex3');
+            const ex4 = document.getElementById('traj-ex4');
+            
+            const feedback1 = document.getElementById('feedback-traj-1');
+            const feedback2 = document.getElementById('feedback-traj-2');
+            const feedback3 = document.getElementById('feedback-traj-3');
+            const feedback4 = document.getElementById('feedback-traj-4');
+            
+            // Vérifier les réponses
+            checkTrajectoryAnswer(ex1, feedback1, 'Une voiture qui roule en ligne droite suit une trajectoire rectiligne.');
+            checkTrajectoryAnswer(ex2, feedback2, 'Une aiguille de montre suit une trajectoire circulaire.');
+            checkTrajectoryAnswer(ex3, feedback3, 'Un ballon lancé en l\'air suit une trajectoire parabolique.');
+            checkTrajectoryAnswer(ex4, feedback4, 'Une voiture sur une route sinueuse suit une trajectoire curviligne.');
+        });
+        
+        function checkTrajectoryAnswer(select, feedback, correctMessage) {
+            if (select.value === 'correct') {
+                feedback.textContent = 'Correct ! ' + correctMessage;
+                feedback.classList.add('bg-green-100', 'text-green-800');
+                feedback.classList.remove('bg-red-100', 'text-red-800');
+            } else if (select.value === 'incorrect') {
+                feedback.textContent = 'Incorrect. ' + correctMessage;
+                feedback.classList.add('bg-red-100', 'text-red-800');
+                feedback.classList.remove('bg-green-100', 'text-green-800');
+            } else {
+                feedback.textContent = 'Veuillez sélectionner une réponse.';
+                feedback.classList.add('bg-yellow-100', 'text-yellow-800');
+                feedback.classList.remove('bg-green-100', 'text-green-800', 'bg-red-100', 'text-red-800');
+            }
+            
+            feedback.classList.remove('hidden');
+        }
+
+        // Calculateur de vitesse
+        document.getElementById('calculate-speed').addEventListener('click', function() {
+            const distance = parseFloat(document.getElementById('distance').value);
+            const time = parseFloat(document.getElementById('time').value);
+            const distanceUnit = document.getElementById('distance-unit').value;
+            const timeUnit = document.getElementById('time-unit').value;
+            
+            if (isNaN(distance) || isNaN(time) || distance <= 0 || time <= 0) {
+                document.getElementById('speed-result').textContent = 'Valeurs invalides';
+                return;
+            }
+            
+            // Conversion en unités de base (m et s)
+            let distanceInMeters = distance;
+            if (distanceUnit === 'km') {
+                distanceInMeters = distance * 1000;
+            } else if (distanceUnit === 'cm') {
+                distanceInMeters = distance / 100;
+            }
+            
+            let timeInSeconds = time;
+            if (timeUnit === 'min') {
+                timeInSeconds = time * 60;
+            } else if (timeUnit === 'h') {
+                timeInSeconds = time * 3600;
+            }
+            
+            // Calcul de la vitesse
+            const speedInMS = distanceInMeters / timeInSeconds;
+            const speedInKMH = speedInMS * 3.6;
+            
+            document.getElementById('speed-result').textContent = `${speedInMS.toFixed(2)} m/s (${speedInKMH.toFixed(2)} km/h)`;
+        });
+
+        // Chronophotographie
+        document.getElementById('start-chrono').addEventListener('click', function() {
+            const container = document.getElementById('chrono-container');
+            const type = document.getElementById('chrono-type').value;
+            
+            // Vider le conteneur
+            container.innerHTML = '';
+            
+            // Générer les points en fonction du type de mouvement
+            const numPoints = 10;
+            
+            for (let i = 0; i < numPoints; i++) {
+                const dot = document.createElement('div');
+                dot.className = 'chrono-dot';
+                
+                let left;
+                
+                if (type === 'uniforme') {
+                    // Mouvement uniforme - espacements égaux
+                    left = (i * (container.offsetWidth - 20) / (numPoints - 1)) + 'px';
+                } else if (type === 'accelere') {
+                    // Mouvement accéléré - espacements qui augmentent
+                    const factor = i * i / ((numPoints - 1) * (numPoints - 1));
+                    left = (factor * (container.offsetWidth - 20)) + 'px';
+                } else if (type === 'ralenti') {
+                    // Mouvement ralenti - espacements qui diminuent
+                    const factor = 1 - ((numPoints - 1 - i) * (numPoints - 1 - i)) / ((numPoints - 1) * (numPoints - 1));
+                    left = (factor * (container.offsetWidth - 20)) + 'px';
+                }
+                
+                dot.style.left = left;
+                dot.style.top = '50%';
+                dot.style.transform = 'translateY(-50%)';
+                
+                container.appendChild(dot);
+            }
+        });
+
+        // Animation de bille pour l'exercice
+        function createBilleAnimation() {
+            const container = document.getElementById('bille-container');
+            container.innerHTML = '';
+            
+            // Créer une chronophotographie avec des points de plus en plus rapprochés (mouvement ralenti)
+            const numPoints = 11;
+            const maxSpacing = container.offsetHeight * 0.85;
+            
+            for (let i = 0; i < numPoints; i++) {
+                const dot = document.createElement('div');
+                dot.className = 'chrono-dot';
+                
+                // Pour un mouvement ralenti, les espacements diminuent
+                // Calcul de la position avec une fonction quadratique inverse
+                const factor = Math.pow(i / (numPoints - 1), 0.5); // Racine carrée pour ralentissement
+                const top = factor * maxSpacing;
+                
+                dot.style.top = top + 'px';
+                dot.style.left = '50%';
+                dot.style.transform = 'translateX(-50%)';
+                
+                // Ajouter un label de position
+                const label = document.createElement('div');
+                label.className = 'text-xs absolute left-full ml-1';
+                label.textContent = `M${i+1}`;
+                dot.appendChild(label);
+                
+                container.appendChild(dot);
+            }
+        }
+
+        // Créer l'animation de bille au chargement
+        document.addEventListener('DOMContentLoaded', createBilleAnimation);
+
+        // Vérifier les réponses de l'exercice sur la chronophotographie
+        document.getElementById('check-exercice').addEventListener('click', function() {
+            const chronoAnswer = document.getElementById('chrono-answer').value.toLowerCase();
+            const feedbackChrono = document.getElementById('feedback-chrono');
+            
+            if (chronoAnswer === 'chronophotographie' || chronoAnswer === 'la chronophotographie') {
+                feedbackChrono.textContent = 'Correct ! Cette technique s\'appelle la chronophotographie.';
+                feedbackChrono.classList.add('bg-green-100', 'text-green-800');
+                feedbackChrono.classList.remove('bg-red-100', 'text-red-800');
+            } else {
+                feedbackChrono.textContent = 'Incorrect. Cette technique s\'appelle la chronophotographie.';
+                feedbackChrono.classList.add('bg-red-100', 'text-red-800');
+                feedbackChrono.classList.remove('bg-green-100', 'text-green-800');
+            }
+            
+            feedbackChrono.classList.remove('hidden');
+        });
+        
+        // Options pour l'exercice de la bille
+        document.querySelectorAll('.bille-option').forEach(button => {
+            button.addEventListener('click', function() {
+                // Retirer les sélections précédentes
+                document.querySelectorAll('.bille-option').forEach(btn => {
+                    btn.classList.remove('bg-blue-100', 'border-blue-500');
+                });
+                
+                // Marquer cette option comme sélectionnée
+                this.classList.add('bg-blue-100', 'border-blue-500');
+                
+                const isCorrect = this.dataset.correct === 'true';
+                const feedback = document.getElementById('feedback-bille');
+                
+                if (isCorrect) {
+                    feedback.textContent = 'Correct ! Les distances entre les positions successives de la bille diminuent, ce qui indique un mouvement ralenti. Lina a raison.';
+                    feedback.classList.add('bg-green-100', 'text-green-800');
+                    feedback.classList.remove('bg-red-100', 'text-red-800');
+                } else {
+                    feedback.textContent = 'Incorrect. Observez les distances entre les positions successives de la bille. Comme elles diminuent, le mouvement est ralenti.';
+                    feedback.classList.add('bg-red-100', 'text-red-800');
+                    feedback.classList.remove('bg-green-100', 'text-green-800');
+                }
+                
+                feedback.classList.remove('hidden');
+            });
+        });
+
+        // Exercise sur le calcul de vitesse
+        document.getElementById('check-vitesse').addEventListener('click', function() {
+            const vMS = document.getElementById('vitesse-ms').value.replace(',', '.');
+            const vKMH = document.getElementById('vitesse-kmh').value.replace(',', '.');
+            
+            const feedbackMS = document.getElementById('feedback-ms');
+            const feedbackKMH = document.getElementById('feedback-kmh');
+            
+            // Vérifier la vitesse en m/s
+            if (parseFloat(vMS) === 10) {
+                feedbackMS.textContent = 'Correct ! v = 100/10 = 10 m/s';
+                feedbackMS.classList.add('bg-green-100', 'text-green-800');
+                feedbackMS.classList.remove('bg-red-100', 'text-red-800');
+            } else {
+                feedbackMS.textContent = 'Incorrect. Utilisez la formule v = d/t = 100/10 = 10 m/s';
+                feedbackMS.classList.add('bg-red-100', 'text-red-800');
+                feedbackMS.classList.remove('bg-green-100', 'text-green-800');
+            }
+            
+            // Vérifier la vitesse en km/h
+            if (parseFloat(vKMH) === 36) {
+                feedbackKMH.textContent = 'Correct ! v = 10 × 3,6 = 36 km/h';
+                feedbackKMH.classList.add('bg-green-100', 'text-green-800');
+                feedbackKMH.classList.remove('bg-red-100', 'text-red-800');
+            } else {
+                feedbackKMH.textContent = 'Incorrect. Pour convertir m/s en km/h, multipliez par 3,6 → 10 × 3,6 = 36 km/h';
+                feedbackKMH.classList.add('bg-red-100', 'text-red-800');
+                feedbackKMH.classList.remove('bg-green-100', 'text-green-800');
+            }
+            
+            feedbackMS.classList.remove('hidden');
+            feedbackKMH.classList.remove('hidden');
+        });
+        
+        // Afficher la solution
+        document.getElementById('solution-vitesse').addEventListener('click', function() {
+            document.getElementById('solution-vitesse-content').classList.toggle('hidden');
+            if (this.textContent === 'Voir la solution') {
+                this.textContent = 'Masquer la solution';
+            } else {
+                this.textContent = 'Voir la solution';
+            }
+        });
+
+        // Dessiner des trajectoires plus complexes
+        function drawEllipse() {
+            const canvas = document.getElementById('ellipseCanvas');
+            const ctx = canvas.getContext('2d');
+            
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+            const radiusX = 80;
+            const radiusY = 40;
+            
+            ctx.beginPath();
+            ctx.ellipse(centerX, centerY, radiusX, radiusY, 0, 0, 2 * Math.PI);
+            ctx.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue('--primary-color');
+            ctx.stroke();
+            
+            // Dessiner un point qui se déplace sur l'ellipse
+            const angle = (Date.now() / 1000) % (2 * Math.PI);
+            const x = centerX + radiusX * Math.cos(angle);
+            const y = centerY + radiusY * Math.sin(angle);
+            
+            ctx.beginPath();
+            ctx.arc(x, y, 5, 0, 2 * Math.PI);
+            ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--primary-color');
+            ctx.fill();
+            
+            requestAnimationFrame(drawEllipse);
+        }
+        
+        function drawParabola() {
+            const canvas = document.getElementById('parabolaCanvas');
+            const ctx = canvas.getContext('2d');
+            
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            const startX = 20;
+            const endX = canvas.width - 20;
+            
+            // Dessiner la parabole
+            ctx.beginPath();
+            ctx.moveTo(startX, canvas.height - 20);
+            
+            for (let x = startX; x <= endX; x++) {
+                // Équation de la parabole
+                const normalizedX = (x - startX) / (endX - startX);
+                const y = canvas.height - 20 - 100 * (1 - Math.pow(2 * normalizedX - 1, 2));
+                
+                ctx.lineTo(x, y);
+            }
+            
+            ctx.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue('--primary-color');
+            ctx.stroke();
+            
+            // Dessiner un point qui se déplace sur la parabole
+            const time = (Date.now() / 2000) % 1; // Cycle de 2 secondes
+            const x = startX + time * (endX - startX);
+            const normalizedX = time;
+            const y = canvas.height - 20 - 100 * (1 - Math.pow(2 * normalizedX - 1, 2));
+            
+            ctx.beginPath();
+            ctx.arc(x, y, 5, 0, 2 * Math.PI);
+            ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--primary-color');
+            ctx.fill();
+            
+            requestAnimationFrame(drawParabola);
+        }
+        
+        // Dessiner les trajectoires géocentriques et héliocentriques
+        function drawOrbits() {
+            // Trajectoire géocentrique
+            const geocentrique = document.getElementById('geocentriqueDemo');
+            geocentrique.innerHTML = '';
+            
+            // Dessiner la Terre au centre
+            const terre = document.createElement('div');
+            terre.className = 'absolute w-8 h-8 bg-blue-500 rounded-full';
+            terre.style.top = '50%';
+            terre.style.left = '50%';
+            terre.style.transform = 'translate(-50%, -50%)';
+            geocentrique.appendChild(terre);
+            
+            // Dessiner l'orbite complexe
+            const orbit = document.createElement('div');
+            orbit.className = 'absolute w-40 h-40 border border-gray-300 border-dashed rounded-full';
+            orbit.style.top = '50%';
+            orbit.style.left = '50%';
+            orbit.style.transform = 'translate(-50%, -50%)';
+            geocentrique.appendChild(orbit);
+            
+            // Dessiner Mars
+            const mars = document.createElement('div');
+            mars.className = 'absolute w-4 h-4 bg-red-500 rounded-full';
+            mars.style.top = '50%';
+            mars.style.left = '50%';
+            geocentrique.appendChild(mars);
+            
+            // Animation de Mars
+            let time = 0;
+            const animate = () => {
+                time += 0.01;
+                
+                // Trajectoire complexe
+                const x = 70 * Math.cos(time) + 10 * Math.cos(4 * time);
+                const y = 70 * Math.sin(time) + 10 * Math.sin(4 * time);
+                
+                mars.style.transform = `translate(calc(-50% + ${x}px), calc(-50% + ${y}px))`;
+                
+                requestAnimationFrame(animate);
+            };
+            animate();
+            
+            // Trajectoire héliocentrique
+            const heliocentrique = document.getElementById('heliocentriqueDemo');
+            heliocentrique.innerHTML = '';
+            
+            // Dessiner le Soleil au centre
+            const soleil = document.createElement('div');
+            soleil.className = 'absolute w-10 h-10 bg-yellow-500 rounded-full';
+            soleil.style.top = '50%';
+            soleil.style.left = '50%';
+            soleil.style.transform = 'translate(-50%, -50%)';
+            heliocentrique.appendChild(soleil);
+            
+            // Dessiner l'orbite de la Terre
+            const orbiteTerre = document.createElement('div');
+            orbiteTerre.className = 'absolute w-28 h-28 border border-gray-300 border-dashed rounded-full';
+            orbiteTerre.style.top = '50%';
+            orbiteTerre.style.left = '50%';
+            orbiteTerre.style.transform = 'translate(-50%, -50%)';
+            heliocentrique.appendChild(orbiteTerre);
+            
+            // Dessiner l'orbite de Mars
+            const orbiteMars = document.createElement('div');
+            orbiteMars.className = 'absolute w-48 h-48 border border-gray-300 border-dashed rounded-full';
+            orbiteMars.style.top = '50%';
+            orbiteMars.style.left = '50%';
+            orbiteMars.style.transform = 'translate(-50%, -50%)';
+            heliocentrique.appendChild(orbiteMars);
+            
+            // Dessiner la Terre
+            const terreHelio = document.createElement('div');
+            terreHelio.className = 'absolute w-4 h-4 bg-blue-500 rounded-full';
+            terreHelio.style.top = '50%';
+            terreHelio.style.left = '50%';
+            heliocentrique.appendChild(terreHelio);
+            
+            // Dessiner Mars
+            const marsHelio = document.createElement('div');
+            marsHelio.className = 'absolute w-3 h-3 bg-red-500 rounded-full';
+            marsHelio.style.top = '50%';
+            marsHelio.style.left = '50%';
+            heliocentrique.appendChild(marsHelio);
+            
+            // Animation des planètes
+            let timeHelio = 0;
+            const animateHelio = () => {
+                timeHelio += 0.01;
+                
+                // La Terre tourne plus vite que Mars
+                const terrePosX = 50 * Math.cos(timeHelio * 1.6);
+                const terrePosY = 50 * Math.sin(timeHelio * 1.6);
+                terreHelio.style.transform = `translate(calc(-50% + ${terrePosX}px), calc(-50% + ${terrePosY}px))`;
+                
+                const marsPosX = 90 * Math.cos(timeHelio);
+                const marsPosY = 90 * Math.sin(timeHelio);
+                marsHelio.style.transform = `translate(calc(-50% + ${marsPosX}px), calc(-50% + ${marsPosY}px))`;
+                
+                requestAnimationFrame(animateHelio);
+            };
+            animateHelio();
+        }
+        
+        // Vecteur vitesse - dessin et interaction
+        function setupVectorCanvas() {
+            const canvas = document.getElementById('vectorCanvas');
+            const ctx = canvas.getContext('2d');
+            const speedInput = document.getElementById('vector-speed');
+            const speedValue = document.getElementById('speed-value');
+            const trajectoryType = document.getElementById('trajectory-type');
+            
+            // Mettre à jour l'affichage de la vitesse
+            speedInput.addEventListener('input', function() {
+                speedValue.textContent = this.value + ' m/s';
+                drawVectorCanvas();
+            });
+            
+            // Changer la trajectoire
+            trajectoryType.addEventListener('change', drawVectorCanvas);
+            
+            function drawVectorCanvas() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                
+                const speed = parseFloat(speedInput.value);
+                const type = trajectoryType.value;
+                
+                const centerX = canvas.width / 2;
+                const centerY = canvas.height / 2;
+                
+                // Dessiner la trajectoire en fonction du type
+                if (type === 'linear') {
+                    // Trajectoire rectiligne
+                    ctx.beginPath();
+                    ctx.moveTo(50, centerY);
+                    ctx.lineTo(canvas.width - 50, centerY);
+                    ctx.strokeStyle = '#aaa';
+                    ctx.stroke();
+                    
+                    // Position du mobile
+                    const time = (Date.now() / 1000) % 5; // Cycle de 5 secondes
+                    const normalizedTime = time / 5;
+                    const x = 50 + normalizedTime * (canvas.width - 100);
+                    
+                    // Dessiner le mobile
+                    ctx.beginPath();
+                    ctx.arc(x, centerY, 8, 0, 2 * Math.PI);
+                    ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--primary-color');
+                    ctx.fill();
+                    
+                    // Dessiner le vecteur vitesse
+                    const vectorLength = speed * 10; // Échelle
+                    
+                    ctx.beginPath();
+                    ctx.moveTo(x, centerY);
+                    ctx.lineTo(x + vectorLength, centerY);
+                    ctx.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue('--primary-color');
+                    ctx.lineWidth = 2;
+                    ctx.stroke();
+                    
+                    // Dessiner la flèche
+                    ctx.beginPath();
+                    ctx.moveTo(x + vectorLength, centerY);
+                    ctx.lineTo(x + vectorLength - 10, centerY - 5);
+                    ctx.lineTo(x + vectorLength - 10, centerY + 5);
+                    ctx.closePath();
+                    ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--primary-color');
+                    ctx.fill();
+                    
+                } else if (type === 'circular') {
+                    // Trajectoire circulaire
+                    const radius = 80;
+                    
+                    ctx.beginPath();
+                    ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
+                    ctx.strokeStyle = '#aaa';
+                    ctx.stroke();
+                    
+                    // Position du mobile
+                    const time = (Date.now() / 2000) % (2 * Math.PI); // Cycle de 2 secondes
+                    const x = centerX + radius * Math.cos(time);
+                    const y = centerY + radius * Math.sin(time);
+                    
+                    // Dessiner le mobile
+                    ctx.beginPath();
+                    ctx.arc(x, y, 8, 0, 2 * Math.PI);
+                    ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--primary-color');
+                    ctx.fill();
+                    
+                    // Dessiner le vecteur vitesse (tangent au cercle)
+                    const vectorLength = speed * 5; // Échelle
+                    const tangentX = -Math.sin(time);
+                    const tangentY = Math.cos(time);
+                    
+                    ctx.beginPath();
+                    ctx.moveTo(x, y);
+                    ctx.lineTo(x + vectorLength * tangentX, y + vectorLength * tangentY);
+                    ctx.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue('--primary-color');
+                    ctx.lineWidth = 2;
+                    ctx.stroke();
+                    
+                    // Dessiner la flèche
+                    const angle = Math.atan2(tangentY, tangentX);
+                    
+                    ctx.beginPath();
+                    ctx.moveTo(x + vectorLength * tangentX, y + vectorLength * tangentY);
+                    ctx.lineTo(
+                        x + vectorLength * tangentX - 10 * Math.cos(angle) + 5 * Math.sin(angle),
+                        y + vectorLength * tangentY - 10 * Math.sin(angle) - 5 * Math.cos(angle)
+                    );
+                    ctx.lineTo(
+                        x + vectorLength * tangentX - 10 * Math.cos(angle) - 5 * Math.sin(angle),
+                        y + vectorLength * tangentY - 10 * Math.sin(angle) + 5 * Math.cos(angle)
+                    );
+                    ctx.closePath();
+                    ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--primary-color');
+                    ctx.fill();
+                    
+                } else if (type === 'parabolic') {
+                    // Trajectoire parabolique
+                    ctx.beginPath();
+                    ctx.moveTo(50, centerY + 70);
+                    
+                    for (let x = 50; x <= canvas.width - 50; x++) {
+                        // Équation de la parabole
+                        const normalizedX = (x - 50) / (canvas.width - 100);
+                        const y = centerY + 70 - 140 * (1 - Math.pow(2 * normalizedX - 1, 2));
+                        
+                        ctx.lineTo(x, y);
+                    }
+                    
+                    ctx.strokeStyle = '#aaa';
+                    ctx.stroke();
+                    
+                    // Position du mobile
+                    const time = (Date.now() / 3000) % 1; // Cycle de 3 secondes
+                    const x = 50 + time * (canvas.width - 100);
+                    const normalizedX = time;
+                    const y = centerY + 70 - 140 * (1 - Math.pow(2 * normalizedX - 1, 2));
+                    
+                    // Calculer la tangente (dérivée de la parabole)
+                    const slope = 140 * 4 * (2 * normalizedX - 1) / (canvas.width - 100);
+                    const angle = Math.atan(slope);
+                    
+                    // Dessiner le mobile
+                    ctx.beginPath();
+                    ctx.arc(x, y, 8, 0, 2 * Math.PI);
+                    ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--primary-color');
+                    ctx.fill();
+                    
+                    // Dessiner le vecteur vitesse
+                    const vectorLength = speed * 5; // Échelle
+                    
+                    ctx.beginPath();
+                    ctx.moveTo(x, y);
+                    ctx.lineTo(x + vectorLength * Math.cos(angle), y + vectorLength * Math.sin(angle));
+                    ctx.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue('--primary-color');
+                    ctx.lineWidth = 2;
+                    ctx.stroke();
+                    
+                    // Dessiner la flèche
+                    ctx.beginPath();
+                    ctx.moveTo(x + vectorLength * Math.cos(angle), y + vectorLength * Math.sin(angle));
+                    ctx.lineTo(
+                        x + vectorLength * Math.cos(angle) - 10 * Math.cos(angle) + 5 * Math.sin(angle),
+                        y + vectorLength * Math.sin(angle) - 10 * Math.sin(angle) - 5 * Math.cos(angle)
+                    );
+                    ctx.lineTo(
+                        x + vectorLength * Math.cos(angle) - 10 * Math.cos(angle) - 5 * Math.sin(angle),
+                        y + vectorLength * Math.sin(angle) - 10 * Math.sin(angle) + 5 * Math.cos(angle)
+                    );
+                    ctx.closePath();
+                    ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--primary-color');
+                    ctx.fill();
+                }
+                
+                requestAnimationFrame(drawVectorCanvas);
+            }
+            
+            // Démarrer l'animation
+            drawVectorCanvas();
+        }
+
+        // Quiz
+        function setupQuiz() {
+            const quizContainer = document.getElementById('quiz-questions');
+            const quizScore = document.getElementById('quiz-score');
+            const checkButton = document.getElementById('check-quiz');
+            const resetButton = document.getElementById('reset-quiz');
+            
+            const questions = [
+                {
+                    question: "Qu'est-ce qu'un système en mécanique ?",
+                    options: [
+                        "C'est l'environnement dans lequel se déroule le mouvement",
+                        "C'est le corps dont on étudie le mouvement",
+                        "C'est l'ensemble des forces qui agissent sur un corps",
+                        "C'est un ensemble d'équations permettant de décrire un mouvement"
+                    ],
+                    correct: 1
+                },
+                {
+                    question: "Qu'est-ce qu'un référentiel ?",
+                    options: [
+                        "C'est un manuel de référence en physique",
+                        "C'est le solide de référence par rapport auquel on étudie le mouvement",
+                        "C'est un système de coordonnées",
+                        "C'est l'unité de mesure de référence pour la vitesse"
+                    ],
+                    correct: 1
+                },
+                {
+                    question: "La trajectoire d'un point est :",
+                    options: [
+                        "La distance parcourue par ce point",
+                        "La vitesse de ce point au cours du temps",
+                        "L'ensemble des positions occupées par ce point durant son mouvement",
+                        "Le temps mis par ce point pour aller d'un endroit à un autre"
+                    ],
+                    correct: 2
+                },
+                {
+                    question: "Dans un mouvement rectiligne, la trajectoire est :",
+                    options: [
+                        "Un cercle",
+                        "Une ligne droite",
+                        "Une ellipse",
+                        "Une parabole"
+                    ],
+                    correct: 1
+                },
+                {
+                    question: "Si v est la vitesse, d la distance et t le temps, quelle est la formule correcte ?",
+                    options: [
+                        "v = d × t",
+                        "v = d + t",
+                        "v = d / t",
+                        "v = t / d"
+                    ],
+                    correct: 2
+                },
+                {
+                    question: "Lorsque la vitesse d'un objet augmente, on dit que son mouvement est :",
+                    options: [
+                        "Accéléré",
+                        "Ralenti",
+                        "Uniforme",
+                        "Curviligne"
+                    ],
+                    correct: 0
+                },
+                {
+                    question: "Un coureur parcourt 200 m en 20 s. Quelle est sa vitesse en m/s ?",
+                    options: [
+                        "10 m/s",
+                        "20 m/s",
+                        "4000 m/s",
+                        "0,1 m/s"
+                    ],
+                    correct: 0
+                },
+                {
+                    question: "La chronophotographie permet de :",
+                    options: [
+                        "Mesurer précisément le temps écoulé",
+                        "Prendre des photos à intervalles de temps réguliers pour étudier un mouvement",
+                        "Calculer la vitesse moyenne d'un objet",
+                        "Étudier la composition chimique d'un corps en mouvement"
+                    ],
+                    correct: 1
+                }
+            ];
+            
+            // Mélanger les questions
+            const shuffledQuestions = [...questions].sort(() => 0.5 - Math.random()).slice(0, 5);
+            
+            // Générer le quiz
+            shuffledQuestions.forEach((q, i) => {
+                const questionEl = document.createElement('div');
+                questionEl.className = 'mb-6 quiz-question';
+                questionEl.innerHTML = `
+                    <p class="font-semibold mb-2">${i + 1}. ${q.question}</p>
+                    <div class="space-y-2">
+                        ${q.options.map((option, j) => `
+                            <div class="quiz-option p-3 rounded cursor-pointer" data-question="${i}" data-option="${j}">
+                                ${option}
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+                quizContainer.appendChild(questionEl);
+            });
+            
+            // Gérer les clics sur les options
+            document.querySelectorAll('.quiz-option').forEach(option => {
+                option.addEventListener('click', function() {
+                    const questionIdx = parseInt(this.dataset.question);
+                    
+                    // Désélectionner les autres options de cette question
+                    document.querySelectorAll(`.quiz-option[data-question="${questionIdx}"]`).forEach(opt => {
+                        opt.classList.remove('selected');
+                    });
+                    
+                    // Sélectionner cette option
+                    this.classList.add('selected');
+                });
+            });
+            
+            // Vérifier les réponses
+            checkButton.addEventListener('click', function() {
+                let correctCount = 0;
+                let totalAnswered = 0;
+                
+                shuffledQuestions.forEach((q, i) => {
+                    const selectedOption = document.querySelector(`.quiz-option[data-question="${i}"].selected`);
+                    
+                    if (selectedOption) {
+                        totalAnswered++;
+                        const optionIdx = parseInt(selectedOption.dataset.option);
+                        
+                        if (optionIdx === q.correct) {
+                            correctCount++;
+                            selectedOption.classList.add('correct');
+                        } else {
+                            selectedOption.classList.add('incorrect');
+                            
+                            // Mettre en évidence la bonne réponse
+                            document.querySelector(`.quiz-option[data-question="${i}"][data-option="${q.correct}"]`).classList.add('correct');
+                        }
+                    }
+                });
+                
+                quizScore.textContent = `${correctCount}/${shuffledQuestions.length}`;
+            });
+            
+            // Réinitialiser le quiz
+            resetButton.addEventListener('click', function() {
+                document.querySelectorAll('.quiz-option').forEach(option => {
+                    option.classList.remove('selected', 'correct', 'incorrect');
+                });
+                
+                quizScore.textContent = `0/${shuffledQuestions.length}`;
+            });
+        }
+        
+        // Initialiser toutes les fonctionnalités au chargement de la page
+        document.addEventListener('DOMContentLoaded', function() {
+            // Animations
+            startTrajectoryAnimations();
+            createBilleAnimation();
+            drawEllipse();
+            drawParabola();
+            drawOrbits();
+            setupVectorCanvas();
+            setupQuiz();
+            
+            // Activer le calcul de vitesse par défaut
+            document.getElementById('start-chrono').click();
+        });
+    </script>
+</body>
+</html>

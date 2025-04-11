@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Révision de Concepts de Géographie Urbaine et Mondialisation</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#5D5CDE',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        
+        .definition-card {
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .definition-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .dark textarea::placeholder,
+        .dark input::placeholder {
+            color: #9ca3af;
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-gray-50 dark:bg-gray-900 dark:text-white">
+    <div class="container mx-auto px-4 py-8 max-w-4xl">
+        <header class="text-center mb-8">
+            <h1 class="text-3xl font-bold text-primary mb-2">Révision de Concepts de Géographie Urbaine et Mondialisation</h1>
+            <p class="text-gray-600 dark:text-gray-300">Testez votre connaissance des concepts géographiques</p>
+        </header>
+
+        <div id="app" class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-6">
+            <!-- Mode sélection -->
+            <div id="selection-mode" class="fade-in">
+                <h2 class="text-xl font-semibold mb-4 text-gray-800 dark:text-gray-100">Choisissez votre mode de révision</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                    <button id="start-practice" class="bg-primary hover:bg-opacity-90 text-white font-medium py-3 px-4 rounded-lg transition-colors">
+                        Mode Révision
+                    </button>
+                    <button id="start-test" class="bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-800 dark:text-white font-medium py-3 px-4 rounded-lg transition-colors">
+                        Mode Test
+                    </button>
+                </div>
+                <div class="mt-6">
+                    <h3 class="text-lg font-semibold mb-2 text-gray-800 dark:text-gray-100">Liste des termes à réviser :</h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+                        <div id="terms-list" class="col-span-full sm:col-span-2 md:col-span-3 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
+                            <!-- La liste des termes sera générée ici par JavaScript -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mode révision/test -->
+            <div id="practice-mode" class="hidden fade-in">
+                <div class="flex justify-between items-center mb-6">
+                    <div>
+                        <span id="progress-text" class="text-sm font-medium text-gray-600 dark:text-gray-300"></span>
+                        <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 mt-1">
+                            <div id="progress-bar" class="bg-primary h-2 rounded-full transition-all duration-300" style="width: 0%"></div>
+                        </div>
+                    </div>
+                    <div>
+                        <span id="score-text" class="text-sm font-medium text-gray-600 dark:text-gray-300">Score: 0/0</span>
+                    </div>
+                </div>
+                
+                <div class="mb-6">
+                    <h2 class="text-2xl font-bold mb-2 text-gray-800 dark:text-gray-100" id="current-term"></h2>
+                    <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">Écrivez la définition de ce terme :</p>
+                    <textarea id="user-definition" class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg p-3 text-base focus:outline-none focus:ring-2 focus:ring-primary dark:text-white" rows="4" placeholder="Tapez votre définition ici..."></textarea>
+                    <button id="check-button" class="mt-4 bg-primary hover:bg-opacity-90 text-white font-medium py-2 px-4 rounded-lg transition-colors">
+                        Vérifier
+                    </button>
+                </div>
+                
+                <div id="feedback" class="hidden mb-6 p-4 rounded-lg">
+                    <h3 class="font-bold mb-2">Correction :</h3>
+                    <div class="flex flex-col space-y-3">
+                        <div>
+                            <p class="text-sm font-medium text-gray-600 dark:text-gray-300">Votre définition :</p>
+                            <p id="user-answer" class="bg-gray-50 dark:bg-gray-700 p-3 rounded-lg text-gray-800 dark:text-gray-200"></p>
+                        </div>
+                        <div>
+                            <p class="text-sm font-medium text-gray-600 dark:text-gray-300">Définition correcte :</p>
+                            <p id="correct-answer" class="bg-gray-50 dark:bg-gray-700 p-3 rounded-lg text-gray-800 dark:text-gray-200"></p>
+                        </div>
+                    </div>
+                    <div class="mt-4 flex flex-wrap gap-2">
+                        <button id="next-button" class="bg-primary hover:bg-opacity-90 text-white font-medium py-2 px-4 rounded-lg transition-colors">
+                            Suivant
+                        </button>
+                        <button id="retry-later-button" class="bg-amber-500 hover:bg-amber-600 text-white font-medium py-2 px-4 rounded-lg transition-colors">
+                            Revoir plus tard
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Mode résultats -->
+            <div id="results-mode" class="hidden fade-in">
+                <h2 class="text-xl font-semibold mb-4 text-gray-800 dark:text-gray-100">Résultats</h2>
+                <div class="mb-6">
+                    <div class="flex justify-between items-center">
+                        <p class="text-gray-600 dark:text-gray-300">Score final :</p>
+                        <p id="final-score" class="text-xl font-bold text-primary">0/0</p>
+                    </div>
+                    <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-4 mt-2">
+                        <div id="final-progress-bar" class="bg-primary h-4 rounded-full transition-all duration-500" style="width: 0%"></div>
+                    </div>
+                </div>
+                
+                <div id="retry-section" class="mb-6">
+                    <h3 class="font-medium mb-2 text-gray-700 dark:text-gray-200">Termes à revoir :</h3>
+                    <div id="retry-terms" class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                        <!-- Les termes à revoir seront ajoutés ici -->
+                    </div>
+                </div>
+                
+                <div class="flex flex-wrap gap-3">
+                    <button id="restart-button" class="bg-primary hover:bg-opacity-90 text-white font-medium py-2 px-4 rounded-lg transition-colors">
+                        Recommencer
+                    </button>
+                    <button id="practice-retry-button" class="bg-amber-500 hover:bg-amber-600 text-white font-medium py-2 px-4 rounded-lg transition-colors hidden">
+                        Réviser les termes difficiles
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="text-center">
+            <button id="toggle-theme" class="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 focus:outline-none">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 hidden dark:inline-block" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                </svg>
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 inline-block dark:hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                </svg>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Définitions
+        const definitions = [
+            {
+                term: "Mondialisation",
+                definition: "Mise en relation des différentes parties du monde sous l'effet de l'accélération des échanges et des mobilités humaines. Favorisée par la révolution des transports et des télécommunications, elle transforme les espaces et sélectionne les territoires."
+            },
+            {
+                term: "Flux",
+                definition: "ensemble de marchandises, personnes, informations et capitaux (argent) en circulation"
+            },
+            {
+                term: "Urbanisation",
+                definition: "Augmentation de la population urbaine et transformation d'un espace rural en un espace urbain"
+            },
+            {
+                term: "Quartier d'affaires",
+                definition: "quartier central constitué de grandes tours où se concentrent les banques, les sièges sociaux, les commerces de luxe…"
+            },
+            {
+                term: "Métropole mondiale",
+                definition: "Grande ville concentrant population, activités et richesses. Elle exerce des fonctions de commandement politique, économique ou culturel à l'échelle mondiale."
+            },
+            {
+                term: "Shrinking city",
+                definition: "une ville qui perd des activités, de la population et qui s'appauvrit."
+            },
+            {
+                term: "Gentrification",
+                definition: "les transformations de quartiers populaires dues à l'arrivée de catégories sociales plus favorisées, qui réhabilitent certains logements et importent des modes de vie et de consommation différents."
+            }
+        ];
+
+        // Variables globales
+        let currentIndex = 0;
+        let score = 0;
+        let isTestMode = false;
+        let shuffledDefinitions = [];
+        let termsToRetry = [];
+
+        // Éléments du DOM
+        const selectionMode = document.getElementById('selection-mode');
+        const practiceMode = document.getElementById('practice-mode');
+        const resultsMode = document.getElementById('results-mode');
+        const startPracticeBtn = document.getElementById('start-practice');
+        const startTestBtn = document.getElementById('start-test');
+        const currentTermEl = document.getElementById('current-term');
+        const userDefinitionEl = document.getElementById('user-definition');
+        const checkButton = document.getElementById('check-button');
+        const feedbackEl = document.getElementById('feedback');
+        const userAnswerEl = document.getElementById('user-answer');
+        const correctAnswerEl = document.getElementById('correct-answer');
+        const nextButton = document.getElementById('next-button');
+        const retryLaterButton = document.getElementById('retry-later-button');
+        const progressBar = document.getElementById('progress-bar');
+        const progressText = document.getElementById('progress-text');
+        const scoreText = document.getElementById('score-text');
+        const finalScoreEl = document.getElementById('final-score');
+        const finalProgressBar = document.getElementById('final-progress-bar');
+        const restartButton = document.getElementById('restart-button');
+        const practiceRetryButton = document.getElementById('practice-retry-button');
+        const toggleThemeBtn = document.getElementById('toggle-theme');
+        const termsListEl = document.getElementById('terms-list');
+        const retryTermsEl = document.getElementById('retry-terms');
+        const retrySection = document.getElementById('retry-section');
+
+        // Initialisation
+        document.addEventListener('DOMContentLoaded', () => {
+            // Détection du thème préféré
+            if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                document.documentElement.classList.add('dark');
+            }
+
+            // Événement pour changer le thème en fonction de la préférence utilisateur
+            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
+                if (event.matches) {
+                    document.documentElement.classList.add('dark');
+                } else {
+                    document.documentElement.classList.remove('dark');
+                }
+            });
+
+            // Initialiser la liste des termes
+            renderTermsList();
+
+            // Événement pour changer le thème manuellement
+            toggleThemeBtn.addEventListener('click', () => {
+                document.documentElement.classList.toggle('dark');
+            });
+
+            // Lancer le mode pratique
+            startPracticeBtn.addEventListener('click', () => {
+                initializeMode(false);
+            });
+
+            // Lancer le mode test
+            startTestBtn.addEventListener('click', () => {
+                initializeMode(true);
+            });
+
+            // Vérifier la réponse de l'utilisateur
+            checkButton.addEventListener('click', checkAnswer);
+
+            // Passer à la question suivante
+            nextButton.addEventListener('click', nextQuestion);
+
+            // Ajouter le terme à revoir plus tard
+            retryLaterButton.addEventListener('click', addToRetryList);
+
+            // Recommencer le quiz
+            restartButton.addEventListener('click', () => {
+                showSelectionMode();
+            });
+
+            // Revoir les termes difficiles
+            practiceRetryButton.addEventListener('click', () => {
+                if (termsToRetry.length > 0) {
+                    shuffledDefinitions = [...termsToRetry];
+                    termsToRetry = [];
+                    currentIndex = 0;
+                    score = 0;
+                    isTestMode = false;
+                    showPracticeMode();
+                    updateProgress();
+                    loadQuestion();
+                }
+            });
+
+            // Permettre d'utiliser Entrée pour vérifier la réponse
+            userDefinitionEl.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    checkButton.click();
+                }
+            });
+        });
+
+        // Afficher la liste des termes à réviser
+        function renderTermsList() {
+            termsListEl.innerHTML = '';
+            definitions.forEach(def => {
+                const termItem = document.createElement('div');
+                termItem.className = 'definition-card bg-gray-100 dark:bg-gray-700 p-3 rounded-lg text-gray-800 dark:text-gray-200 cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-600';
+                termItem.textContent = def.term;
+                termItem.addEventListener('click', () => {
+                    initializeMode(false, def.term);
+                });
+                termsListEl.appendChild(termItem);
+            });
+        }
+
+        // Initialiser le mode de jeu
+        function initializeMode(testMode, specificTerm = null) {
+            isTestMode = testMode;
+            
+            // Si un terme spécifique est demandé, commencer par celui-ci
+            if (specificTerm) {
+                // Trouver l'index du terme spécifique
+                const specificIndex = definitions.findIndex(def => def.term === specificTerm);
+                if (specificIndex !== -1) {
+                    // Réorganiser les définitions pour commencer par ce terme
+                    const reorderedDefs = [...definitions];
+                    const specificDef = reorderedDefs.splice(specificIndex, 1)[0];
+                    reorderedDefs.unshift(specificDef);
+                    shuffledDefinitions = reorderedDefs;
+                }
+            } else {
+                // Sinon, mélanger les définitions
+                shuffledDefinitions = [...definitions].sort(() => Math.random() - 0.5);
+            }
+            
+            currentIndex = 0;
+            score = 0;
+            termsToRetry = [];
+            
+            showPracticeMode();
+            updateProgress();
+            loadQuestion();
+        }
+
+        // Charger une question
+        function loadQuestion() {
+            if (currentIndex < shuffledDefinitions.length) {
+                const currentDef = shuffledDefinitions[currentIndex];
+                currentTermEl.textContent = currentDef.term;
+                userDefinitionEl.value = '';
+                feedbackEl.classList.add('hidden');
+                userDefinitionEl.focus();
+                
+                // Mettre à jour le score et la progression
+                updateProgress();
+            } else {
+                showResults();
+            }
+        }
+
+        // Vérifier la réponse de l'utilisateur
+        function checkAnswer() {
+            const userDefinition = userDefinitionEl.value.trim();
+            
+            if (userDefinition === '') {
+                // Alerter l'utilisateur qu'il doit entrer une définition
+                userDefinitionEl.classList.add('border-red-500', 'ring-1', 'ring-red-500');
+                setTimeout(() => {
+                    userDefinitionEl.classList.remove('border-red-500', 'ring-1', 'ring-red-500');
+                }, 1000);
+                return;
+            }
+            
+            const currentDef = shuffledDefinitions[currentIndex];
+            const correctDefinition = currentDef.definition;
+            
+            // Vérifier la similarité entre les réponses
+            const similarity = calculateSimilarity(userDefinition, correctDefinition);
+            const isCorrect = similarity >= 0.6;
+            
+            // Mettre à jour le score si c'est correct
+            if (isCorrect) {
+                score++;
+                updateProgress();
+            }
+            
+            // Afficher le feedback
+            userAnswerEl.textContent = userDefinition;
+            correctAnswerEl.textContent = correctDefinition;
+            
+            feedbackEl.className = isCorrect ? 
+                'mb-6 p-4 rounded-lg bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-900' :
+                'mb-6 p-4 rounded-lg bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-900';
+            
+            feedbackEl.classList.remove('hidden');
+            userDefinitionEl.disabled = true;
+            checkButton.disabled = true;
+            nextButton.focus();
+        }
+
+        // Calculer la similarité entre deux chaînes de caractères
+        function calculateSimilarity(str1, str2) {
+            // Normaliser les textes (minuscules, sans ponctuation)
+            const normalize = text => text.toLowerCase()
+                .replace(/[.,;:!?()""'']/g, '')
+                .replace(/\s+/g, ' ')
+                .trim();
+            
+            const s1 = normalize(str1);
+            const s2 = normalize(str2);
+            
+            // Tokeniser en mots
+            const words1 = s1.split(' ');
+            const words2 = s2.split(' ');
+            
+            // Compter les mots communs
+            const commonWords = words1.filter(word => 
+                words2.some(w => w === word || w.includes(word) || word.includes(w))
+            ).length;
+            
+            // Calculer la similarité comme le rapport entre les mots communs et le nombre total de mots (moyenne)
+            const totalWords = (words1.length + words2.length) / 2;
+            return commonWords / totalWords;
+        }
+
+        // Passer à la question suivante
+        function nextQuestion() {
+            currentIndex++;
+            userDefinitionEl.disabled = false;
+            checkButton.disabled = false;
+            
+            if (currentIndex < shuffledDefinitions.length) {
+                loadQuestion();
+            } else {
+                showResults();
+            }
+        }
+
+        // Ajouter le terme actuel à la liste des termes à revoir
+        function addToRetryList() {
+            const currentDef = shuffledDefinitions[currentIndex];
+            
+            // Vérifier si le terme n'est pas déjà dans la liste
+            if (!termsToRetry.some(def => def.term === currentDef.term)) {
+                termsToRetry.push(currentDef);
+            }
+            
+            nextQuestion();
+        }
+
+        // Mettre à jour la barre de progression et le score
+        function updateProgress() {
+            const progress = (currentIndex / shuffledDefinitions.length) * 100;
+            progressBar.style.width = `${progress}%`;
+            progressText.textContent = `Question ${currentIndex + 1}/${shuffledDefinitions.length}`;
+            scoreText.textContent = `Score: ${score}/${currentIndex}`;
+        }
+
+        // Afficher les résultats
+        function showResults() {
+            practiceMode.classList.add('hidden');
+            resultsMode.classList.remove('hidden');
+            
+            const finalProgress = (score / shuffledDefinitions.length) * 100;
+            finalProgressBar.style.width = `${finalProgress}%`;
+            finalScoreEl.textContent = `${score}/${shuffledDefinitions.length}`;
+            
+            // Afficher les termes à revoir
+            if (termsToRetry.length > 0) {
+                retrySection.classList.remove('hidden');
+                practiceRetryButton.classList.remove('hidden');
+                renderRetryTerms();
+            } else {
+                retrySection.classList.add('hidden');
+                practiceRetryButton.classList.add('hidden');
+            }
+        }
+
+        // Afficher les termes à revoir
+        function renderRetryTerms() {
+            retryTermsEl.innerHTML = '';
+            termsToRetry.forEach(def => {
+                const termItem = document.createElement('div');
+                termItem.className = 'bg-amber-50 dark:bg-amber-900/20 p-3 rounded-lg border border-amber-200 dark:border-amber-800';
+                termItem.innerHTML = `<strong>${def.term}</strong>`;
+                retryTermsEl.appendChild(termItem);
+            });
+        }
+
+        // Afficher le mode pratique
+        function showPracticeMode() {
+            selectionMode.classList.add('hidden');
+            resultsMode.classList.add('hidden');
+            practiceMode.classList.remove('hidden');
+        }
+
+        // Afficher le mode sélection
+        function showSelectionMode() {
+            practiceMode.classList.add('hidden');
+            resultsMode.classList.add('hidden');
+            selectionMode.classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>

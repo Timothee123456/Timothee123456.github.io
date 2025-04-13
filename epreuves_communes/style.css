@@ -1,4 +1,4 @@
-   * {
+* {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
@@ -11,7 +11,7 @@
       font-family: Arial, sans-serif;
       background-color: black;
       color: #333;
-      background-color: #ffed00;
+      background-color: #75b951;
       text-align: center;
     }
     .title {
@@ -41,7 +41,7 @@
    
         
     h2 {
-      color: #4CAF50;
+      color: #39833c;
       font-size: 30px;
         }
         
@@ -167,6 +167,8 @@
     color: rgba(255, 255, 255, 0.5);
     font-size: 28px;
     font-weight: bold;
+    -webkit-text-stroke: 0.5px rgba(255, 255, 255, 0.3);
+    text-stroke: 0.5px rgba(255, 255, 255, 0.3);;
     cursor: pointer;
   }
 

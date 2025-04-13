@@ -70,16 +70,13 @@
         }
         
         @keyframes moveCirculaire {
-            0% { transform: rotate(0deg) translateX(50px) rotate(0deg); }
-            100% { transform: rotate(360deg) translateX(50px) rotate(-360deg); }
+            0% { transform: rotate(0deg) translateX(50px); }
+            100% { transform: rotate(360deg) translateX(50px); }
         }
         
+        /* Suppression de l'animation CSS qui cause des zigzags */
         @keyframes moveCurviligne {
-            0% { left: 0; top: 0; }
-            25% { left: 25%; top: 50px; }
-            50% { left: 50%; top: 0; }
-            75% { left: 75%; top: 50px; }
-            100% { left: 100%; top: 0; }
+            /* Vide - nous allons utiliser JavaScript à la place */
         }
         
         /* Styles pour la chronophotographie */
@@ -825,9 +822,41 @@
             circulaireDemo.style.left = '50%';
             circulaireDemo.style.animation = 'moveCirculaire 4s linear infinite';
             
-            // Animation curviligne
+            // Animation curviligne - en utilisant JavaScript pour une courbe fluide
             const curviligneDemo = document.getElementById('curviligneDemo');
-            curviligneDemo.style.animation = 'moveCurviligne 4s ease-in-out infinite alternate';
+            
+            // Utiliser JavaScript au lieu de CSS pour une courbe fluide
+            let curviligneX = 0;
+            let direction = 1;
+            
+            function animateCurviligne() {
+                const container = curviligneDemo.parentElement;
+                const maxWidth = container.offsetWidth - 20;
+                const height = container.offsetHeight - 20;
+                
+                // Avancer le point le long de l'axe X
+                curviligneX += 2 * direction;
+                
+                // Changer de direction quand on atteint les bords
+                if (curviligneX >= maxWidth) {
+                    direction = -1;
+                } else if (curviligneX <= 0) {
+                    direction = 1;
+                }
+                
+                // Calculer la position Y en utilisant une fonction sinusoïdale pour une courbe fluide
+                const normalizedX = curviligneX / maxWidth;
+                const y = height / 2 * (1 + 0.6 * Math.sin(normalizedX * Math.PI * 3));
+                
+                // Appliquer les positions
+                curviligneDemo.style.left = curviligneX + 'px';
+                curviligneDemo.style.top = y + 'px';
+                
+                requestAnimationFrame(animateCurviligne);
+            }
+            
+            // Démarrer l'animation
+            animateCurviligne();
         }
         
         // Démarrer les animations au chargement de la page

@@ -8,12 +8,14 @@
 
 ## Examples
 Make it appear right
-```<div class="tooltip_container">
+```html
+<div class="tooltip_container">
   <input type="checkbox">
   <label class="tooltip">This text appears on hover</label>
 </div>```
 Make it appear left
-```<div class="tooltip_container_left">
+```html
+<div class="tooltip_container_left">
   <input type="checkbox">
   <label class="tooltip">This text appears on hover on the left</label>
 </div>```

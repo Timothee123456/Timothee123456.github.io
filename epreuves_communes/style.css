@@ -9,7 +9,6 @@
       min-height: 100vh; /* Ensure the body takes up at least the full viewport height */
       margin: 0;
       font-family: Arial, sans-serif;
-      background-color: black;
       color: #333;
       text-align: center;
     }

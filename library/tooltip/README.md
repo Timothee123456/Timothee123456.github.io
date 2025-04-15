@@ -1,13 +1,13 @@
 # Tooltip
 
-## Import script
-```html
-<script type="module" src="https://timothee123456.github.io/library/tooltip/script.js"></script>
-```
-
 ## Import styles
 ```html
 <link rel="stylesheet" href="https://timothee123456.github.io/library/tooltip/style.css">
+```
+
+## Import script
+```html
+<script type="module" src="https://timothee123456.github.io/library/tooltip/script.js"></script>
 ```
 
 ## Examples

@@ -410,128 +410,8 @@ hr {
             return response;
     } 
           
-async function fetchData () {
-    let reminderArr = [{"content":"Réviser pour les épreuves communes","date":"2025-05-09T00:00:00","id":3,"pronote_id":null,"subject_id":3,"tag_id":3,"user_id":3}];
-    let tagArr = [{"bg_color":"#1882a5","content":"Optionel","id":3,"user_id":3},{"bg_color":"#ff0000","content":"Évaluation","id":4,"user_id":3}];
-    let subjectArr = [{"bg_color":"#ff0000","content":"Maths","id":3,"user_id":3},{"bg_color":"#2532ef","content":"Francais","id":4,"user_id":3}]; 
-    loading = document.getElementById("loading")
-    
-    // sort reminderArr by date
-    reminderArr = reminderArr.sort((a, b) => new Date(a.date) - new Date(b.date));
-
-    // remove expired reminders
-    const removeExpiredObjects = (array) => {
-	    const currentDate = new Date();
-	    currentDate.setDate(currentDate.getDate() - 1);
-	    return array.filter(item => new Date(item.date) >= currentDate);
-     };
-    reminderArr = removeExpiredObjects(reminderArr);
-
-		
-    if (Array.isArray(reminderArr)) {
-        loading.style.display = "block";
-    
-        reminderArr.forEach(function(element, index) {
-            let container = document.createElement("div");
-    container.className = "container";
-    container.id = `container${index}`;
-    
-	let reminder = document.createElement("div");
-		let subject = subjectArr.find(mySubject => mySubject.id === element.subject_id);
-            let tag = tagArr.find(myTag => myTag.id === element.tag_id);
-            element.date = new Date(element.date)
-    reminder.className = "reminder-container"; // Renamed for clarity
-    reminder.style.backgroundColor = subject.bg_color; // Corrected typo
-    reminder.id = `remDiv${index}`;
-    reminder.addEventListener('click', (event) => {
-        // Close other overlays
-        removeDarknessAll(index, reminderArr); // Pass the current index to exclude it
-
-        // Toggle the current overlay
-        toggleDarkness(index);
-        event.stopPropagation();
-      });
-	    container.appendChild(reminder);
-	    
-	    let overlay = document.createElement("div");
-	    overlay.className = "overlay";
-	    overlay.id = `overlay${index}`;
-	    container.appendChild(overlay);
-	    
-	    let edit = document.createElement("button");
-	    edit.className = "edit";
-	    edit.innerHTML = "Modifier";
-        edit.addEventListener('click', () => {
-            open_close_modal();
-        });
-	    edit.id = `edit${index}`;
-	    
-	    let del = document.createElement("button");
-	    del.className = "del";
-	    del.innerHTML = "Effacer";
-	    del.addEventListener('click', () => {
-		toggleDarkness(index);
-		open_modal(`/api/reminder/${element.id}`, `container${index}`);
-        });
-	    del.id = `del${index}`;
-	    
-	    overlay.appendChild(edit);
-	    overlay.appendChild(del);
-	    
-	    document.getElementById("main").appendChild(container);
-    
-            const elem_attributes = {
-                tagged: {
-                    htmlType: "a",
-                    elemContent: tag.content,
-                    elemBgColor: tag.bg_color
-                },
-                date: {
-                    htmlType: "nobr",
-                    elemContent: "Pour : " + find_date_name(element.date)
-                },
-                topic: {
-                    htmlType: "h2",
-                    elemContent: subject.content // Corrected to display subject name
-                },
-                text: {
-                    htmlType: "p",
-                    elemContent: element.content
-                },
-                checkbox: {
-                    htmlType: "input",
-                    elemContent: "",
-                    type: "checkbox"
-                }
-            };
-            Object.keys(elem_attributes).forEach(function(attr){
-                let elem = document.createElement(elem_attributes[attr].htmlType);
-                elem.innerHTML = elem_attributes[attr].elemContent;
-                elem.className =  `reminder${elem_attributes[attr].htmlType}`; // Made class more specific
-                elem.id = `rem${elem_attributes[attr].htmlType}${index}`;
-                if (elem_attributes[attr].htmlType === "a") {
-                    elem.style.backgroundColor = elem_attributes[attr].elemBgColor;
-                } else if (elem_attributes[attr].htmlType === "h2") {
-                    elem.style.color = adjustColorBrightness(subject.bg_color, 70);
-                } else if (elem_attributes[attr].htmlType === "input"){
-                    elem.type = elem_attributes[attr].type;
-                }
-                reminder.appendChild(elem);
-            });
-        });
-	loading.style.display = "none";
-	// add removeDarknessAll onclick to the body
-	const body = document.getElementById("body");
-	body.addEventListener('click', (event) => {removeDarknessALL(reminderArr);});
-    } else {
-        console.error("Data fetched is not an array");
-    }
-}
 
 
-fetchData();
-</script>
-<script>
 // change footer date
     const d = new Date();
     let year = d.getFullYear();
@@ -920,6 +800,130 @@ subject_modal.querySelector("form").addEventListener("submit", function(event){
     secondary_modal(event, "/api/subject", subject_modal, "subject_select");
     document.getElementById("Nom_subject").innerHTML = "";
 });
+
+
+
+
+	async function fetchData () {
+    let reminderArr = [{"content":"Réviser pour les épreuves communes","date":"2025-05-09T00:00:00","id":3,"pronote_id":null,"subject_id":3,"tag_id":3,"user_id":3}];
+    let tagArr = [{"bg_color":"#1882a5","content":"Optionel","id":3,"user_id":3},{"bg_color":"#ff0000","content":"Évaluation","id":4,"user_id":3}];
+    let subjectArr = [{"bg_color":"#ff0000","content":"Maths","id":3,"user_id":3},{"bg_color":"#2532ef","content":"Francais","id":4,"user_id":3}]; 
+    loading = document.getElementById("loading")
+    
+    // sort reminderArr by date
+    reminderArr = reminderArr.sort((a, b) => new Date(a.date) - new Date(b.date));
+
+    // remove expired reminders
+    const removeExpiredObjects = (array) => {
+	    const currentDate = new Date();
+	    currentDate.setDate(currentDate.getDate() - 1);
+	    return array.filter(item => new Date(item.date) >= currentDate);
+     };
+    reminderArr = removeExpiredObjects(reminderArr);
+
+		
+    if (Array.isArray(reminderArr)) {
+        loading.style.display = "block";
+    
+        reminderArr.forEach(function(element, index) {
+            let container = document.createElement("div");
+    container.className = "container";
+    container.id = `container${index}`;
+    
+	let reminder = document.createElement("div");
+		let subject = subjectArr.find(mySubject => mySubject.id === element.subject_id);
+            let tag = tagArr.find(myTag => myTag.id === element.tag_id);
+            element.date = new Date(element.date)
+    reminder.className = "reminder-container"; // Renamed for clarity
+    reminder.style.backgroundColor = subject.bg_color; // Corrected typo
+    reminder.id = `remDiv${index}`;
+    reminder.addEventListener('click', (event) => {
+        // Close other overlays
+        removeDarknessAll(index, reminderArr); // Pass the current index to exclude it
+
+        // Toggle the current overlay
+        toggleDarkness(index);
+        event.stopPropagation();
+      });
+	    container.appendChild(reminder);
+	    
+	    let overlay = document.createElement("div");
+	    overlay.className = "overlay";
+	    overlay.id = `overlay${index}`;
+	    container.appendChild(overlay);
+	    
+	    let edit = document.createElement("button");
+	    edit.className = "edit";
+	    edit.innerHTML = "Modifier";
+        edit.addEventListener('click', () => {
+            open_close_modal();
+        });
+	    edit.id = `edit${index}`;
+	    
+	    let del = document.createElement("button");
+	    del.className = "del";
+	    del.innerHTML = "Effacer";
+	    del.addEventListener('click', () => {
+		toggleDarkness(index);
+		open_modal(`/api/reminder/${element.id}`, `container${index}`);
+        });
+	    del.id = `del${index}`;
+	    
+	    overlay.appendChild(edit);
+	    overlay.appendChild(del);
+	    
+	    document.getElementById("main").appendChild(container);
+    
+            const elem_attributes = {
+                tagged: {
+                    htmlType: "a",
+                    elemContent: tag.content,
+                    elemBgColor: tag.bg_color
+                },
+                date: {
+                    htmlType: "nobr",
+                    elemContent: "Pour : " + find_date_name(element.date)
+                },
+                topic: {
+                    htmlType: "h2",
+                    elemContent: subject.content // Corrected to display subject name
+                },
+                text: {
+                    htmlType: "p",
+                    elemContent: element.content
+                },
+                checkbox: {
+                    htmlType: "input",
+                    elemContent: "",
+                    type: "checkbox"
+                }
+            };
+            Object.keys(elem_attributes).forEach(function(attr){
+                let elem = document.createElement(elem_attributes[attr].htmlType);
+                elem.innerHTML = elem_attributes[attr].elemContent;
+                elem.className =  `reminder${elem_attributes[attr].htmlType}`; // Made class more specific
+                elem.id = `rem${elem_attributes[attr].htmlType}${index}`;
+                if (elem_attributes[attr].htmlType === "a") {
+                    elem.style.backgroundColor = elem_attributes[attr].elemBgColor;
+                } else if (elem_attributes[attr].htmlType === "h2") {
+                    elem.style.color = adjustColorBrightness(subject.bg_color, 70);
+                } else if (elem_attributes[attr].htmlType === "input"){
+                    elem.type = elem_attributes[attr].type;
+                }
+                reminder.appendChild(elem);
+            });
+        });
+	loading.style.display = "none";
+	// add removeDarknessAll onclick to the body
+	const body = document.getElementById("body");
+	body.addEventListener('click', (event) => {removeDarknessALL(reminderArr);});
+    } else {
+        console.error("Data fetched is not an array");
+    }
+}
+
+
+fetchData();
 </script>
 </body>
 </html>

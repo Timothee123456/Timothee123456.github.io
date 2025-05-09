@@ -411,9 +411,9 @@ hr {
     } 
           
 async function fetchData () {
-    let reminderArr = '[{"content":"Réviser pour les épreuves communes","date":"2025-05-09T00:00:00","id":3,"pronote_id":null,"subject_id":3,"tag_id":3,"user_id":3}]';
-    let tagArr = '[{"bg_color":"#1882a5","content":"Optionel","id":3,"user_id":3},{"bg_color":"#ff0000","content":"Évaluation","id":4,"user_id":3}]';
-    let subjectArr = '[{"bg_color":"#ff0000","content":"Maths","id":3,"user_id":3},{"bg_color":"#2532ef","content":"Francais","id":4,"user_id":3}]'; 
+    let reminderArr = [{"content":"Réviser pour les épreuves communes","date":"2025-05-09T00:00:00","id":3,"pronote_id":null,"subject_id":3,"tag_id":3,"user_id":3}];
+    let tagArr = [{"bg_color":"#1882a5","content":"Optionel","id":3,"user_id":3},{"bg_color":"#ff0000","content":"Évaluation","id":4,"user_id":3}];
+    let subjectArr = [{"bg_color":"#ff0000","content":"Maths","id":3,"user_id":3},{"bg_color":"#2532ef","content":"Francais","id":4,"user_id":3}]; 
     loading = document.getElementById("loading")
     
     // sort reminderArr by date

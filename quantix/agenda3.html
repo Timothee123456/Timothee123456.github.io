@@ -69,9 +69,13 @@
         line-height: 0.1;
     }
     
-    .reminderinput { /* Mark as done */
-        position: relative;
-  		left: 0px;
+    .reminderinput { /* Mark as done checkbox */
+        position: absolute;
+  		top: 5px;
+        right: 5px;
+        transform: scale(1.25);
+        -ms-transform: scale(1.25);
+        -webkit-transform: scale(1.25);
     }
 	  
 
@@ -999,6 +1003,8 @@ subject_modal.querySelector("form").addEventListener("submit", function(event){
 
 
 
+
+
 	async function fetchData () {
     let reminderArr = [{"content":"Réviser pour les épreuves communes","date":"2025-05-09T00:00:00","id":3,"pronote_id":null,"subject_id":3,"tag_id":3,"user_id":3}];
     let tagArr = [{"bg_color":"#1882a5","content":"Optionel","id":3,"user_id":3},{"bg_color":"#ff0000","content":"Évaluation","id":4,"user_id":3}];
@@ -1070,11 +1076,6 @@ subject_modal.querySelector("form").addEventListener("submit", function(event){
 	    document.getElementById("main").appendChild(container);
     
             const elem_attributes = {
-                checkbox: {
-                    htmlType: "input",
-                    elemContent: "",
-                    type: "checkbox"
-                }
                 tagged: {
                     htmlType: "a",
                     elemContent: tag.content,
@@ -1083,6 +1084,11 @@ subject_modal.querySelector("form").addEventListener("submit", function(event){
                 date: {
                     htmlType: "nobr",
                     elemContent: "Pour : " + find_date_name(element.date)
+                },
+                checkbox: {
+                    htmlType: "input",
+                    elemContent: "",
+                    type: "checkbox"
                 },
                 topic: {
                     htmlType: "h2",
@@ -1104,6 +1110,18 @@ subject_modal.querySelector("form").addEventListener("submit", function(event){
                     elem.style.color = adjustColorBrightness(subject.bg_color, 70);
                 } else if (elem_attributes[attr].htmlType === "input"){
                     elem.type = elem_attributes[attr].type;
+                    elem.addEventListener('click', function mark_as_done(event) {
+                  event.stopPropagation();
+                  const response = await fetch('/api/reminder/done/' + reminderId);
+                      if (!response.ok) {
+                          throw new Error(`HTTP error! status: ${response.status}`);
+                      }
+                      // Optionally, handle successful response (e.g., remove the reminder from the UI)
+                      console.log(`Reminder ${reminderId} marked as done.`);
+                  } catch (error) {
+                      console.error("Error marking reminder as done:", error);
+                      // Optionally, display an error message to the user
+                  }
                 }
                 reminder.appendChild(elem);
             });

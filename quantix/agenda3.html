@@ -11,7 +11,202 @@
   <script type="module" src="https://timothee123456.github.io/library/tooltip/script.js"></script>
 
   <!-- Import reminder css -->
-  <link rel="stylesheet" href="https://quantix.pythonanywhere.com/static/style/reminder.css">
+<style>
+.reminder-container {
+        /* For mobile phones: */
+            width: 80vw;
+
+            @media only screen and (min-width: 400px) {
+              /* For tablets: */
+              width: 40vw;
+            }
+
+            @media only screen and (min-width: 730px) {
+              /* For computers: */
+              width: 28vw;
+            }
+
+            @media only screen and (min-width: 950px) {
+              /* For computers: */
+              width: 21vw;
+            }
+            
+        height: 102px;
+        padding-top: 15px;
+        border-radius: 15px;
+        overflow: auto;
+        color: #fff;
+      	cursor: pointer;
+      	vertical-align: middle;
+        transition: transform 1s;
+    }
+
+    /* Hover = Zoom */
+    .reminder-container:hover,
+    .reminder-container:focus,
+    .reminder-container-zoom{
+      transform: scale(1.05);
+    }
+
+    .remindera { /*TAG*/
+        padding: 7px;
+        padding-right: 10px;
+        padding-left: 10px;
+        border-radius: 20px;
+        font-size: 13px;
+    }
+
+    .remindernobr { /*DATE*/
+    	font-family: "Anaheim", sans-serif;
+        font-size: 13px;
+        padding-left: 10px;
+    }
+
+    .reminderh2 { /*TOPIC*/
+    	font-family: "Architects Daughter", sans-serif;
+        font-size: 23px;
+        font-weight: bold;
+        line-height: 0.1;
+    }
+    
+    .reminderinput { /* Mark as done */
+        position: relative;
+  		left: 0px;
+    }
+	  
+
+    .add-dev-button {
+        width: 102px;
+        height: 102px;
+        line-height: 1;
+        margin-top: 15px;
+        display: inline-block;
+        background-color: #04AA6D;
+        border-radius: 15px;
+        color: #fff;
+        font-size: 100px;
+        text-decoration: none;
+        border-width: 0px;
+        
+        transform: matrix3d(
+          1, 0, 1, 0,
+          0, 1, 1, 0,
+          1, 1, 0, 0,
+          0, 0, 0, 1
+        );
+        transition: transform 1s;
+      }
+
+      .add-dev-button:hover {
+        transform: rotate3d(1, 1, 1, 0deg)
+        matrix3d(
+        1, 0, 1, 0,
+        0, 1, 1, 0,
+        1, 1, 0, 0,
+        0, 0, 0, 0.95);
+      }
+      
+      
+      
+      
+      /* overlay */
+      .container {
+            position: relative;
+            display: inline-block;
+            /* For mobile phones: */
+            width: 80vw;
+            margin-left: 2.5vw;
+            margin-right: 2.5vw;
+
+            @media only screen and (min-width: 400px) {
+              /* For tablets: */
+              width: 40vw;
+            }
+
+            @media only screen and (min-width: 730px) {
+              /* For computers: */
+              width: 28vw;
+              margin-left: 1.75vw;
+              margin-right: 1.75vw;
+            }
+
+            @media only screen and (min-width: 950px) {
+              /* For computers: */
+              width: 21vw;
+              margin-left: 1vw;
+              margin-right: 1vw;
+            }
+            
+            height: 117px;
+	    vertical-align: middle;
+            margin-bottom: 15px;
+            
+        }
+    
+      .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            /* Changed to allow pointer events when active */
+            pointer-events: none;
+            
+            border-radius: 15px;
+            z-index: 1;
+            transform: rotate3d(1, 1, 1, 0deg)
+                matrix3d(
+                1, 0, 1, 0,
+                0, 1, 1, 0,
+                1, 1, 0, 0,
+                0, 0, 0, 0.95);
+        }
+
+        .overlay.active {
+            opacity: 1;
+            /* This makes the overlay block all interactions */
+            pointer-events: all;
+        }
+        
+
+        /* Disable text selection when overlay is active */
+        .disable-content {
+            user-select: none;
+        }
+        
+        
+  
+        .edit,.del{
+            color: white;
+            padding: 14px 20px;
+            margin: 8px 0;
+            border: none;
+            cursor: pointer;
+            width: 90%;
+            opacity: 0.9;
+            border-radius: 15px;
+        }
+        
+   		 .edit:hover,
+         .del:hover {
+           opacity:1;
+    	}
+        
+        .edit {
+           background-color: #04AA6D;
+        }
+
+        .del {
+           background-color: #f44336;
+        }
+</style>
+  
+  
+  
+  
   <!-- Import loading ring css -->
   <link rel="stylesheet" href="https://quantix.pythonanywhere.com/static/style/loading_ring.css">
 	
@@ -875,6 +1070,11 @@ subject_modal.querySelector("form").addEventListener("submit", function(event){
 	    document.getElementById("main").appendChild(container);
     
             const elem_attributes = {
+                checkbox: {
+                    htmlType: "input",
+                    elemContent: "",
+                    type: "checkbox"
+                }
                 tagged: {
                     htmlType: "a",
                     elemContent: tag.content,
@@ -892,11 +1092,6 @@ subject_modal.querySelector("form").addEventListener("submit", function(event){
                     htmlType: "p",
                     elemContent: element.content
                 },
-                checkbox: {
-                    htmlType: "input",
-                    elemContent: "",
-                    type: "checkbox"
-                }
             };
             Object.keys(elem_attributes).forEach(function(attr){
                 let elem = document.createElement(elem_attributes[attr].htmlType);
@@ -927,4 +1122,3 @@ fetchData();
 </script>
 </body>
 </html>
-

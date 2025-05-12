@@ -1,1 +1,125 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>
+     Las frutas
+    </title>
+<link rel="stylesheet" href="style.css">
+<style>
+.accents {
+	background:linear-gradient(to bottom, #599bb3 5%, #408c99 100%);
+	background-color:#599bb3;
+	border-radius:8px;
+	display:inline-block;
+	cursor:pointer;
+	color:#ffffff;
+	font-family:Arial;
+	font-size:20px;
+	padding:7px 10px;
+	text-decoration:none;
+}
+.accents:hover {
+	background:linear-gradient(to bottom, #408c99 5%, #599bb3 100%);
+	background-color:#408c99;
+}
+.accents:active {
+	position:relative;
+	top:1px;
+}
 
+</style>
+</head>
+<body>
+<!-- This is the div where the menu will be dynamically inserted -->
+<div id="menuContainer"></div>
+
+<!-- Link to the JavaScript file -->
+<script src="https://timothee123456.github.io/espagnol/4/navigation.js"></script>
+
+
+<center>
+<h2>Las frutas</h2>
+<p></p>
+<nobr id="fr"></nobr>
+<p></p>
+<img id="myImage">
+<p></p>
+<input autocomplete="off" style="text-align:center;" id="1">
+<nobr id="correction_a"></nobr>
+<p></p>
+<nobr id="correction_b" style="color:red;"></nobr>
+<p></p>
+<a href="#" class="accents" onclick="accent('á')">á</a>
+<a href="#" class="accents" onclick="accent('é')">é</a>
+<a href="#" class="accents" onclick="accent('í')">í</a>
+<a href="#" class="accents" onclick="accent('ó')">ó</a>
+<a href="#" class="accents" onclick="accent('ú')">ú</a>
+<a href="#" class="accents" onclick="accent('ñ')">ñ</a>
+<p></p>
+<a href="#" class="myButton" onclick="myFunction()" id="Terminado">Terminado</a>
+<p></p>
+<a href="#" class="myButton2" onclick="reset()">Next</a>
+</center>
+<script>
+/* Mots */
+const es = ["la manzana", "la pera", "la naranja", "la mandarina", "la mora", "la frambuesa", "el melón", "la sandía", "el arándano", "la cereza", "el limón", "la lima", "las uvas", "la piña", "el plátano", "el mango", "el kiwi", "el melocotón", "el aguacate", "la ciruela"];
+const fr = ["la pomme", "la poire", "l'orange", "la mandarine", "la mûre", "la framboise", "le melon", "la pastèque", "la myrtille", "la cerise", "le citron", "le citron vert", "le raisin", "l'ananas", "la banane", "la mangue", "le kiwi", "la pêche", "l'avocat", "la prune"];
+
+nb = 0
+
+var image = document.getElementById('myImage')
+
+reset()
+
+function reset() {
+document.getElementById("Terminado").style.display = "inline";
+document.getElementById("correction_a").innerHTML = ""
+document.getElementById("correction_b").innerHTML = ""
+document.getElementById("1").value = ""
+document.getElementById("1").style.color = "black"
+
+
+// create fr
+nb = Math.floor(Math.random() * es.length)
+document.getElementById("fr").innerHTML = fr[nb]
+
+// create image
+image.src = "/" + nb;
+
+
+}
+
+// myFunction
+function myFunction() {
+
+document.getElementById("Terminado").style.display = "none";
+let Word1 = document.getElementById("1").value
+Word1 = Word1.toLowerCase()
+Word1 = Word1.replace(/[!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~]/g, '');
+
+
+if (Word1 == es[nb].toLowerCase()){
+            document.getElementById("correction_a").innerHTML = "✓";
+            document.getElementById("correction_a").style.color = "green"
+            }
+            else if (Word1 == ""){
+            document.getElementById("1").value = answer1;
+            document.getElementById("1").style.color = "red"
+            }
+            else {
+            document.getElementById("correction_a").innerHTML = "✕";
+            document.getElementById("correction_a").style.color = "red";
+            document.getElementById("correction_b").innerHTML = answer1;
+      
+	}
+}
+
+function accent (lettre){
+document.getElementById("1").focus();
+const Word1 = document.getElementById("1").value;
+document.getElementById("1").value = Word1 + lettre;
+}
+</script>
+</body>
+</html>
+</html>

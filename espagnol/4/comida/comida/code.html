@@ -58,7 +58,7 @@
 <p></p>
 <a href="#" class="myButton" onclick="myFunction()" id="Terminado">Terminado</a>
 <p></p>
-<a href="#" class="myButton2" onclick="reset()">Next</a>
+<a href="#" class="myButton2" onclick="reset()" id="Next">Next</a>
 </center>
 <script>
 /* Mots */
@@ -138,6 +138,20 @@ document.getElementById("1").focus();
 const Word1 = document.getElementById("1").value;
 document.getElementById("1").value = Word1 + lettre;
 }
+
+document.getElementById("1").addEventListener('keypress', function(event) {
+  if (event.key === 'Enter') {
+    terminado = document.getElementById('Terminado')
+    next = document.getElementById('Next')
+    const style = window.getComputedStyle(terminado);
+  	if (style.display != 'none'){
+       terminado.click(); // Trigger the button click
+    }
+    else {
+       next.click(); // Trigger the button click
+    }
+  }
+});
 </script>
 </body>
 </html>

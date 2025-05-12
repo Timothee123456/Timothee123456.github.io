@@ -177,6 +177,9 @@
 
         if (correctAnswersCount === answer.length) {
           document.getElementById("correction_b").innerHTML = ""; // All correct
+          // remove element
+            es.splice(nb, 1)
+            fr.splice(nb, 1)
         } else {
           let missingAnswers = answer.filter(item => !answersGiven.includes(item));
           document.getElementById("correction_b").innerHTML = "Faltan: " + missingAnswers.join(" / ");
@@ -188,6 +191,9 @@
         if (Word1 == answer) {
           document.getElementById("correction_1").innerHTML = "✓";
           document.getElementById("correction_1").style.color = "green"
+          // remove element
+            es.splice(nb, 1)
+            fr.splice(nb, 1)
         } else if (Word1 == "") {
           document.getElementById("1").value = answer;
           document.getElementById("1").style.color = "red"

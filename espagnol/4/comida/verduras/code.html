@@ -1,1 +1,144 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>
+     Las verduras
+    </title>
+<link rel="stylesheet" href="https://timothee123456.github.io/espagnol/4/style.css">
+<style>
+.accents {
+	background:linear-gradient(to bottom, #599bb3 5%, #408c99 100%);
+	background-color:#599bb3;
+	border-radius:8px;
+	display:inline-block;
+	cursor:pointer;
+	color:#ffffff;
+	font-family:Arial;
+	font-size:20px;
+	padding:7px 10px;
+	text-decoration:none;
+}
+.accents:hover {
+	background:linear-gradient(to bottom, #408c99 5%, #599bb3 100%);
+	background-color:#408c99;
+}
+.accents:active {
+	position:relative;
+	top:1px;
+}
 
+</style>
+</head>
+<body>
+<!-- This is the div where the menu will be dynamically inserted -->
+<div id="menuContainer"></div>
+
+<!-- Link to the JavaScript file -->
+<script src="https://timothee123456.github.io/espagnol/4/navigation.js"></script>
+
+
+<center>
+<h2>Las verduras</h2>
+<p></p>
+<nobr id="fr"></nobr>
+<p></p>
+<img id="myImage">
+<p></p>
+<input autocomplete="off" style="text-align:center;" id="1">
+<nobr id="correction_a"></nobr>
+<p></p>
+<nobr id="correction_b" style="color:red;"></nobr>
+<p></p>
+<a href="#" class="accents" onclick="accent('á')">á</a>
+<a href="#" class="accents" onclick="accent('é')">é</a>
+<a href="#" class="accents" onclick="accent('í')">í</a>
+<a href="#" class="accents" onclick="accent('ó')">ó</a>
+<a href="#" class="accents" onclick="accent('ú')">ú</a>
+<a href="#" class="accents" onclick="accent('ñ')">ñ</a>
+<p></p>
+<a href="#" class="myButton" onclick="myFunction()" id="Terminado">Terminado</a>
+<p></p>
+<a href="#" class="myButton2" onclick="reset()">Next</a>
+</center>
+<script>
+/* Mots */
+const es = ["la lechuga", "el maíz", ["la judía", "la alubia", "el frijol"], "el guisante", "el brócoli", "la zanahoria", "el pimiento", "la guindilla", "el ajo", "la calabaza", "la berenjena", "la cebolla", "el boniato", "la patata", "la coliflor", "la cebolleta", "el tomate", ["la seta", "el champiñón"], "la col de bruselas"];
+const fr = ["la laitue", "le maïs", "le haricot", "le pois", "le brocoli", "la carotte", "le poivron", "le piment", "l'ail", "la citrouille", "l'aubergine", "l'oignon", "la patate douce", "la pomme de terre", "le chou-fleur", "la ciboulette (spring onions)", "la tomate", "le champignon", "le chou de Bruxelles"];
+
+nb = 0
+
+var image = document.getElementById('myImage')
+
+reset()
+
+function reset() {
+document.getElementById("Terminado").style.display = "inline";
+document.getElementById("correction_a").innerHTML = ""
+document.getElementById("correction_b").innerHTML = ""
+document.getElementById("1").value = ""
+document.getElementById("1").style.color = "black"
+
+
+// create fr
+nb = Math.floor(Math.random() * es.length)
+document.getElementById("fr").innerHTML = fr[nb]
+
+// create image
+imgnb = nb + 1
+image.src = imgnb + '.jpg';
+
+
+}
+
+// myFunction
+function myFunction() {
+
+document.getElementById("Terminado").style.display = "none";
+let Word1 = document.getElementById("1").value
+Word1 = Word1.toLowerCase()
+Word1 = Word1.replace(/[!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~]/g, '');
+
+answer = es[nb]
+if (Array.isArray(answer)){
+      if (answer.includes(Word1)){
+                  document.getElementById("correction_a").innerHTML = "✓";
+                  document.getElementById("correction_a").style.color = "green"
+                  }
+                  else if (Word1 == ""){
+                  document.getElementById("1").value = answer.join("/");
+                  document.getElementById("1").style.color = "red"
+                  }
+                  else {
+                  document.getElementById("correction_a").innerHTML = "✕";
+                  document.getElementById("correction_a").style.color = "red";
+                  document.getElementById("correction_b").innerHTML = answer.join(" / ");
+            
+      	}
+      }
+else {
+  if (Word1 == answer){
+                  document.getElementById("correction_a").innerHTML = "✓";
+                  document.getElementById("correction_a").style.color = "green"
+                  }
+                  else if (Word1 == ""){
+                  document.getElementById("1").value = answer;
+                  document.getElementById("1").style.color = "red"
+                  }
+                  else {
+                  document.getElementById("correction_a").innerHTML = "✕";
+                  document.getElementById("correction_a").style.color = "red";
+                  document.getElementById("correction_b").innerHTML = answer;
+            
+      	}
+      }
+}
+
+function accent (lettre){
+document.getElementById("1").focus();
+const Word1 = document.getElementById("1").value;
+document.getElementById("1").value = Word1 + lettre;
+}
+</script>
+</body>
+</html>
+</html>

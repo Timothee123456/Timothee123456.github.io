@@ -7,6 +7,15 @@ function createMenu() {
     var menuItems = [
         { title: "Estar", url: "https://timothee123456.github.io/espagnol/4/estar.html" },
         { title: "Gérondif", url: "https://timothee123456.github.io/espagnol/4/gerondif.html" },
+        {
+            title: "Comida",
+            dropdown: true,
+            items: [
+                { title: "Frutas", url: "https://timothee123456.github.io/espagnol/4/comida/frutas/code.html" },
+                { title: "Verduras", url: "https://timothee123456.github.io/espagnol/4/comida/verduras/code.html" },
+                { title: "Comida", url: "https://timothee123456.github.io/espagnol/4/comida/comida/code.html" }
+            ]
+        },
         { title: "5ème", url: "https://timothee123456.github.io/espagnol/jours-de-la-semaine", floatRight: true }
     ];
 

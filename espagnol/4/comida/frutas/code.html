@@ -4,7 +4,7 @@
     <title>
      Las frutas
     </title>
-<link rel="stylesheet" href="timothee123456.github.io/espagnol/4/style.css">
+<link rel="stylesheet" href="style.css">
 <style>
 .accents {
 	background:linear-gradient(to bottom, #599bb3 5%, #408c99 100%);
@@ -84,7 +84,7 @@ nb = Math.floor(Math.random() * es.length)
 document.getElementById("fr").innerHTML = fr[nb]
 
 // create image
-image.src = nb + '.jpg';
+image.src = "/" + nb;
 
 
 }
@@ -97,8 +97,8 @@ let Word1 = document.getElementById("1").value
 Word1 = Word1.toLowerCase()
 Word1 = Word1.replace(/[!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~]/g, '');
 
-
-if (Word1 == es[nb].toLowerCase()){
+answer1 = es[nb]
+if (Word1 == answer1.toLowerCase()){
             document.getElementById("correction_a").innerHTML = "✓";
             document.getElementById("correction_a").style.color = "green"
             }

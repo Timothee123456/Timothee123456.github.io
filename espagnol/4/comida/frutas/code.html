@@ -5,6 +5,7 @@
      Las frutas
     </title>
 <link rel="stylesheet" href="https://timothee123456.github.io/espagnol/4/style.css">
+<link rel="stylesheet" href="https://timothee123456.github.io/espagnol/4/comida/bravo_styles.css">
 <style>
 .accents {
 	background:linear-gradient(to bottom, #599bb3 5%, #408c99 100%);
@@ -60,6 +61,12 @@
 <p></p>
 <a href="#" class="myButton2" onclick="reset()" id="Next">Next</a>
 </center>
+<div class="popup" id="bravoPopup">
+  <div class="popup-content">
+    <h2>¡Bravo!</h2>
+    <p>¡Felicitaciones!</p>
+  </div>
+</div>
 <script>
 /* Mots */
 const es = ["la manzana", "la pera", "la naranja", "la mandarina", "la mora", "la frambuesa", "el melón", "la sandía", "el arándano", "la cereza", "el limón", "la lima", "las uvas", "la piña", "el plátano", "el mango", "el kiwi", "el melocotón", "el aguacate", "la ciruela"];
@@ -78,7 +85,10 @@ document.getElementById("correction_b").innerHTML = ""
 document.getElementById("1").value = ""
 document.getElementById("1").style.color = "black"
 
-
+if (es.length === 0){
+   showPopup()
+}
+else {
 // create fr
 nb = Math.floor(Math.random() * es.length)
 document.getElementById("fr").innerHTML = fr[nb]
@@ -86,7 +96,7 @@ document.getElementById("fr").innerHTML = fr[nb]
 // create image
 imgnb = nb + 1
 image.src = imgnb + '.jpg';
-
+}
 
 }
 
@@ -137,6 +147,11 @@ document.getElementById("1").addEventListener('keypress', function(event) {
     }
   }
 });
+
+
+function showPopup() {
+  document.getElementById('bravoPopup').style.display = 'flex';
+}
 </script>
 </body>
 </html>

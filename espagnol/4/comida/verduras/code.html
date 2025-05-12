@@ -6,6 +6,7 @@
     Las verduras
   </title>
   <link rel="stylesheet" href="https://timothee123456.github.io/espagnol/4/style.css">
+  <link rel="stylesheet" href="https://timothee123456.github.io/espagnol/4/comida/bravo_styles.css">
   <style>
     .accents {
       background: linear-gradient(to bottom, #599bb3 5%, #408c99 100%);
@@ -69,6 +70,12 @@
     <p></p>
     <a href="#" class="myButton2" onclick="reset()" id="Next">Next</a>
   </center>
+  <div class="popup" id="bravoPopup">
+  <div class="popup-content">
+    <h2>¡Bravo!</h2>
+    <p>¡Felicitaciones!</p>
+  </div>
+</div>
   <script>
     /* Mots */
     const es = ["la lechuga", "el maíz", ["la judía", "la alubia", "el frijol"], "el guisante", "el brócoli", "la zanahoria", "el pimiento", "la guindilla", "el ajo", "la calabaza", "la berenjena", "la cebolla", "el boniato", "la patata", "la coliflor", "la cebolleta", "el tomate", ["la seta", "el champiñón"], "la col de bruselas"];
@@ -93,7 +100,10 @@
       document.getElementById("3").value = "" // Clear input 3
       document.getElementById("3").style.color = "black"
 
-
+      if (es.length === 0){
+         showPopup()
+      }
+      else {
       // create fr
       nb = Math.floor(Math.random() * es.length)
       document.getElementById("fr").innerHTML = fr[nb]
@@ -117,6 +127,7 @@
         input2.style.display = 'none'
         input3.style.display = 'none'
       }
+    }
     }
 
 
@@ -226,6 +237,9 @@
     }
   }
 });
+    function showPopup() {
+  document.getElementById('bravoPopup').style.display = 'flex';
+}
   </script>
 </body>
 

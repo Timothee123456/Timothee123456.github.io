@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Mirrored text</title>
+<style>
+div {
+	font-size: 25px
+}
+
+div.ex {
+  transform: scaleX(-1)
+}
+</style>
+</head>
+<body>
+
+  <center>
+<div class="ex">Look in a mirror</div>
+
+  <script>
+    // Function to extract a query parameter value by name
+    function getQueryParam(name) {
+      const urlParams = new URLSearchParams(window.location.search);
+      return urlParams.get(name);
+    }
+
+    // Get the value of the 'text' parameter
+    const textValue = getQueryParam('text');
+
+    // Get the span element where we'll display the value
+    const ex = document.getElementById('ex');
+
+    // If the 'text' parameter exists, update the p's text content
+    if (textValue) {
+      ex.textContent = textValue;
+    }
+  </script>
+
+</body>
+</html>

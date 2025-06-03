@@ -3,19 +3,26 @@
 <head>
   <title>Mirrored text</title>
 <style>
-div {
-	font-size: 25px
+html, body {
+  height: 100%;
+  margin: 0;
 }
 
-div.ex {
-  transform: scaleX(-1)
+div {
+  font-size: 25px;
+  transform: scaleX(-1);
+  display: flex;  /* Make it a flex container */
+  justify-content: center;  /* Center horizontally */
+  align-items: center;      /* Center vertically */
+  height: 100%;
 }
 </style>
 </head>
 <body>
 
-  <center>
-<div class="ex" id="ex">Look in a mirror</div>
+<div id="ex">Look in a mirror</div>
+
+</body>
 
   <script>
     // Function to extract a query parameter value by name
@@ -32,9 +39,7 @@ div.ex {
 
     // If the 'text' parameter exists, update the p's text content
     if (textValue) {
-      ex.innerHTML = textValue;
+      ex.textContent = textValue;
     }
   </script>
-
-</body>
 </html>

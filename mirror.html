@@ -39,6 +39,8 @@ div {
 
     // If the 'text' parameter exists, update the p's text content
     if (textValue) {
+      // Insert space before the <strong> tag
+      const stringWithSpace = textValue.replace(/%3Cstrong/i, ' %3Cstrong'); //i for case insensitive
       ex.innerHTML = textValue;
     }
   </script>

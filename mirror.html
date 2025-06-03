@@ -11,16 +11,15 @@ html, body {
 div {
   font-size: 25px;
   transform: scaleX(-1);
-  display: flex;  /* Make it a flex container */
-  justify-content: center;  /* Center horizontally */
-  align-items: center;      /* Center vertically */
+  text-align: center;
+  line-height: 100vh;
   height: 100%;
 }
 </style>
 </head>
 <body>
 
-<div id="ex">Look in a mirror</div>
+<div id="ex">Look in a <strong>mirror</strong></div>
 
 </body>
 
@@ -39,8 +38,6 @@ div {
 
     // If the 'text' parameter exists, update the p's text content
     if (textValue) {
-      // Insert space before the <strong> tag
-      const stringWithSpace = textValue.replace(/%3Cstrong/i, ' %3Cstrong'); //i for case insensitive
       ex.innerHTML = textValue;
     }
   </script>

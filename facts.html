@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+</head>
+<body>
+
+<input id="input">
+<button id="button">Press</button>
+<script>
+let text = document.getElementById("demo").innerHTML
+
+const remove_did-you-know = text.split("Did you know");
+if (remove_did-you-know){
+	text = "Did you know" + remove_did-you-know[1]
+}
+
+const remove_sources = text.split("---");
+if (remove_sources){
+	text = remove_sources[0]
+}
+
+let button = document.getElementById("button")
+button.innerHTML = text
+</script>
+</body>
+</html>

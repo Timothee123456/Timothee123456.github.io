@@ -1,26 +1,29 @@
 <!DOCTYPE html>
 <html>
-<head>
-</head>
 <body>
-
 <input id="input">
-<button id="button">Press</button>
+<button id="button" onclick="press()">Press</button>
+<p id="p"></p>
+
 <script>
-let text = document.getElementById("demo").innerHTML
+function press(){
+  let text = document.getElementById("input").value
 
-const remove_did-you-know = text.split("Did you know");
-if (remove_did-you-know){
-	text = "Did you know" + remove_did-you-know[1]
+  const remove_did_you_know = text.split("Did you know");
+  if (remove_did_you_know[1]){
+      text = "Did you know" + remove_did_you_know[1]
+  }
+
+  const remove_sources = text.split("---");
+  if (remove_sources){
+      text = remove_sources[0]
+  }
+
+  let button = document.getElementById("button")
+  let p = document.getElementById("p")
+  p.innerHTML = text
+  navigator.clipboard.writeText(text);
 }
-
-const remove_sources = text.split("---");
-if (remove_sources){
-	text = remove_sources[0]
-}
-
-let button = document.getElementById("button")
-button.innerHTML = text
 </script>
 </body>
 </html>

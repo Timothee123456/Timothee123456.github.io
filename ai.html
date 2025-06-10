@@ -1,42 +1,26 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <title>Comida</title>
-  <link rel="stylesheet" href="https://timothee123456.github.io/espagnol/jours-de-la-semaine/style.css">
-</head>
 <body>
-  <h1>Comida</h1>
-  <div id="content">
-    <div class="column">
-      <h2>Desayuno</h2>
-      <ul>
-        <li>Pan</li>
-        <li>Café</li>
-        <li>Jugo de naranja</li>
-        <li>Huevos</li>
-        <li>Tostadas</li>
-      </ul>
-    </div>
-    <div class="column">
-      <h2>Almuerzo</h2>
-      <ul>
-        <li>Arroz con pollo</li>
-        <li>Pizza</li>
-        <li>Ensalada</li>
-        <li>Pasta</li>
-        <li>Sopa</li>
-      </ul>
-    </div>
-    <div class="column">
-      <h2>Cena</h2>
-      <ul>
-        <li>Pescado</li>
-        <li>Carne asada</li>
-        <li>Vegetales al vapor</li>
-        <li>Sushi</li>
-        <li>Papas fritas</li>
-      </ul>
-    </div>
-  </div>
+<input id="input">
+<button id="button" onclick="press()">Press</button>
+<p id="p"></p>
+
+<script>
+function press(){
+  let text = document.getElementById("input").value
+
+  const slashes = text.split("//");
+  if (slashes[1]){
+      text = slashes[1]
+  }
+
+  text.trim()
+
+  let button = document.getElementById("button")
+  let p = document.getElementById("p")
+  p.innerHTML = text
+  navigator.clipboard.writeText(text);
+}
+</script>
 </body>
 </html>

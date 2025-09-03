@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+.group {
+    line-height: 1%;
+    float: left;
+    padding: 2px;
+}
+
+p {
+	text-align: center;
+}
+
+input {
+	width: 100px;
+}
+
+button {
+	position: absolute;
+    font-size: 20px;
+  	top: 35px;
+    margin-left: 30px
+}
+
+.done {
+	margin-left: 150px
+}
+</style>
+</head>
+<body>
+<div class="main">
+  <div class="group">
+    <p>Pinyin</p>
+    <input id="input1">
+  </div>
+  <div class="group">
+    <p>Caractère</p>
+    <input id="input2">
+  </div>
+  <div class="group">
+    <p>Français</p>
+    <input id="input3">
+  </div>
+  <button onclick="add()">Ajouter</button>
+  <button onclick="done()" class="done">Terminé</button>
+<div>
+
+<script>
+var dictionary = []
+
+function add(){
+	const input1 = document.getElementById("input1")
+    const input2 = document.getElementById("input2")
+    const input3 = document.getElementById("input3")
+
+    if (input1.value != "" && input2.value != "" && input3.value != ""){
+      const new_word = {
+        Pinyin: input1.value,
+        Caractère: input2.value,
+        Français: input3.value,
+      }
+      dictionary.push(new_word); 
+      input1.value = ""
+      input2.value = ""
+      input3.value = ""
+    }
+}
+
+function done(){
+	text = ""
+    text += "["
+  	for (item in dictionary){
+  		text += JSON.stringify(dictionary[item])
+        text += ","
+  	}
+    text += "]"
+	document.write(text)
+}
+
+
+
+
+
+</script>
+
+</body>
+</html>
+
+

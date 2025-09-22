@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>Chinese Flashcards</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
@@ -22,6 +22,28 @@
         .card-back {
             transform: rotateY(180deg);
         }
+        
+        /* Mobile optimizations */
+        @media (max-width: 640px) {
+            .card-chinese {
+                font-size: 4rem;
+            }
+            .card-pinyin {
+                font-size: 1.5rem;
+            }
+            .card-french {
+                font-size: 2rem;
+            }
+        }
+        
+        /* Prevent text selection on tap */
+        .no-select {
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
     </style>
 </head>
 <body class="bg-gray-100 dark:bg-gray-900 min-h-screen">
@@ -38,52 +60,52 @@
         });
     </script>
 
-    <div class="container mx-auto px-4 py-8 max-w-2xl">
-        <h1 class="text-3xl font-bold text-center mb-8 text-gray-800 dark:text-white">
+    <div class="container mx-auto px-3 py-4 max-w-2xl">
+        <h1 class="text-2xl sm:text-3xl font-bold text-center mb-6 text-gray-800 dark:text-white">
             Chinese Flashcards
         </h1>
 
         <!-- Game Screen -->
-        <div id="gameScreen" class="space-y-6">
+        <div id="gameScreen" class="space-y-4 sm:space-y-6">
             <!-- Progress Bar -->
-            <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
-                <div id="progressBar" class="bg-blue-500 h-2 rounded-full transition-all duration-300" style="width: 0%"></div>
+            <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3">
+                <div id="progressBar" class="bg-blue-500 h-3 rounded-full transition-all duration-300" style="width: 0%"></div>
             </div>
             
             <!-- Card Counter -->
-            <div class="text-center text-gray-600 dark:text-gray-400">
+            <div class="text-center text-gray-600 dark:text-gray-400 text-base">
                 <span id="cardCounter">1 / 20</span>
             </div>
 
             <!-- Flashcard -->
-            <div class="card-flip">
-                <div id="flashcard" class="card-inner relative w-full h-80 cursor-pointer">
+            <div class="card-flip px-2">
+                <div id="flashcard" class="card-inner relative w-full h-72 sm:h-80 cursor-pointer no-select">
                     <!-- Front of card (Chinese + Pinyin) -->
-                    <div class="card-front absolute inset-0 bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 flex flex-col items-center justify-center p-8">
-                        <div id="chineseChar" class="text-6xl font-bold text-gray-800 dark:text-white mb-4">你好</div>
-                        <div id="pinyin" class="text-2xl text-gray-600 dark:text-gray-400">nǐ hǎo</div>
-                        <div class="text-sm text-gray-500 dark:text-gray-500 mt-6">Click to reveal translation</div>
+                    <div class="card-front absolute inset-0 bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 flex flex-col items-center justify-center p-4 sm:p-8">
+                        <div id="chineseChar" class="card-chinese text-6xl sm:text-6xl font-bold text-gray-800 dark:text-white mb-2 sm:mb-4">你好</div>
+                        <div id="pinyin" class="card-pinyin text-xl sm:text-2xl text-gray-600 dark:text-gray-400">nǐ hǎo</div>
+                        <div class="text-sm text-gray-500 dark:text-gray-500 mt-4 sm:mt-6 text-center">Tap to reveal translation</div>
                     </div>
                     
                     <!-- Back of card (French translation) -->
-                    <div class="card-back absolute inset-0 bg-blue-50 dark:bg-blue-900 rounded-xl shadow-lg border border-blue-200 dark:border-blue-700 flex flex-col items-center justify-center p-8">
-                        <div id="frenchTranslation" class="text-3xl font-semibold text-blue-800 dark:text-blue-200 text-center">salut</div>
-                        <div class="text-sm text-blue-600 dark:text-blue-400 mt-6">Click to flip back</div>
+                    <div class="card-back absolute inset-0 bg-blue-50 dark:bg-blue-900 rounded-xl shadow-lg border border-blue-200 dark:border-blue-700 flex flex-col items-center justify-center p-4 sm:p-8">
+                        <div id="frenchTranslation" class="card-french text-2xl sm:text-3xl font-semibold text-blue-800 dark:text-blue-200 text-center">salut</div>
+                        <div class="text-sm text-blue-600 dark:text-blue-400 mt-4 sm:mt-6 text-center">Tap to flip back</div>
                     </div>
                 </div>
             </div>
 
             <!-- Action Buttons -->
-            <div class="flex justify-center space-x-4">
-                <button id="knowItBtn" class="flex items-center space-x-2 bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-lg font-semibold transition-colors">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div class="flex justify-center space-x-3 px-2">
+                <button id="knowItBtn" class="flex-1 max-w-40 flex items-center justify-center space-x-2 bg-green-500 hover:bg-green-600 active:bg-green-700 text-white px-4 py-4 rounded-lg font-semibold transition-colors min-h-[56px] text-base">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
                     </svg>
                     <span>Know it</span>
                 </button>
                 
-                <button id="dontKnowBtn" class="flex items-center space-x-2 bg-red-500 hover:bg-red-600 text-white px-6 py-3 rounded-lg font-semibold transition-colors">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <button id="dontKnowBtn" class="flex-1 max-w-40 flex items-center justify-center space-x-2 bg-red-500 hover:bg-red-600 active:bg-red-700 text-white px-4 py-4 rounded-lg font-semibold transition-colors min-h-[56px] text-base">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                     </svg>
                     <span>Don't know</span>
@@ -92,32 +114,32 @@
         </div>
 
         <!-- Results Screen -->
-        <div id="resultsScreen" class="hidden text-center space-y-6">
-            <h2 class="text-2xl font-bold text-gray-800 dark:text-white mb-6">Session Complete!</h2>
+        <div id="resultsScreen" class="hidden text-center space-y-4 sm:space-y-6 px-2">
+            <h2 class="text-xl sm:text-2xl font-bold text-gray-800 dark:text-white mb-4 sm:mb-6">Session Complete!</h2>
             
-            <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg">
-                <div class="grid grid-cols-2 gap-4 mb-6">
+            <div class="bg-white dark:bg-gray-800 rounded-xl p-4 sm:p-6 shadow-lg">
+                <div class="grid grid-cols-2 gap-4 mb-4 sm:mb-6">
                     <div class="text-center">
-                        <div id="correctCount" class="text-3xl font-bold text-green-500">0</div>
+                        <div id="correctCount" class="text-2xl sm:text-3xl font-bold text-green-500">0</div>
                         <div class="text-sm text-gray-600 dark:text-gray-400">Known</div>
                     </div>
                     <div class="text-center">
-                        <div id="incorrectCount" class="text-3xl font-bold text-red-500">0</div>
+                        <div id="incorrectCount" class="text-2xl sm:text-3xl font-bold text-red-500">0</div>
                         <div class="text-sm text-gray-600 dark:text-gray-400">Unknown</div>
                     </div>
                 </div>
                 
                 <div class="text-center">
-                    <div id="accuracyPercent" class="text-4xl font-bold text-blue-500">0%</div>
+                    <div id="accuracyPercent" class="text-3xl sm:text-4xl font-bold text-blue-500">0%</div>
                     <div class="text-sm text-gray-600 dark:text-gray-400">Accuracy</div>
                 </div>
             </div>
 
             <div class="space-y-3">
-                <button id="reviewMissedBtn" class="w-full bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 rounded-lg font-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                <button id="reviewMissedBtn" class="w-full bg-orange-500 hover:bg-orange-600 active:bg-orange-700 text-white px-6 py-4 rounded-lg font-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed min-h-[56px] text-base">
                     Review Missed Cards
                 </button>
-                <button id="restartBtn" class="w-full bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold transition-colors">
+                <button id="restartBtn" class="w-full bg-blue-500 hover:bg-blue-600 active:bg-blue-700 text-white px-6 py-4 rounded-lg font-semibold transition-colors min-h-[56px] text-base">
                     Start New Session
                 </button>
             </div>

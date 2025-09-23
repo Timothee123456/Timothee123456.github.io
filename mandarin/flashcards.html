@@ -238,7 +238,7 @@
         // Get the desired flashcards file name from a query parameter (e.g., index.html?deck=vocabulary)
         const urlParams = new URLSearchParams(window.location.search);
         const deckName = urlParams.get('deck') || 'default'; // Use 'default' if no deck is specified
-        const flashcardsFile = `flashcards-${deckName}.js`; // e.g., flashcards-vocabulary.js
+        const flashcardsFile = `${deckName}.js`; // e.g., flashcards-vocabulary.js
 
         // Load the flashcards data and then initialize the app
         loadScript(flashcardsFile, () => {

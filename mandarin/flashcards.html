@@ -298,8 +298,8 @@
             const flashcardsFile = `${deckName}.js`;
 
             loadScript(flashcardsFile, () => {
-                if (typeof window.flashcards === 'undefined' || !Array.isArray(window.flashcards)) {
-                    console.error(`Failed to load flashcards from ${flashcardsFile} or 'flashcards' is not properly defined. File content: ${window.flashcards}`);
+                if (typeof flashcards === 'undefined' || !Array.isArray(flashcards)) {
+                    console.error(`Failed to load flashcards from ${flashcardsFile} or 'flashcards' is not properly defined. File content: ${flashcards}`);
                     flashcards = []; // Ensure flashcards is an empty array to prevent errors
                 } else {
                     flashcards = window.flashcards; // Load the flashcards from the single file

@@ -238,7 +238,7 @@
         // Function to fetch the list of JavaScript files in the current directory
         async function getFlashcardFiles() {
             try {
-                const response = await fetch('./'); // Fetch the current directory
+                const response = await fetch('https://api.github.com/repos/Timothee123456/Timothee123456.github.io/contents/mandarin'); // Fetch the current directory
                 const text = await response.text();
 
                 // Use a regular expression to find all .js files

@@ -229,6 +229,7 @@
         // Function to load a JavaScript file dynamically
         function loadScript(url, callback) {
             const script = document.createElement('script');
+            console.log(url)
             script.src = url;
             script.onload = callback;
             script.onerror = () => console.error(`Failed to load script: ${url}`);

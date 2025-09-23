@@ -246,13 +246,18 @@
                     .filter(item => item.name.endsWith('.js'))
                     .map(item => {
                         let url = item.download_url;
-                        const prefixToRemove = "https://raw.githubusercontent.com/";
+                        const prefixToRemove = "https://raw.githubusercontent.com/Timothee123456/";
+                        const mainToRemove = "/main";
+        
                         if (url.startsWith(prefixToRemove)) {
                             url = url.slice(prefixToRemove.length);
                         }
+        
+                        url = url.replace(mainToRemove, ""); // Remove /main
+        
                         return url;
                     });
-                
+
                 return fileNames;
             } catch (error) {
                 console.error("Could not fetch file list:", error);

@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width:device-width, initial-scale=1.0, user-scalable=no">
     <title>Chinese Flashcards</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
@@ -235,15 +235,91 @@
             document.head.appendChild(script);
         }
 
+        // Function to fetch the list of JavaScript files in the current directory
+        async function getFlashcardFiles() {
+            try {
+                const response = await fetch('./'); // Fetch the current directory
+                const text = await response.text();
+
+                // Use a regular expression to find all .js files
+                const regex = /<a[^>]*?href="(?<filename>.*\.js)"[^>]*?>/g;
+                const fileNames = [];
+                let match;
+
+                while ((match = regex.exec(text)) !== null) {
+                    fileNames.push(match.groups.filename);
+                }
+                return fileNames;
+            } catch (error) {
+                console.error("Could not fetch file list:", error);
+                return [];
+            }
+        }
+
+        // Function to load all flashcard files
+        function loadAllFlashcards(fileList, callback) {
+            let flashcards = []; // Initialize an empty array to hold all flashcards
+            let loadedCount = 0;
+
+            function fileLoaded(file) {
+                loadedCount++;
+                if (typeof window.flashcards !== 'undefined' && Array.isArray(window.flashcards)) {
+                    flashcards = flashcards.concat(window.flashcards);
+                    delete window.flashcards; // Clean up the global scope
+                } else {
+                    console.warn(`File ${file} did not properly define a 'flashcards' array.`);
+                }
+
+                if (loadedCount === fileList.length) {
+                    // All files have been loaded, execute the callback
+                    callback(flashcards); // Pass the combined flashcards to the callback
+                }
+            }
+
+            if (fileList.length === 0) {
+                console.warn("No flashcard files found.");
+                callback([]); // Still call the callback with an empty array
+                return;
+            }
+
+            fileList.forEach(file => {
+                loadScript(file, () => {
+                    fileLoaded(file);
+                });
+            });
+        }
+
         // Get the desired flashcards file name from a query parameter (e.g., index.html?deck=vocabulary)
         const urlParams = new URLSearchParams(window.location.search);
-        const deckName = urlParams.get('deck') || 'default'; // Use 'default' if no deck is specified
-        const flashcardsFile = `${deckName}.js`; // e.g., vocabulary.js
+        const deckName = urlParams.get('deck');
 
-        // Load the flashcards data and then initialize the app
-        loadScript(flashcardsFile, () => {
+        if (deckName) {
+            // Load a specific deck if the 'deck' parameter is provided
+            const flashcardsFile = `${deckName}.js`;
+
+            loadScript(flashcardsFile, () => {
+                if (typeof window.flashcards === 'undefined' || !Array.isArray(window.flashcards)) {
+                    console.error(`Failed to load flashcards from ${flashcardsFile} or 'flashcards' is not properly defined.`);
+                    flashcards = []; // Ensure flashcards is an empty array to prevent errors
+                } else {
+                    flashcards = window.flashcards; // Load the flashcards from the single file
+                    delete window.flashcards; // Clean up global scope
+                }
+                initializeApp(flashcards); // Initialize the app with the loaded flashcards
+            });
+        } else {
+            // Load all flashcard files if no 'deck' parameter is provided
+            getFlashcardFiles().then(fileList => {
+                loadAllFlashcards(fileList, (allFlashcards) => {
+                    initializeApp(allFlashcards); // Initialize the app with all the flashcards
+                });
+            });
+        }
+
+        function initializeApp(flashcards) {
             class FlashcardApp {
-                constructor() {
+                constructor(flashcards) {
+                    this.flashcards = flashcards; // Store the flashcards
                     this.currentDeck = [];
                     this.currentIndex = 0;
                     this.correctAnswers = [];
@@ -299,7 +375,7 @@
                 }
 
                 startNewSession() {
-                    this.currentDeck = this.shuffleArray(flashcards);
+                    this.currentDeck = this.shuffleArray(this.flashcards);
                     this.currentIndex = 0;
                     this.correctAnswers = [];
                     this.incorrectAnswers = [];
@@ -441,18 +517,19 @@
                     const total = this.correctAnswers.length + this.incorrectAnswers.length;
                     const accuracy = total > 0 ? Math.round((this.correctAnswers.length / total) * 100) : 0;
 
-                    this.correctCount.textContent = this.correctAnswers.length;
-                    this.incorrectCount.textContent = this.incorrectAnswers.length;
-                    this.accuracyPercent.textContent = `${accuracy}%`;
+                        this.correctCount.textContent = this.correctAnswers.length;
+                        this.incorrectCount.textContent = this.incorrectAnswers.length;
+                        this.accuracyPercent.textContent = `${accuracy}%`;
 
-                    // Enable/disable review button based on missed cards
-                    this.reviewMissedBtn.disabled = this.incorrectAnswers.length === 0;
+                        // Enable/disable review button based on missed cards
+                        this.reviewMissedBtn.disabled = this.incorrectAnswers.length === 0;
+                    }
                 }
-            }
 
-            // Initialize the app
-            new FlashcardApp();
-        });
+                // Initialize the app with all the flashcards
+                new FlashcardApp(flashcards);
+            }
+        }
     </script>
 </body>
 

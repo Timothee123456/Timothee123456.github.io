@@ -6,21 +6,71 @@
     <title>Chinese Flashcards</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        .card-flip {
-            perspective: 1000px;
+        /* 3D Card flip animation */
+        .card-container {
+            position: relative;
+            perspective: 1200px;
+            perspective-origin: center center;
         }
-        .card-inner {
-            transition: transform 0.6s;
+        
+        .card-flipper {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1);
+            transform-style: preserve-3d;
+            transform-origin: center center;
+        }
+        
+        .card-flipped .card-flipper {
+            transform: rotateY(180deg);
+        }
+        
+        .card-side {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+            -moz-backface-visibility: hidden;
             transform-style: preserve-3d;
         }
-        .card-flipped .card-inner {
-            transform: rotateY(180deg);
+        
+        .card-front {
+            transform: rotateY(0deg);
+            z-index: 2;
         }
-        .card-front, .card-back {
-            backface-visibility: hidden;
-        }
+        
         .card-back {
             transform: rotateY(180deg);
+            z-index: 1;
+        }
+        
+        /* Webkit optimization for mobile */
+        @supports (-webkit-appearance: none) {
+            .card-flipper {
+                -webkit-transform-style: preserve-3d;
+                -webkit-transition: -webkit-transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1);
+            }
+            
+            .card-flipped .card-flipper {
+                -webkit-transform: rotateY(180deg);
+            }
+            
+            .card-side {
+                -webkit-backface-visibility: hidden;
+                -webkit-transform-style: preserve-3d;
+            }
+            
+            .card-front {
+                -webkit-transform: rotateY(0deg);
+            }
+            
+            .card-back {
+                -webkit-transform: rotateY(180deg);
+            }
         }
         
         /* Mobile optimizations */
@@ -78,19 +128,19 @@
             </div>
 
             <!-- Flashcard -->
-            <div class="card-flip px-2">
-                <div id="flashcard" class="card-inner relative w-full h-72 sm:h-80 cursor-pointer no-select">
-                    <!-- Front of card (Chinese + Pinyin) -->
-                    <div class="card-front absolute inset-0 bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 flex flex-col items-center justify-center p-4 sm:p-8">
-                        <div id="chineseChar" class="card-chinese text-6xl sm:text-6xl font-bold text-gray-800 dark:text-white mb-2 sm:mb-4">你好</div>
-                        <div id="pinyin" class="card-pinyin text-xl sm:text-2xl text-gray-600 dark:text-gray-400">nǐ hǎo</div>
-                        <div class="text-sm text-gray-500 dark:text-gray-500 mt-4 sm:mt-6 text-center">Tap to reveal translation</div>
-                    </div>
-                    
-                    <!-- Back of card (French translation) -->
-                    <div class="card-back absolute inset-0 bg-blue-50 dark:bg-blue-900 rounded-xl shadow-lg border border-blue-200 dark:border-blue-700 flex flex-col items-center justify-center p-4 sm:p-8">
-                        <div id="frenchTranslation" class="card-french text-2xl sm:text-3xl font-semibold text-blue-800 dark:text-blue-200 text-center">salut</div>
-                        <div class="text-sm text-blue-600 dark:text-blue-400 mt-4 sm:mt-6 text-center">Tap to flip back</div>
+            <div class="px-2">
+                <div id="flashcard" class="card-container w-full h-72 sm:h-80 cursor-pointer no-select">
+                    <div class="card-flipper">
+                        <!-- Front of card (Chinese + Pinyin) -->
+                        <div class="card-front card-side bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 flex flex-col items-center justify-center p-4 sm:p-8">
+                            <div id="chineseChar" class="card-chinese text-6xl sm:text-6xl font-bold text-gray-800 dark:text-white mb-2 sm:mb-4">你好</div>
+                            <div id="pinyin" class="card-pinyin text-xl sm:text-2xl text-gray-600 dark:text-gray-400">nǐ hǎo</div>
+                        </div>
+                        
+                        <!-- Back of card (French translation) -->
+                        <div class="card-back card-side bg-blue-50 dark:bg-blue-900 rounded-xl shadow-lg border border-blue-200 dark:border-blue-700 flex flex-col items-center justify-center p-4 sm:p-8">
+                            <div id="frenchTranslation" class="card-french text-2xl sm:text-3xl font-semibold text-blue-800 dark:text-blue-200 text-center">salut</div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -272,7 +322,6 @@
             }
 
             flipCard() {
-                console.log('Card flipped!');
                 this.isFlipped = !this.isFlipped;
                 this.flashcard.classList.toggle('card-flipped');
             }

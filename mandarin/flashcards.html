@@ -244,8 +244,15 @@
                 // Filter for .js files and map to get the download URLs
                 const fileNames = data
                     .filter(item => item.name.endsWith('.js'))
-                    .map(item => item.download_url);
-        
+                    .map(item => {
+                        let url = item.download_url;
+                        const prefixToRemove = "https://raw.githubusercontent.com/";
+                        if (url.startsWith(prefixToRemove)) {
+                            url = url.slice(prefixToRemove.length);
+                        }
+                        return url;
+                    });
+                
                 return fileNames;
             } catch (error) {
                 console.error("Could not fetch file list:", error);

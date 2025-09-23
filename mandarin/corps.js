@@ -1,4 +1,4 @@
-const flashcards = [
+let flashcards = [
   { chinese: "身体", pinyin: "shēnti", french: "Corps" },
   { chinese: "外貌", pinyin: "wàimào", french: "Apparence" },
   { chinese: "眼睛", pinyin: "yǎnjīng", french: "yeux" },

@@ -276,6 +276,7 @@
             }
 
             if (fileList.length === 0) {
+                console.log(fileList)
                 console.warn("No flashcard files found.");
                 callback([]); // Still call the callback with an empty array
                 return;

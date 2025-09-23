@@ -272,6 +272,7 @@
                 if (typeof window.flashcards !== 'undefined' && Array.isArray(window.flashcards)) {
                     flashcards = flashcards.concat(window.flashcards);
                     delete window.flashcards; // Clean up the global scope
+                    console.log('Success')
                 } else {
                     console.warn(`File ${file} did not properly define a 'flashcards' array.`);
                 }
@@ -292,6 +293,7 @@
             fileList.forEach(file => {
                 console.log(file)
                 loadScript(file, () => {
+                    console.log('a')
                     fileLoaded(file);
                 });
             });

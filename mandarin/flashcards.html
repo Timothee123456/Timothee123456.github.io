@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width:device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>Chinese Flashcards</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
@@ -293,13 +293,15 @@
         const urlParams = new URLSearchParams(window.location.search);
         const deckName = urlParams.get('deck');
 
+        let flashcards = []; // Initialize flashcards here
+
         if (deckName) {
             // Load a specific deck if the 'deck' parameter is provided
             const flashcardsFile = `${deckName}.js`;
 
             loadScript(flashcardsFile, () => {
-                if (typeof flashcards === 'undefined' || !Array.isArray(flashcards)) {
-                    console.error(`Failed to load flashcards from ${flashcardsFile} or 'flashcards' is not properly defined. File content: ${flashcards}`);
+                if (typeof window.flashcards === 'undefined' || !Array.isArray(window.flashcards)) {
+                    console.error(`Failed to load flashcards from ${flashcardsFile} or 'flashcards' is not properly defined.`);
                     flashcards = []; // Ensure flashcards is an empty array to prevent errors
                 } else {
                     flashcards = window.flashcards; // Load the flashcards from the single file
@@ -311,7 +313,8 @@
             // Load all flashcard files if no 'deck' parameter is provided
             getFlashcardFiles().then(fileList => {
                 loadAllFlashcards(fileList, (allFlashcards) => {
-                    initializeApp(allFlashcards); // Initialize the app with all the flashcards
+                    flashcards = allFlashcards;
+                    initializeApp(flashcards); // Initialize the app with all the flashcards
                 });
             });
         }
@@ -319,7 +322,7 @@
         function initializeApp(flashcards) {
             class FlashcardApp {
                 constructor(flashcards) {
-                    this.flashcards = flashcards; // Store the flashcards
+                    this.flashcards = Array.isArray(flashcards) ? flashcards : []; // Store the flashcards, ensure it's an array
                     this.currentDeck = [];
                     this.currentIndex = 0;
                     this.correctAnswers = [];
@@ -366,6 +369,10 @@
                 }
 
                 shuffleArray(array) {
+                    if (!Array.isArray(array)) {
+                        console.error("Cannot shuffle: input is not an array.");
+                        return []; // Return an empty array or handle the error as needed
+                    }
                     const shuffled = [...array];
                     for (let i = shuffled.length - 1; i > 0; i--) {
                         const j = Math.floor(Math.random() * (i + 1));
@@ -375,6 +382,10 @@
                 }
 
                 startNewSession() {
+                    if (!Array.isArray(this.flashcards)) {
+                        console.error("Flashcards is not an array. Cannot start a new session.");
+                        return;
+                    }
                     this.currentDeck = this.shuffleArray(this.flashcards);
                     this.currentIndex = 0;
                     this.correctAnswers = [];
@@ -529,7 +540,6 @@
                 // Initialize the app with all the flashcards
                 new FlashcardApp(flashcards);
             }
-        
     </script>
 </body>
 

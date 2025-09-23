@@ -292,8 +292,6 @@
         const urlParams = new URLSearchParams(window.location.search);
         const deckName = urlParams.get('deck');
 
-        let flashcards = []; // Initialize flashcards here
-
         if (deckName) {
             // Load a specific deck if the 'deck' parameter is provided
             const flashcardsFile = `${deckName}.js`;

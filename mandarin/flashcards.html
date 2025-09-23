@@ -247,16 +247,13 @@
                     .filter(item => item.name.endsWith('.js'))
                     .map(item => {
                         let url = item.download_url;
-                        const prefixToRemove = "https://raw.githubusercontent.com/Timothee123456/";
-                        const mainToRemove = "/main";
+                        const prefixToRemove = "https://raw.githubusercontent.com/Timothee123456/Timothee123456.github.io/main/mandarin/";
                 
-                                if (url.startsWith(prefixToRemove)) {
-                                    url = url.slice(prefixToRemove.length);
-                                }
-                
-                                url = url.replace(mainToRemove, ""); // Remove /main
-                
-                                return url;
+                        if (url.startsWith(prefixToRemove)) {
+                            url = url.slice(prefixToRemove.length);
+                        }
+        
+                        return url;
                     });
                 console.log(fileNames)
                 return fileNames;

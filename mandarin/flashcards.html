@@ -248,12 +248,15 @@
                     .map(item => {
                         let url = item.download_url;
                         const prefixToRemove = "https://raw.githubusercontent.com/Timothee123456/";
-        
-                        if (url.startsWith(prefixToRemove)) {
-                            url = url.slice(prefixToRemove.length);
-                        }
-        
-                        return url;
+                        const mainToRemove = "/main";
+                
+                                if (url.startsWith(prefixToRemove)) {
+                                    url = url.slice(prefixToRemove.length);
+                                }
+                
+                                url = url.replace(mainToRemove, ""); // Remove /main
+                
+                                return url;
                     });
                 console.log(fileNames)
                 return fileNames;

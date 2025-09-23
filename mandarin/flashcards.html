@@ -289,6 +289,7 @@
             }
 
             fileList.forEach(file => {
+                console.log(file)
                 loadScript(file, () => {
                     fileLoaded(file);
                 });

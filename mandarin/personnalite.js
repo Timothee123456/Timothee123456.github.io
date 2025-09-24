@@ -16,7 +16,7 @@ var flashcards = [
 { chinese: "热情", pinyin: "rèqíng", french: "chaleureux" },
 { chinese: "淘气", pinyin: "táo qì", french: "coquin" },
 { chinese: "做自己", pinyin: "zuò zìjǐ", french: "être soi-même" },
-{ chinese: "我为骄傲", pinyin: "wǒ wèi jiāo ào", french: "fier" },
+{ chinese: "骄傲", pinyin: "jiāo ào", french: "fier" },
 { chinese: "美女", pinyin: "měinǚ", french: "belle fille" },
 { chinese: "校草", pinyin: "xiào cǎo", french: "le garçon populaire de l'école" },
 { chinese: "自信", pinyin: "zìxìn", french: "confiance en soi" },

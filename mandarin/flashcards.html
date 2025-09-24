@@ -132,11 +132,13 @@
                 <div class="text-gray-600 dark:text-gray-400 text-base">
                     <span id="cardCounter">1 / 20</span>
                 </div>
-                
-                <button id="modeToggle" class="flex items-center space-x-2 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 px-3 py-2 rounded-lg font-medium transition-colors text-sm">
+
+                <button id="modeToggle"
+                    class="flex items-center space-x-2 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 px-3 py-2 rounded-lg font-medium transition-colors text-sm">
                     <span id="modeText">中→FR+拼</span>
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M4 6h16M4 12h16M4 18h16"></path>
                     </svg>
                 </button>
             </div>
@@ -151,8 +153,9 @@
                             <div id="chineseChar"
                                 class="card-chinese text-6xl sm:text-6xl font-bold text-gray-800 dark:text-white mb-2 sm:mb-4">
                                 Loading...</div>
-                            <div id="pinyin" class="card-pinyin text-xl sm:text-2xl text-gray-600 dark:text-gray-400">Loading...
-                                </div>
+                            <div id="pinyin" class="card-pinyin text-xl sm:text-2xl text-gray-600 dark:text-gray-400">
+                                Loading...
+                            </div>
                         </div>
 
                         <!-- Back of card (French translation) -->
@@ -342,7 +345,7 @@
                     this.isFlipped = false;
                     this.studyMode = 0; // Study modes: 0=中→FR+拼, 1=中+拼→FR, 2=拼→中+FR, 3=FR→中+拼
                     this.showPinyin = true; // true = show pinyin, false = hide pinyin
-                    
+
                     this.initializeElements();
                     this.setupEventListeners();
                     this.setupKeyboardListeners();
@@ -446,24 +449,6 @@
                     this.displayResults();
                 }
 
-                displayCurrentCard() {
-                    if (this.currentIndex >= this.currentDeck.length) {
-                        this.showResultsScreen();
-                        return;
-                    }
-
-                    // Add a delay before updating the card content
-                    const card = this.currentDeck[this.currentIndex];
-                    setTimeout(() => {
-                        this.chineseChar.textContent = card.chinese;
-                        this.pinyin.textContent = card.pinyin;
-                        this.frenchTranslation.textContent = card.french;
-                        this.updateProgress();
-                    }, 300); // Delay of 300 milliseconds
-
-                    this.resetCard();
-                }
-
                 updateProgress() {
                     const progress = (this.currentIndex / this.currentDeck.length) * 100;
                     this.progressBar.style.width = `${progress}%`;
@@ -496,182 +481,24 @@
                 toggleMode() {
                     this.studyMode = (this.studyMode + 1) % 4;
                     this.updateModeDisplay();
-                    this.updateCardContent();
+                    this.displayCurrentCard(); // Call displayCurrentCard to update the card content
                     this.resetCard();
                 }
-    
+
                 updateModeDisplay() {
                     const modes = ['中→FR+拼', '中+拼→FR', '拼→中+FR', 'FR→中+拼'];
                     this.modeText.textContent = modes[this.studyMode];
                 }
-    
-                updateCardContent() {
-                    if (this.currentIndex >= this.currentDeck.length) return;
-                    
-                    const card = this.currentDeck[this.currentIndex];
-                    
-                    switch (this.studyMode) {
-                        case 0: // 中→FR+拼 (Character front, French + Pinyin back)
-                            this.cardFront.innerHTML = `
-                                <div id="chineseChar" class="card-chinese text-6xl sm:text-6xl font-bold text-gray-800 dark:text-white">${card.chinese}</div>
-                            `;
-                            this.cardBack.innerHTML = `
-                                <div id="frenchTranslation" class="card-french text-2xl sm:text-3xl font-semibold text-blue-800 dark:text-blue-200 text-center mb-3">${card.french}</div>
-                                <div class="card-pinyin text-lg sm:text-xl text-blue-600 dark:text-blue-400">${card.pinyin}</div>
-                            `;
-                            break;
-                        
-                        case 1: // 中+拼→FR (Character + Pinyin front, French back)
-                            this.cardFront.innerHTML = `
-                                <div id="chineseChar" class="card-chinese text-6xl sm:text-6xl font-bold text-gray-800 dark:text-white mb-2 sm:mb-4">${card.chinese}</div>
-                                <div id="pinyin" class="card-pinyin text-xl sm:text-2xl text-gray-600 dark:text-gray-400">${card.pinyin}</div>
-                            `;
-                            this.cardBack.innerHTML = `
-                                <div id="frenchTranslation" class="card-french text-2xl sm:text-3xl font-semibold text-blue-800 dark:text-blue-200 text-center">${card.french}</div>
-                            `;
-                            break;
-                        
-                        case 2: // 拼→中+FR (Pinyin front, Character + French back)
-                            this.cardFront.innerHTML = `
-                                <div id="pinyin" class="card-pinyin text-3xl sm:text-4xl font-semibold text-gray-800 dark:text-white">${card.pinyin}</div>
-                            `;
-                            this.cardBack.innerHTML = `
-                                <div id="chineseChar" class="card-chinese text-6xl sm:text-6xl font-bold text-blue-800 dark:text-blue-200 mb-3">${card.chinese}</div>
-                                <div id="frenchTranslation" class="card-french text-xl sm:text-2xl font-medium text-blue-600 dark:text-blue-400 text-center">${card.french}</div>
-                            `;
-                            break;
-                        
-                        case 3: // FR→中+拼 (French front, Character + Pinyin back)
-                            this.cardFront.innerHTML = `
-                                <div id="frenchTranslation" class="card-french text-2xl sm:text-3xl font-semibold text-gray-800 dark:text-white text-center">${card.french}</div>
-                            `;
-                            this.cardBack.innerHTML = `
-                                <div id="chineseChar" class="card-chinese text-6xl sm:text-6xl font-bold text-blue-800 dark:text-blue-200 mb-2 sm:mb-4">${card.chinese}</div>
-                                <div id="pinyin" class="card-pinyin text-xl sm:text-2xl text-blue-600 dark:text-blue-400">${card.pinyin}</div>
-                            `;
-                            break;
-                    }
-                    
-                    // Update styling (same for all modes)
-                    this.cardFront.className = 'card-front card-side bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 flex flex-col items-center justify-center p-4 sm:p-8';
-                    this.cardBack.className = 'card-back card-side bg-blue-50 dark:bg-blue-900 rounded-xl shadow-lg border border-blue-200 dark:border-blue-700 flex flex-col items-center justify-center p-4 sm:p-8';
-                    
-                    // Re-get element references since innerHTML changed
-                    this.chineseChar = document.getElementById('chineseChar');
-                    this.pinyin = document.getElementById('pinyin');
-                    this.frenchTranslation = document.getElementById('frenchTranslation');
-                }
-    
-                displayCurrentCard() {
-                    if (this.currentIndex >= this.currentDeck.length) {
-                        this.showResultsScreen();
-                        return;
-                    }
-    
-                    const card = this.currentDeck[this.currentIndex];
-                    this.updateCardContent();
-                    this.updateProgress();
-                    this.resetCard();
-                }
 
-                displayCurrentCard() {
-                    if (this.currentIndex >= this.currentDeck.length) {
-                        this.showResultsScreen();
-                        return;
-                    }
 
-                    // Add a delay before updating the card content
-                    const card = this.currentDeck[this.currentIndex];
-
-                    // Flip the card back to the front before updating content
-                    if (this.isFlipped) {
-                        this.flipCard(); // Flip back if it's currently flipped
-                    }
-
-                    setTimeout(() => {
-                        this.updateCardContent(); // Update content after the card is flipped back
-                        this.updateProgress();
-                    }, 300); // Delay of 300 milliseconds to match the animation
-
-                    this.resetCard();
-                }
-
-                togglePinyin() {
-                this.showPinyin = !this.showPinyin;
-                this.updatePinyinDisplay();
-                this.updateCardContent();
-                this.resetCard();
-            }
-
-                updatePinyinDisplay() {
-                    if (this.showPinyin) {
-                        this.pinyinText.textContent = '拼音';
-                        this.pinyinIcon.innerHTML = `
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
-                        `;
-                        this.pinyinToggle.classList.remove('opacity-60');
-                    } else {
-                        this.pinyinText.textContent = '拼音';
-                        this.pinyinIcon.innerHTML = `
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21"></path>
-                        `;
-                        this.pinyinToggle.classList.add('opacity-60');
-                    }
-                }
-    
-                updateCardContent() {
-                    if (this.currentIndex >= this.currentDeck.length) return;
-                    
-                    const card = this.currentDeck[this.currentIndex];
-                    const pinyinHTML = this.showPinyin ? 
-                        `<div id="pinyin" class="card-pinyin text-xl sm:text-2xl text-gray-600 dark:text-gray-400">${card.pinyin}</div>` : 
-                        `<div id="pinyin" class="card-pinyin text-xl sm:text-2xl text-gray-600 dark:text-gray-400" style="display: none;"></div>`;
-                    
-                    const pinyinHTMLBack = this.showPinyin ? 
-                        `<div id="pinyin" class="card-pinyin text-xl sm:text-2xl text-blue-600 dark:text-blue-400">${card.pinyin}</div>` : 
-                        `<div id="pinyin" class="card-pinyin text-xl sm:text-2xl text-blue-600 dark:text-blue-400" style="display: none;"></div>`;
-                    
-                    if (this.chineseToFrench) {
-                        // Chinese on front, French on back
-                        this.cardFront.innerHTML = `
-                            <div id="chineseChar" class="card-chinese text-6xl sm:text-6xl font-bold text-gray-800 dark:text-white mb-2 sm:mb-4">${card.chinese}</div>
-                            ${pinyinHTML}
-                        `;
-                        this.cardBack.innerHTML = `
-                            <div id="frenchTranslation" class="card-french text-2xl sm:text-3xl font-semibold text-blue-800 dark:text-blue-200 text-center">${card.french}</div>
-                        `;
-                        // Update styling
-                        this.cardFront.className = 'card-front card-side bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 flex flex-col items-center justify-center p-4 sm:p-8';
-                        this.cardBack.className = 'card-back card-side bg-blue-50 dark:bg-blue-900 rounded-xl shadow-lg border border-blue-200 dark:border-blue-700 flex flex-col items-center justify-center p-4 sm:p-8';
-                    } else {
-                        // French on front, Chinese on back
-                        this.cardFront.innerHTML = `
-                            <div id="frenchTranslation" class="card-french text-2xl sm:text-3xl font-semibold text-gray-800 dark:text-white text-center">${card.french}</div>
-                        `;
-                        this.cardBack.innerHTML = `
-                            <div id="chineseChar" class="card-chinese text-6xl sm:text-6xl font-bold text-blue-800 dark:text-blue-200 mb-2 sm:mb-4">${card.chinese}</div>
-                            ${pinyinHTMLBack}
-                        `;
-                        // Update styling
-                        this.cardFront.className = 'card-front card-side bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 flex flex-col items-center justify-center p-4 sm:p-8';
-                        this.cardBack.className = 'card-back card-side bg-blue-50 dark:bg-blue-900 rounded-xl shadow-lg border border-blue-200 dark:border-blue-700 flex flex-col items-center justify-center p-4 sm:p-8';
-                    }
-                    
-                    // Re-get element references since innerHTML changed
-                    this.chineseChar = document.getElementById('chineseChar');
-                    this.pinyin = document.getElementById('pinyin');
-                    this.frenchTranslation = document.getElementById('frenchTranslation');
-                }
-    
                 displayResults() {
                     const total = this.correctAnswers.length + this.incorrectAnswers.length;
                     const accuracy = total > 0 ? Math.round((this.correctAnswers.length / total) * 100) : 0;
-    
+
                     this.correctCount.textContent = this.correctAnswers.length;
                     this.incorrectCount.textContent = this.incorrectAnswers.length;
                     this.accuracyPercent.textContent = `${accuracy}%`;
-    
+
                     // Enable/disable review button based on missed cards
                     this.reviewMissedBtn.disabled = this.incorrectAnswers.length === 0;
                 }

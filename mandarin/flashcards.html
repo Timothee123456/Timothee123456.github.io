@@ -490,6 +490,18 @@
                     this.modeText.textContent = modes[this.studyMode];
                 }
 
+                displayCurrentCard() {
+                    if (this.currentIndex >= this.currentDeck.length) {
+                        this.showResultsScreen();
+                        return;
+                    }
+    
+                    const card = this.currentDeck[this.currentIndex];
+                    this.updateCardContent();
+                    this.updateProgress();
+                    this.resetCard();
+                }
+                
 
                 displayResults() {
                     const total = this.correctAnswers.length + this.incorrectAnswers.length;

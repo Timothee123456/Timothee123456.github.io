@@ -316,6 +316,7 @@
                 if (typeof window.title !== 'undefined') {
                     titleText = `${window.title['french']} - Flashcards Chinois`;
                 }
+                titleText = titleText.charAt(0).toUpperCase() + titleText.slice(1)
                 document.getElementById('title').textContent = titleText;
                 document.getElementById('pageTitle').textContent = titleText;
                 initializeApp(flashcards); // Initialize the app with the loaded flashcards

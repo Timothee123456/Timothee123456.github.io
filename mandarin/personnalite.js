@@ -1,4 +1,4 @@
-var flashcards = [
+var flashcards += [
 { chinese: "酷", pinyin: "kù", french: "cool" },
 { chinese: "冷", pinyin: "lěng", french: "froid" },
 { chinese: "爱玩儿", pinyin: "ài wánr", french: "aimer jouer" },

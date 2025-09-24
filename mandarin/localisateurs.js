@@ -1,4 +1,4 @@
-var title = {chinese: "", pinyin: "", french: "Localisateurs"}
+var title = {french: "Localisateurs"}
 
 var flashcards = [
 {chinese: "上", pinyin: "shàng", french: "dessus"},

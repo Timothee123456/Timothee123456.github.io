@@ -314,7 +314,7 @@
                 }
                 // Check if 'title' is defined in the loaded script
                 if (typeof window.title !== 'undefined') {
-                    titleText = `${window.title} - Flashcards Chinois`;
+                    titleText = `${window.title['french']} - Flashcards Chinois`;
                 }
                 document.getElementById('title').textContent = titleText;
                 document.getElementById('pageTitle').textContent = titleText;

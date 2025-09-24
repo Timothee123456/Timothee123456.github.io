@@ -1,4 +1,4 @@
-var flashcards += [
+var flashcards = [
 { chinese: "酷", pinyin: "kù", french: "cool" },
 { chinese: "冷", pinyin: "lěng", french: "froid" },
 { chinese: "爱玩儿", pinyin: "ài wánr", french: "aimer jouer" },
@@ -22,4 +22,9 @@ var flashcards += [
 { chinese: "靓仔", pinyin: "liàng zǎi", french: "beau garçon" },
 { chinese: "青见女", pinyin: "qīng jiàn nǚ", french: "belle fille" },
 { chinese: "坏", pinyin: "huài", french: "méchant"},
+{ chinese: "学习好", pinyin: "xué xí hǎo", french: "bon élève" },
+{ chinese: "班长", pinyin: "bān zhǎng", french: "chef de classe" },
+{ chinese: "用功", pinyin: "yòng gōng", french: "studieux" },
+{ chinese: "理想的", pinyin: "lǐ xiǎng de", french: "idéal" },
+{ chinese: "安静", pinyin: "ān jìng", french: "silencieux, calme" }
 ];

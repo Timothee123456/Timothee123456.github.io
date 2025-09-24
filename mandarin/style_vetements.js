@@ -1,4 +1,4 @@
-var flashcards += [
+var flashcards = [
     { chinese: "衣服", pinyin: "yī fú", french: "vêtements" },
     { chinese: "时髦", pinyin: "shí máo", french: "à la mode" },
     { chinese: "有型", pinyin: "yǒu xíng", french: "avoir du style" },

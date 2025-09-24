@@ -1,4 +1,8 @@
+var title = {chinese: "性格", pinyin: "xìng gé", french: "personnalité"}
+
 var flashcards = [
+{ chinese: "性格", pinyin: "xìng gé", french: "personnalité" },
+{ chinese: "风格", pinyin: "fēng gé", french: "style" },
 { chinese: "酷", pinyin: "kù", french: "cool" },
 { chinese: "冷", pinyin: "lěng", french: "froid" },
 { chinese: "爱玩儿", pinyin: "ài wánr", french: "aimer jouer" },

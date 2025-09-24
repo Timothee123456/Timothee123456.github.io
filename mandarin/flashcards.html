@@ -547,15 +547,20 @@
                     this.frenchTranslation = document.getElementById('frenchTranslation');
                 }
     
-                displayCurrentCard() {
+                displayCurrentCard() {                    
                     if (this.currentIndex >= this.currentDeck.length) {
                         this.showResultsScreen();
                         return;
                     }
-    
+
+                    // Add a delay before updating the card content
                     const card = this.currentDeck[this.currentIndex];
-                    this.updateCardContent();
-                    this.updateProgress();
+                    setTimeout(() => {
+                        const card = this.currentDeck[this.currentIndex];
+                        this.updateCardContent();
+                        this.updateProgress();
+                    }, 300); // Delay of 300 milliseconds
+                    
                     this.resetCard();
                 }
     

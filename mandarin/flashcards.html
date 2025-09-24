@@ -373,6 +373,9 @@
 
                 setupKeyboardListeners() {
                     document.addEventListener('keydown', (event) => {
+                        if (this.resultsScreen.classList.contains('hidden') === false) {
+                             return; // Do nothing if results screen is active
+                        }
                         if (event.key === 'Enter') {
                             this.markAnswer(true); // "Know it" on Enter
                         } else if (event.key === 'Backspace') {

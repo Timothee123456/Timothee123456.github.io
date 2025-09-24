@@ -14,6 +14,6 @@ var flashcards = [
 { chinese: "学习好", pinyin: "xué xí hǎo", french: "bon élève" },
 { chinese: "班长", pinyin: "bān zhǎng", french: "chef de classe" },
 { chinese: "用功", pinyin: "yòng gōng", french: "studieux" },
-{ chinese: "理想的", pinyin: "lǐ xiǎng de", french: "idéal" },
+{ chinese: "理想", pinyin: "lǐ xiǎng", french: "idéal" },
 { chinese: "安静", pinyin: "ān jìng", french: "silencieux, calme" }
 ];

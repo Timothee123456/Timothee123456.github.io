@@ -1,3 +1,5 @@
+var title = {chinese: "衣服", pinyin: "yī fú", french: "vêtements"}
+
 var flashcards = [
     { chinese: "衣服", pinyin: "yī fú", french: "vêtements" },
     { chinese: "时髦", pinyin: "shí máo", french: "à la mode" },

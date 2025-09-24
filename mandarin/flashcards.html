@@ -334,6 +334,7 @@
 
                     this.initializeElements();
                     this.setupEventListeners();
+                    this.setupKeyboardListeners();
                     this.startNewSession();
                 }
 
@@ -370,6 +371,19 @@
                     this.modeToggle.addEventListener('click', () => this.toggleMode());
                 }
 
+                setupKeyboardListeners() {
+                    document.addEventListener('keydown', (event) => {
+                        if (event.key === 'Enter') {
+                            this.markAnswer(true); // "Know it" on Enter
+                        } else if (event.key === 'Backspace') {
+                            this.markAnswer(false); // "Don't know" on Backspace
+                        } else if (event.code === 'Space') {
+                            this.flipCard(); // Flip card on Spacebar
+                            event.preventDefault(); // Prevent scrolling
+                        }
+                    });
+                }
+                
                 shuffleArray(array) {
                     if (!Array.isArray(array)) {
                         console.error("Cannot shuffle: input is not an array.");

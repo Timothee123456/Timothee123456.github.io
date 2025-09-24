@@ -263,35 +263,36 @@
 
         // Function to load all flashcard files
         function loadAllFlashcards(fileList, callback) {
-            let loadedCount = 0;
+    let combinedFlashcards = []; // Initialize an array to hold all flashcards
+    let loadedCount = 0;
 
-            function fileLoaded(file) {
-                loadedCount++;
-                if (typeof window.flashcards !== 'undefined' && Array.isArray(window.flashcards)) {
-                    flashcards = flashcards.concat(window.flashcards);
-                    delete window.flashcards; // Clean up the global scope
-                } else {
-                    console.warn(`File ${file} did not properly define a 'flashcards' array.`);
-                }
-
-                if (loadedCount === fileList.length) {
-                    // All files have been loaded, execute the callback
-                    callback(flashcards); // Pass the combined flashcards to the callback
-                }
+    function fileLoaded(file) {
+            loadedCount++;
+            if (typeof window.flashcards !== 'undefined' && Array.isArray(window.flashcards)) {
+                combinedFlashcards = combinedFlashcards.concat(window.flashcards); // Concatenate the flashcards
+                delete window.flashcards; // Clean up the global scope
+            } else {
+                console.warn(`File ${file} did not properly define a 'flashcards' array.`);
             }
-
-            if (fileList.length === 0) {
-                console.warn("No flashcard files found.");
-                callback([]); // Still call the callback with an empty array
-                return;
+    
+            if (loadedCount === fileList.length) {
+                // All files have been loaded, execute the callback
+                callback(combinedFlashcards); // Pass the combined flashcards to the callback
             }
-
-            fileList.forEach(file => {
-                loadScript(file, () => {
-                    fileLoaded(file);
-                });
-            });
         }
+    
+        if (fileList.length === 0) {
+            console.warn("No flashcard files found.");
+            callback([]); // Still call the callback with an empty array
+            return;
+        }
+    
+        fileList.forEach(file => {
+            loadScript(file, () => {
+                fileLoaded(file);
+            });
+        });
+    }
 
         // Get the desired flashcards file name from a query parameter (e.g., index.html?deck=vocabulary)
         const urlParams = new URLSearchParams(window.location.search);

@@ -1,6 +1,8 @@
+var title = {chinese: "身体", pinyin: "shēnti", french: "corps"}
+
 var flashcards = [
-  { chinese: "身体", pinyin: "shēnti", french: "Corps" },
-  { chinese: "外貌", pinyin: "wàimào", french: "Apparence" },
+  { chinese: "身体", pinyin: "shēnti", french: "corps" },
+  { chinese: "外貌", pinyin: "wàimào", french: "apparence" },
   { chinese: "眼睛", pinyin: "yǎnjīng", french: "yeux" },
   { chinese: "鼻子", pinyin: "bízi", french: "nez" },
   { chinese: "耳朵", pinyin: "ěrduo", french: "oreille" },

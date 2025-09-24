@@ -24,11 +24,10 @@ var flashcards = [
 { chinese: "有 个性", pinyin: "yǒu gèxìng", french: "a de la forte personnalité" },
 { chinese: "热心", pinyin: "rèxīn", french: "gentil" },
 { chinese: "靓仔", pinyin: "liàng zǎi", french: "beau garçon" },
-{ chinese: "青见女", pinyin: "qīng jiàn nǚ", french: "belle fille" },
 { chinese: "坏", pinyin: "huài", french: "méchant"},
 { chinese: "学习好", pinyin: "xué xí hǎo", french: "bon élève" },
 { chinese: "班长", pinyin: "bān zhǎng", french: "chef de classe" },
 { chinese: "用功", pinyin: "yòng gōng", french: "studieux" },
-{ chinese: "理想的", pinyin: "lǐ xiǎng de", french: "idéal" },
+{ chinese: "理想", pinyin: "lǐ xiǎng", french: "idéal" },
 { chinese: "安静", pinyin: "ān jìng", french: "silencieux, calme" }
 ];

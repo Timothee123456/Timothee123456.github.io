@@ -127,20 +127,28 @@
                     style="width: 0%"></div>
             </div>
 
-            <!-- Card Counter and Mode Toggle -->
+            <!-- Card Counter and Toggles -->
             <div class="flex justify-between items-center">
                 <div class="text-gray-600 dark:text-gray-400 text-base">
                     <span id="cardCounter">1 / 20</span>
                 </div>
-
-                <button id="modeToggle"
-                    class="flex items-center space-x-2 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 px-3 py-2 rounded-lg font-medium transition-colors text-sm">
-                    <span id="modeText">中→FR</span>
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path>
-                    </svg>
-                </button>
+                
+                <div class="flex space-x-2">
+                    <button id="pinyinToggle" class="flex items-center space-x-1 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 px-3 py-2 rounded-lg font-medium transition-colors text-sm">
+                        <span id="pinyinText">拼音</span>
+                        <svg id="pinyinIcon" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                        </svg>
+                    </button>
+                    
+                    <button id="modeToggle" class="flex items-center space-x-2 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 px-3 py-2 rounded-lg font-medium transition-colors text-sm">
+                        <span id="modeText">中→FR</span>
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path>
+                        </svg>
+                    </button>
+                </div>
             </div>
 
             <!-- Flashcard -->
@@ -343,7 +351,8 @@
                     this.incorrectAnswers = [];
                     this.isFlipped = false;
                     this.chineseToFrench = true; // true = Chinese→French, false = French→Chinese
-
+                    this.showPinyin = true; // true = show pinyin, false = hide pinyin
+                    
                     this.initializeElements();
                     this.setupEventListeners();
                     this.setupKeyboardListeners();
@@ -361,6 +370,9 @@
                     this.cardCounter = document.getElementById('cardCounter');
                     this.modeToggle = document.getElementById('modeToggle');
                     this.modeText = document.getElementById('modeText');
+                    this.pinyinToggle = document.getElementById('pinyinToggle');
+                    this.pinyinText = document.getElementById('pinyinText');
+                    this.pinyinIcon = document.getElementById('pinyinIcon');
                     this.knowItBtn = document.getElementById('knowItBtn');
                     this.dontKnowBtn = document.getElementById('dontKnowBtn');
                     this.correctCount = document.getElementById('correctCount');
@@ -381,6 +393,7 @@
                     this.reviewMissedBtn.addEventListener('click', () => this.reviewMissedCards());
                     this.restartBtn.addEventListener('click', () => this.startNewSession());
                     this.modeToggle.addEventListener('click', () => this.toggleMode());
+                    this.pinyinToggle.addEventListener('click', () => this.togglePinyin());
                 }
 
                 setupKeyboardListeners() {
@@ -571,11 +584,11 @@
                 displayResults() {
                     const total = this.correctAnswers.length + this.incorrectAnswers.length;
                     const accuracy = total > 0 ? Math.round((this.correctAnswers.length / total) * 100) : 0;
-
+    
                     this.correctCount.textContent = this.correctAnswers.length;
                     this.incorrectCount.textContent = this.incorrectAnswers.length;
                     this.accuracyPercent.textContent = `${accuracy}%`;
-
+    
                     // Enable/disable review button based on missed cards
                     this.reviewMissedBtn.disabled = this.incorrectAnswers.length === 0;
                 }

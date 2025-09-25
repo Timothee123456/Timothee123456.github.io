@@ -508,30 +508,30 @@
                     const card = this.currentDeck[this.currentIndex];
                     
                     switch (this.studyMode) {
-                        case 0: // 中→FR+拼 (Character front, French + Pinyin back) - with hint button
-                            this.cardFront.innerHTML = `
-                                <div id="chineseChar" class="card-chinese text-6xl sm:text-6xl font-bold text-gray-800 dark:text-white mb-4">${card.chinese}</div>
-                                <button id="hintButton" class="bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200 px-3 py-2 rounded-lg text-sm font-medium hover:bg-yellow-200 dark:hover:bg-yellow-800 transition-colors border border-yellow-300 dark:border-yellow-700">
-                                    💡 Show Pinyin
-                                </button>
-                                <div id="hintPinyin" class="card-pinyin text-xl sm:text-2xl text-gray-600 dark:text-gray-400 mt-2" style="display: none;">${card.pinyin}</div>
-                            `;
-                            this.cardBack.innerHTML = `
-                                <div id="frenchTranslation" class="card-french text-2xl sm:text-3xl font-semibold text-blue-800 dark:text-blue-200 text-center mb-3">${card.french}</div>
-                                <div class="card-pinyin text-lg sm:text-xl text-blue-600 dark:text-blue-400">${card.pinyin}</div>
-                            `;
-                            
-                            // Add hint button event listener after a small delay to ensure DOM is ready
-                            setTimeout(() => {
-                                const hintButton = document.getElementById('hintButton');
-                                if (hintButton) {
-                                    hintButton.addEventListener('click', (e) => {
-                                        e.stopPropagation(); // Prevent card flip
-                                        this.showHint();
-                                    });
-                                }
-                            }, 10);
-                            break;
+                        case 0: // 中→FR+拼 (Character front, French + Pinyin back) - with hint icon
+                        this.cardFront.innerHTML = `
+                            <button id="hintButton" class="absolute top-3 right-3 w-8 h-8 bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200 rounded-full hover:bg-yellow-200 dark:hover:bg-yellow-800 transition-colors border border-yellow-300 dark:border-yellow-700 flex items-center justify-center text-sm z-10">
+                                💡
+                            </button>
+                            <div id="chineseChar" class="card-chinese text-6xl sm:text-6xl font-bold text-gray-800 dark:text-white">${card.chinese}</div>
+                            <div id="hintPinyin" class="card-pinyin text-xl sm:text-2xl text-gray-600 dark:text-gray-400 mt-4" style="display: none;">${card.pinyin}</div>
+                        `;
+                        this.cardBack.innerHTML = `
+                            <div id="frenchTranslation" class="card-french text-2xl sm:text-3xl font-semibold text-blue-800 dark:text-blue-200 text-center mb-3">${card.french}</div>
+                            <div class="card-pinyin text-lg sm:text-xl text-blue-600 dark:text-blue-400">${card.pinyin}</div>
+                        `;
+                        
+                        // Add hint button event listener after a small delay to ensure DOM is ready
+                        setTimeout(() => {
+                            const hintButton = document.getElementById('hintButton');
+                            if (hintButton) {
+                                hintButton.addEventListener('click', (e) => {
+                                    e.stopPropagation(); // Prevent card flip
+                                    this.showHint();
+                                });
+                            }
+                        }, 10);
+                        break;
                         
                         case 1: // 中+拼→FR (Character + Pinyin front, French back)
                             this.cardFront.innerHTML = `

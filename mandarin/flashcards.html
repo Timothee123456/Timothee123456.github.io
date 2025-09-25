@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title id="pageTitle">Flashcards Chinois</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src='https://kit.fontawesome.com/a076d05399.js' crossorigin='anonymous'></script>
     <style>
         /* 3D Card flip animation */
         .card-container {
@@ -510,8 +511,8 @@
                     switch (this.studyMode) {
                         case 0: // 中→FR+拼 (Character front, French + Pinyin back) - with hint icon
                         this.cardFront.innerHTML = `
-                            <button id="hintButton" class="absolute top-3 right-3 w-8 h-8 bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200 rounded-full hover:bg-yellow-200 dark:hover:bg-yellow-800 transition-colors border border-yellow-300 dark:border-yellow-700 flex items-center justify-center text-sm z-10">
-                                💡
+                            <button id="hintButton" class="fas fa-lightbulb absolute top-3 right-3 w-8 h-8 bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200 rounded-full hover:bg-yellow-200 dark:hover:bg-yellow-800 transition-colors border border-yellow-300 dark:border-yellow-700 flex items-center justify-center text-sm z-10">
+                                
                             </button>
                             <div id="chineseChar" class="card-chinese text-6xl sm:text-6xl font-bold text-gray-800 dark:text-white">${card.chinese}</div>
                             <div id="hintPinyin" class="card-pinyin text-xl sm:text-2xl text-gray-600 dark:text-gray-400 mt-4" style="display: none;">${card.pinyin}</div>

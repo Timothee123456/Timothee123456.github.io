@@ -413,10 +413,12 @@
                 return;
             }
 
+            // Reset card *before* updating content
+            this.resetCard();
+
             const card = this.currentDeck[this.currentIndex];
             this.updateCardContent();
             this.updateProgress();
-            this.resetCard();
         }
 
         updateProgress() {

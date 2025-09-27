@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Date & Event Flashcards</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* 3D Card flip animation */
+        .card-container {
+            position: relative;
+            perspective: 1200px;
+            perspective-origin: center center;
+        }
+
+        .card-flipper {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1);
+            transform-style: preserve-3d;
+            transform-origin: center center;
+        }
+
+        .card-flipped .card-flipper {
+            transform: rotateY(180deg);
+        }
+
+        .card-side {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+            -moz-backface-visibility: hidden;
+            transform-style: preserve-3d;
+        }
+
+        .card-front {
+            transform: rotateY(0deg);
+            z-index: 2;
+        }
+
+        .card-back {
+            transform: rotateY(180deg);
+            z-index: 1;
+        }
+
+        /* Webkit optimization for mobile */
+        @supports (-webkit-appearance: none) {
+            .card-flipper {
+                -webkit-transform-style: preserve-3d;
+                -webkit-transition: -webkit-transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1);
+            }
+
+            .card-flipped .card-flipper {
+                -webkit-transform: rotateY(180deg);
+            }
+
+            .card-side {
+                -webkit-backface-visibility: hidden;
+                -webkit-transform-style: preserve-3d;
+            }
+
+            .card-front {
+                -webkit-transform: rotateY(0deg);
+            }
+
+            .card-back {
+                -webkit-transform: rotateY(180deg);
+            }
+        }
+
+        /* Mobile optimizations */
+        @media (max-width: 640px) {
+            .card-date {
+                font-size: 4rem;
+            }
+
+            .card-event {
+                font-size: 2rem;
+            }
+        }
+
+        /* Prevent text selection on tap */
+        .no-select {
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 dark:bg-gray-900 min-h-screen">
+<script>
+    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.documentElement.classList.add('dark');
+    }
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
+        if (event.matches) {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+    });
+</script>
+
+<div class="container mx-auto px-3 py-4 max-w-2xl">
+    <h1 class="text-2xl sm:text-3xl font-bold text-center mb-6 text-gray-800 dark:text-white">
+        Date & Event Flashcards
+    </h1>
+
+    <!-- Game Screen -->
+    <div id="gameScreen" class="space-y-4 sm:space-y-6">
+        <!-- Progress Bar -->
+        <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3">
+            <div id="progressBar" class="bg-blue-500 h-3 rounded-full transition-all duration-300" style="width: 0%"></div>
+        </div>
+
+        <!-- Card Counter -->
+        <div class="flex justify-between items-center">
+            <div class="text-gray-600 dark:text-gray-400 text-base">
+                <span id="cardCounter">1 / 20</span>
+            </div>
+        </div>
+
+        <!-- Flashcard -->
+        <div class="px-2">
+            <div id="flashcard" class="card-container w-full h-72 sm:h-80 cursor-pointer no-select">
+                <div class="card-flipper">
+                    <!-- Front of card (Date) -->
+                    <div class="card-front card-side bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 flex flex-col items-center justify-center p-4 sm:p-8">
+                        <div id="eventDate" class="card-date text-5xl sm:text-6xl font-bold text-gray-800 dark:text-white">
+                            1776-07-04
+                        </div>
+                    </div>
+
+                    <!-- Back of card (Event) -->
+                    <div class="card-back card-side bg-blue-50 dark:bg-blue-900 rounded-xl shadow-lg border border-blue-200 dark:border-blue-700 flex flex-col items-center justify-center p-4 sm:p-8">
+                        <div id="eventName" class="card-event text-2xl sm:text-3xl font-semibold text-blue-800 dark:text-blue-200 text-center">
+                            Declaration of Independence
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="flex justify-center space-x-3 px-2">
+            <button id="knowItBtn" class="flex-1 max-w-40 flex items-center justify-center space-x-2 bg-green-500 hover:bg-green-600 active:bg-green-700 text-white px-4 py-4 rounded-lg font-semibold transition-colors min-h-[56px] text-base">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                </svg>
+                <span>Know it</span>
+            </button>
+
+            <button id="dontKnowBtn" class="flex-1 max-w-40 flex items-center justify-center space-x-2 bg-red-500 hover:bg-red-600 active:bg-red-700 text-white px-4 py-4 rounded-lg font-semibold transition-colors min-h-[56px] text-base">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+                <span>Don't know</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Results Screen -->
+    <div id="resultsScreen" class="hidden text-center space-y-4 sm:space-y-6 px-2">
+        <h2 class="text-xl sm:text-2xl font-bold text-gray-800 dark:text-white mb-4 sm:mb-6">Session Complete!</h2>
+
+        <div class="bg-white dark:bg-gray-800 rounded-xl p-4 sm:p-6 shadow-lg">
+            <div class="grid grid-cols-2 gap-4 mb-4 sm:mb-6">
+                <div class="text-center">
+                    <div id="correctCount" class="text-2xl sm:text-3xl font-bold text-green-500">0</div>
+                    <div class="text-sm text-gray-600 dark:text-gray-400">Known</div>
+                </div>
+                <div class="text-center">
+                    <div id="incorrectCount" class="text-2xl sm:text-3xl font-bold text-red-500">0</div>
+                    <div class="text-sm text-gray-600 dark:text-gray-400">Unknown</div>
+                </div>
+            </div>
+
+            <div class="text-center">
+                <div id="accuracyPercent" class="text-3xl sm:text-4xl font-bold text-blue-500">0%</div>
+                <div class="text-sm text-gray-600 dark:text-gray-400">Accuracy</div>
+            </div>
+        </div>
+
+        <div class="space-y-3">
+            <button id="reviewMissedBtn" class="w-full bg-orange-500 hover:bg-orange-600 active:bg-orange-700 text-white px-6 py-4 rounded-lg font-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed min-h-[56px] text-base">
+                Review Missed Cards
+            </button>
+            <button id="restartBtn" class="w-full bg-blue-500 hover:bg-blue-600 active:bg-blue-700 text-white px-6 py-4 rounded-lg font-semibold transition-colors min-h-[56px] text-base">
+                Start New Session
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Flashcard data
+    const flashcards = [
+        { date: "28 juin 1914", event: "Assassinat de l'archiduc Francois" },
+        { date: "1969-07-20", event: "First Moon Landing" },
+        { date: "1945-08-06", event: "Atomic Bombing of Hiroshima" },
+        { date: "1492-10-12", event: "Columbus's Arrival in the Americas" },
+        { date: "1914-06-28", event: "Assassination of Archduke Franz Ferdinand" },
+        { date: "1989-11-09", event: "Fall of the Berlin Wall" },
+        { date: "2001-09-11", event: "September 11 Attacks" },
+        { date: "1066-10-14", event: "Battle of Hastings" },
+        { date: "1789-07-14", event: "Storming of the Bastille" },
+        { date: "1929-10-29", event: "Wall Street Crash" },
+        { date: "1957-10-04", event: "Sputnik Launch" },
+        { date: "1861-04-12", event: "Start of the American Civil War" },
+        { date: "1939-09-01", event: "Invasion of Poland" },
+        { date: "1804-12-02", event: "Napoleon's Coronation" },
+        { date: "1607-05-14", event: "Founding of Jamestown" },
+        { date: "1215-06-15", event: "Signing of the Magna Carta" },
+        { date: "1765-03-22", event: "Stamp Act" },
+        { date: "1863-01-01", event: "Emancipation Proclamation" },
+        { date: "1903-12-17", event: "First Successful Airplane Flight" },
+        { date: "1955-12-01", event: "Rosa Parks and the Montgomery Bus Boycott" }
+    ];
+
+    class FlashcardApp {
+        constructor() {
+            this.currentDeck = [];
+            this.currentIndex = 0;
+            this.correctAnswers = [];
+            this.incorrectAnswers = [];
+            this.isFlipped = false;
+
+            this.initializeElements();
+            this.setupEventListeners();
+            this.startNewSession();
+        }
+
+        initializeElements() {
+            this.gameScreen = document.getElementById('gameScreen');
+            this.resultsScreen = document.getElementById('resultsScreen');
+            this.flashcard = document.getElementById('flashcard');
+            this.eventDate = document.getElementById('eventDate');
+            this.eventName = document.getElementById('eventName');
+            this.progressBar = document.getElementById('progressBar');
+            this.cardCounter = document.getElementById('cardCounter');
+            this.knowItBtn = document.getElementById('knowItBtn');
+            this.dontKnowBtn = document.getElementById('dontKnowBtn');
+            this.correctCount = document.getElementById('correctCount');
+            this.incorrectCount = document.getElementById('incorrectCount');
+            this.accuracyPercent = document.getElementById('accuracyPercent');
+            this.reviewMissedBtn = document.getElementById('reviewMissedBtn');
+            this.restartBtn = document.getElementById('restartBtn');
+        }
+
+        setupEventListeners() {
+            this.flashcard.addEventListener('click', () => this.flipCard());
+            this.knowItBtn.addEventListener('click', () => this.markAnswer(true));
+            this.dontKnowBtn.addEventListener('click', () => this.markAnswer(false));
+            this.reviewMissedBtn.addEventListener('click', () => this.reviewMissedCards());
+            this.restartBtn.addEventListener('click', () => this.startNewSession());
+        }
+
+        shuffleArray(array) {
+            const shuffled = [...array];
+            for (let i = shuffled.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+            }
+            return shuffled;
+        }
+
+        startNewSession() {
+            this.currentDeck = this.shuffleArray(flashcards);
+            this.currentIndex = 0;
+            this.correctAnswers = [];
+            this.incorrectAnswers = [];
+            this.showGameScreen();
+            this.displayCurrentCard();
+        }
+
+        reviewMissedCards() {
+            if (this.incorrectAnswers.length === 0) return;
+
+            this.currentDeck = this.shuffleArray(this.incorrectAnswers);
+            this.currentIndex = 0;
+            this.correctAnswers = [];
+            this.incorrectAnswers = [];
+            this.showGameScreen();
+            this.displayCurrentCard();
+        }
+
+        showGameScreen() {
+            this.gameScreen.classList.remove('hidden');
+            this.resultsScreen.classList.add('hidden');
+        }
+
+        showResultsScreen() {
+            this.gameScreen.classList.add('hidden');
+            this.resultsScreen.classList.remove('hidden');
+            this.displayResults();
+        }
+
+        displayCurrentCard() {
+            if (this.currentIndex >= this.currentDeck.length) {
+                this.showResultsScreen();
+                return;
+            }
+
+            const card = this.currentDeck[this.currentIndex];
+            this.eventDate.textContent = card.date;
+            this.eventName.textContent = card.event;
+
+            this.updateProgress();
+            this.resetCard();
+        }
+
+        updateProgress() {
+            const progress = (this.currentIndex / this.currentDeck.length) * 100;
+            this.progressBar.style.width = `${progress}%`;
+            this.cardCounter.textContent = `${this.currentIndex + 1} / ${this.currentDeck.length}`;
+        }
+
+        flipCard() {
+            this.isFlipped = !this.isFlipped;
+            this.flashcard.classList.toggle('card-flipped');
+        }
+
+        resetCard() {
+            this.isFlipped = false;
+            this.flashcard.classList.remove('card-flipped');
+        }
+
+        markAnswer(correct) {
+            const currentCard = this.currentDeck[this.currentIndex];
+
+            if (correct) {
+                this.correctAnswers.push(currentCard);
+            } else {
+                this.incorrectAnswers.push(currentCard);
+            }
+
+            this.currentIndex++;
+            this.displayCurrentCard();
+        }
+
+        displayResults() {
+            const total = this.correctAnswers.length + this.incorrectAnswers.length;
+            const accuracy = total > 0 ? Math.round((this.correctAnswers.length / total) * 100) : 0;
+
+            this.correctCount.textContent = this.correctAnswers.length;
+            this.incorrectCount.textContent = this.incorrectAnswers.length;
+            this.accuracyPercent.textContent = `${accuracy}%`;
+
+            // Enable/disable review button based on missed cards
+            this.reviewMissedBtn.disabled = this.incorrectAnswers.length === 0;
+        }
+    }
+
+    // Initialize the app
+    new FlashcardApp();
+</script>
+</body>
+</html>

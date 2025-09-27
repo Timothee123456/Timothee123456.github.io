@@ -120,11 +120,18 @@
             <div id="progressBar" class="bg-blue-500 h-3 rounded-full transition-all duration-300" style="width: 0%"></div>
         </div>
 
-        <!-- Card Counter -->
+        <!-- Card Counter and Mode Toggle -->
         <div class="flex justify-between items-center">
             <div class="text-gray-600 dark:text-gray-400 text-base">
                 <span id="cardCounter">1 / 20</span>
             </div>
+
+            <button id="modeToggle" class="flex items-center space-x-2 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 px-3 py-2 rounded-lg font-medium transition-colors text-sm">
+                <span id="modeText">Term→Def</span>
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path>
+                </svg>
+            </button>
         </div>
 
         <!-- Flashcard -->
@@ -263,6 +270,7 @@
             this.correctAnswers = [];
             this.incorrectAnswers = [];
             this.isFlipped = false;
+            this.termToDef = true; // true = Term -> Definition, false = Definition -> Term
 
             this.initializeElements();
             this.setupEventListeners();
@@ -277,6 +285,8 @@
             this.definition = document.getElementById('definition');
             this.progressBar = document.getElementById('progressBar');
             this.cardCounter = document.getElementById('cardCounter');
+            this.modeToggle = document.getElementById('modeToggle');
+            this.modeText = document.getElementById('modeText');
             this.knowItBtn = document.getElementById('knowItBtn');
             this.dontKnowBtn = document.getElementById('dontKnowBtn');
             this.correctCount = document.getElementById('correctCount');
@@ -284,6 +294,10 @@
             this.accuracyPercent = document.getElementById('accuracyPercent');
             this.reviewMissedBtn = document.getElementById('reviewMissedBtn');
             this.restartBtn = document.getElementById('restartBtn');
+
+            // Get card side elements
+            this.cardFront = document.querySelector('.card-front');
+            this.cardBack = document.querySelector('.card-back');
         }
 
         setupEventListeners() {
@@ -292,6 +306,7 @@
             this.dontKnowBtn.addEventListener('click', () => this.markAnswer(false));
             this.reviewMissedBtn.addEventListener('click', () => this.reviewMissedCards());
             this.restartBtn.addEventListener('click', () => this.startNewSession());
+            this.modeToggle.addEventListener('click', () => this.toggleMode());
         }
 
         shuffleArray(array) {
@@ -334,6 +349,64 @@
             this.displayResults();
         }
 
+        toggleMode() {
+            this.termToDef = !this.termToDef;
+            this.updateModeDisplay();
+            this.updateCardContent();
+            this.resetCard();
+        }
+
+        updateModeDisplay() {
+            if (this.termToDef) {
+                this.modeText.textContent = 'Term→Def';
+            } else {
+                this.modeText.textContent = 'Def→Term';
+            }
+        }
+
+        updateCardContent() {
+            if (this.currentIndex >= this.currentDeck.length) return;
+
+            const card = this.currentDeck[this.currentIndex];
+
+            if (this.termToDef) {
+                // Term on front, Definition on back
+                this.cardFront.innerHTML = `
+                    <div id="term" class="card-term text-3xl sm:text-4xl font-bold text-gray-800 dark:text-white text-center">
+                        ${card.term}
+                    </div>
+                `;
+                this.cardBack.innerHTML = `
+                    <div id="definition" class="card-definition text-lg sm:text-xl font-semibold text-blue-800 dark:text-blue-200 text-center">
+                        ${card.definition}
+                    </div>
+                `;
+                // Update styling
+                this.cardFront.className = 'card-front card-side bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 flex flex-col items-center justify-center p-4 sm:p-8';
+                this.cardBack.className = 'card-back card-side bg-blue-50 dark:bg-blue-900 rounded-xl shadow-lg border border-blue-200 dark:border-blue-700 flex flex-col items-center justify-center p-4 sm:p-8';
+
+            } else {
+                // Definition on front, Term on back
+                this.cardFront.innerHTML = `
+                    <div id="definition" class="card-definition text-lg sm:text-xl font-semibold text-gray-800 dark:text-white text-center">
+                        ${card.definition}
+                    </div>
+                `;
+                this.cardBack.innerHTML = `
+                    <div id="term" class="card-term text-3xl sm:text-4xl font-bold text-blue-800 dark:text-blue-200 text-center">
+                        ${card.term}
+                    </div>
+                `;
+                // Update styling
+                this.cardFront.className = 'card-front card-side bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 flex flex-col items-center justify-center p-4 sm:p-8';
+                this.cardBack.className = 'card-back card-side bg-blue-50 dark:bg-blue-900 rounded-xl shadow-lg border border-blue-200 dark:border-blue-700 flex flex-col items-center justify-center p-4 sm:p-8';
+            }
+
+            // Re-get element references since innerHTML changed
+            this.term = document.getElementById('term');
+            this.definition = document.getElementById('definition');
+        }
+
         displayCurrentCard() {
             if (this.currentIndex >= this.currentDeck.length) {
                 this.showResultsScreen();
@@ -341,9 +414,7 @@
             }
 
             const card = this.currentDeck[this.currentIndex];
-            this.term.textContent = card.term;
-            this.definition.textContent = card.definition;
-
+            this.updateCardContent();
             this.updateProgress();
             this.resetCard();
         }

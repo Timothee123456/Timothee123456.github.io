@@ -413,12 +413,13 @@
                 return;
             }
 
-            // Reset card *before* updating content
+            const card = this.currentDeck[this.currentIndex];
             this.resetCard();
 
-            const card = this.currentDeck[this.currentIndex];
-            this.updateCardContent();
-            this.updateProgress();
+            setTimeout(() => {
+                this.updateCardContent(); // Update content after the card is flipped back
+                this.updateProgress();
+            }, 300); // Delay of 300 milliseconds to match the animation
         }
 
         updateProgress() {

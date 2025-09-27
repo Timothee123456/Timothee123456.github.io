@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Date & Event Flashcards</title>
+    <title>Flashcards de Dates et Événements</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* 3D Card flip animation */
+        /* Animation de retournement de carte 3D */
         .card-container {
             position: relative;
             perspective: 1200px;
@@ -48,7 +48,7 @@
             z-index: 1;
         }
 
-        /* Webkit optimization for mobile */
+        /* Optimisation Webkit pour mobile */
         @supports (-webkit-appearance: none) {
             .card-flipper {
                 -webkit-transform-style: preserve-3d;
@@ -73,7 +73,7 @@
             }
         }
 
-        /* Mobile optimizations */
+        /* Optimisations mobiles */
         @media (max-width: 640px) {
             .card-date {
                 font-size: 4rem;
@@ -84,7 +84,7 @@
             }
         }
 
-        /* Prevent text selection on tap */
+        /* Empêcher la sélection de texte au toucher */
         .no-select {
             -webkit-user-select: none;
             -moz-user-select: none;
@@ -110,97 +110,104 @@
 
 <div class="container mx-auto px-3 py-4 max-w-2xl">
     <h1 class="text-2xl sm:text-3xl font-bold text-center mb-6 text-gray-800 dark:text-white">
-        Date & Event Flashcards
+        Flashcards de Dates et Événements
     </h1>
 
-    <!-- Game Screen -->
+    <!-- Écran de Jeu -->
     <div id="gameScreen" class="space-y-4 sm:space-y-6">
-        <!-- Progress Bar -->
+        <!-- Barre de Progression -->
         <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3">
             <div id="progressBar" class="bg-blue-500 h-3 rounded-full transition-all duration-300" style="width: 0%"></div>
         </div>
 
-        <!-- Card Counter -->
+        <!-- Compteur de Cartes et Mode -->
         <div class="flex justify-between items-center">
             <div class="text-gray-600 dark:text-gray-400 text-base">
                 <span id="cardCounter">1 / 20</span>
             </div>
+
+            <button id="modeToggle" class="flex items-center space-x-2 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 px-3 py-2 rounded-lg font-medium transition-colors text-sm">
+                <span id="modeText">Date→Événement</span>
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path>
+                </svg>
+            </button>
         </div>
 
         <!-- Flashcard -->
         <div class="px-2">
             <div id="flashcard" class="card-container w-full h-72 sm:h-80 cursor-pointer no-select">
                 <div class="card-flipper">
-                    <!-- Front of card (Date) -->
+                    <!-- Avant de la carte (Date) -->
                     <div class="card-front card-side bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 flex flex-col items-center justify-center p-4 sm:p-8">
                         <div id="eventDate" class="card-date text-5xl sm:text-6xl font-bold text-gray-800 dark:text-white">
                             1776-07-04
                         </div>
                     </div>
 
-                    <!-- Back of card (Event) -->
+                    <!-- Arrière de la carte (Événement) -->
                     <div class="card-back card-side bg-blue-50 dark:bg-blue-900 rounded-xl shadow-lg border border-blue-200 dark:border-blue-700 flex flex-col items-center justify-center p-4 sm:p-8">
                         <div id="eventName" class="card-event text-2xl sm:text-3xl font-semibold text-blue-800 dark:text-blue-200 text-center">
-                            Declaration of Independence
+                            Déclaration d'Indépendance
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Action Buttons -->
+        <!-- Boutons d'Action -->
         <div class="flex justify-center space-x-3 px-2">
             <button id="knowItBtn" class="flex-1 max-w-40 flex items-center justify-center space-x-2 bg-green-500 hover:bg-green-600 active:bg-green-700 text-white px-4 py-4 rounded-lg font-semibold transition-colors min-h-[56px] text-base">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
                 </svg>
-                <span>Know it</span>
+                <span>Connais</span>
             </button>
 
             <button id="dontKnowBtn" class="flex-1 max-w-40 flex items-center justify-center space-x-2 bg-red-500 hover:bg-red-600 active:bg-red-700 text-white px-4 py-4 rounded-lg font-semibold transition-colors min-h-[56px] text-base">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                 </svg>
-                <span>Don't know</span>
+                <span>Connais pas</span>
             </button>
         </div>
     </div>
 
-    <!-- Results Screen -->
+    <!-- Écran de Résultats -->
     <div id="resultsScreen" class="hidden text-center space-y-4 sm:space-y-6 px-2">
-        <h2 class="text-xl sm:text-2xl font-bold text-gray-800 dark:text-white mb-4 sm:mb-6">Session Complete!</h2>
+        <h2 class="text-xl sm:text-2xl font-bold text-gray-800 dark:text-white mb-4 sm:mb-6">Session Terminée !</h2>
 
         <div class="bg-white dark:bg-gray-800 rounded-xl p-4 sm:p-6 shadow-lg">
             <div class="grid grid-cols-2 gap-4 mb-4 sm:mb-6">
                 <div class="text-center">
                     <div id="correctCount" class="text-2xl sm:text-3xl font-bold text-green-500">0</div>
-                    <div class="text-sm text-gray-600 dark:text-gray-400">Known</div>
+                    <div class="text-sm text-gray-600 dark:text-gray-400">Connues</div>
                 </div>
                 <div class="text-center">
                     <div id="incorrectCount" class="text-2xl sm:text-3xl font-bold text-red-500">0</div>
-                    <div class="text-sm text-gray-600 dark:text-gray-400">Unknown</div>
+                    <div class="text-sm text-gray-600 dark:text-gray-400">Inconnues</div>
                 </div>
             </div>
 
             <div class="text-center">
                 <div id="accuracyPercent" class="text-3xl sm:text-4xl font-bold text-blue-500">0%</div>
-                <div class="text-sm text-gray-600 dark:text-gray-400">Accuracy</div>
+                <div class="text-sm text-gray-600 dark:text-gray-400">Précision</div>
             </div>
         </div>
 
         <div class="space-y-3">
             <button id="reviewMissedBtn" class="w-full bg-orange-500 hover:bg-orange-600 active:bg-orange-700 text-white px-6 py-4 rounded-lg font-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed min-h-[56px] text-base">
-                Review Missed Cards
+                Revoir les Cartes Manquées
             </button>
             <button id="restartBtn" class="w-full bg-blue-500 hover:bg-blue-600 active:bg-blue-700 text-white px-6 py-4 rounded-lg font-semibold transition-colors min-h-[56px] text-base">
-                Start New Session
+                Nouvelle Session
             </button>
         </div>
     </div>
 </div>
 
 <script>
-    // Flashcard data
+    // Données des flashcards
     const flashcards = [
         { date: "28 juin 1914", event: "Assassinat de l'archiduc François Ferdinand et de son épouse par un étudiant serbe" },
         { date: "3 août 1914", event: "L'Allemagne déclare la guerre à la France" },
@@ -223,6 +230,7 @@
             this.correctAnswers = [];
             this.incorrectAnswers = [];
             this.isFlipped = false;
+            this.dateToEvent = true; // true = Date -> Événement, false = Événement -> Date
 
             this.initializeElements();
             this.setupEventListeners();
@@ -237,6 +245,8 @@
             this.eventName = document.getElementById('eventName');
             this.progressBar = document.getElementById('progressBar');
             this.cardCounter = document.getElementById('cardCounter');
+            this.modeToggle = document.getElementById('modeToggle');
+            this.modeText = document.getElementById('modeText');
             this.knowItBtn = document.getElementById('knowItBtn');
             this.dontKnowBtn = document.getElementById('dontKnowBtn');
             this.correctCount = document.getElementById('correctCount');
@@ -244,6 +254,10 @@
             this.accuracyPercent = document.getElementById('accuracyPercent');
             this.reviewMissedBtn = document.getElementById('reviewMissedBtn');
             this.restartBtn = document.getElementById('restartBtn');
+
+            // Récupérer les éléments des côtés de la carte
+            this.cardFront = document.querySelector('.card-front');
+            this.cardBack = document.querySelector('.card-back');
         }
 
         setupEventListeners() {
@@ -252,6 +266,7 @@
             this.dontKnowBtn.addEventListener('click', () => this.markAnswer(false));
             this.reviewMissedBtn.addEventListener('click', () => this.reviewMissedCards());
             this.restartBtn.addEventListener('click', () => this.startNewSession());
+            this.modeToggle.addEventListener('click', () => this.toggleMode());
         }
 
         shuffleArray(array) {
@@ -294,6 +309,64 @@
             this.displayResults();
         }
 
+        toggleMode() {
+            this.dateToEvent = !this.dateToEvent;
+            this.updateModeDisplay();
+            this.updateCardContent();
+            this.resetCard();
+        }
+
+        updateModeDisplay() {
+            if (this.dateToEvent) {
+                this.modeText.textContent = 'Date→Événement';
+            } else {
+                this.modeText.textContent = 'Événement→Date';
+            }
+        }
+
+        updateCardContent() {
+            if (this.currentIndex >= this.currentDeck.length) return;
+
+            const card = this.currentDeck[this.currentIndex];
+
+            if (this.dateToEvent) {
+                // Date à l'avant, Événement à l'arrière
+                this.cardFront.innerHTML = `
+                    <div id="eventDate" class="card-date text-5xl sm:text-6xl font-bold text-gray-800 dark:text-white">
+                        ${card.date}
+                    </div>
+                `;
+                this.cardBack.innerHTML = `
+                    <div id="eventName" class="card-event text-2xl sm:text-3xl font-semibold text-blue-800 dark:text-blue-200 text-center">
+                        ${card.event}
+                    </div>
+                `;
+                // Mettre à jour le style
+                this.cardFront.className = 'card-front card-side bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 flex flex-col items-center justify-center p-4 sm:p-8';
+                this.cardBack.className = 'card-back card-side bg-blue-50 dark:bg-blue-900 rounded-xl shadow-lg border border-blue-200 dark:border-blue-700 flex flex-col items-center justify-center p-4 sm:p-8';
+
+            } else {
+                // Événement à l'avant, Date à l'arrière
+                this.cardFront.innerHTML = `
+                    <div id="eventName" class="card-event text-2xl sm:text-3xl font-semibold text-gray-800 dark:text-white text-center">
+                        ${card.event}
+                    </div>
+                `;
+                this.cardBack.innerHTML = `
+                    <div id="eventDate" class="card-date text-5xl sm:text-6xl font-bold text-blue-800 dark:text-blue-200">
+                        ${card.date}
+                    </div>
+                `;
+                // Mettre à jour le style
+                this.cardFront.className = 'card-front card-side bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 flex flex-col items-center justify-center p-4 sm:p-8';
+                this.cardBack.className = 'card-back card-side bg-blue-50 dark:bg-blue-900 rounded-xl shadow-lg border border-blue-200 dark:border-blue-700 flex flex-col items-center justify-center p-4 sm:p-8';
+            }
+
+            // Récupérer à nouveau les références des éléments car innerHTML a changé
+            this.eventDate = document.getElementById('eventDate');
+            this.eventName = document.getElementById('eventName');
+        }
+
         displayCurrentCard() {
             if (this.currentIndex >= this.currentDeck.length) {
                 this.showResultsScreen();
@@ -301,9 +374,7 @@
             }
 
             const card = this.currentDeck[this.currentIndex];
-            this.eventDate.textContent = card.date;
-            this.eventName.textContent = card.event;
-
+            this.updateCardContent();
             this.updateProgress();
             this.resetCard();
         }
@@ -345,12 +416,12 @@
             this.incorrectCount.textContent = this.incorrectAnswers.length;
             this.accuracyPercent.textContent = `${accuracy}%`;
 
-            // Enable/disable review button based on missed cards
+            // Activer/désactiver le bouton de révision en fonction des cartes manquées
             this.reviewMissedBtn.disabled = this.incorrectAnswers.length === 0;
         }
     }
 
-    // Initialize the app
+    // Initialiser l'application
     new FlashcardApp();
 </script>
 </body>

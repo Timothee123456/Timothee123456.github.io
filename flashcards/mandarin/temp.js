@@ -8,4 +8,5 @@ var flashcards = [
   { chinese: "头发", pinyin: "tóufà", french: "cheveux" },
   { chinese: "手", pinyin: "shǒu", french: "main" },
   { chinese: "脸", pinyin: "liǎn", french: "visage" },
+  { chinese: "高", pinyin: "gāo", french: "grand" },
 ];

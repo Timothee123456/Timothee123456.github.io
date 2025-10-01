@@ -68,7 +68,7 @@
                 // Dynamically import the JS file
                 try {
                     // Construct the full URL to the JS file on GitHub
-                    const jsFileURL = `https://raw.githubusercontent.com/Timothee123456/Timothee123456.github.io/main/mandarin/${jsFile}`;
+                    const jsFileURL = jsFile;
                     const module = await import(jsFileURL);
 
                     // Extract data from the imported module

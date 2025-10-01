@@ -1,5 +1,4 @@
 export var title = "Corps"
-
 export var color = "#ffe5e5"
 
 export var flashcards = [

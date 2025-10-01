@@ -9,4 +9,5 @@ var flashcards = [
   { chinese: "手", pinyin: "shǒu", french: "main" },
   { chinese: "脸", pinyin: "liǎn", french: "visage" },
   { chinese: "高", pinyin: "gāo", french: "grand" },
+  { chinese: "矮", pinyin: "ǎi", french: "petit (en taille)" },
 ];

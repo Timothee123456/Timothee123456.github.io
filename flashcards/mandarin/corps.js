@@ -1,4 +1,6 @@
-export var title = {chinese: "身体", pinyin: "shēnti", french: "corps"}
+export var title = "Corps"
+
+export var color = "#ffe5e5"
 
 export var flashcards = [
   { chinese: "身体", pinyin: "shēnti", french: "corps" },

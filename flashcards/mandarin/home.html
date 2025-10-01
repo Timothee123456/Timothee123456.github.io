@@ -68,7 +68,8 @@
                     // Construct the full URL to the JS file on GitHub
                     const jsFileURL = jsFile;
                     const module = await import(`./${jsFileURL}`);
-
+                    console.log(module)
+                    
                     // Extract data from the imported module
                     const title = module.title;
                     console.log(title)

@@ -119,7 +119,7 @@
 
                     const flashcards = module.flashcards;
                     const cardCount = flashcards.length;
-                    const link = jsFile.replace(".js", ".html"); // Create the link
+                    const link = `main?deck=${jsFile}`; // Create the link
 
                     // Create the flashcard set element
                     const flashcardSet = document.createElement('div');

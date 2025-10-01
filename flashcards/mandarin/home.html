@@ -66,9 +66,8 @@
                 // Dynamically import the JS file
                 try {
                     // Construct the full URL to the JS file on GitHub
-                    const jsFileURL = jsFile;
-                    const module = await import(`./${jsFileURL}`);
-                    console.log(module)
+                    const jsFileURL = `./${jsFile}`;
+                    const module = await import(jsFileURL);
                     
                     // Extract data from the imported module
                     const title = module.title;

@@ -10,6 +10,21 @@
         .flashcard-set:hover {
             transform: translateY(-2px);
         }
+
+        /* Define light and dark mode colors */
+        .flashcard-set {
+            background-color: var(--flashcard-bg-color); /* Use a CSS variable */
+        }
+
+        /* Light mode */
+        :root {
+            --flashcard-bg-color: #f0f0f0; /* Very light gray */
+        }
+
+        /* Dark mode */
+        .dark {
+            --flashcard-bg-color: #333333; /* Dark gray */
+        }
     </style>
 </head>
 <body class="bg-gray-100 dark:bg-gray-900 min-h-screen">
@@ -55,7 +70,7 @@
             }
         }
 
-        // Function to generate a consistent color based on the title
+        // Function to generate a consistent light/dark color based on the title
         function generateConsistentColor(title) {
             // Use a simple hash function to generate a number from the title
             let hash = 0;
@@ -63,9 +78,20 @@
                 hash = title.charCodeAt(i) + ((hash << 5) - hash);
             }
 
-            // Convert the hash to a hex color
-            const color = '#' + ((hash & 0xFFFFFF) + 0x777777).toString(16).slice(1); // Add offset to avoid very dark colors
-            return color;
+            // Determine light or dark mode
+            const isDarkMode = document.documentElement.classList.contains('dark');
+
+            let baseColor;
+            if (isDarkMode) {
+                baseColor = 0x333333; // Dark gray
+            } else {
+                baseColor = 0xf0f0f0; // Very light gray
+            }
+
+            // Modify the base color based on the hash
+            const modifiedColor = '#' + ((hash & 0xFFFFFF) ^ baseColor).toString(16).padStart(6, '0'); // XOR with base color
+
+            return modifiedColor;
         }
 
         async function loadFlashcardData() {

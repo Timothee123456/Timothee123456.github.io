@@ -67,19 +67,14 @@
                 try {
                     // Construct the full URL to the JS file on GitHub
                     const jsFileURL = `./${jsFile}`;
-                    console.log(jsFileURL)
-
                     const module = await import(jsFileURL);
                     
                     // Extract data from the imported module
                     const title = module.title;
-                    console.log(title)
                     const color = module.color;
-                    console.log(module.color)
                     const flashcards = module.flashcards;
-                    console.log(module.flashcards)
                     const cardCount = flashcards.length;
-                    const link = `main?deck=${jsFileURL}`; // Create the link
+                    const link = `main?deck=${jsFile}`; // Create the link
 
                     // Create the flashcard set element
                     const flashcardSet = document.createElement('div');

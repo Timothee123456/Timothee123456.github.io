@@ -6,7 +6,6 @@ var flashcards = [
   { chinese: "脚", pinyin: "jiǎo", french: "pied" },
   { chinese: "背", pinyin: "bèi", french: "dos" },
   { chinese: "头发", pinyin: "tóufà", french: "cheveux" },
-  { chinese: "手", pinyin: "shǒu", french: "main" },
   { chinese: "脸", pinyin: "liǎn", french: "visage" },
   { chinese: "高", pinyin: "gāo", french: "grand" },
   { chinese: "胖", pinyin: "pàng", french: "gros" },

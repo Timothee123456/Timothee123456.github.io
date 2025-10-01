@@ -39,12 +39,14 @@
                 const fileNames = data
                     .filter(item => item.name.endsWith('.js'))
                     .map(item => {
+                        console.log(item)
                         let url = item.download_url;
                         const prefixToRemove = "https://raw.githubusercontent.com/Timothee123456/Timothee123456.github.io/main/flashcards/mandarin/";
-
+                        console.log(url)
                         if (url.startsWith(prefixToRemove)) {
                             url = url.slice(prefixToRemove.length);
                         }
+                        console.log(url)
 
                         return url;
                     });

@@ -1,4 +1,4 @@
-export var title = {chinese: "颜色", pinyin: "yán sè", french: "couleurs"}
+export var title = "Couleurs"
 
 export var flashcards = [
 {chinese: "颜色(的)", pinyin: "yán sè", french: "couleurs"},

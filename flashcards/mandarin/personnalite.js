@@ -1,6 +1,6 @@
-var title = {chinese: "性格", pinyin: "xìng gé", french: "personnalité"}
+export var title = {chinese: "性格", pinyin: "xìng gé", french: "personnalité"}
 
-var flashcards = [
+export var flashcards = [
 { chinese: "性格", pinyin: "xìng gé", french: "personnalité" },
 { chinese: "风格", pinyin: "fēng gé", french: "style" },
 { chinese: "酷", pinyin: "kù", french: "cool" },

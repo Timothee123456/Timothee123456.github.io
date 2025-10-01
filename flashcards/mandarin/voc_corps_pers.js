@@ -1,6 +1,6 @@
-var title = {french: "Corps et personnalité"}
+export var title = {french: "Corps et personnalité"}
 
-var flashcards = [
+export var flashcards = [
   { chinese: "身体", pinyin: "shēnti", french: "corps" },
   { chinese: "外貌", pinyin: "wàimào", french: "apparence" },
   { chinese: "眼睛", pinyin: "yǎnjīng", french: "yeux" },

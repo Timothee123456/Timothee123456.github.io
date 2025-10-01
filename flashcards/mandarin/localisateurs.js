@@ -1,6 +1,6 @@
-var title = {french: "Localisateurs"}
+export var title = {french: "Localisateurs"}
 
-var flashcards = [
+export var flashcards = [
 {chinese: "上", pinyin: "shàng", french: "dessus"},
 {chinese: "下", pinyin: "xià", french: "dessous"},
 {chinese: "前", pinyin: "qián", french: "devant"},

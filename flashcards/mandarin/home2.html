@@ -32,7 +32,7 @@
         // Function to fetch the list of JavaScript files in the current directory
         async function getFlashcardFiles() {
             try {
-                const response = await fetch('https://api.github.com/repos/Timothee123456/Timothee123456.github.io/contents/mandarin'); // Fetch the current directory
+                const response = await fetch('https://api.github.com/repos/Timothee123456/Timothee123456.github.io/contents/flashcards/mandarin'); // Fetch the current directory
                 const data = await response.json();
 
                 // Filter for .js files and map to get the download URLs
@@ -40,7 +40,7 @@
                     .filter(item => item.name.endsWith('.js'))
                     .map(item => {
                         let url = item.download_url;
-                        const prefixToRemove = "https://raw.githubusercontent.com/Timothee123456/Timothee123456.github.io/main/mandarin/";
+                        const prefixToRemove = "https://raw.githubusercontent.com/Timothee123456/Timothee123456.github.io/main/flashcards/mandarin/";
 
                         if (url.startsWith(prefixToRemove)) {
                             url = url.slice(prefixToRemove.length);
@@ -79,7 +79,7 @@
                 // Dynamically import the JS file
                 try {
                     // Construct the full URL to the JS file on GitHub
-                    const jsFileURL = `https://raw.githubusercontent.com/Timothee123456/Timothee123456.github.io/main/mandarin/${jsFile}`;
+                    const jsFileURL = `./${jsFile}`;
                     const module = await import(jsFileURL);
 
                     // Extract data from the imported module

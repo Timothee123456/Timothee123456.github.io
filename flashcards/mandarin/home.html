@@ -67,6 +67,8 @@
                 try {
                     // Construct the full URL to the JS file on GitHub
                     const jsFileURL = `./${jsFile}`;
+                    console.log(jsFileURL)
+
                     const module = await import(jsFileURL);
                     
                     // Extract data from the imported module

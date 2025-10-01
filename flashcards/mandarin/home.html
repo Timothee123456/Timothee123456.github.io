@@ -39,14 +39,12 @@
                 const fileNames = data
                     .filter(item => item.name.endsWith('.js'))
                     .map(item => {
-                        console.log(item)
                         let url = item.download_url;
                         const prefixToRemove = "https://raw.githubusercontent.com/Timothee123456/Timothee123456.github.io/main/flashcards/mandarin/";
-                        console.log(url)
+                        
                         if (url.startsWith(prefixToRemove)) {
                             url = url.slice(prefixToRemove.length);
                         }
-                        console.log(url)
 
                         return url;
                     });
@@ -69,14 +67,14 @@
                 try {
                     // Construct the full URL to the JS file on GitHub
                     const jsFileURL = jsFile;
-                    const module = await import(jsFileURL);
+                    const module = await import(`./${jsFileURL}`);
 
                     // Extract data from the imported module
                     const title = module.title;
                     const color = module.color;
                     const flashcards = module.flashcards;
                     const cardCount = flashcards.length;
-                    const link = jsFile.replace(".js", ".html"); // Create the link
+                    const link = `main?deck=${jsFileURL}`; // Create the link
 
                     // Create the flashcard set element
                     const flashcardSet = document.createElement('div');

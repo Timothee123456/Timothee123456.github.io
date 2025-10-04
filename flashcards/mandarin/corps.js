@@ -1,6 +1,6 @@
-export var title = "Corps"
+var title = "Corps"
 
-export var flashcards = [
+var flashcards = [
   { chinese: "身体", pinyin: "shēnti", french: "corps" },
   { chinese: "外貌", pinyin: "wàimào", french: "apparence" },
   { chinese: "眼睛", pinyin: "yǎnjīng", french: "yeux" },

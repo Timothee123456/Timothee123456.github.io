@@ -314,15 +314,22 @@
             document.addEventListener('keydown', (event) => {
                 if (this.resultsScreen.classList.contains('hidden') === false) {
                     if (event.key === 'Enter') {
-                        this.reviewMissedCards(); // "Review missed cards" on Enter
+                        if (this.reviewMissedBtn.disabled === false) {
+                            this.reviewMissedCards(); // "Review missed cards" on Enter
+                        } else {
+                            this.startNewSession(); // "New session" if no missed cards
+                        }
+                    }
                 }
-                if (event.key === 'Enter') {
-                    this.markAnswer(true); // "Know it" on Enter
-                } else if (event.key === 'Backspace') {
-                    this.markAnswer(false); // "Don't know" on Backspace
-                } else if (event.code === 'Space') {
-                    this.flipCard(); // Flip card on Spacebar
-                    event.preventDefault(); // Prevent scrolling
+                else {
+                    if (event.key === 'Enter') {
+                        this.markAnswer(true); // "Know it" on Enter
+                    } else if (event.key === 'Backspace') {
+                        this.markAnswer(false); // "Don't know" on Backspace
+                    } else if (event.code === 'Space') {
+                        this.flipCard(); // Flip card on Spacebar
+                        event.preventDefault(); // Prevent scrolling
+                    }
                 }
             });
         }

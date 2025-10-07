@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale: 1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>Flashcards Mandarin</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
@@ -41,7 +41,7 @@
                     .map(item => {
                         let url = item.download_url;
                         const prefixToRemove = "https://raw.githubusercontent.com/Timothee123456/Timothee123456.github.io/main/flashcards/mandarin/";
-
+                        
                         if (url.startsWith(prefixToRemove)) {
                             url = url.slice(prefixToRemove.length);
                         }
@@ -55,27 +55,6 @@
             }
         }
 
-        // Function to fetch the colors from colors.js
-        async function getColors() {
-            try {
-                const response = await fetch('./colors.js');
-                const scriptText = await response.text();
-
-                // Execute the script to define lightColors and darkColors
-                const script = document.createElement('script');
-                script.textContent = scriptText;
-                document.head.appendChild(script);
-                document.head.removeChild(script); // Clean up
-
-                // Now lightColors and darkColors are available
-                return { lightColors, darkColors };
-            } catch (error) {
-                console.error("Could not fetch colors:", error);
-                return { lightColors: [], darkColors: [] }; // Return empty arrays in case of error
-            }
-        }
-
-
         async function loadFlashcardData() {
             const gridContainer = document.querySelector('.grid');
             gridContainer.innerHTML = ''; // Clear existing content
@@ -83,31 +62,16 @@
             // Fetch all JS files in the directory
             const jsFiles = await getFlashcardFiles();
 
-            // Fetch colors
-            const { lightColors, darkColors } = await getColors();
-            let colorIndex = 0; // Initialize color index
-
             for (const jsFile of jsFiles) {
                 // Dynamically import the JS file
                 try {
                     // Construct the full URL to the JS file on GitHub
                     const jsFileURL = `./${jsFile}`;
                     const module = await import(jsFileURL);
-
+                    
                     // Extract data from the imported module
                     const title = module.title;
-
-                    let color;
-                    const isDarkMode = document.documentElement.classList.contains('dark');
-
-                    if (isDarkMode) {
-                        color = darkColors[colorIndex % darkColors.length];
-                    } else {
-                        color = lightColors[colorIndex % lightColors.length];
-                    }
-
-                    colorIndex++; // Increment color index for the next card
-
+                    const color = module.color;
                     const flashcards = module.flashcards;
                     const cardCount = flashcards.length;
                     const link = `main?deck=${jsFile}`; // Create the link

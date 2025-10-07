@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale: 1.0, user-scalable=no">
     <title>Flashcards Mandarin</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
@@ -35,25 +35,57 @@
                 const response = await fetch('https://api.github.com/repos/Timothee123456/Timothee123456.github.io/contents/flashcards/mandarin'); // Fetch the current directory
                 const data = await response.json();
 
-                // Filter for .js files and map to get the download URLs
-                const fileNames = data
-                    .filter(item => item.name.endsWith('.js'))
-                    .map(item => {
-                        let url = item.download_url;
-                        const prefixToRemove = "https://raw.githubusercontent.com/Timothee123456/Timothee123456.github.io/main/flashcards/mandarin/";
-                        
-                        if (url.startsWith(prefixToRemove)) {
-                            url = url.slice(prefixToRemove.length);
-                        }
-
-                        return url;
-                    });
-                return fileNames;
+                // Filter for .js files
+                const jsFiles = data.filter(item => item.name.endsWith('.js'));
+                return jsFiles;
             } catch (error) {
                 console.error("Could not fetch file list:", error);
                 return [];
             }
         }
+
+        // Function to fetch the date from a JavaScript file
+        async function getDateFromJSFile(file) {
+            try {
+                const response = await fetch(`https://raw.githubusercontent.com/Timothee123456/Timothee123456.github.io/main/flashcards/mandarin/${file.name}`);
+                const scriptText = await response.text();
+
+                // Use a regular expression to find the date variable
+                const dateRegex = /export\s+var\s+date\s*=\s*"(.*?)";/;
+                const match = scriptText.match(dateRegex);
+
+                if (match && match[1]) {
+                    return { file: file, date: match[1] };
+                } else {
+                    console.warn(`No date found in ${file.name}`);
+                    return { file: file, date: null };
+                }
+            } catch (error) {
+                console.error(`Could not fetch or parse ${file.name}:`, error);
+                return { file: file, date: null };
+            }
+        }
+
+        // Function to fetch the colors from colors.js
+        async function getColors() {
+            try {
+                const response = await fetch('./colors.js');
+                const scriptText = await response.text();
+
+                // Execute the script to define lightColors and darkColors
+                const script = document.createElement('script');
+                script.textContent = scriptText;
+                document.head.appendChild(script);
+                document.head.removeChild(script); // Clean up
+
+                // Now lightColors and darkColors are available
+                return { lightColors, darkColors };
+            } catch (error) {
+                console.error("Could not fetch colors:", error);
+                return { lightColors: [], darkColors: [] }; // Return empty arrays in case of error
+            }
+        }
+
 
         async function loadFlashcardData() {
             const gridContainer = document.querySelector('.grid');
@@ -62,19 +94,47 @@
             // Fetch all JS files in the directory
             const jsFiles = await getFlashcardFiles();
 
-            for (const jsFile of jsFiles) {
+            // Fetch dates from all JS files
+            const filesWithDates = await Promise.all(jsFiles.map(file => getDateFromJSFile(file)));
+
+            // Sort files by date (newest to oldest)
+            filesWithDates.sort((a, b) => {
+                if (!a.date && !b.date) return 0; // If both are null, keep original order
+                if (!a.date) return 1; // If a is null, b comes first
+                if (!b.date) return -1; // If b is null, a comes first
+                return new Date(b.date) - new Date(a.date); // Sort by date
+            });
+
+            // Fetch colors
+            const { lightColors, darkColors } = await getColors();
+            let colorIndex = 0; // Initialize color index
+
+            for (const fileWithDate of filesWithDates) {
+                const file = fileWithDate.file;
+
                 // Dynamically import the JS file
                 try {
                     // Construct the full URL to the JS file on GitHub
-                    const jsFileURL = `./${jsFile}`;
+                    const jsFileURL = `https://raw.githubusercontent.com/Timothee123456/Timothee123456.github.io/main/flashcards/mandarin/${file.name}`;
                     const module = await import(jsFileURL);
-                    
+
                     // Extract data from the imported module
                     const title = module.title;
-                    const color = module.color;
+
+                    let color;
+                    const isDarkMode = document.documentElement.classList.contains('dark');
+
+                    if (isDarkMode) {
+                        color = darkColors[colorIndex % darkColors.length];
+                    } else {
+                        color = lightColors[colorIndex % lightColors.length];
+                    }
+
+                    colorIndex++; // Increment color index for the next card
+
                     const flashcards = module.flashcards;
                     const cardCount = flashcards.length;
-                    const link = `main?deck=${jsFile}`; // Create the link
+                    const link = `main?deck=${file.name}`; // Create the link
 
                     // Create the flashcard set element
                     const flashcardSet = document.createElement('div');
@@ -99,7 +159,7 @@
                     gridContainer.appendChild(flashcardSet);
 
                 } catch (error) {
-                    console.error(`Error loading or processing ${jsFile}:`, error);
+                    console.error(`Error loading or processing ${file.name}:`, error);
                 }
             }
         }

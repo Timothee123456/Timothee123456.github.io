@@ -1,4 +1,5 @@
 export var title = "Vêtements"
+export var date = "2025-09-17"
 
 export var flashcards = [
     { chinese: "衣服", pinyin: "yī fú", french: "vêtements" },

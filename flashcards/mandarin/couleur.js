@@ -1,4 +1,5 @@
 export var title = "Couleurs"
+export var date = "2024-01-01"
 
 export var flashcards = [
 {chinese: "颜色(的)", pinyin: "yán sè", french: "couleurs"},

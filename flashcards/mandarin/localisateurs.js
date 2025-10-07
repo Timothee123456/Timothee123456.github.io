@@ -1,4 +1,5 @@
 export var title = "Localisateurs"
+export var date = "2025-01-01"
 
 export var flashcards = [
 {chinese: "上", pinyin: "shàng", french: "dessus"},

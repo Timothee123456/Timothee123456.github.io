@@ -1,4 +1,5 @@
 var title = "Corps"
+var date = "2025-09-15"
 
 var flashcards = [
   { chinese: "身体", pinyin: "shēnti", french: "corps" },

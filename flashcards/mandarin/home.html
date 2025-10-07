@@ -75,6 +75,32 @@
             }
         }
 
+        function sortFilesWithDate(jsFiles){
+            jsFilesDictionary = []
+            for (const jsFile of jsFiles) {
+                // Dynamically import the JS file
+                try {
+                    // Construct the full URL to the JS file on GitHub
+                    const jsFileURL = `./${jsFile}`;
+                    const module = await import(jsFileURL);
+
+                    // Extract date from the imported module
+                    const date = module.date;
+                    jsFilesDictionary.push({name: jsFile, date: date})
+                    
+                } catch (error) {
+                    console.error(`Error loading or processing ${jsFile}:`, error);
+                }
+            }
+
+            // Sort files by date (newest to oldest)
+            jsFilesDictionary.sort((a, b) => {
+                return new Date(b.date) - new Date(a.date); // Sort by date
+            });
+            const jsFilesSorted = arr.map(item => item.name); // Extract the 'name' property from each object
+            return jsFilesSorted
+        }
+        
 
         async function loadFlashcardData() {
             const gridContainer = document.querySelector('.grid');
@@ -82,12 +108,13 @@
 
             // Fetch all JS files in the directory
             const jsFiles = await getFlashcardFiles();
-
+            const jsFilesSorted = sortFilesWithDate(jsFiles);
+            
             // Fetch colors
             const { lightColors, darkColors } = await getColors();
             let colorIndex = 0; // Initialize color index
 
-            for (const jsFile of jsFiles) {
+            for (const jsFile of jsFilesSorted) {
                 // Dynamically import the JS file
                 try {
                     // Construct the full URL to the JS file on GitHub

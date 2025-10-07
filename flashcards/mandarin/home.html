@@ -114,8 +114,23 @@
 
                 // Dynamically import the JS file
                 try {
-                    // Construct the full URL to the JS file on GitHub
                     const jsFileURL = `https://raw.githubusercontent.com/Timothee123456/Timothee123456.github.io/main/flashcards/mandarin/${file.name}`;
+
+                    // Fetch the JavaScript file as text
+                    const response = await fetch(jsFileURL);
+                    const jsCode = await response.text();
+
+                    // Create a script element and set its type to "module"
+                    const script = document.createElement('script');
+                    script.type = 'module';
+
+                    // Set the script's text content to the JavaScript code
+                    script.textContent = jsCode;
+
+                    // Append the script to the document head
+                    document.head.appendChild(script);
+
+                    // Extract data from the module
                     const module = await import(jsFileURL);
 
                     // Extract data from the imported module

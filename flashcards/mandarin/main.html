@@ -237,65 +237,6 @@
             document.head.appendChild(script);
         }
 
-        // Function to fetch the list of JavaScript files in the current directory
-        async function getFlashcardFiles() {
-            try {
-                const response = await fetch('https://api.github.com/repos/Timothee123456/Timothee123456.github.io/contents/mandarin'); // Fetch the current directory
-                const data = await response.json();
-
-                // Filter for .js files and map to get the download URLs
-                const fileNames = data
-                    .filter(item => item.name.endsWith('.js'))
-                    .map(item => {
-                        let url = item.download_url;
-                        const prefixToRemove = "https://raw.githubusercontent.com/Timothee123456/Timothee123456.github.io/main/mandarin/";
-
-                        if (url.startsWith(prefixToRemove)) {
-                            url = url.slice(prefixToRemove.length);
-                        }
-
-                        return url;
-                    });
-                return fileNames;
-            } catch (error) {
-                console.error("Could not fetch file list:", error);
-                return [];
-            }
-        }
-
-        // Function to load all flashcard files
-        function loadAllFlashcards(fileList, callback) {
-            let combinedFlashcards = []; // Initialize an array to hold all flashcards
-            let loadedCount = 0;
-
-            function fileLoaded(file) {
-                loadedCount++;
-                if (typeof window.flashcards !== 'undefined' && Array.isArray(window.flashcards)) {
-                    combinedFlashcards = combinedFlashcards.concat(window.flashcards); // Concatenate the flashcards
-                    delete window.flashcards; // Clean up the global scope
-                } else {
-                    console.warn(`File ${file} did not properly define a 'flashcards' array.`);
-                }
-
-                if (loadedCount === fileList.length) {
-                    // All files have been loaded, execute the callback
-                    callback(combinedFlashcards); // Pass the combined flashcards to the callback
-                }
-            }
-
-            if (fileList.length === 0) {
-                console.warn("No flashcard files found.");
-                callback([]); // Still call the callback with an empty array
-                return;
-            }
-
-            fileList.forEach(file => {
-                loadScript(file, () => {
-                    fileLoaded(file);
-                });
-            });
-        }
-
         // Get the desired flashcards file name from a query parameter (e.g., index.html?deck=vocabulary)
         const urlParams = new URLSearchParams(window.location.search);
         const deckName = urlParams.get('deck');
@@ -324,15 +265,8 @@
                 initializeApp(flashcards); // Initialize the app with the loaded flashcards
             });
         } else {
-            // Load all flashcard files if no 'deck' parameter is provided
-            getFlashcardFiles().then(fileList => {
-                loadAllFlashcards(fileList, (allFlashcards) => {
-                    flashcards = allFlashcards;
-                    document.getElementById('title').textContent = titleText;
-                    document.getElementById('pageTitle').textContent = titleText;
-                    initializeApp(flashcards); // Initialize the app with all the flashcards
-                });
-            });
+            // Navigate back to home if no deck is specified
+            window.location.href = "/home";
         }
 
         function initializeApp(flashcards) {

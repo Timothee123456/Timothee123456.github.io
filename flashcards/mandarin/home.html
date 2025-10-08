@@ -35,7 +35,7 @@
         // Function to fetch the list of JavaScript files in the current directory
         async function getFlashcardFiles() {
             try {
-                const response = await fetch('https://api.github.com/repos/Timothee123456/Timothee123456.github.io/contents/flashcards/mandarin'); // Fetch the current directory
+                const response = await fetch('https://api.github.com/repos/Timothee123456/Timothee123456.github.io/contents/flashcards/mandarin/sets'); // Fetch the current directory
                 const data = await response.json();
 
                 // Filter for .js files and map to get the download URLs
@@ -98,7 +98,6 @@
 
             // Fetch all JS files in the directory
             const jsFiles = await getFlashcardFiles();
-            console.log(jsFiles);
             const jsFilesSorted = sortFilesWithDate(jsFiles);
             
             // Fetch colors

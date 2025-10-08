@@ -99,6 +99,7 @@
             // Fetch all JS files in the directory
             const jsFiles = await getFlashcardFiles();
             const jsFilesSorted = sortFilesWithDate(jsFiles);
+            console.log(jsFilesSorted);
             
             // Fetch colors
             let colorIndex = 0; // Initialize color index

@@ -43,7 +43,7 @@
                     .filter(item => item.name.endsWith('.js'))
                     .map(item => {
                         let url = item.download_url;
-                        const prefixToRemove = "https://raw.githubusercontent.com/Timothee123456/Timothee123456.github.io/main/flashcards/mandarin/";
+                        const prefixToRemove = "https://raw.githubusercontent.com/Timothee123456/Timothee123456.github.io/main/flashcards/mandarin/sets/";
                         const suffixToRemove = ".js";
 
                         if (url.startsWith(prefixToRemove)) {

@@ -87,7 +87,7 @@
             jsFilesDictionary.sort((a, b) => {
                 return new Date(b.date) - new Date(a.date); // Sort by date
             });
-            const jsFilesSorted = arr.map(item => item.name); // Extract the 'name' property from each object
+            const jsFilesSorted = jsFilesDictionary.map(item => item.name); // Extract the 'name' property from each object
             return jsFilesSorted
         }
         

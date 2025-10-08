@@ -98,6 +98,7 @@
 
             // Fetch all JS files in the directory
             const jsFiles = await getFlashcardFiles();
+            console.log(jsFiles);
             const jsFilesSorted = sortFilesWithDate(jsFiles);
             
             // Fetch colors

@@ -98,6 +98,8 @@
 
             // Fetch all JS files in the directory
             const jsFiles = await getFlashcardFiles();
+            console.log(jsFiles);
+            // Sort files by date
             const jsFilesSorted = await sortFilesWithDate(jsFiles);
             console.log(jsFilesSorted);
             
@@ -107,7 +109,6 @@
             for (const jsFile of jsFilesSorted) {
                 // Dynamically import the JS file
                 try {
-                    // Construct the full URL to the JS file on GitHub
                     const jsFileURL = `./sets/${jsFile}.js`;
                     const module = await import(jsFileURL);
 

@@ -71,7 +71,7 @@
                 // Dynamically import the JS file
                 try {
                     // Construct the full URL to the JS file on GitHub
-                    const jsFileURL = `./${jsFile}`;
+                    const jsFileURL = `./sets/${jsFile}`;
                     const module = await import(jsFileURL);
 
                     // Extract date from the imported module
@@ -98,7 +98,7 @@
 
             // Fetch all JS files in the directory
             const jsFiles = await getFlashcardFiles();
-            const jsFilesSorted = sortFilesWithDate(jsFiles);
+            const jsFilesSorted = await sortFilesWithDate(jsFiles);
             console.log(jsFilesSorted);
             
             // Fetch colors
@@ -108,7 +108,7 @@
                 // Dynamically import the JS file
                 try {
                     // Construct the full URL to the JS file on GitHub
-                    const jsFileURL = `./sort/${jsFile}.js`;
+                    const jsFileURL = `./sets/${jsFile}.js`;
                     const module = await import(jsFileURL);
 
                     // Extract data from the imported module

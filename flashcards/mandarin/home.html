@@ -71,7 +71,7 @@
                 // Dynamically import the JS file
                 try {
                     // Construct the full URL to the JS file on GitHub
-                    const jsFileURL = `./sets/${jsFile}`;
+                    const jsFileURL = `./sets/${jsFile}.js`;
                     const module = await import(jsFileURL);
 
                     // Extract date from the imported module

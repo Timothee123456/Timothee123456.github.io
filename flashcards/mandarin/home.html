@@ -35,7 +35,7 @@
         // Function to fetch the list of JavaScript files in the current directory
         async function getFlashcardFiles() {
             try {
-                const response = await fetch('https://api.github.com/repos/Timothee123456/Timothee123456.github.io/contents/flashcards/mandarin/sets'); // Fetch the current directory
+                const response = await fetch('https://api.github.com/repos/Timothee123456/Timothee123456.github.io/contents/flashcards/mandarin/decks'); // Fetch the current directory
                 const data = await response.json();
 
                 // Filter for .js files and map to get the download URLs
@@ -43,7 +43,7 @@
                     .filter(item => item.name.endsWith('.js'))
                     .map(item => {
                         let url = item.download_url;
-                        const prefixToRemove = "https://raw.githubusercontent.com/Timothee123456/Timothee123456.github.io/main/flashcards/mandarin/sets/";
+                        const prefixToRemove = "https://raw.githubusercontent.com/Timothee123456/Timothee123456.github.io/main/flashcards/mandarin/decks/";
                         const suffixToRemove = ".js";
 
                         if (url.startsWith(prefixToRemove)) {
@@ -71,7 +71,7 @@
                 // Dynamically import the JS file
                 try {
                     // Construct the full URL to the JS file on GitHub
-                    const jsFileURL = `./sets/${jsFile}.js`;
+                    const jsFileURL = `./decks/${jsFile}.js`;
                     const module = await import(jsFileURL);
 
                     // Extract date from the imported module
@@ -109,7 +109,7 @@
             for (const jsFile of jsFilesSorted) {
                 // Dynamically import the JS file
                 try {
-                    const jsFileURL = `./sets/${jsFile}.js`;
+                    const jsFileURL = `./decks/${jsFile}.js`;
                     const module = await import(jsFileURL);
 
                     // Extract data from the imported module
@@ -175,7 +175,7 @@
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <!-- Flashcard sets will be added here by JavaScript -->
+            <!-- Flashcard decks will be added here by JavaScript -->
         </div>
     </div>
 </body>

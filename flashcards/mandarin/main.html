@@ -247,10 +247,10 @@
 
 
                 // Set title based on deckName
-                const titleText = module.title + 'Flashcards Chinois';
+                const titleText = module.title + ' - Flashcards Chinois';
                 // Check if 'title' is defined in the loaded script
                 if (titleText === 'undefined') {
-                    titleText = 'Flashcards Chinois'; // Default title
+                    titleText = ' - Flashcards Chinois'; // Default title
                 }
                 document.getElementById('title').textContent = titleText;
                 document.getElementById('pageTitle').textContent = titleText;
@@ -272,7 +272,7 @@
                     this.correctAnswers = [];
                     this.incorrectAnswers = [];
                     this.isFlipped = false;
-                    this.studyMode = 0; // Study modes: 0=中→FR+拼, 1=中+拼→FR, 2=拼→中+FR, 3=FR→中+拼
+                    this.studyMode = 2; // Study modes: 0=中→FR+拼, 1=中+拼→FR, 2=拼→中+FR, 3=FR→中+拼
                     this.hintShown = false;
                     this.showPinyin = true; // true = show pinyin, false = hide pinyin
 

@@ -232,32 +232,36 @@
         const urlParams = new URLSearchParams(window.location.search);
         const deckName = urlParams.get('deck');
 
-        if (deckName) {
-            // Load a specific deck if the 'deck' parameter is provided
-            const flashcardsFile = `${deckName}.js`;
-            const jsFileURL = `./decks/${flashcardsFile}`;
-            const module = await import(jsFileURL);
-            const flashcards = module.flashcards;
-            // Check if 'flashcards' is defined in the loaded script
-            if (flashcards === undefined) {
-                // Navigate back to home if no flashcards
+        async function load_flashcards(){
+            if (deckName) {
+                // Load a specific deck if the 'deck' parameter is provided
+                const flashcardsFile = `${deckName}.js`;
+                const jsFileURL = `./decks/${flashcardsFile}`;
+                const module = await import(jsFileURL);
+                const flashcards = module.flashcards;
+                // Check if 'flashcards' is defined in the loaded script
+                if (flashcards === undefined) {
+                    // Navigate back to home if no flashcards
+                    window.location.href = "/home";
+                }
+
+
+                // Set title based on deckName
+                const titleText = module.title + 'Flashcards Chinois';
+                // Check if 'title' is defined in the loaded script
+                if (titleText === 'undefined') {
+                    titleText = 'Flashcards Chinois'; // Default title
+                }
+                document.getElementById('title').textContent = titleText;
+                document.getElementById('pageTitle').textContent = titleText;
+                initializeApp(flashcards); // Initialize the app with the loaded flashcards
+            } else {
+                // Navigate back to home if no deck is specified
                 window.location.href = "/home";
             }
-
-
-            // Set title based on deckName
-            const titleText = module.title + 'Flashcards Chinois';
-            // Check if 'title' is defined in the loaded script
-            if (titleText === 'undefined') {
-                titleText = 'Flashcards Chinois'; // Default title
-            }
-            document.getElementById('title').textContent = titleText;
-            document.getElementById('pageTitle').textContent = titleText;
-            initializeApp(flashcards); // Initialize the app with the loaded flashcards
-        } else {
-            // Navigate back to home if no deck is specified
-            window.location.href = "/home";
         }
+
+        load_flashcards()
 
         function initializeApp(flashcards) {
             class FlashcardApp {

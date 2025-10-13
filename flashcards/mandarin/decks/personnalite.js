@@ -1,7 +1,7 @@
-var title = "Personnalité"
-var date = "2025-09-16"
+export var title = "Personnalité"
+export var date = "2025-09-16"
 
-var flashcards = [
+export var flashcards = [
 { chinese: "性格", pinyin: "xìng gé", french: "personnalité" },
 { chinese: "风格", pinyin: "fēng gé", french: "style" },
 { chinese: "酷", pinyin: "kù", french: "cool" },

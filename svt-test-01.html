@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Révisions : Le Corps Humain et les Micro-organismes</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+        .container {
+            width: 80%;
+            margin: auto;
+            overflow: hidden;
+        }
+        header {
+            background: #5098D4;
+            color: white;
+            padding-top: 30px;
+            min-height: 70px;
+            border-bottom: 3px solid #2980b9;
+        }
+        header a {
+            color: #ffffff;
+            text-decoration: none;
+            text-transform: uppercase;
+            font-size: 16px;
+        }
+        header ul {
+            padding: 0;
+            margin: 0;
+        }
+        header li {
+            float: left;
+            display: inline;
+            padding: 0 20px 0 20px;
+        }
+        header #branding {
+            float: left;
+        }
+        header #branding h1 {
+            margin: 0;
+        }
+        header nav {
+            float: right;
+            margin-top: 10px;
+        }
+        header .highlight, header .current a {
+            color: #e8491d;
+            font-weight: bold;
+        }
+        section {
+            padding: 20px;
+            background-color: #fff;
+            margin-bottom: 20px;
+            border-radius: 8px;
+        }
+        h1, h2 {
+            color: #2980b9;
+        }
+        ul {
+            list-style-type: square;
+        }
+        .quiz-container {
+            background-color: #f9f9f9;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+        .quiz-container button {
+            background-color: #5098D4;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .quiz-container button:hover {
+            background-color: #2980b9;
+        }
+        footer {
+            padding: 20px;
+            margin-top: 20px;
+            color: #fff;
+            background-color: #2980b9;
+            text-align: center;
+        }
+        /* Responsive layout */
+        @media(max-width: 768px) {
+            header #branding,
+            header nav {
+                float: none;
+                text-align: center;
+            }
+            header ul li {
+                float: none;
+                display: block;
+            }
+            header nav li a {
+                padding: 5px 0;
+            }
+            .container {
+                width: 90%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div id="branding">
+                <h1><span class="highlight">SVT</span> Révisions</h1>
+            </div>
+            <nav>
+                <ul>
+                    <li class="current"><a href="index.html">Accueil</a></li>
+                    <li><a href="quiz.html">Quiz</a></li>
+                    <li><a href="exercices.html">Exercices</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <section id="main">
+        <div class="container">
+            <article>
+                <h1>Bienvenue sur le site de révision SVT</h1>
+                <p>Ce site est conçu pour vous aider à réviser le chapitre sur le corps humain et les micro-organismes. Vous y trouverez des quiz pour tester vos connaissances et des exercices interactifs pour approfondir votre compréhension.</p>
+
+                <h2>Thèmes abordés :</h2>
+                <ul>
+                    <li>Les micro-organismes et leur diversité</li>
+                    <li>Le microbiote humain</li>
+                    <li>La contamination et l'infection</li>
+                    <li>Les mesures d'hygiène</li>
+                    <li>Le système immunitaire</li>
+                </ul>
+            </article>
+        </div>
+    </section>
+
+    <section id="quiz">
+        <div class="container">
+            <h2>Quiz</h2>
+
+            <div class="quiz-container">
+                <p><strong>Question 1:</strong> Qu'est-ce que le microbiote ?</p>
+                <label><input type="radio" name="q1" value="a"> a) Un ensemble d'organes</label><br>
+                <label><input type="radio" name="q1" value="b"> b) Un ensemble de micro-organismes</label><br>
+                <label><input type="radio" name="q1" value="c"> c) Un type de cellule</label><br>
+                <button onclick="alert('La réponse est b) Un ensemble de micro-organismes')">Vérifier</button>
+            </div>
+
+            <div class="quiz-container">
+                <p><strong>Question 2:</strong> Qu'est-ce que la contamination ?</p>
+                <label><input type="radio" name="q2" value="a"> a) La multiplication des micro-organismes</label><br>
+                <label><input type="radio" name="q2" value="b"> b) L'entrée des micro-organismes dans l'organisme</label><br>
+                <label><input type="radio" name="q2" value="c"> c) La réaction du système immunitaire</label><br>
+                <button onclick="alert('La réponse est b) L\'entrée des micro-organismes dans l\'organisme')">Vérifier</button>
+            </div>
+
+            <div class="quiz-container">
+                <p><strong>Question 3:</strong> Quelle est l'importance des mesures d'hygiène ?</p>
+                <label><input type="radio" name="q3" value="a"> a) Elles n'ont aucune importance</label><br>
+                <label><input type="radio" name="q3" value="b"> b) Elles permettent de maintenir l'équilibre du microbiote et de prévenir la contamination</label><br>
+                <label><input type="radio" name="q3" value="c"> c) Elles servent uniquement à se sentir propre</label><br>
+                <button onclick="alert('La réponse est b) Elles permettent de maintenir l\'équilibre du microbiote et de prévenir la contamination')">Vérifier</button>
+            </div>
+
+            <div class="quiz-container">
+                <p><strong>Question 4:</strong> Quel est le rôle du système immunitaire ?</p>
+                <label><input type="radio" name="q4" value="a"> a) Digérer les aliments</label><br>
+                <label><input type="radio" name="q4" value="b"> b) Protéger l'organisme contre les infections</label><br>
+                <label><input type="radio" name="q4" value="c"> c) Transporter l'oxygène</label><br>
+                <button onclick="alert('La réponse est b) Protéger l\'organisme contre les infections')">Vérifier</button>
+            </div>
+
+            <div class="quiz-container">
+                <p><strong>Question 5:</strong> Qu'est-ce qu'une infection ?</p>
+                <label><input type="radio" name="q5" value="a"> a) L'entrée de micro-organismes dans l'organisme</label><br>
+                <label><input type="radio" name="q5" value="b"> b) La multiplication de micro-organismes pathogènes dans l'organisme</label><br>
+                <label><input type="radio" name="q5" value="c"> c) La réaction du corps à une blessure</label><br>
+                <button onclick="alert('La réponse est b) La multiplication de micro-organismes pathogènes dans l\'organisme')">Vérifier</button>
+            </div>
+        </div>
+    </section>
+
+    <section id="exercices">
+        <div class="container">
+            <h2>Exercices Interactifs</h2>
+            <p>
+                Ici, vous trouverez des exercices pour tester et approfondir vos connaissances.
+            </p>
+
+            <h3>Exercice 1: Vrai ou Faux</h3>
+            <p>Indiquez si les affirmations suivantes sont vraies ou fausses :</p>
+            <ul>
+                <li>Le microbiote est uniquement composé de bactéries. (Faux)</li>
+                <li>La contamination est toujours suivie d'une infection. (Faux)</li>
+                <li>Le lavage des mains est une mesure d'hygiène importante. (Vrai)</li>
+            </ul>
+
+            <h3>Exercice 2: Associations</h3>
+            <p>Associez chaque terme à sa définition :</p>
+            <ul>
+                <li>Microbiote - Ensemble des micro-organismes vivant dans l'organisme</li>
+                <li>Contamination - Entrée de micro-organismes pathogènes dans l'organisme</li>
+                <li>Infection - Multiplication des micro-organismes pathogènes dans l'organisme</li>
+            </ul>
+
+            <h3>Exercice 3: Scénario</h3>
+            <p>Décrivez comment une personne peut éviter une infection après s'être coupée avec un couteau sale.</p>
+            <p><em>(Réponse attendue : Nettoyer la plaie avec de l'eau et du savon, appliquer un antiseptique, et couvrir avec un pansement propre.)</em></p>
+
+            <h3>Exercice 4: Questions Ouvertes</h3>
+            <p>
+              Répondez aux questions suivantes :
+            </p>
+            <ol>
+              <li>
+                Pourquoi le microbiote est-il important pour notre santé ?
+              </li>
+              <li>
+                Quelles sont les principales mesures d'hygiène que vous devriez suivre quotidiennement ?
+              </li>
+              <li>
+                Comment le système immunitaire réagit-il à une infection ?
+              </li>
+            </ol>
+
+        </div>
+    </section>
+
+    <footer>
+        <p>SVT Révisions &copy; 2024</p>
+    </footer>
+</body>
+</html>

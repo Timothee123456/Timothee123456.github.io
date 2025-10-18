@@ -254,10 +254,11 @@
 
 
                 // Set title based on deckName
-                const titleText = module.title + ' - Flashcards Chinois';
+                const defaultName = 'Flashcards Chinois'
+                const titleText = module.title + ' - ' + defaultName;
                 // Check if 'title' is defined in the loaded script
                 if (titleText === 'undefined') {
-                    titleText = ' - Flashcards Chinois'; // Default title
+                    titleText = defaultName; // Default title
                 }
                 document.getElementById('title').textContent = titleText;
                 document.getElementById('pageTitle').textContent = titleText;

@@ -138,9 +138,13 @@
                 const file = `${setName}.js`;
                 const jsFileURL = `./sets/${file}`;
                 const module = await import(jsFileURL);
-                const vocabularyWords = module.voc;
-                // Check if 'voc' is defined in the loaded script
-    
+                const vocabularyWords = module.vocabularyWords;
+                // Check if 'vocabularyWords' is defined in the loaded script
+                if (vocabularyWords === undefined) {
+                    // Navigate back to home if no volcabulary list
+                    window.location.href = "/home";
+                }
+
 
                 // Set title based on setName
                 const defaultName = 'Vocabulary Matcher'
@@ -150,6 +154,9 @@
                     titleText = defaultName; // Default title
                 }
                 document.getElementById('title').textContent = titleText;
+            } else {
+                // Navigate back to home if no set is specified
+                window.location.href = "/home";
             }
 
 

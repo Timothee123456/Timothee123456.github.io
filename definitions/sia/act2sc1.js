@@ -1,5 +1,5 @@
 export var title = "Act II, Scene 1 (pages 76-95)"
-export var date = "2025-10-14"
+export var date = "2025-10-15"
 
 export var vocabularyWords = [
     { word: "coquettishly", definition: "Done in a flirtatious manner; done to attract attention in a teasing, lighthearted, or superficial manner." },

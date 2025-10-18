@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jeu d'Association de Vocabulaire</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#5D5CDE'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .dragging {
+            opacity: 0.5;
+            transform: rotate(5deg);
+        }
+        .drop-zone {
+            transition: all 0.3s ease;
+        }
+        .drop-zone.drag-over {
+            background-color: rgba(93, 92, 222, 0.1);
+            border-color: #5D5CDE;
+            transform: scale(1.02);
+        }
+        .match-correct {
+            background-color: rgba(34, 197, 94, 0.1);
+            border-color: #22c55e;
+        }
+        .match-incorrect {
+            background-color: rgba(239, 68, 68, 0.1);
+            border-color: #ef4444;
+        }
+        .bounce-in {
+            animation: bounceIn 0.6s ease;
+        }
+        @keyframes bounceIn {
+            0% { transform: scale(0.3); opacity: 0; }
+            50% { transform: scale(1.05); }
+            70% { transform: scale(0.9); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .shake {
+            animation: shake 0.5s ease-in-out;
+        }
+        @keyframes shake {
+            0%, 20%, 40%, 60%, 80% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-white dark:bg-gray-900 transition-colors">
+    <div class="container mx-auto px-4 py-8 max-w-6xl">
+        <!-- Header -->
+        <div class="text-center mb-8">
+            <h1 class="text-4xl font-bold text-gray-800 dark:text-white mb-2" id="title">Jeu d'Association de Vocabulaire</h1>
+            <p class="text-gray-600 dark:text-gray-300">Faites glisser les mots vers leurs définitions correspondantes</p>
+        </div>
+
+        <!-- Game Area -->
+        <div id="gameArea" class="mb-8">
+            <!-- Score and Progress -->
+            <div class="flex justify-between items-center mb-6 bg-gray-50 dark:bg-gray-800 rounded-lg p-4">
+                <div class="text-lg font-semibold text-gray-700 dark:text-gray-300">
+                    Score : <span id="score" class="text-primary">0</span>/<span id="total">0</span>
+                </div>
+                <div class="text-sm text-gray-600 dark:text-gray-400">
+                    Correspondances : <span id="matches">0</span> | Tentatives : <span id="attempts">0</span>
+                </div>
+            </div>
+
+            <!-- Game Columns -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- Words Column -->
+                <div class="space-y-4">
+                    <h2 class="text-2xl font-bold text-gray-800 dark:text-white mb-4 text-center">Mots</h2>
+                    <div id="wordsColumn" class="space-y-3">
+                        <!-- Words will be populated here -->
+                    </div>
+                </div>
+
+                <!-- Definitions Column -->
+                <div class="space-y-4">
+                    <h2 class="text-2xl font-bold text-gray-800 dark:text-white mb-4 text-center">Définitions</h2>
+                    <div id="definitionsColumn" class="space-y-3">
+                        <!-- Definitions will be populated here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Try Again Button (shown after completion) -->
+        <div id="completionArea" class="text-center mt-8 hidden">
+            <button id="tryAgainBtn" class="px-6 py-3 bg-primary text-white rounded-lg hover:bg-purple-600 transition-colors font-semibold">
+                🔄 Réessayer
+            </button>
+        </div>
+
+        <!-- Control Buttons -->
+        <div class="text-center space-x-4">
+            <button id="shuffleBtn" class="px-6 py-3 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors font-semibold">
+                🔀 Mélanger
+            </button>
+            <button id="checkAnswers" class="px-8 py-3 bg-primary text-white rounded-lg hover:bg-purple-600 transition-colors font-semibold text-lg disabled:opacity-50 disabled:cursor-not-allowed">
+                Vérifier les réponses
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Dark mode support
+        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            document.documentElement.classList.add('dark');
+        }
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
+            if (event.matches) {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+        });
+
+      
+        // Vocabulary data
+        // Get the desired vocabulary file name from a query parameter (e.g., index.html?set=vocabulary)
+        const urlParams = new URLSearchParams(window.location.search);
+        const setName = urlParams.get('set');
+        var vocabularyWords = {}
+        
+        async function load_vocabulary() {
+            if (setName) {
+                // Load a specific set if the 'set' parameter is provided
+                const file = `${setName}.js`;
+                const jsFileURL = `./sets/${file}`;
+                const module = await import(jsFileURL);
+                vocabularyWords = module.vocabularyWords;
+                // Check if 'vocabularyWords' is defined in the loaded script
+                if (vocabularyWords === undefined) {
+                    // Navigate back to home if no volcabulary list
+                    window.location.href = "/home";
+                }
+
+
+                // Set title based on setName
+                const defaultName = 'Vocabulary Matcher'
+                const titleText = module.title + ' - ' + defaultName;
+                // Check if 'title' is defined in the loaded script
+                if (titleText === 'undefined') {
+                    titleText = defaultName; // Default title
+                }
+                document.getElementById('title').textContent = titleText;
+            } else {
+                // Navigate back to home if no set is specified
+                window.location.href = "/home";
+            }
+
+
+            // Initialize the game
+            initializeGame();
+        }
+
+        load_vocabulary()
+
+        let gameState = {
+            matches: {},
+            score: 0,
+            attempts: 0,
+            completed: false
+        };
+
+        function shuffleArray(array) {
+            const shuffled = [...array];
+            for (let i = shuffled.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+            }
+            return shuffled;
+        }
+
+        function initializeGame() {
+            const shuffledWords = shuffleArray(vocabularyWords);
+            const shuffledDefinitions = shuffleArray([...vocabularyWords]);
+
+            gameState = {
+                matches: {},
+                score: 0,
+                attempts: 0,
+                completed: false,
+                correctMatches: {}
+            };
+
+            // Store correct matches for validation
+            vocabularyWords.forEach(item => {
+                gameState.correctMatches[item.word] = item.definition;
+            });
+
+            populateColumns(shuffledWords, shuffledDefinitions);
+            updateScore();
+            document.getElementById('checkAnswers').disabled = false;
+        }
+
+        function shuffleWords() {
+            // Clear all existing matches
+            gameState.matches = {};
+            initializeGame();
+        }
+
+        function populateColumns(words, definitions) {
+            const wordsColumn = document.getElementById('wordsColumn');
+            const definitionsColumn = document.getElementById('definitionsColumn');
+
+            wordsColumn.innerHTML = '';
+            definitionsColumn.innerHTML = '';
+
+            // Populate words
+            words.forEach((item, index) => {
+                const wordElement = createWordElement(item.word, index);
+                wordsColumn.appendChild(wordElement);
+            });
+
+            // Populate definitions
+            definitions.forEach((item, index) => {
+                const defElement = createDefinitionElement(item.definition, index);
+                definitionsColumn.appendChild(defElement);
+            });
+        }
+
+        function createWordElement(word, index) {
+            const element = document.createElement('div');
+            element.className = 'word-item bg-blue-50 dark:bg-blue-900 border-2 border-blue-200 dark:border-blue-700 p-4 rounded-lg cursor-move text-gray-800 dark:text-white font-semibold transition-all hover:shadow-md';
+            element.textContent = word;
+            element.draggable = true;
+            element.dataset.word = word;
+            element.dataset.index = index;
+
+            element.addEventListener('dragstart', handleDragStart);
+            element.addEventListener('dragend', handleDragEnd);
+
+            return element;
+        }
+
+        function createDefinitionElement(definition, index) {
+            const element = document.createElement('div');
+            element.className = 'definition-item drop-zone bg-gray-50 dark:bg-gray-700 border-2 border-dashed border-gray-300 dark:border-gray-600 p-4 rounded-lg min-h-[80px] text-gray-700 dark:text-gray-300 transition-all';
+            element.textContent = definition;
+            element.dataset.definition = definition;
+            element.dataset.index = index;
+
+            element.addEventListener('dragover', handleDragOver);
+            element.addEventListener('drop', handleDrop);
+            element.addEventListener('dragleave', handleDragLeave);
+
+            return element;
+        }
+
+        function handleDragStart(e) {
+            e.dataTransfer.setData('text/plain', e.target.dataset.word);
+            e.target.classList.add('dragging');
+        }
+
+        function handleDragEnd(e) {
+            e.target.classList.remove('dragging');
+        }
+
+        function handleDragOver(e) {
+            e.preventDefault();
+            e.currentTarget.classList.add('drag-over');
+        }
+
+        function handleDragLeave(e) {
+            e.currentTarget.classList.remove('drag-over');
+        }
+
+        function handleDrop(e) {
+            e.preventDefault();
+            const word = e.dataTransfer.getData('text/plain');
+            const definition = e.currentTarget.dataset.definition;
+            
+            e.currentTarget.classList.remove('drag-over');
+            
+            // Check if there's already a word matched to this definition
+            const existingWord = Object.keys(gameState.matches).find(w => gameState.matches[w] === definition);
+            if (existingWord) {
+                // Remove the existing match and move the word to the end of the list
+                delete gameState.matches[existingWord];
+                const existingWordElement = document.querySelector(`[data-word="${existingWord}"]`);
+                if (existingWordElement) {
+                    existingWordElement.style.display = 'block';
+                    // Move to end of words column
+                    const wordsColumn = document.getElementById('wordsColumn');
+                    wordsColumn.appendChild(existingWordElement);
+                }
+            }
+            
+            // Store the new match
+            gameState.matches[word] = definition;
+            
+            // Visual feedback
+            e.currentTarget.innerHTML = `
+                <div class="flex justify-between items-center">
+                    <span class="font-semibold text-primary">${word}</span>
+                    <button onclick="removeMatch('${word}', this)" class="text-red-500 hover:text-red-700 ml-2">×</button>
+                </div>
+                <div class="text-sm mt-2">${definition}</div>
+            `;
+            e.currentTarget.classList.add('bg-primary', 'bg-opacity-10', 'border-primary');
+            
+            // Hide the dragged word
+            const wordElement = document.querySelector(`[data-word="${word}"]`);
+            if (wordElement) {
+                wordElement.style.display = 'none';
+            }
+            
+            updateScore();
+        }
+
+        function removeMatch(word, button) {
+            delete gameState.matches[word];
+            
+            // Reset the definition element
+            const defElement = button.closest('.definition-item');
+            const definition = defElement.dataset.definition;
+            defElement.innerHTML = definition;
+            defElement.className = 'definition-item drop-zone bg-gray-50 dark:bg-gray-700 border-2 border-dashed border-gray-300 dark:border-gray-600 p-4 rounded-lg min-h-[80px] text-gray-700 dark:text-gray-300 transition-all';
+            
+            // Show the word element again and move it to the end
+            const wordElement = document.querySelector(`[data-word="${word}"]`);
+            if (wordElement) {
+                wordElement.style.display = 'block';
+                // Move to end of words column
+                const wordsColumn = document.getElementById('wordsColumn');
+                wordsColumn.appendChild(wordElement);
+            }
+            
+            updateScore();
+        }
+
+        function updateScore() {
+            const matchesCount = Object.keys(gameState.matches).length;
+            const totalWords = vocabularyWords.length;
+            
+            document.getElementById('matches').textContent = matchesCount;
+            document.getElementById('total').textContent = totalWords;
+            document.getElementById('attempts').textContent = gameState.attempts;
+        }
+
+        function checkAnswers() {
+            gameState.attempts++;
+            const totalWords = vocabularyWords.length;
+            const matchesCount = Object.keys(gameState.matches).length;
+            
+            if (matchesCount < totalWords) {
+                showCustomAlert('Veuillez associer tous les mots avant de vérifier les réponses !');
+                return;
+            }
+            
+            let correctCount = 0;
+            
+            // Check each match
+            Object.entries(gameState.matches).forEach(([word, selectedDefinition]) => {
+                const correctDefinition = gameState.correctMatches[word];
+                const isCorrect = selectedDefinition === correctDefinition;
+                
+                // Visual feedback
+                const defElement = document.querySelector(`[data-definition="${selectedDefinition}"]`);
+                if (defElement) {
+                    defElement.classList.remove('match-correct', 'match-incorrect');
+                    defElement.classList.add(isCorrect ? 'match-correct' : 'match-incorrect');
+                    
+                    if (isCorrect) {
+                        correctCount++;
+                        // Keep the word in the definition box with green background
+                        defElement.innerHTML = `
+                            <div class="flex justify-between items-center">
+                                <span class="font-semibold text-gray-800 dark:text-white">${word}</span>
+                                <span class="text-gray-800 dark:text-white">✓</span>
+                            </div>
+                            <div class="text-sm mt-2 text-gray-700 dark:text-gray-200">${selectedDefinition}</div>
+                        `;
+                        // Update classes to show green background
+                        defElement.className = 'definition-item bg-green-100 dark:bg-green-800 border-2 border-green-500 p-4 rounded-lg min-h-[80px] transition-all';
+                    } else {
+                        // Wrong match: show red background temporarily, then move word back
+                        defElement.className = 'definition-item bg-red-100 dark:bg-red-800 border-2 border-red-500 p-4 rounded-lg min-h-[80px] transition-all';
+                        
+                        setTimeout(() => {
+                            // Remove word from matches and reset definition
+                            delete gameState.matches[word];
+                            
+                            // Reset the definition element
+                            defElement.innerHTML = selectedDefinition;
+                            defElement.className = 'definition-item drop-zone bg-gray-50 dark:bg-gray-700 border-2 border-dashed border-gray-300 dark:border-gray-600 p-4 rounded-lg min-h-[80px] text-gray-700 dark:text-gray-300 transition-all';
+                            
+                            // Move word back to words column at the end
+                            const wordElement = document.querySelector(`[data-word="${word}"]`);
+                            if (wordElement) {
+                                wordElement.style.display = 'block';
+                                wordElement.classList.add('match-incorrect');
+                                const wordsColumn = document.getElementById('wordsColumn');
+                                wordsColumn.appendChild(wordElement);
+                                
+                                // Add shake animation to the word
+                                wordElement.classList.add('shake');
+                                setTimeout(() => {
+                                    wordElement.classList.remove('shake', 'match-incorrect');
+                                }, 500);
+                            }
+                            
+                            updateScore();
+                        }, 1000); // Show red background for 1 second before moving word back
+                    }
+                }
+            });
+            
+            gameState.score = correctCount;
+            gameState.completed = correctCount === totalWords;
+            
+            updateScore();
+            document.getElementById('score').textContent = correctCount;
+            
+            // Show completion message and try again button if all correct
+            if (gameState.completed) {
+                showCustomAlert('🎉 Félicitations ! Toutes les correspondances sont correctes !', 'success');
+                document.getElementById('completionArea').classList.remove('hidden');
+                document.getElementById('checkAnswers').disabled = true;
+            }
+        }
+
+
+
+        function showCustomAlert(message, type = 'error') {
+            const alert = document.createElement('div');
+            const bgColor = type === 'success' ? 'bg-green-500' : 'bg-red-500';
+            alert.className = `fixed top-4 right-4 ${bgColor} text-white px-6 py-3 rounded-lg shadow-lg z-50 transform translate-x-full transition-transform`;
+            alert.textContent = message;
+            
+            document.body.appendChild(alert);
+            
+            // Animate in
+            setTimeout(() => {
+                alert.classList.remove('translate-x-full');
+            }, 100);
+            
+            // Animate out and remove
+            setTimeout(() => {
+                alert.classList.add('translate-x-full');
+                setTimeout(() => {
+                    document.body.removeChild(alert);
+                }, 300);
+            }, type === 'success' ? 4000 : 3000);
+        }
+
+        // Event listeners
+        document.getElementById('checkAnswers').addEventListener('click', checkAnswers);
+        
+        document.getElementById('tryAgainBtn').addEventListener('click', () => {
+            document.getElementById('completionArea').classList.add('hidden');
+            initializeGame();
+        });
+        
+        document.getElementById('shuffleBtn').addEventListener('click', shuffleWords);
+    </script>
+</body>
+</html>

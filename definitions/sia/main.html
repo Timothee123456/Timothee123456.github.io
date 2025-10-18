@@ -131,14 +131,15 @@
         // Get the desired vocabulary file name from a query parameter (e.g., index.html?set=vocabulary)
         const urlParams = new URLSearchParams(window.location.search);
         const setName = urlParams.get('set');
-
+        var vocabularyWords = {}
+        
         async function load_vocabulary() {
             if (setName) {
                 // Load a specific set if the 'set' parameter is provided
                 const file = `${setName}.js`;
                 const jsFileURL = `./sets/${file}`;
                 const module = await import(jsFileURL);
-                const vocabularyWords = module.vocabularyWords;
+                vocabularyWords = module.vocabularyWords;
                 // Check if 'vocabularyWords' is defined in the loaded script
                 if (vocabularyWords === undefined) {
                     // Navigate back to home if no volcabulary list

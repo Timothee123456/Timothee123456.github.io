@@ -59,7 +59,7 @@
     <div class="container mx-auto px-4 py-8 max-w-6xl">
         <!-- Header -->
         <div class="text-center mb-8">
-            <h1 class="text-4xl font-bold text-gray-800 dark:text-white mb-2">Vocabulary Matcher</h1>
+            <h1 class="text-4xl font-bold text-gray-800 dark:text-white mb-2" id="title">Vocabulary Matcher</h1>
             <p class="text-gray-600 dark:text-gray-300">Drag words to their matching definitions</p>
         </div>
 
@@ -139,6 +139,11 @@
                 const jsFileURL = `./sets/${file}`;
                 const module = await import(jsFileURL);
                 const vocabularyWords = module.voc;
+                // Check if 'voc' is defined in the loaded script
+                if (vocabularyWords === undefined) {
+                    // Navigate back to home if no volcabulary list
+                    window.location.href = "/home";
+                }
 
 
                 // Set title based on setName
@@ -150,7 +155,14 @@
                 }
                 document.getElementById('title').textContent = titleText;
                 document.getElementById('pageTitle').textContent = titleText;
+            } else {
+                // Navigate back to home if no set is specified
+                window.location.href = "/home";
             }
+
+
+            // Initialize the game
+            initializeGame();
         }
 
         load_vocabulary()
@@ -453,9 +465,6 @@
         });
         
         document.getElementById('shuffleBtn').addEventListener('click', shuffleWords);
-
-        // Initialize the game
-        initializeGame();
     </script>
 </body>
 </html>

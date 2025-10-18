@@ -1,5 +1,5 @@
 export var title = "First half of Act I, Scene 1 (pages 23-38)"
-export var date = "2025-10-18"
+export var date = "2025-10-12"
 
 export var vocabularyWords = [
     { word: "accommodate", definition: "To make room for; to provide with a place to stay or sleep." },

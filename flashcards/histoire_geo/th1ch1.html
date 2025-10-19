@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Flashcards d'Histoire-Géo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Animation de retournement de carte 3D */
+        .card-container {
+            position: relative;
+            perspective: 1200px;
+            perspective-origin: center center;
+        }
+
+        .card-flipper {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1);
+            transform-style: preserve-3d;
+            transform-origin: center center;
+        }
+
+        .card-flipped .card-flipper {
+            transform: rotateY(180deg);
+        }
+
+        .card-side {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+            -moz-backface-visibility: hidden;
+            transform-style: preserve-3d;
+        }
+
+        .card-front {
+            transform: rotateY(0deg);
+            z-index: 2;
+        }
+
+        .card-back {
+            transform: rotateY(180deg);
+            z-index: 1;
+        }
+
+        /* Optimisation Webkit pour mobile */
+        @supports (-webkit-appearance: none) {
+            .card-flipper {
+                -webkit-transform-style: preserve-3d;
+                -webkit-transition: -webkit-transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1);
+            }
+
+            .card-flipped .card-flipper {
+                -webkit-transform: rotateY(180deg);
+            }
+
+            .card-side {
+                -webkit-backface-visibility: hidden;
+                -webkit-transform-style: preserve-3d;
+            }
+
+            .card-front {
+                -webkit-transform: rotateY(0deg);
+            }
+
+            .card-back {
+                -webkit-transform: rotateY(180deg);
+            }
+        }
+
+        /* Optimisations mobiles */
+        @media (max-width: 640px) {
+            .card-term {
+                font-size: 2.5rem;
+            }
+
+            .card-definition {
+                font-size: 1.5rem;
+            }
+        }
+
+        /* Empêcher la sélection de texte au toucher */
+        .no-select {
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 dark:bg-gray-900 min-h-screen">
+<script>
+    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.documentElement.classList.add('dark');
+    }
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
+        if (event.matches) {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+    });
+</script>
+
+<div class="container mx-auto px-3 py-4 max-w-2xl">
+    <h1 class="text-2xl sm:text-3xl font-bold text-center mb-6 text-gray-800 dark:text-white">
+        Flashcards de Définitions
+    </h1>
+
+    <!-- Écran de Jeu -->
+    <div id="gameScreen" class="space-y-4 sm:space-y-6">
+        <!-- Barre de Progression -->
+        <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3">
+            <div id="progressBar" class="bg-blue-500 h-3 rounded-full transition-all duration-300" style="width: 0%"></div>
+        </div>
+
+        <!-- Compteur de Cartes et Mode -->
+        <div class="flex justify-between items-center">
+            <div class="text-gray-600 dark:text-gray-400 text-base">
+                <span id="cardCounter">1 / 20</span>
+            </div>
+
+            <button id="modeToggle" class="flex items-center space-x-2 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 px-3 py-2 rounded-lg font-medium transition-colors text-sm">
+                <span id="modeText">Terme→Définition</span>
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path>
+                </svg>
+            </button>
+        </div>
+
+        <!-- Flashcard -->
+        <div class="px-2">
+            <div id="flashcard" class="card-container w-full h-72 sm:h-80 cursor-pointer no-select">
+                <div class="card-flipper">
+                    <!-- Avant de la carte (Terme) -->
+                    <div class="card-front card-side bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 flex flex-col items-center justify-center p-4 sm:p-8">
+                        <div id="term" class="card-term text-3xl sm:text-4xl font-bold text-gray-800 dark:text-white text-center">
+                            Chargement...
+                        </div>
+                    </div>
+
+                    <!-- Arrière de la carte (Définition) -->
+                    <div class="card-back card-side bg-blue-50 dark:bg-blue-900 rounded-xl shadow-lg border border-blue-200 dark:border-blue-700 flex flex-col items-center justify-center p-4 sm:p-8">
+                        <div id="definition" class="card-definition text-lg sm:text-xl font-semibold text-blue-800 dark:text-blue-200 text-center">
+                            Chargement...
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Boutons d'Action -->
+        <div class="flex justify-center space-x-3 px-2">
+            <button id="knowItBtn" class="flex-1 max-w-40 flex items-center justify-center space-x-2 bg-green-500 hover:bg-green-600 active:bg-green-700 text-white px-4 py-4 rounded-lg font-semibold transition-colors min-h-[56px] text-base">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                </svg>
+                <span>Connais</span>
+            </button>
+
+            <button id="dontKnowBtn" class="flex-1 max-w-40 flex items-center justify-center space-x-2 bg-red-500 hover:bg-red-600 active:bg-red-700 text-white px-4 py-4 rounded-lg font-semibold transition-colors min-h-[56px] text-base">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+                <span>Connais pas</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Écran de Résultats -->
+    <div id="resultsScreen" class="hidden text-center space-y-4 sm:space-y-6 px-2">
+        <h2 class="text-xl sm:text-2xl font-bold text-gray-800 dark:text-white mb-4 sm:mb-6">Session Terminée !</h2>
+
+        <div class="bg-white dark:bg-gray-800 rounded-xl p-4 sm:p-6 shadow-lg">
+            <div class="grid grid-cols-2 gap-4 mb-4 sm:mb-6">
+                <div class="text-center">
+                    <div id="correctCount" class="text-2xl sm:text-3xl font-bold text-green-500">0</div>
+                    <div class="text-sm text-gray-600 dark:text-gray-400">Connues</div>
+                </div>
+                <div class="text-center">
+                    <div id="incorrectCount" class="text-2xl sm:text-3xl font-bold text-red-500">0</div>
+                    <div class="text-sm text-gray-600 dark:text-gray-400">Inconnues</div>
+                </div>
+            </div>
+
+            <div class="text-center">
+                <div id="accuracyPercent" class="text-3xl sm:text-4xl font-bold text-blue-500">0%</div>
+                <div class="text-sm text-gray-600 dark:text-gray-400">Précision</div>
+            </div>
+        </div>
+
+        <div class="space-y-3">
+            <button id="reviewMissedBtn" class="w-full bg-orange-500 hover:bg-orange-600 active:bg-orange-700 text-white px-6 py-4 rounded-lg font-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed min-h-[56px] text-base">
+                Revoir les Cartes Manquées
+            </button>
+            <button id="restartBtn" class="w-full bg-blue-500 hover:bg-blue-600 active:bg-blue-700 text-white px-6 py-4 rounded-lg font-semibold transition-colors min-h-[56px] text-base">
+                Nouvelle Session
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Données des flashcards
+    const flashcards = [
+    {
+        "term": "Civil",
+        "definition": "personne qui n'appartient pas à l'armée, qui ne combat pas, resté à l'arrière du front pour travailler"
+    },
+    {
+        "term": "Militaire",
+        "definition": "personne qui participe à la guerre sur le front, qui combat"
+    },
+    {
+        "term": "Guerre de mouvement",
+        "definition": "guerre où l'on essaye d'obtenir la victoire par la manoeuvre et le déplacement des troupes"
+    },
+    {
+        "term": "Tranchée",
+        "definition": "fossé creusé par les soldats pour se protéger des attaques ennemies"
+    },
+    {
+        "term": "Guerre de position",
+        "definition": "guerre où l'on essaye d'obtenir la victoire en s'emparant des positions ennemies"
+    },
+    {
+        "term": "Front",
+        "definition": "zone de combat"
+    },
+    {
+        "term": "Violence de masse",
+        "definition": "violence déployée par un État ou par une armée qui vise à tuer ou à faire souffrir un grand nombres de personnes, soldats ou civils"
+    },
+    {
+        "term": "Culture de guerre",
+        "definition": "ensemble de représentations et d'attitudes qui justifient le conflit en développant une haine à l'égard de l'ennemi identifié comme le mal"
+    },
+    {
+        "term": "Génocide",
+        "definition": "l'extermination programmée et réalisée par un acteur politique d'un groupe différent (religion, ethnie, idéologie...)"
+    },
+    {
+        "term": "Guerre Totale",
+        "definition": "mobilisation extrême de toutes les ressources, de toutes les populations et de tous les esprits pour gagner un conflit"
+    },
+    {
+        "term": "Bolchevik",
+        "definition": "terme synonyme de communistes, révolutionnaire russe partisan de Lénine"
+    },
+    {
+        "term": "Armistice",
+        "definition": "accord entre les pays en guerre suspendant les combats mais qui ne met pas fin à l'état de guerre"
+    },
+    {
+        "term": "Brutalisation",
+        "definition": "processus d'acceptation de la violence et de la brutalité par une population"
+    }
+]
+
+  
+    // Initialiser l'application
+    new FlashcardApp();
+
+    class FlashcardApp {
+        constructor() {
+            this.currentDeck = [];
+            this.currentIndex = 0;
+            this.correctAnswers = [];
+            this.incorrectAnswers = [];
+            this.isFlipped = false;
+            this.termToDef = true; // true = Term -> Definition, false = Definition -> Term
+
+            this.initializeElements();
+            this.setupEventListeners();
+            this.setupKeyboardListeners();
+            this.startNewSession();
+        }
+
+        initializeElements() {
+            this.gameScreen = document.getElementById('gameScreen');
+            this.resultsScreen = document.getElementById('resultsScreen');
+            this.flashcard = document.getElementById('flashcard');
+            this.term = document.getElementById('term');
+            this.definition = document.getElementById('definition');
+            this.progressBar = document.getElementById('progressBar');
+            this.cardCounter = document.getElementById('cardCounter');
+            this.modeToggle = document.getElementById('modeToggle');
+            this.modeText = document.getElementById('modeText');
+            this.knowItBtn = document.getElementById('knowItBtn');
+            this.dontKnowBtn = document.getElementById('dontKnowBtn');
+            this.correctCount = document.getElementById('correctCount');
+            this.incorrectCount = document.getElementById('incorrectCount');
+            this.accuracyPercent = document.getElementById('accuracyPercent');
+            this.reviewMissedBtn = document.getElementById('reviewMissedBtn');
+            this.restartBtn = document.getElementById('restartBtn');
+
+            // Récupérer les éléments des côtés de la carte
+            this.cardFront = document.querySelector('.card-front');
+            this.cardBack = document.querySelector('.card-back');
+        }
+
+        setupEventListeners() {
+            this.flashcard.addEventListener('click', () => this.flipCard());
+            this.knowItBtn.addEventListener('click', () => this.markAnswer(true));
+            this.dontKnowBtn.addEventListener('click', () => this.markAnswer(false));
+            this.reviewMissedBtn.addEventListener('click', () => this.reviewMissedCards());
+            this.restartBtn.addEventListener('click', () => this.startNewSession());
+            this.modeToggle.addEventListener('click', () => this.toggleMode());
+        }
+
+        setupKeyboardListeners() {
+            document.addEventListener('keydown', (event) => {
+                if (this.resultsScreen.classList.contains('hidden') === false) {
+                    if (event.key === 'Enter') {
+                        if (this.reviewMissedBtn.disabled === false) {
+                            this.reviewMissedCards(); // "Review missed cards" on Enter
+                        } else {
+                            this.startNewSession(); // "New session" if no missed cards
+                        }
+                    }
+                }
+                else {
+                    if (event.key === 'Enter') {
+                        this.markAnswer(true); // "Know it" on Enter
+                    } else if (event.key === 'Backspace') {
+                        this.markAnswer(false); // "Don't know" on Backspace
+                    } else if (event.code === 'Space') {
+                        this.flipCard(); // Flip card on Spacebar
+                        event.preventDefault(); // Prevent scrolling
+                    }
+                }
+            });
+        }
+
+        shuffleArray(array) {
+            const shuffled = [...array];
+            for (let i = shuffled.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+            }
+            return shuffled;
+        }
+
+        startNewSession() {
+            this.currentDeck = this.shuffleArray(flashcards);
+            this.currentIndex = 0;
+            this.correctAnswers = [];
+            this.incorrectAnswers = [];
+            this.showGameScreen();
+            this.displayCurrentCard();
+        }
+
+        reviewMissedCards() {
+            if (this.incorrectAnswers.length === 0) return;
+
+            this.currentDeck = this.shuffleArray(this.incorrectAnswers);
+            this.currentIndex = 0;
+            this.correctAnswers = [];
+            this.incorrectAnswers = [];
+            this.showGameScreen();
+            this.displayCurrentCard();
+        }
+
+        showGameScreen() {
+            this.gameScreen.classList.remove('hidden');
+            this.resultsScreen.classList.add('hidden');
+        }
+
+        showResultsScreen() {
+            this.gameScreen.classList.add('hidden');
+            this.resultsScreen.classList.remove('hidden');
+            this.displayResults();
+        }
+
+        toggleMode() {
+            this.termToDef = !this.termToDef;
+            this.updateModeDisplay();
+            this.updateCardContent();
+            this.resetCard();
+        }
+
+        updateModeDisplay() {
+            if (this.termToDef) {
+                this.modeText.textContent = 'Terme→Définition';
+            } else {
+                this.modeText.textContent = 'Définition→Terme';
+            }
+        }
+
+        updateCardContent() {
+            if (this.currentIndex >= this.currentDeck.length) return;
+
+            const card = this.currentDeck[this.currentIndex];
+
+            if (this.termToDef) {
+                // Terme à l'avant, Définition à l'arrière
+                this.cardFront.innerHTML = `
+                    <div id="term" class="card-term text-3xl sm:text-4xl font-bold text-gray-800 dark:text-white text-center">
+                        ${card.term}
+                    </div>
+                `;
+                this.cardBack.innerHTML = `
+                    <div id="definition" class="card-definition text-lg sm:text-xl font-semibold text-blue-800 dark:text-blue-200 text-center">
+                        ${card.definition}
+                    </div>
+                `;
+                // Mettre à jour le style
+                this.cardFront.className = 'card-front card-side bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 flex flex-col items-center justify-center p-4 sm:p-8';
+                this.cardBack.className = 'card-back card-side bg-blue-50 dark:bg-blue-900 rounded-xl shadow-lg border border-blue-200 dark:border-blue-700 flex flex-col items-center justify-center p-4 sm:p-8';
+
+            } else {
+                // Définition à l'avant, Terme à l'arrière
+                this.cardFront.innerHTML = `
+                    <div id="definition" class="card-definition text-lg sm:text-xl font-semibold text-gray-800 dark:text-white text-center">
+                        ${card.definition}
+                    </div>
+                `;
+                this.cardBack.innerHTML = `
+                    <div id="term" class="card-term text-3xl sm:text-4xl font-bold text-blue-800 dark:text-blue-200 text-center">
+                        ${card.term}
+                    </div>
+                `;
+                // Mettre à jour le style
+                this.cardFront.className = 'card-front card-side bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 flex flex-col items-center justify-center p-4 sm:p-8';
+                this.cardBack.className = 'card-back card-side bg-blue-50 dark:bg-blue-900 rounded-xl shadow-lg border border-blue-200 dark:border-blue-700 flex flex-col items-center justify-center p-4 sm:p-8';
+            }
+
+            // Récupérer à nouveau les références des éléments car innerHTML a changé
+            this.term = document.getElementById('term');
+            this.definition = document.getElementById('definition');
+        }
+
+        displayCurrentCard() {
+            if (this.currentIndex >= this.currentDeck.length) {
+                this.showResultsScreen();
+                return;
+            }
+
+            const card = this.currentDeck[this.currentIndex];
+            this.resetCard();
+
+            setTimeout(() => {
+                this.updateCardContent(); // Update content after the card is flipped back
+                this.updateProgress();
+            }, 300); // Delay of 300 milliseconds to match the animation
+        }
+
+        updateProgress() {
+            const progress = (this.currentIndex / this.currentDeck.length) * 100;
+            this.progressBar.style.width = `${progress}%`;
+            this.cardCounter.textContent = `${this.currentIndex + 1} / ${this.currentDeck.length}`;
+        }
+
+        flipCard() {
+            this.isFlipped = !this.isFlipped;
+            this.flashcard.classList.toggle('card-flipped');
+        }
+
+        resetCard() {
+            this.isFlipped = false;
+            this.flashcard.classList.remove('card-flipped');
+        }
+
+        markAnswer(correct) {
+            const currentCard = this.currentDeck[this.currentIndex];
+
+            if (correct) {
+                this.correctAnswers.push(currentCard);
+            } else {
+                this.incorrectAnswers.push(currentCard);
+            }
+
+            this.currentIndex++;
+            this.displayCurrentCard();
+        }
+
+        displayResults() {
+            const total = this.correctAnswers.length + this.incorrectAnswers.length;
+            const accuracy = total > 0 ? Math.round((this.correctAnswers.length / total) * 100) : 0;
+
+            this.correctCount.textContent = this.correctAnswers.length;
+            this.incorrectCount.textContent = this.incorrectAnswers.length;
+            this.accuracyPercent.textContent = `${accuracy}%`;
+
+            // Activer/désactiver le bouton de révision en fonction des cartes manquées
+            this.reviewMissedBtn.disabled = this.incorrectAnswers.length === 0;
+        }
+    }
+
+</script>
+</body>
+</html>

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Flashcards d'Histoire-Géo</title>
+    <title>Flashcards d'histoire-géo</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         /* Animation de retournement de carte 3D */
@@ -110,7 +110,7 @@
 
 <div class="container mx-auto px-3 py-4 max-w-2xl">
     <h1 class="text-2xl sm:text-3xl font-bold text-center mb-6 text-gray-800 dark:text-white">
-        Flashcards de Définitions
+        Flashcards de géographie
     </h1>
 
     <!-- Écran de Jeu -->
@@ -207,65 +207,48 @@
 </div>
 
 <script>
-    // Données des flashcards
-    const flashcards = [
-    {
-        "term": "Civil",
-        "definition": "personne qui n'appartient pas à l'armée, qui ne combat pas, resté à l'arrière du front pour travailler"
-    },
-    {
-        "term": "Militaire",
-        "definition": "personne qui participe à la guerre sur le front, qui combat"
-    },
-    {
-        "term": "Guerre de mouvement",
-        "definition": "guerre où l'on essaye d'obtenir la victoire par la manoeuvre et le déplacement des troupes"
-    },
-    {
-        "term": "Tranchée",
-        "definition": "fossé creusé par les soldats pour se protéger des attaques ennemies"
-    },
-    {
-        "term": "Guerre de position",
-        "definition": "guerre où l'on essaye d'obtenir la victoire en s'emparant des positions ennemies"
-    },
-    {
-        "term": "Front",
-        "definition": "zone de combat"
-    },
-    {
-        "term": "Violence de masse",
-        "definition": "violence déployée par un État ou par une armée qui vise à tuer ou à faire souffrir un grand nombres de personnes, soldats ou civils"
-    },
-    {
-        "term": "Culture de guerre",
-        "definition": "ensemble de représentations et d'attitudes qui justifient le conflit en développant une haine à l'égard de l'ennemi identifié comme le mal"
-    },
-    {
-        "term": "Génocide",
-        "definition": "l'extermination programmée et réalisée par un acteur politique d'un groupe différent (religion, ethnie, idéologie...)"
-    },
-    {
-        "term": "Guerre Totale",
-        "definition": "mobilisation extrême de toutes les ressources, de toutes les populations et de tous les esprits pour gagner un conflit"
-    },
-    {
-        "term": "Bolchevik",
-        "definition": "terme synonyme de communistes, révolutionnaire russe partisan de Lénine"
-    },
-    {
-        "term": "Armistice",
-        "definition": "accord entre les pays en guerre suspendant les combats mais qui ne met pas fin à l'état de guerre"
-    },
-    {
-        "term": "Brutalisation",
-        "definition": "processus d'acceptation de la violence et de la brutalité par une population"
-    }
-]
+    // Get the desired flashcards file name from a query parameter (e.g., index.html?deck=vocabulary)
+    const urlParams = new URLSearchParams(window.location.search);
+    const deckName = urlParams.get('deck');
+    
+    var flashcards = []
 
-  
-    // Initialiser l'application
-    new FlashcardApp();
+    async function load_flashcards() {
+        if (deckName) {
+            // Load a specific deck if the 'deck' parameter is provided
+            const deckParts = deckName.split('/');
+            const type = deckParts[0]
+            const flashcardsFile = `${deckParts[1]}.js`;
+            const jsFileURL = `./${type}/decks/${flashcardsFile}`;
+            const module = await import(jsFileURL);
+            flashcards = module.flashcards;
+            // Check if 'flashcards' is defined in the loaded script
+            if (flashcards === undefined) {
+                // Navigate back to home if no flashcards
+                window.location.href = "/home";
+            }
+
+
+            // Set title based on deckName
+            const defaultName = "Flashcards d'histoire-géo"
+            const titleText = module.title + ' - ' + defaultName;
+            // Check if 'title' is defined in the loaded script
+            if (titleText === 'undefined') {
+                titleText = defaultName; // Default title
+            }
+            document.getElementById('title').textContent = titleText;
+            document.getElementById('pageTitle').textContent = titleText;
+            
+            // Initialiser l'application
+            new FlashcardApp();
+        } else {
+            // Navigate back to home if no deck is specified
+            window.location.href = "/home";
+        }
+    }
+
+    load_flashcards()
+
 
     class FlashcardApp {
         constructor() {

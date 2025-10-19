@@ -1,4 +1,4 @@
-export var title = "Thème 1 : Dynamiques territoriales de la France contemporaine"
+export var title = "Un territoire sous influence urbaine"
 export var date = "2025-10-18"
 
 export var vocabularyWords = [

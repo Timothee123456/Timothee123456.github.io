@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Flashcards de Définitions</title>
+    <title>Flashcards de Dates et Événements</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         /* Animation de retournement de carte 3D */
@@ -75,12 +75,12 @@
 
         /* Optimisations mobiles */
         @media (max-width: 640px) {
-            .card-term {
-                font-size: 2.5rem;
+            .card-date {
+                font-size: 4rem;
             }
 
-            .card-definition {
-                font-size: 1.5rem;
+            .card-event {
+                font-size: 2rem;
             }
         }
 
@@ -110,7 +110,7 @@
 
 <div class="container mx-auto px-3 py-4 max-w-2xl">
     <h1 class="text-2xl sm:text-3xl font-bold text-center mb-6 text-gray-800 dark:text-white">
-        Flashcards de Définitions
+        Flashcards de Dates et Événements
     </h1>
 
     <!-- Écran de Jeu -->
@@ -127,7 +127,7 @@
             </div>
 
             <button id="modeToggle" class="flex items-center space-x-2 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 px-3 py-2 rounded-lg font-medium transition-colors text-sm">
-                <span id="modeText">Terme→Définition</span>
+                <span id="modeText">Date→Événement</span>
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path>
                 </svg>
@@ -138,16 +138,16 @@
         <div class="px-2">
             <div id="flashcard" class="card-container w-full h-72 sm:h-80 cursor-pointer no-select">
                 <div class="card-flipper">
-                    <!-- Avant de la carte (Terme) -->
+                    <!-- Avant de la carte (Date) -->
                     <div class="card-front card-side bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 flex flex-col items-center justify-center p-4 sm:p-8">
-                        <div id="term" class="card-term text-3xl sm:text-4xl font-bold text-gray-800 dark:text-white text-center">
+                        <div id="eventDate" class="card-date text-5xl sm:text-6xl font-bold text-gray-800 dark:text-white">
                             Chargement...
                         </div>
                     </div>
 
-                    <!-- Arrière de la carte (Définition) -->
+                    <!-- Arrière de la carte (Événement) -->
                     <div class="card-back card-side bg-blue-50 dark:bg-blue-900 rounded-xl shadow-lg border border-blue-200 dark:border-blue-700 flex flex-col items-center justify-center p-4 sm:p-8">
-                        <div id="definition" class="card-definition text-lg sm:text-xl font-semibold text-blue-800 dark:text-blue-200 text-center">
+                        <div id="eventName" class="card-event text-2xl sm:text-3xl font-semibold text-blue-800 dark:text-blue-200 text-center">
                             Chargement...
                         </div>
                     </div>
@@ -207,61 +207,45 @@
 </div>
 
 <script>
-    // Données des flashcards
-    const flashcards = [
-    {
-        "term": "Civil",
-        "definition": "personne qui n'appartient pas à l'armée, qui ne combat pas, resté à l'arrière du front pour travailler"
-    },
-    {
-        "term": "Militaire",
-        "definition": "personne qui participe à la guerre sur le front, qui combat"
-    },
-    {
-        "term": "Guerre de mouvement",
-        "definition": "guerre où l'on essaye d'obtenir la victoire par la manoeuvre et le déplacement des troupes"
-    },
-    {
-        "term": "Tranchée",
-        "definition": "fossé creusé par les soldats pour se protéger des attaques ennemies"
-    },
-    {
-        "term": "Guerre de position",
-        "definition": "guerre où l'on essaye d'obtenir la victoire en s'emparant des positions ennemies"
-    },
-    {
-        "term": "Front",
-        "definition": "zone de combat"
-    },
-    {
-        "term": "Violence de masse",
-        "definition": "violence déployée par un État ou par une armée qui vise à tuer ou à faire souffrir un grand nombres de personnes, soldats ou civils"
-    },
-    {
-        "term": "Culture de guerre",
-        "definition": "ensemble de représentations et d'attitudes qui justifient le conflit en développant une haine à l'égard de l'ennemi identifié comme le mal"
-    },
-    {
-        "term": "Génocide",
-        "definition": "l'extermination programmée et réalisée par un acteur politique d'un groupe différent (religion, ethnie, idéologie...)"
-    },
-    {
-        "term": "Guerre Totale",
-        "definition": "mobilisation extrême de toutes les ressources, de toutes les populations et de tous les esprits pour gagner un conflit"
-    },
-    {
-        "term": "Bolchevik",
-        "definition": "terme synonyme de communistes, révolutionnaire russe partisan de Lénine"
-    },
-    {
-        "term": "Armistice",
-        "definition": "accord entre les pays en guerre suspendant les combats mais qui ne met pas fin à l'état de guerre"
-    },
-    {
-        "term": "Brutalisation",
-        "definition": "processus d'acceptation de la violence et de la brutalité par une population"
+    // Get the desired flashcards file name from a query parameter (e.g., index.html?deck=vocabulary)
+    const urlParams = new URLSearchParams(window.location.search);
+    const deckName = urlParams.get('deck');
+    
+    var flashcards = []
+
+    async function load_flashcards() {
+        if (deckName) {
+            // Load a specific deck if the 'deck' parameter is provided
+            const flashcardsFile = `${deckName}.js`;
+            const jsFileURL = `./decks/${flashcardsFile}`;
+            const module = await import(jsFileURL);
+            flashcards = module.flashcards;
+            // Check if 'flashcards' is defined in the loaded script
+            if (flashcards === undefined) {
+                // Navigate back to home if no flashcards
+                window.location.href = "/home";
+            }
+
+
+            // Set title based on deckName
+            const defaultName = "Flashcards d'histoire-géo"
+            const titleText = module.title + ' - ' + defaultName;
+            // Check if 'title' is defined in the loaded script
+            if (titleText === 'undefined') {
+                titleText = defaultName; // Default title
+            }
+            document.getElementById('title').textContent = titleText;
+            document.getElementById('pageTitle').textContent = titleText;
+            
+            // Initialiser l'application
+            new FlashcardApp();
+        } else {
+            // Navigate back to home if no deck is specified
+            window.location.href = "/home";
+        }
     }
-]
+
+    load_flashcards()
 
     class FlashcardApp {
         constructor() {
@@ -270,7 +254,7 @@
             this.correctAnswers = [];
             this.incorrectAnswers = [];
             this.isFlipped = false;
-            this.termToDef = true; // true = Term -> Definition, false = Definition -> Term
+            this.dateToEvent = true; // true = Date -> Événement, false = Événement -> Date
 
             this.initializeElements();
             this.setupEventListeners();
@@ -282,8 +266,8 @@
             this.gameScreen = document.getElementById('gameScreen');
             this.resultsScreen = document.getElementById('resultsScreen');
             this.flashcard = document.getElementById('flashcard');
-            this.term = document.getElementById('term');
-            this.definition = document.getElementById('definition');
+            this.eventDate = document.getElementById('eventDate');
+            this.eventName = document.getElementById('eventName');
             this.progressBar = document.getElementById('progressBar');
             this.cardCounter = document.getElementById('cardCounter');
             this.modeToggle = document.getElementById('modeToggle');
@@ -375,17 +359,17 @@
         }
 
         toggleMode() {
-            this.termToDef = !this.termToDef;
+            this.dateToEvent = !this.dateToEvent;
             this.updateModeDisplay();
             this.updateCardContent();
             this.resetCard();
         }
 
         updateModeDisplay() {
-            if (this.termToDef) {
-                this.modeText.textContent = 'Terme→Définition';
+            if (this.dateToEvent) {
+                this.modeText.textContent = 'Date→Événement';
             } else {
-                this.modeText.textContent = 'Définition→Terme';
+                this.modeText.textContent = 'Événement→Date';
             }
         }
 
@@ -394,16 +378,16 @@
 
             const card = this.currentDeck[this.currentIndex];
 
-            if (this.termToDef) {
-                // Terme à l'avant, Définition à l'arrière
+            if (this.dateToEvent) {
+                // Date à l'avant, Événement à l'arrière
                 this.cardFront.innerHTML = `
-                    <div id="term" class="card-term text-3xl sm:text-4xl font-bold text-gray-800 dark:text-white text-center">
-                        ${card.term}
+                    <div id="eventDate" class="card-date text-5xl sm:text-6xl font-bold text-gray-800 dark:text-white">
+                        ${card.date}
                     </div>
                 `;
                 this.cardBack.innerHTML = `
-                    <div id="definition" class="card-definition text-lg sm:text-xl font-semibold text-blue-800 dark:text-blue-200 text-center">
-                        ${card.definition}
+                    <div id="eventName" class="card-event text-2xl sm:text-3xl font-semibold text-blue-800 dark:text-blue-200 text-center">
+                        ${card.event}
                     </div>
                 `;
                 // Mettre à jour le style
@@ -411,15 +395,15 @@
                 this.cardBack.className = 'card-back card-side bg-blue-50 dark:bg-blue-900 rounded-xl shadow-lg border border-blue-200 dark:border-blue-700 flex flex-col items-center justify-center p-4 sm:p-8';
 
             } else {
-                // Définition à l'avant, Terme à l'arrière
+                // Événement à l'avant, Date à l'arrière
                 this.cardFront.innerHTML = `
-                    <div id="definition" class="card-definition text-lg sm:text-xl font-semibold text-gray-800 dark:text-white text-center">
-                        ${card.definition}
+                    <div id="eventName" class="card-event text-2xl sm:text-3xl font-semibold text-gray-800 dark:text-white text-center">
+                        ${card.event}
                     </div>
                 `;
                 this.cardBack.innerHTML = `
-                    <div id="term" class="card-term text-3xl sm:text-4xl font-bold text-blue-800 dark:text-blue-200 text-center">
-                        ${card.term}
+                    <div id="eventDate" class="card-date text-5xl sm:text-6xl font-bold text-blue-800 dark:text-blue-200">
+                        ${card.date}
                     </div>
                 `;
                 // Mettre à jour le style
@@ -428,8 +412,8 @@
             }
 
             // Récupérer à nouveau les références des éléments car innerHTML a changé
-            this.term = document.getElementById('term');
-            this.definition = document.getElementById('definition');
+            this.eventDate = document.getElementById('eventDate');
+            this.eventName = document.getElementById('eventName');
         }
 
         displayCurrentCard() {
@@ -488,9 +472,6 @@
             this.reviewMissedBtn.disabled = this.incorrectAnswers.length === 0;
         }
     }
-
-    // Initialiser l'application
-    new FlashcardApp();
 </script>
 </body>
 </html>

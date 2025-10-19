@@ -109,7 +109,7 @@
 </script>
 
 <div class="container mx-auto px-3 py-4 max-w-2xl">
-    <h1 class="text-2xl sm:text-3xl font-bold text-center mb-6 text-gray-800 dark:text-white">
+    <h1 id="title" class="text-2xl sm:text-3xl font-bold text-center mb-6 text-gray-800 dark:text-white">
         Flashcards de géographie
     </h1>
 
@@ -127,7 +127,7 @@
             </div>
 
             <button id="modeToggle" class="flex items-center space-x-2 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 px-3 py-2 rounded-lg font-medium transition-colors text-sm">
-                <span id="modeText">Terme→Définition</span>
+                <span id="modeText">Question→Réponse</span>
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path>
                 </svg>
@@ -140,14 +140,14 @@
                 <div class="card-flipper">
                     <!-- Avant de la carte (Terme) -->
                     <div class="card-front card-side bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 flex flex-col items-center justify-center p-4 sm:p-8">
-                        <div id="term" class="card-term text-3xl sm:text-4xl font-bold text-gray-800 dark:text-white text-center">
+                        <div id="question" class="card-term text-3xl sm:text-4xl font-bold text-gray-800 dark:text-white text-center">
                             Chargement...
                         </div>
                     </div>
 
                     <!-- Arrière de la carte (Définition) -->
                     <div class="card-back card-side bg-blue-50 dark:bg-blue-900 rounded-xl shadow-lg border border-blue-200 dark:border-blue-700 flex flex-col items-center justify-center p-4 sm:p-8">
-                        <div id="definition" class="card-definition text-lg sm:text-xl font-semibold text-blue-800 dark:text-blue-200 text-center">
+                        <div id="answer" class="card-definition text-lg sm:text-xl font-semibold text-blue-800 dark:text-blue-200 text-center">
                             Chargement...
                         </div>
                     </div>
@@ -216,10 +216,8 @@
     async function load_flashcards() {
         if (deckName) {
             // Load a specific deck if the 'deck' parameter is provided
-            const deckParts = deckName.split('/');
-            const type = deckParts[0]
-            const flashcardsFile = `${deckParts[1]}.js`;
-            const jsFileURL = `./${type}/decks/${flashcardsFile}`;
+            const flashcardsFile = `${deckName}.js`;
+            const jsFileURL = `./decks/${flashcardsFile}`;
             const module = await import(jsFileURL);
             flashcards = module.flashcards;
             // Check if 'flashcards' is defined in the loaded script
@@ -257,7 +255,7 @@
             this.correctAnswers = [];
             this.incorrectAnswers = [];
             this.isFlipped = false;
-            this.termToDef = true; // true = Term -> Definition, false = Definition -> Term
+            this.questionToAnswer = true; // true = Question -> Answer, false = Answer -> Question
 
             this.initializeElements();
             this.setupEventListeners();
@@ -269,8 +267,8 @@
             this.gameScreen = document.getElementById('gameScreen');
             this.resultsScreen = document.getElementById('resultsScreen');
             this.flashcard = document.getElementById('flashcard');
-            this.term = document.getElementById('term');
-            this.definition = document.getElementById('definition');
+            this.question = document.getElementById('question');
+            this.answer = document.getElementById('answer');
             this.progressBar = document.getElementById('progressBar');
             this.cardCounter = document.getElementById('cardCounter');
             this.modeToggle = document.getElementById('modeToggle');
@@ -362,17 +360,17 @@
         }
 
         toggleMode() {
-            this.termToDef = !this.termToDef;
+            this.questionToAnswer = !this.questionToAnswer;
             this.updateModeDisplay();
             this.updateCardContent();
             this.resetCard();
         }
 
         updateModeDisplay() {
-            if (this.termToDef) {
-                this.modeText.textContent = 'Terme→Définition';
+            if (this.questionToAnswer) {
+                this.modeText.textContent = 'Question→Réponse';
             } else {
-                this.modeText.textContent = 'Définition→Terme';
+                this.modeText.textContent = 'Réponse→Question';
             }
         }
 
@@ -381,16 +379,16 @@
 
             const card = this.currentDeck[this.currentIndex];
 
-            if (this.termToDef) {
-                // Terme à l'avant, Définition à l'arrière
+            if (this.questionToAnswer) {
+                // Question à l'avant, Réponse à l'arrière
                 this.cardFront.innerHTML = `
-                    <div id="term" class="card-term text-3xl sm:text-4xl font-bold text-gray-800 dark:text-white text-center">
-                        ${card.term}
+                    <div id="question" class="card-term text-3xl sm:text-4xl font-bold text-gray-800 dark:text-white text-center">
+                        ${card.question}
                     </div>
                 `;
                 this.cardBack.innerHTML = `
-                    <div id="definition" class="card-definition text-lg sm:text-xl font-semibold text-blue-800 dark:text-blue-200 text-center">
-                        ${card.definition}
+                    <div id="answer" class="card-definition text-lg sm:text-xl font-semibold text-blue-800 dark:text-blue-200 text-center">
+                        ${card.answer}
                     </div>
                 `;
                 // Mettre à jour le style
@@ -398,15 +396,15 @@
                 this.cardBack.className = 'card-back card-side bg-blue-50 dark:bg-blue-900 rounded-xl shadow-lg border border-blue-200 dark:border-blue-700 flex flex-col items-center justify-center p-4 sm:p-8';
 
             } else {
-                // Définition à l'avant, Terme à l'arrière
+                // Réponse à l'avant, Question à l'arrière
                 this.cardFront.innerHTML = `
-                    <div id="definition" class="card-definition text-lg sm:text-xl font-semibold text-gray-800 dark:text-white text-center">
-                        ${card.definition}
+                    <div id="answer" class="card-definition text-lg sm:text-xl font-semibold text-gray-800 dark:text-white text-center">
+                        ${card.answer}
                     </div>
                 `;
                 this.cardBack.innerHTML = `
-                    <div id="term" class="card-term text-3xl sm:text-4xl font-bold text-blue-800 dark:text-blue-200 text-center">
-                        ${card.term}
+                    <div id="question" class="card-term text-3xl sm:text-4xl font-bold text-blue-800 dark:text-blue-200 text-center">
+                        ${card.question}
                     </div>
                 `;
                 // Mettre à jour le style
@@ -415,8 +413,8 @@
             }
 
             // Récupérer à nouveau les références des éléments car innerHTML a changé
-            this.term = document.getElementById('term');
-            this.definition = document.getElementById('definition');
+            this.question = document.getElementById('question');
+            this.answer = document.getElementById('answer');
         }
 
         displayCurrentCard() {

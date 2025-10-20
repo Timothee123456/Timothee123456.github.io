@@ -1,4 +1,4 @@
-export var title = "Un territoire sous influence urbaine"
+export var title = "Chapitre 1 : un territoire sous influence urbaine"
 export var date = "2025-09-12"
 
 export var flashcards = [

@@ -1,7 +1,7 @@
-var title = "Mots Chinois Utiles";
-var date = "2025-10-28";
+export var title = "Mots Chinois Utiles";
+export var date = "2025-10-28";
 
-var flashcards = [
+export var flashcards = [
 {chinese: "你好", pinyin: "nǐ hǎo", french: "bonjour", title: title},
 {chinese: "谢谢", pinyin: "xiè xiè", french: "merci", title: title},
 {chinese: "不客气", pinyin: "bù kè qì", french: "de rien", title: title},

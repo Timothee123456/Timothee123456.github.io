@@ -3,9 +3,9 @@
 ## MUST KNOW SHORTCUTS:
 **`CTRL` + `SHIFT` + `T`** = reopens closed tab or window
 
-CTRL + F = find in page
+`CTRL` + `F` = find in page
 
-CTRL + Z = Undo
+`CTRL` + `Z` = Undo
 
 ## Youtube  videos  shortcuts:
 

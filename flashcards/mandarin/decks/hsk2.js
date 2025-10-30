@@ -1,7 +1,7 @@
- var title = "HSK 2"
- var date = "2025-10-29"
+export var title = "HSK 2"
+export var date = "2025-10-29"
 
- var flashcards = [
+export var flashcards = [
 { chinese: "您", pinyin: "nín", french: "vous (formel)" },
 { chinese: "它", pinyin: "tā", french: "il, elle (pour les objets et animaux)" },
 { chinese: "大家", pinyin: "dàjiā", french: "tout le monde" },

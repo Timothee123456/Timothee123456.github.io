@@ -1,7 +1,7 @@
-export var title = "HSK 1"
-export var date = "2025-10-28"
+var title = "HSK 1"
+var date = "2025-10-28"
 
-export var flashcards = [
+var flashcards = [
 {chinese: "我", pinyin: "wǒ", french: "I, me"},
 {chinese: "我们", pinyin: "wǒmen", french: "we, us (pl.)"},
 {chinese: "你", pinyin: "nǐ", french: "you"},

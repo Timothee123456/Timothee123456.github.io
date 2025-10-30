@@ -8,5 +8,6 @@ export var flashcards = [
 {chinese: "请问", pinyin: "qǐng wèn", french: "excusez-moi"},
 {chinese: "对不起", pinyin: "duì bù qǐ", french: "pardon"},
 {chinese: "多少钱", pinyin: "duō shao qián", french: "combien ça coûte ?"},
-{chinese: "厕所在哪里", pinyin: "cè suǒ zài nǎ lǐ", french: "où sont les toilettes ?"}
+{chinese: "厕所在哪里", pinyin: "cè suǒ zài nǎ lǐ", french: "où sont les toilettes ?"},
+{chinese: "辛辣", pinyin:"xīn là", french:"épicé"}
 ];

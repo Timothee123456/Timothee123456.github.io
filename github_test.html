@@ -1,33 +1,34 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Auto-Refreshing Iframe</title>
-  <style>
-    body {
-      margin: 0; /* Remove default body margins */
-      overflow: hidden; /* Hide scrollbars */
-    }
-    iframe {
-      width: 100vw; /* Take up the full viewport width */
-      height: 100vh; /* Take up the full viewport height */
-      border: none; /* Remove iframe border */
-    }
-  </style>
+    <title>Auto-Refreshing Iframe</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+        }
+        iframe {
+            width: 100vw;
+            height: 100vh;
+            border: none;
+        }
+    </style>
 </head>
 <body>
+    <iframe id="myIframe" src="https://special-space-happiness-76q4pj9wg76cxj97-3000.app.github.dev"></iframe>
 
-  <iframe id="myIframe" src="https://special-space-happiness-76q4pj9wg76cxj97-3000.app.github.dev/"></iframe>
+    <script>
+        function refreshIframe() {
+            const iframe = document.getElementById('myIframe');
+            iframe.src = iframe.src; // Force a reload
+            console.log("iframe reloaded");
+        }
 
-  <script>
-    function refreshIframe() {
-      const iframe = document.getElementById('myIframe');
-      iframe.src = iframe.src; // Force a reload of the iframe content
-      console.log("iframe reloaded");
-    }
-
-    // Refresh the iframe every 1 second (1000 milliseconds)
-    setInterval(refreshIframe, 1000);
-  </script>
-
+        document.addEventListener('keydown', function(event) {
+            if (event.code === 'Space') {
+                refreshIframe();
+            }
+        });
+    </script>
 </body>
 </html>

@@ -14,7 +14,7 @@
         }
     </style>
 </head>
-<body>
+<body onkeypress="refreshIframe()">
     <iframe id="myIframe" src="https://special-space-happiness-76q4pj9wg76cxj97-3000.app.github.dev"></iframe>
 
     <script>
@@ -23,13 +23,6 @@
             iframe.src = iframe.src; // Force a reload
             console.log("iframe reloaded");
         }
-
-        document.addEventListener('keydown', function(event) {
-            console.log('keydown')
-            if (event.code === 'Space') {
-                refreshIframe();
-            }
-        });
     </script>
 </body>
 </html>

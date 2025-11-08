@@ -41,14 +41,17 @@
         .flashcard-back {
             transform: rotateY(180deg);
         }
-        .expanded {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            z-index: 50;
+        .word-list-container {
+            height: calc(100vh - 280px);
             overflow-y: auto;
+        }
+
+        .word-item {
+            transition: background-color 0.2s ease;
+        }
+
+        .word-item:hover {
+            opacity: 0.8;
         }
 
         /* Dark mode support */
@@ -98,33 +101,24 @@
                 </button>
             </div>
 
-            <!-- Word Lists -->
-            <div class="space-y-4">
+            <!-- Word Lists - Side by Side -->
+            <div class="grid grid-cols-3 gap-4">
                 <!-- Unknown Words -->
-                <div id="unknownContainer" class="bg-red-50 dark:bg-red-900/20 border-2 border-red-200 dark:border-red-800 rounded-lg p-4">
-                    <div class="flex justify-between items-center mb-4">
-                        <h2 class="text-xl font-bold text-red-700 dark:text-red-400">Unknown Words (<span id="unknownCount">0</span>)</h2>
-                        <button onclick="toggleExpand('unknown')" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition text-base">Expand</button>
-                    </div>
-                    <div id="unknownWords" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3"></div>
+                <div class="bg-red-50 dark:bg-red-900/20 border-2 border-red-200 dark:border-red-800 rounded-lg p-4">
+                    <h2 class="text-xl font-bold text-red-700 dark:text-red-400 mb-4">Unknown Words (<span id="unknownCount">0</span>)</h2>
+                    <div id="unknownWords" class="word-list-container space-y-2"></div>
                 </div>
 
                 <!-- Half-Known Words -->
-                <div id="halfKnownContainer" class="bg-yellow-50 dark:bg-yellow-900/20 border-2 border-yellow-200 dark:border-yellow-800 rounded-lg p-4">
-                    <div class="flex justify-between items-center mb-4">
-                        <h2 class="text-xl font-bold text-yellow-700 dark:text-yellow-400">Half-Known Words (<span id="halfKnownCount">0</span>)</h2>
-                        <button onclick="toggleExpand('halfKnown')" class="px-4 py-2 bg-yellow-600 hover:bg-yellow-700 text-white rounded-lg transition text-base">Expand</button>
-                    </div>
-                    <div id="halfKnownWords" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3"></div>
+                <div class="bg-yellow-50 dark:bg-yellow-900/20 border-2 border-yellow-200 dark:border-yellow-800 rounded-lg p-4">
+                    <h2 class="text-xl font-bold text-yellow-700 dark:text-yellow-400 mb-4">Half-Known Words (<span id="halfKnownCount">0</span>)</h2>
+                    <div id="halfKnownWords" class="word-list-container space-y-2"></div>
                 </div>
 
                 <!-- Known Words -->
-                <div id="knownContainer" class="bg-green-50 dark:bg-green-900/20 border-2 border-green-200 dark:border-green-800 rounded-lg p-4">
-                    <div class="flex justify-between items-center mb-4">
-                        <h2 class="text-xl font-bold text-green-700 dark:text-green-400">Known Words (<span id="knownCount2">0</span>)</h2>
-                        <button onclick="toggleExpand('known')" class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition text-base">Expand</button>
-                    </div>
-                    <div id="knownWords" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3"></div>
+                <div class="bg-green-50 dark:bg-green-900/20 border-2 border-green-200 dark:border-green-800 rounded-lg p-4">
+                    <h2 class="text-xl font-bold text-green-700 dark:text-green-400 mb-4">Known Words (<span id="knownCount2">0</span>)</h2>
+                    <div id="knownWords" class="word-list-container space-y-2"></div>
                 </div>
             </div>
         </div>
@@ -427,33 +421,16 @@
             container.innerHTML = '';
 
             words.forEach(word => {
-                const card = document.createElement('div');
-                card.className = `word-card ${levelColors[word.level]} rounded-lg p-4 shadow`;
-                card.innerHTML = `
-                    <div class="text-3xl font-bold mb-2 text-gray-900 dark:text-white">${word.chinese}</div>
-                    <div class="text-lg mb-1 text-gray-700 dark:text-gray-300">${word.pinyin}</div>
-                    <div class="text-base text-gray-600 dark:text-gray-400">${word.english}</div>
-                    <div class="text-xs mt-2 text-gray-500 dark:text-gray-500">HSK ${word.level}</div>
+                const item = document.createElement('div');
+                item.className = `word-item ${levelColors[word.level]} rounded-lg p-3 shadow-sm flex justify-between items-center`;
+                item.innerHTML = `
+                    <div class="flex-1 min-w-0">
+                        <div class="text-lg font-bold text-gray-900 dark:text-white">${word.chinese}</div>
+                        <div class="text-sm text-gray-700 dark:text-gray-300">${word.pinyin}</div>
+                    </div>
+                    <div class="text-sm text-gray-600 dark:text-gray-400 text-right ml-2">${word.english}</div>
                 `;
-                container.appendChild(card);
-            });
-        }
-
-        // Expand functionality
-        function toggleExpand(type) {
-            const containers = {
-                'unknown': 'unknownContainer',
-                'halfKnown': 'halfKnownContainer',
-                'known': 'knownContainer'
-            };
-
-            Object.keys(containers).forEach(key => {
-                const container = document.getElementById(containers[key]);
-                if (key === type) {
-                    container.classList.toggle('expanded');
-                } else {
-                    container.classList.remove('expanded');
-                }
+                container.appendChild(item);
             });
         }
 
@@ -577,7 +554,7 @@
                 } else if (progress.status === 'half') {
                     // Check if 24 hours have passed since first correct
                     const hoursSinceFirst = (now - progress.firstCorrect) / (1000 * 60 * 60);
-                    if (hoursSinceFirst >= 0.1) {
+                    if (hoursSinceFirst >= 24) {
                         progress.status = 'known';
                         progress.lastCorrect = now;
                     } else {

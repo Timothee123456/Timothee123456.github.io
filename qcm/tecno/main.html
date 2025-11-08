@@ -375,6 +375,18 @@
         let incorrectAnswers = 0;
         let answered = false;
         let userAnswers = []; // Stocker les réponses de l'élève
+        let currentShuffledAnswers = []; // Stores the shuffled answers for the current question, with their original indices
+
+        /**
+         * Shuffles an array in place using the Fisher-Yates (Knuth) algorithm.
+         * @param {Array} array The array to shuffle.
+         */
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]]; // Swap elements
+            }
+        }
 
         function startQuiz() {
             document.getElementById('startScreen').classList.add('hidden');
@@ -388,25 +400,9 @@
             displayQuestion();
         }
 
-        // Function to shuffle array (Fisher-Yates shuffle)
-        function shuffleArray(array) {
-            for (let i = array.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [array[i], array[j]] = [array[j], array[i]];
-            }
-        }
-
         function displayQuestion() {
             answered = false;
-            const questionData = quizData[currentQuestionIndex];
-            const question = { ...questionData }; // Create a copy to avoid modifying the original data
-
-            // Create a shuffled copy of the answers
-            question.answers = [...questionData.answers];
-            shuffleArray(question.answers);
-
-            // Find the new index of the correct answer after shuffling
-            question.correct = question.answers.indexOf(quizData[currentQuestionIndex].answers[questionData.correct]);
+            const question = quizData[currentQuestionIndex];
 
             document.getElementById('currentQuestion').textContent = currentQuestionIndex + 1;
             document.getElementById('totalQuestions').textContent = quizData.length;
@@ -418,60 +414,79 @@
             const progress = ((currentQuestionIndex) / quizData.length) * 100;
             document.getElementById('progressBar').style.width = progress + '%';
 
+            // Prepare answers for shuffling: map text to an object with original index
+            const answersWithOriginalIndex = question.answers.map((text, originalIndex) => ({ text, originalIndex }));
+            
+            // Shuffle the answers
+            shuffleArray(answersWithOriginalIndex);
+            currentShuffledAnswers = answersWithOriginalIndex; // Store for later use in selectAnswer
+
             // Display answers
             const answersContainer = document.getElementById('answersContainer');
             answersContainer.innerHTML = '';
 
-            question.answers.forEach((answer, index) => {
+            currentShuffledAnswers.forEach((answerObj, shuffledIndex) => {
                 const button = document.createElement('button');
                 button.className = 'w-full text-left p-4 rounded-lg border-2 border-gray-300 dark:border-gray-600 hover:border-primary hover:bg-gray-100 dark:hover:bg-gray-700 transition-all text-base bg-white dark:bg-gray-800';
-                button.innerHTML = `<span class="font-semibold">${String.fromCharCode(65 + index)}.</span> ${answer}`;
-                button.onclick = () => selectAnswer(index, question); // Pass the question object
+                button.innerHTML = `<span class="font-semibold">${String.fromCharCode(65 + shuffledIndex)}.</span> ${answerObj.text}`;
+                button.onclick = () => selectAnswer(shuffledIndex); // Pass the shuffled index
                 answersContainer.appendChild(button);
             });
         }
 
-        function selectAnswer(selectedIndex, question) {
+        function selectAnswer(selectedIndex) {
             if (answered) return;
             answered = true;
 
-            const originalCorrectIndex = quizData[currentQuestionIndex].correct;
+            const question = quizData[currentQuestionIndex];
             const buttons = document.getElementById('answersContainer').children;
             const feedback = document.getElementById('feedback');
             const feedbackText = document.getElementById('feedbackText');
             const explanationText = document.getElementById('explanationText');
+
+            // Get the original index of the selected answer
+            const selectedAnswerOriginalIndex = currentShuffledAnswers[selectedIndex].originalIndex;
+            // Get the original index of the correct answer
+            const correctAnswerOriginalIndex = question.correct;
 
             // Disable all buttons
             for (let btn of buttons) {
                 btn.classList.add('disabled');
             }
 
-            // Mark correct and incorrect answers
-            buttons[question.correct].classList.add('correct');
-
             // Enregistrer la réponse de l'élève
             userAnswers.push({
                 questionIndex: currentQuestionIndex,
-                selectedAnswer: selectedIndex,
-                correctAnswer: question.correct,
-                isCorrect: selectedIndex === question.correct
+                selectedAnswerOriginalIndex: selectedAnswerOriginalIndex,
+                correctAnswerOriginalIndex: correctAnswerOriginalIndex,
+                isCorrect: selectedAnswerOriginalIndex === correctAnswerOriginalIndex
             });
 
-            if (selectedIndex === question.correct) {
+            if (selectedAnswerOriginalIndex === correctAnswerOriginalIndex) {
                 score++;
                 correctAnswers++;
+                buttons[selectedIndex].classList.add('correct'); // Mark the selected (and correct) button
                 feedbackText.textContent = '✓ Correct !';
                 feedbackText.className = 'font-semibold text-green-600 dark:text-green-400 text-base';
                 feedback.className = 'mb-6 p-4 rounded-lg bg-green-50 dark:bg-green-900/30 border-2 border-green-500';
             } else {
                 incorrectAnswers++;
-                buttons[selectedIndex].classList.add('incorrect');
+                buttons[selectedIndex].classList.add('incorrect'); // Mark the selected (and incorrect) button
+                
+                // Find the button that contains the correct answer (based on its original index)
+                const correctButtonShuffledIndex = currentShuffledAnswers.findIndex(
+                    ans => ans.originalIndex === correctAnswerOriginalIndex
+                );
+                if (correctButtonShuffledIndex !== -1) {
+                    buttons[correctButtonShuffledIndex].classList.add('correct'); // Mark the truly correct button
+                }
+
                 feedbackText.textContent = '✗ Incorrect';
                 feedbackText.className = 'font-semibold text-red-600 dark:text-red-400 text-base';
                 feedback.className = 'mb-6 p-4 rounded-lg bg-red-50 dark:bg-red-900/30 border-2 border-red-500';
             }
 
-            explanationText.textContent = quizData[currentQuestionIndex].explanation;
+            explanationText.textContent = question.explanation;
             explanationText.className = 'mt-2 text-sm text-gray-700 dark:text-gray-300';
             feedback.classList.remove('hidden');
 
@@ -549,31 +564,21 @@
             `;
 
             mistakes.forEach((mistake, index) => {
-                const questionData = quizData[mistake.questionIndex];
-                const originalCorrectAnswer = questionData.answers[questionData.correct];
-                const question = { ...questionData };
-
-                // Find the user's selected answer in the original answer array
-                const selectedAnswerText = question.answers[mistake.selectedAnswer];
-
-                // Find the correct answer in the shuffled answer array
-                question.answers = [...questionData.answers];
-                const correctAnswerText = question.answers[questionData.correct];
-
+                const question = quizData[mistake.questionIndex];
                 html += `
                     <div class="border-l-4 border-red-500 bg-red-50 dark:bg-red-900/20 p-4 rounded">
                         <p class="font-semibold text-gray-900 dark:text-gray-100 mb-2">
-                            <span class="text-red-500">Question ${mistake.questionIndex + 1}:</span> ${questionData.question}
+                            <span class="text-red-500">Question ${mistake.questionIndex + 1}:</span> ${question.question}
                         </p>
                         <div class="ml-4 space-y-1 text-sm">
                             <p class="text-red-600 dark:text-red-400">
-                                ✗ <span class="font-medium">Votre réponse :</span> ${selectedAnswerText}
+                                ✗ <span class="font-medium">Votre réponse :</span> ${question.answers[mistake.selectedAnswerOriginalIndex]}
                             </p>
                             <p class="text-green-600 dark:text-green-400">
-                                ✓ <span class="font-medium">Bonne réponse :</span> ${correctAnswerText}
+                                ✓ <span class="font-medium">Bonne réponse :</span> ${question.answers[mistake.correctAnswerOriginalIndex]}
                             </p>
                             <p class="text-gray-600 dark:text-gray-400 italic mt-2">
-                                💡 ${questionData.explanation}
+                                💡 ${question.explanation}
                             </p>
                         </div>
                     </div>
@@ -619,7 +624,7 @@
             // Touches 1-4 ou A-D pour sélectionner une réponse
             if (!document.getElementById('quizScreen').classList.contains('hidden') && !answered) {
                 const question = quizData[currentQuestionIndex];
-                let answerIndex = -1;
+                let answerIndex = -1; // This will be the shuffled index
 
                 // Touches numériques 1-4
                 if (key >= '1' && key <= '4') {
@@ -631,8 +636,8 @@
                 else if (key === 'c') answerIndex = 2;
                 else if (key === 'd') answerIndex = 3;
 
-                // Vérifier que l'index est valide pour cette question
-                if (answerIndex >= 0 && answerIndex < question.answers.length) {
+                // Check if the selected index is valid for the current shuffled answers
+                if (answerIndex >= 0 && answerIndex < currentShuffledAnswers.length) {
                     selectAnswer(answerIndex);
                     event.preventDefault();
                 }

@@ -388,9 +388,25 @@
             displayQuestion();
         }
 
+        // Function to shuffle array (Fisher-Yates shuffle)
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
         function displayQuestion() {
             answered = false;
-            const question = quizData[currentQuestionIndex];
+            const questionData = quizData[currentQuestionIndex];
+            const question = { ...questionData }; // Create a copy to avoid modifying the original data
+
+            // Create a shuffled copy of the answers
+            question.answers = [...questionData.answers];
+            shuffleArray(question.answers);
+
+            // Find the new index of the correct answer after shuffling
+            question.correct = question.answers.indexOf(quizData[currentQuestionIndex].answers[questionData.correct]);
 
             document.getElementById('currentQuestion').textContent = currentQuestionIndex + 1;
             document.getElementById('totalQuestions').textContent = quizData.length;
@@ -410,16 +426,16 @@
                 const button = document.createElement('button');
                 button.className = 'w-full text-left p-4 rounded-lg border-2 border-gray-300 dark:border-gray-600 hover:border-primary hover:bg-gray-100 dark:hover:bg-gray-700 transition-all text-base bg-white dark:bg-gray-800';
                 button.innerHTML = `<span class="font-semibold">${String.fromCharCode(65 + index)}.</span> ${answer}`;
-                button.onclick = () => selectAnswer(index);
+                button.onclick = () => selectAnswer(index, question); // Pass the question object
                 answersContainer.appendChild(button);
             });
         }
 
-        function selectAnswer(selectedIndex) {
+        function selectAnswer(selectedIndex, question) {
             if (answered) return;
             answered = true;
 
-            const question = quizData[currentQuestionIndex];
+            const originalCorrectIndex = quizData[currentQuestionIndex].correct;
             const buttons = document.getElementById('answersContainer').children;
             const feedback = document.getElementById('feedback');
             const feedbackText = document.getElementById('feedbackText');
@@ -455,7 +471,7 @@
                 feedback.className = 'mb-6 p-4 rounded-lg bg-red-50 dark:bg-red-900/30 border-2 border-red-500';
             }
 
-            explanationText.textContent = question.explanation;
+            explanationText.textContent = quizData[currentQuestionIndex].explanation;
             explanationText.className = 'mt-2 text-sm text-gray-700 dark:text-gray-300';
             feedback.classList.remove('hidden');
 
@@ -533,21 +549,31 @@
             `;
 
             mistakes.forEach((mistake, index) => {
-                const question = quizData[mistake.questionIndex];
+                const questionData = quizData[mistake.questionIndex];
+                const originalCorrectAnswer = questionData.answers[questionData.correct];
+                const question = { ...questionData };
+
+                // Find the user's selected answer in the original answer array
+                const selectedAnswerText = question.answers[mistake.selectedAnswer];
+
+                // Find the correct answer in the shuffled answer array
+                question.answers = [...questionData.answers];
+                const correctAnswerText = question.answers[questionData.correct];
+
                 html += `
                     <div class="border-l-4 border-red-500 bg-red-50 dark:bg-red-900/20 p-4 rounded">
                         <p class="font-semibold text-gray-900 dark:text-gray-100 mb-2">
-                            <span class="text-red-500">Question ${mistake.questionIndex + 1}:</span> ${question.question}
+                            <span class="text-red-500">Question ${mistake.questionIndex + 1}:</span> ${questionData.question}
                         </p>
                         <div class="ml-4 space-y-1 text-sm">
                             <p class="text-red-600 dark:text-red-400">
-                                ✗ <span class="font-medium">Votre réponse :</span> ${question.answers[mistake.selectedAnswer]}
+                                ✗ <span class="font-medium">Votre réponse :</span> ${selectedAnswerText}
                             </p>
                             <p class="text-green-600 dark:text-green-400">
-                                ✓ <span class="font-medium">Bonne réponse :</span> ${question.answers[mistake.correctAnswer]}
+                                ✓ <span class="font-medium">Bonne réponse :</span> ${correctAnswerText}
                             </p>
                             <p class="text-gray-600 dark:text-gray-400 italic mt-2">
-                                💡 ${question.explanation}
+                                💡 ${questionData.explanation}
                             </p>
                         </div>
                     </div>

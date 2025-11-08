@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quiz - Architecture Réseau et Internet</title>
+    <title id="pageTitle">Quiz</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -51,8 +51,8 @@
     <div class="container mx-auto px-4 py-8 max-w-3xl">
         <!-- Header -->
         <div class="text-center mb-8">
-            <h1 class="text-3xl md:text-4xl font-bold mb-2 text-primary">Quiz - Architecture Réseau</h1>
-            <p class="text-gray-600 dark:text-gray-400 text-base">Testez vos connaissances sur les réseaux et Internet</p>
+            <h1 class="text-3xl md:text-4xl font-bold mb-2 text-primary" id="title">Quiz</h1>
+            <p class="text-gray-600 dark:text-gray-400 text-base">Testez vos connaissances</p>
         </div>
 
         <!-- Start Screen -->
@@ -63,7 +63,7 @@
                 </svg>
             </div>
             <h2 class="text-2xl font-bold mb-4">Prêt à commencer ?</h2>
-            <p class="text-gray-600 dark:text-gray-400 mb-6 text-base">Ce quiz contient 18 questions sur l'architecture réseau et Internet.</p>
+            <p class="text-gray-600 dark:text-gray-400 mb-6 text-base">Ce quiz contient <span id="questionsNb">0</span> questions</p>
             <button onclick="startQuiz()" class="bg-primary hover:bg-opacity-90 text-white font-semibold py-3 px-8 rounded-lg transition-all transform hover:scale-105 text-base">
                 Commencer le quiz
             </button>
@@ -172,6 +172,40 @@
         });
 
         // Quiz data
+        // Get the desired data file name from a query parameter (e.g., index.html?deck=eval1)
+        const urlParams = new URLSearchParams(window.location.search);
+        const deckName = urlParams.get('deck');
+
+        async function load_data() {
+            if (deckName) {
+                // Load a specific deck if the 'deck' parameter is provided
+                const flashcardsFile = `${deckName}.js`;
+                const jsFileURL = `./decks/${flashcardsFile}`;
+                const module = await import(jsFileURL);
+                const quizData = module.data;
+                // Check if 'flashcards' is defined in the loaded script
+                if (quizData === undefined) {
+                    // Navigate back to home if no flashcards
+                    window.location.href = "/home";
+                }
+
+
+                // Set title based on deckName
+                const defaultName = 'Quiz'
+                const titleText = module.title + ' - ' + defaultName;
+                // Check if 'title' is defined in the loaded script
+                if (titleText === 'undefined') {
+                    titleText = defaultName; // Default title
+                }
+                document.getElementById('title').textContent = titleText;
+                document.getElementById('pageTitle').textContent = titleText;
+            } else {
+                // Navigate back to home if no deck is specified
+                window.location.href = "/home";
+            }
+        }
+
+        load_data()
         const quizData = [
             {
                 question: "Quel est le rôle principal d'un modem ?",

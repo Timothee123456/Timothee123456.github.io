@@ -577,7 +577,7 @@
                 } else if (progress.status === 'half') {
                     // Check if 24 hours have passed since first correct
                     const hoursSinceFirst = (now - progress.firstCorrect) / (1000 * 60 * 60);
-                    if (hoursSinceFirst >= 24) {
+                    if (hoursSinceFirst >= 0.1) {
                         progress.status = 'known';
                         progress.lastCorrect = now;
                     } else {

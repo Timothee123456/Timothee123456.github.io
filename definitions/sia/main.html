@@ -126,52 +126,51 @@
             }
         });
 
-      
         // Vocabulary data
-        // Get the desired vocabulary file name from a query parameter (e.g., index.html?set=vocabulary)
         const urlParams = new URLSearchParams(window.location.search);
         const setName = urlParams.get('set');
-        var vocabularyWords = {}
-        
+        let vocabularyWords = []; // Initialize as an empty array
+
+        // Variable to keep track of the currently dragged word element for auto-scrolling
+        let draggedWordElement = null;
+
         async function load_vocabulary() {
             if (setName) {
-                // Load a specific set if the 'set' parameter is provided
                 const file = `${setName}.js`;
                 const jsFileURL = `./sets/${file}`;
-                const module = await import(jsFileURL);
-                vocabularyWords = module.vocabularyWords;
-                // Check if 'vocabularyWords' is defined in the loaded script
-                if (vocabularyWords === undefined) {
-                    // Navigate back to home if no volcabulary list
+                try {
+                    const module = await import(jsFileURL);
+                    vocabularyWords = module.vocabularyWords;
+
+                    if (!vocabularyWords || vocabularyWords.length === 0) {
+                        console.error('Vocabulary list not found or empty in the loaded module.');
+                        window.location.href = "/home";
+                        return;
+                    }
+
+                    const defaultName = 'Vocabulary Matcher';
+                    let titleText = module.title ? `${module.title} - ${defaultName}` : defaultName;
+                    document.getElementById('title').textContent = titleText;
+
+                    initializeGame(); // Initialize the game AFTER vocabulary is loaded
+
+                } catch (error) {
+                    console.error('Failed to load vocabulary module:', error);
                     window.location.href = "/home";
                 }
-
-
-                // Set title based on setName
-                const defaultName = 'Vocabulary Matcher'
-                const titleText = module.title + ' - ' + defaultName;
-                // Check if 'title' is defined in the loaded script
-                if (titleText === 'undefined') {
-                    titleText = defaultName; // Default title
-                }
-                document.getElementById('title').textContent = titleText;
             } else {
-                // Navigate back to home if no set is specified
                 window.location.href = "/home";
             }
-
-
-            // Initialize the game
-            initializeGame();
         }
 
-        load_vocabulary()
+        load_vocabulary(); // Call to load vocabulary and then initialize game
 
         let gameState = {
             matches: {},
             score: 0,
             attempts: 0,
-            completed: false
+            completed: false,
+            correctMatches: {}
         };
 
         function shuffleArray(array) {
@@ -203,6 +202,7 @@
             populateColumns(shuffledWords, shuffledDefinitions);
             updateScore();
             document.getElementById('checkAnswers').disabled = false;
+            document.getElementById('completionArea').classList.add('hidden'); // Hide completion message
         }
 
         function shuffleWords() {
@@ -262,10 +262,12 @@
         function handleDragStart(e) {
             e.dataTransfer.setData('text/plain', e.target.dataset.word);
             e.target.classList.add('dragging');
+            draggedWordElement = e.target; // Store the dragged element for auto-scrolling
         }
 
         function handleDragEnd(e) {
             e.target.classList.remove('dragging');
+            draggedWordElement = null; // Clear the dragged element
         }
 
         function handleDragOver(e) {
@@ -287,7 +289,7 @@
             // Check if there's already a word matched to this definition
             const existingWord = Object.keys(gameState.matches).find(w => gameState.matches[w] === definition);
             if (existingWord) {
-                // Remove the existing match and move the word to the end of the list
+                // Remove the existing match and move the word back to the words column
                 delete gameState.matches[existingWord];
                 const existingWordElement = document.querySelector(`[data-word="${existingWord}"]`);
                 if (existingWordElement) {
@@ -304,12 +306,14 @@
             // Visual feedback
             e.currentTarget.innerHTML = `
                 <div class="flex justify-between items-center">
-                    <span class="font-semibold text-primary">${word}</span>
+                    <span class="font-semibold text-primary dark:text-primary-light">${word}</span>
                     <button onclick="removeMatch('${word}', this)" class="text-red-500 hover:text-red-700 ml-2">×</button>
                 </div>
-                <div class="text-sm mt-2">${definition}</div>
+                <div class="text-sm mt-2 text-gray-700 dark:text-gray-300">${definition}</div>
             `;
             e.currentTarget.classList.add('bg-primary', 'bg-opacity-10', 'border-primary');
+            // Remove any previous match-correct/incorrect classes
+            e.currentTarget.classList.remove('match-correct', 'match-incorrect');
             
             // Hide the dragged word
             const wordElement = document.querySelector(`[data-word="${word}"]`);
@@ -348,6 +352,7 @@
             document.getElementById('matches').textContent = matchesCount;
             document.getElementById('total').textContent = totalWords;
             document.getElementById('attempts').textContent = gameState.attempts;
+            document.getElementById('score').textContent = gameState.score; // Ensure score is updated here too
         }
 
         function checkAnswers() {
@@ -357,63 +362,47 @@
             
             if (matchesCount < totalWords) {
                 showCustomAlert('Please match all words before checking answers!');
+                updateScore(); // Update attempts
                 return;
             }
             
             let correctCount = 0;
+            let definitionsToReset = []; // Store definitions that need to be reset
             
+            // Temporarily disable check answers button to prevent multiple clicks
+            document.getElementById('checkAnswers').disabled = true;
+
             // Check each match
             Object.entries(gameState.matches).forEach(([word, selectedDefinition]) => {
                 const correctDefinition = gameState.correctMatches[word];
                 const isCorrect = selectedDefinition === correctDefinition;
                 
-                // Visual feedback
                 const defElement = document.querySelector(`[data-definition="${selectedDefinition}"]`);
                 if (defElement) {
-                    defElement.classList.remove('match-correct', 'match-incorrect');
-                    defElement.classList.add(isCorrect ? 'match-correct' : 'match-incorrect');
+                    defElement.classList.remove('match-correct', 'match-incorrect', 'bg-primary', 'bg-opacity-10', 'border-primary'); // Clean up previous styles
                     
                     if (isCorrect) {
                         correctCount++;
-                        // Keep the word in the definition box with green background
                         defElement.innerHTML = `
                             <div class="flex justify-between items-center">
                                 <span class="font-semibold text-gray-800 dark:text-white">${word}</span>
-                                <span class="text-gray-800 dark:text-white">✓</span>
+                                <span class="text-green-600 dark:text-green-400">✓ Correct</span>
                             </div>
                             <div class="text-sm mt-2 text-gray-700 dark:text-gray-200">${selectedDefinition}</div>
                         `;
-                        // Update classes to show green background
                         defElement.className = 'definition-item bg-green-100 dark:bg-green-800 border-2 border-green-500 p-4 rounded-lg min-h-[80px] transition-all';
                     } else {
-                        // Wrong match: show red background temporarily, then move word back
+                        // Mark as incorrect visually
+                        defElement.innerHTML = `
+                            <div class="flex justify-between items-center">
+                                <span class="font-semibold text-gray-800 dark:text-white">${word}</span>
+                                <span class="text-red-600 dark:text-red-400">✗ Incorrect</span>
+                            </div>
+                            <div class="text-sm mt-2 text-gray-700 dark:text-gray-200">${selectedDefinition}</div>
+                        `;
                         defElement.className = 'definition-item bg-red-100 dark:bg-red-800 border-2 border-red-500 p-4 rounded-lg min-h-[80px] transition-all';
                         
-                        setTimeout(() => {
-                            // Remove word from matches and reset definition
-                            delete gameState.matches[word];
-                            
-                            // Reset the definition element
-                            defElement.innerHTML = selectedDefinition;
-                            defElement.className = 'definition-item drop-zone bg-gray-50 dark:bg-gray-700 border-2 border-dashed border-gray-300 dark:border-gray-600 p-4 rounded-lg min-h-[80px] text-gray-700 dark:text-gray-300 transition-all';
-                            
-                            // Move word back to words column at the end
-                            const wordElement = document.querySelector(`[data-word="${word}"]`);
-                            if (wordElement) {
-                                wordElement.style.display = 'block';
-                                wordElement.classList.add('match-incorrect');
-                                const wordsColumn = document.getElementById('wordsColumn');
-                                wordsColumn.appendChild(wordElement);
-                                
-                                // Add shake animation to the word
-                                wordElement.classList.add('shake');
-                                setTimeout(() => {
-                                    wordElement.classList.remove('shake', 'match-incorrect');
-                                }, 500);
-                            }
-                            
-                            updateScore();
-                        }, 1000); // Show red background for 1 second before moving word back
+                        definitionsToReset.push({ word, defElement, originalDefinition: selectedDefinition });
                     }
                 }
             });
@@ -422,17 +411,49 @@
             gameState.completed = correctCount === totalWords;
             
             updateScore();
-            document.getElementById('score').textContent = correctCount;
             
+            // Handle incorrect matches after a delay
+            if (definitionsToReset.length > 0) {
+                setTimeout(() => {
+                    definitionsToReset.forEach(({ word, defElement, originalDefinition }) => {
+                        // Remove word from matches and reset definition
+                        delete gameState.matches[word];
+                        
+                        // Reset the definition element
+                        defElement.innerHTML = originalDefinition;
+                        defElement.className = 'definition-item drop-zone bg-gray-50 dark:bg-gray-700 border-2 border-dashed border-gray-300 dark:border-gray-600 p-4 rounded-lg min-h-[80px] text-gray-700 dark:text-gray-300 transition-all';
+                        
+                        // Move word back to words column at the end
+                        const wordElement = document.querySelector(`[data-word="${word}"]`);
+                        if (wordElement) {
+                            wordElement.style.display = 'block';
+                            wordElement.classList.add('match-incorrect'); // Add temporary class for visual feedback
+                            const wordsColumn = document.getElementById('wordsColumn');
+                            wordsColumn.appendChild(wordElement);
+                            
+                            // Add shake animation to the word
+                            wordElement.classList.add('shake');
+                            setTimeout(() => {
+                                wordElement.classList.remove('shake', 'match-incorrect');
+                            }, 500);
+                        }
+                    });
+                    updateScore(); // Update score after words are moved back
+                    document.getElementById('checkAnswers').disabled = false; // Re-enable button
+                }, 1500); // Show red background for 1.5 seconds before moving word back
+            } else {
+                // If all were correct or no incorrect ones to reset, re-enable immediately
+                document.getElementById('checkAnswers').disabled = false;
+            }
+
+
             // Show completion message and try again button if all correct
             if (gameState.completed) {
                 showCustomAlert('🎉 Congratulations! All matches are correct!', 'success');
                 document.getElementById('completionArea').classList.remove('hidden');
-                document.getElementById('checkAnswers').disabled = true;
+                document.getElementById('checkAnswers').disabled = true; // Keep disabled if completed
             }
         }
-
-
 
         function showCustomAlert(message, type = 'error') {
             const alert = document.createElement('div');
@@ -455,6 +476,26 @@
                 }, 300);
             }, type === 'success' ? 4000 : 3000);
         }
+
+        // --- Auto-scrolling logic during drag ---
+        document.body.addEventListener('dragover', (e) => {
+            e.preventDefault(); // Crucial for allowing drops and auto-scrolling
+            if (!draggedWordElement) return; // Only scroll if an item is being dragged
+
+            const scrollThreshold = 70; // Pixels from the top/bottom edge to trigger scroll
+            const scrollSpeed = 15;    // Pixels to scroll per interval
+
+            // Scroll up
+            if (e.clientY < scrollThreshold) {
+                window.scrollBy(0, -scrollSpeed);
+            }
+            // Scroll down
+            else if (e.clientY > window.innerHeight - scrollThreshold) {
+                window.scrollBy(0, scrollSpeed);
+            }
+        });
+        // --- End Auto-scrolling logic ---
+
 
         // Event listeners
         document.getElementById('checkAnswers').addEventListener('click', checkAnswers);

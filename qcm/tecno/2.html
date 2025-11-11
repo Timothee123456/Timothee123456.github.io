@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz - Architecture Réseau et Internet</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#5D5CDE'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .question-enter {
+            animation: slideIn 0.3s ease-out;
+        }
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        .correct {
+            background-color: #10b981 !important;
+            border-color: #10b981 !important;
+            color: white !important;
+        }
+        .incorrect {
+            background-color: #ef4444 !important;
+            border-color: #ef4444 !important;
+            color: white !important;
+        }
+        .disabled {
+            pointer-events: none;
+            opacity: 0.6;
+        }
+    </style>
+</head>
+<body class="bg-white dark:bg-[#181818] text-gray-900 dark:text-gray-100 min-h-screen transition-colors">
+    <div class="container mx-auto px-4 py-8 max-w-3xl">
+        <!-- Header -->
+        <div class="text-center mb-8">
+            <h1 class="text-3xl md:text-4xl font-bold mb-2 text-primary">Quiz - Architecture Réseau</h1>
+            <p class="text-gray-600 dark:text-gray-400 text-base">Testez vos connaissances sur les réseaux et Internet</p>
+        </div>
+
+        <!-- Start Screen -->
+        <div id="startScreen" class="bg-gray-50 dark:bg-gray-800 rounded-lg shadow-lg p-8 text-center">
+            <div class="mb-6">
+                <svg class="w-20 h-20 mx-auto text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"/>
+                </svg>
+            </div>
+            <h2 class="text-2xl font-bold mb-4">Prêt à commencer ?</h2>
+            <p class="text-gray-600 dark:text-gray-400 mb-6 text-base">Ce quiz contient 30 questions sur l'architecture réseau et Internet.</p>
+            <button onclick="startQuiz()" class="bg-primary hover:bg-opacity-90 text-white font-semibold py-3 px-8 rounded-lg transition-all transform hover:scale-105 text-base">
+                Commencer le quiz
+            </button>
+            <div class="mt-6 text-sm text-gray-500 dark:text-gray-400">
+                <p class="mb-2">⌨️ Raccourcis clavier :</p>
+                <p><kbd class="px-2 py-1 bg-gray-200 dark:bg-gray-700 rounded text-xs">Entrée</kbd> pour commencer</p>
+            </div>
+        </div>
+
+        <!-- Quiz Screen -->
+        <div id="quizScreen" class="hidden">
+            <!-- Progress Bar -->
+            <div class="mb-6">
+                <div class="flex justify-between items-center mb-2">
+                    <span class="text-sm text-gray-600 dark:text-gray-400">Question <span id="currentQuestion">1</span> / <span id="totalQuestions">30</span></span>
+                    <span class="text-sm font-semibold text-primary"><span id="score">0</span> points</span>
+                </div>
+                <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2.5">
+                    <div id="progressBar" class="bg-primary h-2.5 rounded-full transition-all duration-300" style="width: 0%"></div>
+                </div>
+            </div>
+
+            <!-- Question Card -->
+            <div class="bg-gray-50 dark:bg-gray-800 rounded-lg shadow-lg p-6 md:p-8 mb-6 question-enter">
+                <h3 id="questionText" class="text-xl md:text-2xl font-bold mb-6 text-gray-900 dark:text-gray-100"></h3>
+                <div id="answersContainer" class="space-y-3"></div>
+            </div>
+
+            <!-- Feedback -->
+            <div id="feedback" class="hidden mb-6 p-4 rounded-lg">
+                <p id="feedbackText" class="font-semibold text-base"></p>
+                <p id="explanationText" class="mt-2 text-sm"></p>
+            </div>
+
+            <!-- Next Button -->
+            <div class="text-center">
+                <button id="nextBtn" onclick="nextQuestion()" class="hidden bg-primary hover:bg-opacity-90 text-white font-semibold py-3 px-8 rounded-lg transition-all text-base">
+                    Question suivante →
+                </button>
+                <div class="mt-4 text-sm text-gray-500 dark:text-gray-400">
+                    <p>⌨️ Raccourcis :
+                        <kbd class="px-2 py-1 bg-gray-200 dark:bg-gray-700 rounded text-xs">A-D</kbd> ou
+                        <kbd class="px-2 py-1 bg-gray-200 dark:bg-gray-700 rounded text-xs">1-4</kbd> pour répondre •
+                        <kbd class="px-2 py-1 bg-gray-200 dark:bg-gray-700 rounded text-xs">Entrée</kbd> pour continuer
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Results Screen -->
+        <div id="resultsScreen" class="hidden">
+            <div class="bg-gray-50 dark:bg-gray-800 rounded-lg shadow-lg p-8 text-center">
+                <div class="mb-6">
+                    <svg id="resultIcon" class="w-24 h-24 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                </div>
+                <h2 class="text-3xl font-bold mb-4">Quiz terminé !</h2>
+                <p class="text-xl mb-2">Votre score :</p>
+                <p id="finalScore" class="text-5xl font-bold text-primary mb-6">0/30</p>
+                <p id="resultMessage" class="text-gray-600 dark:text-gray-400 mb-8 text-base"></p>
+
+                <!-- Score Details -->
+                <div class="bg-white dark:bg-gray-700 rounded-lg p-6 mb-6">
+                    <h3 class="font-semibold mb-4 text-lg">Détails</h3>
+                    <div class="grid grid-cols-3 gap-4 text-center">
+                        <div>
+                            <p class="text-2xl font-bold text-green-500" id="correctCount">0</p>
+                            <p class="text-sm text-gray-600 dark:text-gray-400">Correctes</p>
+                        </div>
+                        <div>
+                            <p class="text-2xl font-bold text-red-500" id="incorrectCount">0</p>
+                            <p class="text-sm text-gray-600 dark:text-gray-400">Incorrectes</p>
+                        </div>
+                        <div>
+                            <p class="text-2xl font-bold text-primary" id="percentageScore">0%</p>
+                            <p class="text-sm text-gray-600 dark:text-gray-400">Réussite</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section des erreurs -->
+                <div id="mistakesSection" class="mt-6"></div>
+
+                <button onclick="restartQuiz()" class="bg-primary hover:bg-opacity-90 text-white font-semibold py-3 px-8 rounded-lg transition-all transform hover:scale-105 text-base">
+                    Recommencer le quiz
+                </button>
+                <div class="mt-4 text-sm text-gray-500 dark:text-gray-400">
+                    <p>⌨️ <kbd class="px-2 py-1 bg-gray-200 dark:bg-gray-700 rounded text-xs">Entrée</kbd> pour recommencer</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Dark mode detection
+        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            document.documentElement.classList.add('dark');
+        }
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
+            if (event.matches) {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+        });
+
+        // Quiz data
+        const quizData = [
+            {
+                question: "Quel composant d'un réseau local agit comme une interface avec Internet ?",
+                answers: [
+                    "Switch",
+                    "Modem",
+                    "Routeur",
+                    "Serveur"
+                ],
+                correct: 1,
+                explanation: "Le modem sert d'interface entre le réseau local et Internet."
+            },
+            {
+                question: "Quel est le rôle principal d'un switch dans un réseau local ?",
+                answers: [
+                    "Distribuer des adresses IP",
+                    "Relier des réseaux différents",
+                    "Relier des équipements au sein du même réseau",
+                    "Convertir des URL en adresses IP"
+                ],
+                correct: 2,
+                explanation: "Le switch relie plusieurs équipements au sein du même réseau local."
+            },
+            {
+                question: "Quelle est la fonction principale d'une adresse IP ?",
+                answers: [
+                    "Identifier un site web",
+                    "Identifier un appareil sur un réseau",
+                    "Définir un protocole de communication",
+                    "Stocker des données"
+                ],
+                correct: 1,
+                explanation: "Une adresse IP identifie de manière unique un appareil connecté à un réseau."
+            },
+            {
+                question: "Que signifie l'acronyme LAN ?",
+                answers: [
+                    "Large Area Network",
+                    "Local Area Network",
+                    "Linked Area Network",
+                    "Logical Area Network"
+                ],
+                correct: 1,
+                explanation: "LAN signifie Local Area Network (réseau local)."
+            },
+            {
+                question: "Quelle technologie de connexion utilise la lumière pour la transmission de données ?",
+                answers: [
+                    "Wi-Fi",
+                    "Bluetooth",
+                    "Li-Fi",
+                    "Fibre optique"
+                ],
+                correct: 2,
+                explanation: "Le Li-Fi utilise la lumière pour transmettre des données sans fil."
+            },
+            {
+                question: "Quelle connexion offre la vitesse de transmission la plus élevée ?",
+                answers: [
+                    "Câble Ethernet",
+                    "Wi-Fi",
+                    "Fibre optique",
+                    "Bluetooth"
+                ],
+                correct: 2,
+                explanation: "La fibre optique offre une très haute vitesse de transmission."
+            },
+            {
+                question: "Quel est le rôle principal d'un routeur dans un réseau ?",
+                answers: [
+                    "Stocker des données",
+                    "Relier des réseaux et distribuer Internet",
+                    "Connecter des périphériques Bluetooth",
+                    "Améliorer le signal Wi-Fi"
+                ],
+                correct: 1,
+                explanation: "Le routeur relie plusieurs réseaux et distribue la connexion Internet."
+            },
+            {
+                question: "Que signifie l'acronyme WAN ?",
+                answers: [
+                    "Wide Area Network",
+                    "Wireless Area Network",
+                    "World Area Network",
+                    "Web Area Network"
+                ],
+                correct: 0,
+                explanation: "WAN signifie Wide Area Network (réseau étendu)."
+            },
+            {
+                question: "Quel système convertit les URL en adresses IP ?",
+                answers: [
+                    "Le routeur",
+                    "Le switch",
+                    "Les serveurs DNS",
+                    "Le modem"
+                ],
+                correct: 2,
+                explanation: "Les serveurs DNS convertissent les URL en adresses IP."
+            },
+            {
+                question: "Quelle connexion a la plus grande portée mais la plus grande latence ?",
+                answers: [
+                    "Wi-Fi",
+                    "Fibre optique",
+                    "Satellite",
+                    "Câble Ethernet"
+                ],
+                correct: 2,
+                explanation: "La connexion satellite offre une très grande portée mais présente plus de latence."
+            },
+            {
+                question: "Quel est le rôle d'un serveur dans un réseau ?",
+                answers: [
+                    "Relier les ordinateurs entre eux",
+                    "Stocker, gérer et partager des données",
+                    "Distribuer la connexion Internet",
+                    "Convertir les signaux numériques"
+                ],
+                correct: 1,
+                explanation: "Un serveur stocke, gère et partage des données sur le réseau."
+            },
+            {
+                question: "Quelle technologie est idéale pour connecter des périphériques proches ?",
+                answers: [
+                    "Satellite",
+                    "Fibre optique",
+                    "Bluetooth",
+                    "Câble Ethernet"
+                ],
+                correct: 2,
+                explanation: "Le Bluetooth est conçu pour les connexions à courte portée."
+            },
+            {
+                question: "Qu'est-ce qu'Internet ?",
+                answers: [
+                    "Un réseau local limité à un bâtiment",
+                    "Un réseau mondial d'ordinateurs interconnectés",
+                    "Un protocole de communication",
+                    "Un type de serveur"
+                ],
+                correct: 1,
+                explanation: "Internet est un réseau mondial reliant des millions d'ordinateurs."
+            },
+            {
+                question: "Quelle connexion filaire est la plus stable et rapide pour un réseau local ?",
+                answers: [
+                    "Wi-Fi",
+                    "Bluetooth",
+                    "Câble Ethernet",
+                    "Li-Fi"
+                ],
+                correct: 2,
+                explanation: "Le câble Ethernet offre une connexion filaire stable et rapide."
+            },
+            {
+                question: "Quel composant choisit le meilleur chemin pour les données sur Internet ?",
+                answers: [
+                    "Le switch",
+                    "Le routeur",
+                    "Le modem",
+                    "Le serveur"
+                ],
+                correct: 1,
+                explanation: "Les routeurs choisissent le meilleur chemin pour faire circuler les données."
+            },
+            {
+                question: "Un réseau LAN est-il limité à un bâtiment ou un site ?",
+                answers: [
+                    "Vrai",
+                    "Faux"
+                ],
+                correct: 0,
+                explanation: "Vrai. Un réseau LAN est limité à un bâtiment ou un site."
+            },
+            {
+                question: "Le Wi-Fi est-il une connexion filaire ?",
+                answers: [
+                    "Vrai",
+                    "Faux"
+                ],
+                correct: 1,
+                explanation: "Faux. Le Wi-Fi est une connexion sans fil."
+            },
+            {
+                question: "Quel élément attribue une adresse IP à chaque appareil ?",
+                answers: [
+                    "Le serveur DNS",
+                    "Le FAI",
+                    "L'URL",
+                    "Le protocole"
+                ],
+                correct: 1,
+                explanation: "Le FAI attribue une adresse IP à chaque appareil connecté."
+            },
+             {
+                question: "Quel est le rôle du protocole dans la communication réseau ?",
+                answers: [
+                    "Définir la vitesse de connexion",
+                    "Assurer la communication entre ordinateurs",
+                    "Attribuer des adresses IP",
+                    "Convertir des URL en adresses IP"
+                ],
+                correct: 1,
+                explanation: "Les protocoles assurent la communication entre les ordinateurs."
+            },
+            {
+                question: "Qu'est-ce que le routage dans un réseau ?",
+                answers: [
+                    "Le processus de conversion des URL",
+                    "Le processus de distribution des adresses IP",
+                    "Le processus de choix du meilleur chemin pour les données",
+                    "Le processus de sécurisation des données"
+                ],
+                correct: 2,
+                explanation: "Le routage est le processus de choix du meilleur chemin pour les données."
+            },
+            {
+                question: "Quelle est la principale contrainte d'un réseau étendu (WAN) ?",
+                answers: [
+                    "La vitesse de connexion",
+                    "La mobilité des appareils",
+                    "La couverture géographique",
+                    "La sécurité des données"
+                ],
+                correct: 2,
+                explanation: "La principale contrainte d'un WAN est sa couverture géographique étendue."
+            },
+            {
+                question: "Quel est l'usage principal du Bluetooth ?",
+                answers: [
+                    "Connecter un réseau local à Internet",
+                    "Connecter des périphériques proches",
+                    "Transmettre des données à haute vitesse sur de longues distances",
+                    "Assurer la sécurité des données"
+                ],
+                correct: 1,
+                explanation: "Le Bluetooth est utilisé pour connecter des périphériques proches."
+            },
+            {
+                question: "Quel est l'avantage principal de la fibre optique par rapport au câble Ethernet ?",
+                answers: [
+                    "Une plus grande mobilité",
+                    "Une plus grande stabilité",
+                    "Une plus grande vitesse de transmission",
+                    "Un coût plus faible"
+                ],
+                correct: 2,
+                explanation: "La fibre optique offre une plus grande vitesse de transmission."
+            },
+            {
+                question: "Quel est l'inconvénient principal de la connexion satellite ?",
+                answers: [
+                    "Une faible portée",
+                    "Une faible vitesse de transmission",
+                    "Une latence élevée",
+                    "Un coût élevé"
+                ],
+                correct: 2,
+                explanation: "La connexion satellite a une latence élevée."
+            },
+            {
+                question: "Quel est le rôle du fournisseur d'accès Internet (FAI) ?",
+                answers: [
+                    "Attribuer des adresses IP",
+                    "Convertir des URL en adresses IP",
+                    "Relier des réseaux locaux",
+                    "Stocker des données"
+                ],
+                correct: 0,
+                explanation: "Le FAI attribue des adresses IP aux appareils connectés."
+            },
+            {
+                question: "Quelle est la différence principale entre un réseau LAN et un réseau WAN ?",
+                answers: [
+                    "Le type de câble utilisé",
+                    "La portée géographique",
+                    "La vitesse de transmission",
+                    "Le nombre d'appareils connectés"
+                ],
+                correct: 1,
+                explanation: "La différence principale est la portée géographique."
+            },
+            {
+                question: "Quel est le rôle des serveurs DNS dans la navigation Internet ?",
+                answers: [
+                    "Stocker les données des sites web",
+                    "Convertir les URL en adresses IP",
+                    "Attribuer des adresses IP",
+                    "Sécuriser les connexions"
+                ],
+                correct: 1,
+                explanation: "Les serveurs DNS convertissent les URL en adresses IP."
+            },
+            {
+                question: "Quel type de réseau est limité à un seul bâtiment ou site ?",
+                answers: [
+                    "WAN",
+                    "LAN",
+                    "Internet",
+                    "Bluetooth"
+                ],
+                correct: 1,
+                explanation: "Un réseau LAN est limité à un seul bâtiment ou site."
+            },
+            {
+                question: "Quel type de connexion est le plus approprié pour une installation fixe nécessitant une connexion stable et rapide ?",
+                answers: [
+                    "Wi-Fi",
+                    "Bluetooth",
+                    "Câble Ethernet",
+                    "Satellite"
+                ],
+                correct: 2,
+                explanation: "Le câble Ethernet est le plus stable et rapide pour une installation fixe."
+            },
+            {
+                question: "Quel est le principal avantage d'un réseau sans fil comme le Wi-Fi ?",
+                answers: [
+                    "Une plus grande stabilité",
+                    "Une plus grande vitesse",
+                    "Une plus grande mobilité",
+                    "Une plus grande sécurité"
+                ],
+                correct: 2,
+                explanation: "Le Wi-Fi offre une plus grande mobilité."
+            }
+        ];
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let correctAnswers = 0;
+        let incorrectAnswers = 0;
+        let answered = false;
+        let userAnswers = []; // Stocker les réponses de l'élève
+        let currentShuffledAnswers = []; // Stores the shuffled answers for the current question, with their original indices
+
+        /**
+         * Shuffles an array in place using the Fisher-Yates (Knuth) algorithm.
+         * @param {Array} array The array to shuffle.
+         */
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]]; // Swap elements
+            }
+        }
+
+        function startQuiz() {
+            document.getElementById('startScreen').classList.add('hidden');
+            document.getElementById('quizScreen').classList.remove('hidden');
+            currentQuestionIndex = 0;
+            score = 0;
+            correctAnswers = 0;
+            incorrectAnswers = 0;
+            answered = false;
+            userAnswers = []; // Réinitialiser les réponses
+            displayQuestion();
+        }
+
+        function displayQuestion() {
+            answered = false;
+            const question = quizData[currentQuestionIndex];
+
+            document.getElementById('currentQuestion').textContent = currentQuestionIndex + 1;
+            document.getElementById('totalQuestions').textContent = quizData.length;
+            document.getElementById('questionText').textContent = question.question;
+            document.getElementById('feedback').classList.add('hidden');
+            document.getElementById('nextBtn').classList.add('hidden');
+
+            // Update progress bar
+            const progress = ((currentQuestionIndex) / quizData.length) * 100;
+            document.getElementById('progressBar').style.width = progress + '%';
+
+            // Prepare answers for shuffling: map text to an object with original index
+            const answersWithOriginalIndex = question.answers.map((text, originalIndex) => ({ text, originalIndex }));
+
+            // Shuffle the answers
+            shuffleArray(answersWithOriginalIndex);
+            currentShuffledAnswers = answersWithOriginalIndex; // Store for later use in selectAnswer
+
+            // Display answers
+            const answersContainer = document.getElementById('answersContainer');
+            answersContainer.innerHTML = '';
+
+            currentShuffledAnswers.forEach((answerObj, shuffledIndex) => {
+                const button = document.createElement('button');
+                button.className = 'w-full text-left p-4 rounded-lg border-2 border-gray-300 dark:border-gray-600 hover:border-primary hover:bg-gray-100 dark:hover:bg-gray-700 transition-all text-base bg-white dark:bg-gray-800';
+                button.innerHTML = `<span class="font-semibold">${String.fromCharCode(65 + shuffledIndex)}.</span> ${answerObj.text}`;
+                button.onclick = () => selectAnswer(shuffledIndex); // Pass the shuffled index
+                answersContainer.appendChild(button);
+            });
+        }
+
+        function selectAnswer(selectedIndex) {
+            if (answered) return;
+            answered = true;
+
+            const question = quizData[currentQuestionIndex];
+            const buttons = document.getElementById('answersContainer').children;
+            const feedback = document.getElementById('feedback');
+            const feedbackText = document.getElementById('feedbackText');
+            const explanationText = document.getElementById('explanationText');
+
+            // Get the original index of the selected answer
+            const selectedAnswerOriginalIndex = currentShuffledAnswers[selectedIndex].originalIndex;
+            // Get the original index of the correct answer
+            const correctAnswerOriginalIndex = question.correct;
+
+            // Disable all buttons
+            for (let btn of buttons) {
+                btn.classList.add('disabled');
+            }
+
+            // Enregistrer la réponse de l'élève
+            userAnswers.push({
+                questionIndex: currentQuestionIndex,
+                selectedAnswerOriginalIndex: selectedAnswerOriginalIndex,
+                correctAnswerOriginalIndex: correctAnswerOriginalIndex,
+                isCorrect: selectedAnswerOriginalIndex === correctAnswerOriginalIndex
+            });
+
+            if (selectedAnswerOriginalIndex === correctAnswerOriginalIndex) {
+                score++;
+                correctAnswers++;
+                buttons[selectedIndex].classList.add('correct'); // Mark the selected (and correct) button
+                feedbackText.textContent = '✓ Correct !';
+                feedbackText.className = 'font-semibold text-green-600 dark:text-green-400 text-base';
+                feedback.className = 'mb-6 p-4 rounded-lg bg-green-50 dark:bg-green-900/30 border-2 border-green-500';
+            } else {
+                incorrectAnswers++;
+                buttons[selectedIndex].classList.add('incorrect'); // Mark the selected (and incorrect) button
+
+                // Find the button that contains the correct answer (based on its original index)
+                const correctButtonShuffledIndex = currentShuffledAnswers.findIndex(
+                    ans => ans.originalIndex === correctAnswerOriginalIndex
+                );
+                if (correctButtonShuffledIndex !== -1) {
+                    buttons[correctButtonShuffledIndex].classList.add('correct'); // Mark the truly correct button
+                }
+
+                feedbackText.textContent = '✗ Incorrect';
+                feedbackText.className = 'font-semibold text-red-600 dark:text-red-400 text-base';
+                feedback.className = 'mb-6 p-4 rounded-lg bg-red-50 dark:bg-red-900/30 border-2 border-red-500';
+            }
+
+            explanationText.textContent = question.explanation;
+            explanationText.className = 'mt-2 text-sm text-gray-700 dark:text-gray-300';
+            feedback.classList.remove('hidden');
+
+            // Update score display
+            document.getElementById('score').textContent = score;
+
+            // Show next button
+            document.getElementById('nextBtn').classList.remove('hidden');
+        }
+
+        function nextQuestion() {
+            currentQuestionIndex++;
+
+            if (currentQuestionIndex < quizData.length) {
+                displayQuestion();
+            } else {
+                showResults();
+            }
+        }
+
+        function showResults() {
+            document.getElementById('quizScreen').classList.add('hidden');
+            document.getElementById('resultsScreen').classList.remove('hidden');
+
+            const percentage = Math.round((score / quizData.length) * 100);
+
+            document.getElementById('finalScore').textContent = `${score}/${quizData.length}`;
+            document.getElementById('correctCount').textContent = correctAnswers;
+            document.getElementById('incorrectCount').textContent = incorrectAnswers;
+            document.getElementById('percentageScore').textContent = percentage + '%';
+
+            // Result message
+            let message = '';
+            const resultIcon = document.getElementById('resultIcon');
+
+            if (percentage >= 90) {
+                message = 'Excellent ! Vous maîtrisez parfaitement l\'architecture réseau ! 🎉';
+                resultIcon.className = 'w-24 h-24 mx-auto text-green-500';
+            } else if (percentage >= 70) {
+                message = 'Très bien ! Vous avez de bonnes connaissances sur les réseaux. 👍';
+                resultIcon.className = 'w-24 h-24 mx-auto text-blue-500';
+            } else if (percentage >= 50) {
+                message = 'Pas mal ! Continuez à réviser pour améliorer votre score. 📚';
+                resultIcon.className = 'w-24 h-24 mx-auto text-yellow-500';
+            } else {
+                message = 'Continuez vos révisions ! Relisez la fiche et réessayez. 💪';
+                resultIcon.className = 'w-24 h-24 mx-auto text-red-500';
+            }
+
+            document.getElementById('resultMessage').textContent = message;
+
+            // Afficher les erreurs de l'élève
+            displayMistakes();
+        }
+
+        function displayMistakes() {
+            const mistakesSection = document.getElementById('mistakesSection');
+            const mistakes = userAnswers.filter(answer => !answer.isCorrect);
+
+            if (mistakes.length === 0) {
+                mistakesSection.innerHTML = `
+                    <div class="bg-green-50 dark:bg-green-900/30 border-2 border-green-500 rounded-lg p-6">
+                        <h3 class="text-xl font-bold text-green-600 dark:text-green-400 mb-2">🎉 Parfait !</h3>
+                        <p class="text-gray-700 dark:text-gray-300 text-base">Vous n'avez fait aucune erreur ! Félicitations !</p>
+                    </div>
+                `;
+                return;
+            }
+
+            let html = `
+                <div class="bg-white dark:bg-gray-700 rounded-lg p-6 text-left">
+                    <h3 class="text-xl font-bold mb-4 text-red-500">📋 Vos erreurs (${mistakes.length})</h3>
+                    <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">Voici les questions où vous vous êtes trompé(e) :</p>
+                    <div class="space-y-4">
+            `;
+
+            mistakes.forEach((mistake, index) => {
+                const question = quizData[mistake.questionIndex];
+                html += `
+                    <div class="border-l-4 border-red-500 bg-red-50 dark:bg-red-900/20 p-4 rounded">
+                        <p class="font-semibold text-gray-900 dark:text-gray-100 mb-2">
+                            <span class="text-red-500">Question ${mistake.questionIndex + 1}:</span> ${question.question}
+                        </p>
+                        <div class="ml-4 space-y-1 text-sm">
+                            <p class="text-red-600 dark:text-red-400">
+                                ✗ <span class="font-medium">Votre réponse :</span> ${question.answers[mistake.selectedAnswerOriginalIndex]}
+                            </p>
+                            <p class="text-green-600 dark:text-green-400">
+                                ✓ <span class="font-medium">Bonne réponse :</span> ${question.answers[mistake.correctAnswerOriginalIndex]}
+                            </p>
+                            <p class="text-gray-600 dark:text-gray-400 italic mt-2">
+                                💡 ${question.explanation}
+                            </p>
+                        </div>
+                    </div>
+                `;
+            });
+
+            html += `
+                    </div>
+                </div>
+            `;
+
+            mistakesSection.innerHTML = html;
+        }
+
+        function restartQuiz() {
+            document.getElementById('resultsScreen').classList.add('hidden');
+            document.getElementById('startScreen').classList.remove('hidden');
+        }
+
+        // Gestion des touches clavier
+        document.addEventListener('keydown', (event) => {
+            const key = event.key.toLowerCase();
+
+            // Enter pour commencer, suivant, ou recommencer
+            if (key === 'enter') {
+                // Si on est sur l'écran de démarrage
+                if (!document.getElementById('startScreen').classList.contains('hidden')) {
+                    startQuiz();
+                    event.preventDefault();
+                }
+                // Si on est dans le quiz et qu'une réponse a été donnée
+                else if (!document.getElementById('quizScreen').classList.contains('hidden') && answered) {
+                    nextQuestion();
+                    event.preventDefault();
+                }
+                // Si on est sur l'écran de résultats
+                else if (!document.getElementById('resultsScreen').classList.contains('hidden')) {
+                    restartQuiz();
+                    event.preventDefault();
+                }
+            }
+
+            // Touches 1-4 ou A-D pour sélectionner une réponse
+            if (!document.getElementById('quizScreen').classList.contains('hidden') && !answered) {
+                const question = quizData[currentQuestionIndex];
+                let answerIndex = -1; // This will be the shuffled index
+
+                // Touches numériques 1-4
+                if (key >= '1' && key <= '4') {
+                    answerIndex = parseInt(key) - 1;
+                }
+                // Touches A-D
+                else if (key === 'a') answerIndex = 0;
+                else if (key === 'b') answerIndex = 1;
+                else if (key === 'c') answerIndex = 2;
+                else if (key === 'd') answerIndex = 3;
+
+                // Check if the selected index is valid for the current shuffled answers
+                if (answerIndex >= 0 && answerIndex < currentShuffledAnswers.length) {
+                    selectAnswer(answerIndex);
+                    event.preventDefault();
+                

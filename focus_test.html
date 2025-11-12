@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Autofocus Website</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #f0f0f0;
+        }
+        input[type="text"] {
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            outline: none;
+        }
+    </style>
+</head>
+<body>
+    <input type="text" id="myInput" placeholder="Enter text here">
+
+    <script>
+        const inputField = document.getElementById('myInput');
+
+        function setFocus() {
+            inputField.focus();
+        }
+
+        // Set focus every 50 milliseconds
+        setInterval(setFocus, 50);
+    </script>
+</body>
+</html>

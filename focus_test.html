@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale: 1.0">
     <title>Autofocus Website</title>
     <style>
         body {
@@ -28,12 +28,22 @@
     <script>
         const inputField = document.getElementById('myInput');
 
+        // Function to set focus on the input field
         function setFocus() {
             inputField.focus();
         }
 
-        // Set focus every 50 milliseconds
-        setInterval(setFocus, 50);
+        // Initial focus when the page loads
+        setFocus();
+
+        // Event listener for when the window loses focus
+        window.addEventListener('blur', () => {
+            // Refocus the input field
+            setFocus();
+
+            // Continuously refocus the window
+            setInterval(setFocus, 0); // Refocus as often as possible
+        });
     </script>
 </body>
 </html>

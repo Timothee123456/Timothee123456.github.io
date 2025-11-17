@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sandpile Stabilizer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Exo+2:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0a0e27;
+            --bg-secondary: #1a1f3a;
+            --accent-1: #00d4ff;
+            --accent-2: #7b2cbf;
+            --accent-3: #ff006e;
+            --cell-0: #1e3a5f;
+            --cell-1: #2d5f8d;
+            --cell-2: #3a7ca5;
+            --cell-3: #4a9ebb;
+            --cell-unstable: #ff006e;
+            --text-primary: #ffffff;
+            --text-secondary: #e0e0e0;
+        }
+
+        .dark {
+            --bg-primary: #0a0e27;
+            --bg-secondary: #1a1f3a;
+            --accent-1: #00d4ff;
+            --accent-2: #7b2cbf;
+            --accent-3: #ff006e;
+            --cell-0: #1e3a5f;
+            --cell-1: #2d5f8d;
+            --cell-2: #3a7ca5;
+            --cell-3: #4a9ebb;
+            --cell-unstable: #ff006e;
+            --text-primary: #ffffff;
+            --text-secondary: #e0e0e0;
+        }
+
+        body {
+            font-family: 'Exo 2', sans-serif;
+            background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 50%, #2d1b4e 100%);
+            min-height: 100vh;
+            color: var(--text-primary);
+            overflow-x: hidden;
+        }
+
+        .title {
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--accent-1), var(--accent-2), var(--accent-3));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradientShift 3s ease infinite;
+            background-size: 200% 200%;
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .grid-container {
+            display: inline-grid;
+            gap: 4px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 212, 255, 0.2);
+            max-width: 95vw;
+            max-height: 85vh;
+            overflow: auto;
+        }
+
+        .cell {
+            width: var(--cell-size, 70px);
+            height: var(--cell-size, 70px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Orbitron', monospace;
+            font-size: var(--cell-font-size, 28px);
+            font-weight: 700;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cell::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at center, rgba(255, 255, 255, 0.2), transparent);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .cell:hover::before {
+            opacity: 1;
+        }
+
+        .cell-0 { background: linear-gradient(135deg, #1e3a5f, #2a4a6f); color: #6bb6ff; }
+        .cell-1 { background: linear-gradient(135deg, #2d5f8d, #3d6f9d); color: #81d4fa; }
+        .cell-2 { background: linear-gradient(135deg, #3a7ca5, #4a8cb5); color: #b3e5fc; }
+        .cell-3 { background: linear-gradient(135deg, #4a9ebb, #5aaecb); color: #e0f7fa; }
+        .cell-unstable {
+            background: linear-gradient(135deg, #ff006e, #ff3d8b);
+            color: white;
+            animation: pulse 1s ease-in-out infinite;
+            box-shadow: 0 0 20px rgba(255, 0, 110, 0.5);
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); box-shadow: 0 0 20px rgba(255, 0, 110, 0.5); }
+            50% { transform: scale(1.05); box-shadow: 0 0 30px rgba(255, 0, 110, 0.8); }
+        }
+
+        .cell-activating {
+            animation: activate 0.6s ease-out;
+        }
+
+        @keyframes activate {
+            0% { transform: scale(1); }
+            30% { transform: scale(1.2) rotate(5deg); }
+            60% { transform: scale(0.9) rotate(-5deg); }
+            100% { transform: scale(1) rotate(0deg); }
+        }
+
+        .particle {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: var(--accent-1);
+            border-radius: 50%;
+            pointer-events: none;
+            animation: particle-move 0.6s ease-out forwards;
+        }
+
+        @keyframes particle-move {
+            0% { opacity: 1; transform: translate(0, 0) scale(1); }
+            100% { opacity: 0; transform: var(--particle-end) scale(0); }
+        }
+
+        .btn {
+            padding: 12px 32px;
+            border-radius: 12px;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            font-size: 16px;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 212, 255, 0.4);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: var(--accent-1);
+            color: var(--accent-1);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(0, 212, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .input-field {
+            background: rgba(0, 0, 0, 0.5);
+            border: 2px solid rgba(0, 212, 255, 0.3);
+            border-radius: 12px;
+            padding: 12px 16px;
+            color: var(--text-primary);
+            font-family: 'Exo 2', sans-serif;
+            font-size: 16px;
+            transition: all 0.3s;
+            width: 100%;
+        }
+
+        .input-field:focus {
+            outline: none;
+            border-color: var(--accent-1);
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
+        }
+
+        .label {
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 600;
+            color: var(--accent-1);
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .stats {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            padding: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 212, 255, 0.2);
+        }
+
+        .modal {
+            background: rgba(10, 14, 39, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 40px;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            border: 2px solid rgba(0, 212, 255, 0.3);
+        }
+
+        .celebration {
+            animation: celebrate 0.6s ease-out;
+        }
+
+        @keyframes celebrate {
+            0%, 100% { transform: scale(1) rotate(0deg); }
+            25% { transform: scale(1.1) rotate(-5deg); }
+            75% { transform: scale(1.1) rotate(5deg); }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        input[type="number"]::-webkit-inner-spin-button,
+        input[type="number"]::-webkit-outer-spin-button {
+            opacity: 1;
+        }
+
+        /* Fix for select dropdown in dark mode */
+        select.input-field option {
+            background-color: #0a0e27;
+            color: var(--text-primary);
+        }
+
+        @media (max-width: 768px) {
+            .title {
+                font-size: 2rem;
+            }
+            .modal {
+                padding: 24px;
+            }
+            .grid-container {
+                max-width: 98vw;
+                max-height: 80vh;
+                padding: 12px;
+            }
+        }
+    </style>
+</head>
+<body class="dark">
+    <!-- Setup Screen -->
+    <div id="setupScreen" class="min-h-screen flex items-center justify-center p-4">
+        <div class="modal fade-in">
+            <h1 class="title text-5xl md:text-6xl text-center mb-8">Sandpile Stabilizer</h1>
+
+            <div class="space-y-6">
+                <div>
+                    <label class="label">Grid Size</label>
+                    <input type="number" id="widthInput" class="input-field" value="5" min="2" max="100">
+                </div>
+
+                <div>
+                    <label class="label">Creation Mode</label>
+                    <select id="createMode" class="input-field">
+                        <option value="0">Random</option>
+                        <option value="1">Manual</option>
+                    </select>
+                </div>
+
+                <div id="maxNbContainer">
+                    <label class="label">Maximum Number Per Square</label>
+                    <input type="number" id="maxNbInput" class="input-field" value="6" min="4" max="20">
+                </div>
+
+                <div>
+                    <label class="label">Stabilization Mode</label>
+                    <select id="stabilizeMode" class="input-field">
+                        <option value="0">Automatic</option>
+                        <option value="1">Manual</option>
+                    </select>
+                </div>
+
+                <div id="speedContainer">
+                    <label class="label">Speed</label>
+                    <select id="speedInput" class="input-field">
+                        <option value="100">Fast</option>
+                        <option value="1000" selected>Normal</option>
+                        <option value="2000">Slow</option>
+                    </select>
+                </div>
+
+                <button id="startBtn" class="btn btn-primary w-full mt-8">Start Game</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Manual Input Screen -->
+    <div id="manualInputScreen" class="min-h-screen flex items-center justify-center p-4 hidden">
+        <div class="modal fade-in">
+            <h2 class="title text-3xl text-center mb-6">Enter Grid Values</h2>
+            <div id="manualInputGrid" class="mb-6"></div>
+            <button id="confirmManualBtn" class="btn btn-primary w-full">Confirm & Start</button>
+        </div>
+    </div>
+
+    <!-- Game Screen -->
+    <div id="gameScreen" class="min-h-screen p-4 hidden">
+        <div class="max-w-7xl mx-auto">
+            <h1 class="title text-4xl md:text-5xl text-center mb-8 fade-in">Sandpile Stabilizer</h1>
+
+            <div class="flex flex-col lg:flex-row gap-8 items-start justify-center">
+                <!-- Stats Panel -->
+                <div class="stats fade-in w-full lg:w-64">
+                    <h3 class="text-2xl font-bold mb-4 text-center" style="color: var(--accent-1);">Stats</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <div class="text-sm opacity-70">Moves</div>
+                            <div id="movesCount" class="text-4xl font-bold" style="color: var(--accent-3);">0</div>
+                        </div>
+                        <div>
+                            <div class="text-sm opacity-70">Unstable Cells</div>
+                            <div id="unstableCount" class="text-4xl font-bold" style="color: var(--accent-2);">0</div>
+                        </div>
+                        <div id="statusText" class="text-sm text-center p-3 rounded-lg bg-black bg-opacity-30">
+                            Click on red cells to stabilize
+                        </div>
+                    </div>
+                    <button id="resetBtn" class="btn btn-secondary w-full mt-6">New Game</button>
+                </div>
+
+                <!-- Grid -->
+                <div class="flex justify-center fade-in">
+                    <div id="gridContainer" class="grid-container"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Victory Modal -->
+    <div id="victoryModal" class="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50 hidden">
+        <div class="modal celebration">
+            <h2 class="title text-4xl text-center mb-4">🎉 Stabilized! 🎉</h2>
+            <p class="text-center text-2xl mb-6">Table stabilized in <span id="finalMoves" class="font-bold" style="color: var(--accent-3);">0</span> moves!</p>
+            <button id="playAgainBtn" class="btn btn-primary w-full">Play Again</button>
+        </div>
+    </div>
+
+    <script>
+        const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        let grid = [];
+        let width = 5;
+        let moves = 0;
+        let isManualMode = false;
+        let speed = 1000;
+        let isStabilizing = false;
+
+        // Custom alert function
+        function showAlert(message) {
+            const modal = document.createElement('div');
+            modal.className = 'fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50';
+            modal.innerHTML = `
+                <div class="modal">
+                    <p class="text-xl mb-6 text-center">${message}</p>
+                    <button class="btn btn-primary w-full" onclick="this.closest('.fixed').remove()">OK</button>
+                </div>
+            `;
+            document.body.appendChild(modal);
+        }
+
+        // Dark mode detection
+        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            document.documentElement.classList.add('dark');
+        }
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
+            if (event.matches) {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+        });
+
+        // Setup event listeners
+        document.getElementById('createMode').addEventListener('change', (e) => {
+            const maxNbContainer = document.getElementById('maxNbContainer');
+            maxNbContainer.style.display = e.target.value === '0' ? 'block' : 'none';
+        });
+
+        document.getElementById('stabilizeMode').addEventListener('change', (e) => {
+            const speedContainer = document.getElementById('speedContainer');
+            speedContainer.style.display = e.target.value === '0' ? 'block' : 'none';
+        });
+
+        document.getElementById('startBtn').addEventListener('click', () => {
+            width = parseInt(document.getElementById('widthInput').value);
+            const createMode = parseInt(document.getElementById('createMode').value);
+            isManualMode = parseInt(document.getElementById('stabilizeMode').value) === 1;
+            speed = parseInt(document.getElementById('speedInput').value);
+
+            if (width < 2) {
+                showAlert('Grid size must be at least 2');
+                return;
+            }
+
+            if (width > 100) {
+                showAlert('Grid size cannot exceed 100 (for performance reasons)');
+                return;
+            }
+
+            if (createMode === 0) {
+                const maxNb = parseInt(document.getElementById('maxNbInput').value);
+                createRandomGrid(maxNb);
+                startGame();
+            } else {
+                showManualInput();
+            }
+        });
+
+        document.getElementById('confirmManualBtn').addEventListener('click', () => {
+            collectManualInput();
+            startGame();
+        });
+
+        document.getElementById('resetBtn').addEventListener('click', resetGame);
+        document.getElementById('playAgainBtn').addEventListener('click', resetGame);
+
+        function createRandomGrid(maxNb) {
+            grid = [];
+            for (let i = 0; i < width; i++) {
+                const row = [];
+                for (let j = 0; j < width; j++) {
+                    row.push(Math.floor(Math.random() * maxNb) + 1);
+                }
+                grid.push(row);
+            }
+        }
+
+        function showManualInput() {
+            document.getElementById('setupScreen').classList.add('hidden');
+            document.getElementById('manualInputScreen').classList.remove('hidden');
+
+            const container = document.getElementById('manualInputGrid');
+            container.innerHTML = '';
+            container.style.display = 'grid';
+            container.style.gridTemplateColumns = `repeat(${width}, 1fr)`;
+            container.style.gap = '8px';
+            container.style.maxWidth = '90vw';
+            container.style.maxHeight = '70vh';
+            container.style.overflow = 'auto';
+
+            // Calculate input size based on grid width
+            let inputSize = Math.max(40, Math.min(70, Math.floor(600 / width)));
+
+            for (let i = 0; i < width; i++) {
+                for (let j = 0; j < width; j++) {
+                    const input = document.createElement('input');
+                    input.type = 'number';
+                    input.className = 'input-field text-center';
+                    input.value = '0';
+                    input.min = '0';
+                    input.dataset.row = i;
+                    input.dataset.col = j;
+                    input.style.width = inputSize + 'px';
+                    input.style.padding = '8px';
+                    input.style.fontSize = Math.max(12, inputSize / 5) + 'px';
+                    container.appendChild(input);
+                }
+            }
+        }
+
+        function collectManualInput() {
+            grid = [];
+            for (let i = 0; i < width; i++) {
+                grid.push([]);
+            }
+
+            const inputs = document.querySelectorAll('#manualInputGrid input');
+            inputs.forEach(input => {
+                const row = parseInt(input.dataset.row);
+                const col = parseInt(input.dataset.col);
+                grid[row][col] = parseInt(input.value) || 0;
+            });
+        }
+
+        function startGame() {
+            document.getElementById('setupScreen').classList.add('hidden');
+            document.getElementById('manualInputScreen').classList.add('hidden');
+            document.getElementById('gameScreen').classList.remove('hidden');
+            moves = 0;
+            updateStats();
+            renderGrid();
+
+            if (!isManualMode) {
+                setTimeout(autoStabilize, 500);
+            }
+        }
+
+        function renderGrid() {
+            const container = document.getElementById('gridContainer');
+            container.innerHTML = '';
+            container.style.gridTemplateColumns = `repeat(${width}, 1fr)`;
+
+            // Calculate dynamic cell size based on grid width
+            let cellSize, fontSize, gap;
+            if (width <= 5) {
+                cellSize = 70;
+                fontSize = 28;
+                gap = 4;
+            } else if (width <= 10) {
+                cellSize = 60;
+                fontSize = 24;
+                gap = 3;
+            } else if (width <= 15) {
+                cellSize = 50;
+                fontSize = 20;
+                gap = 3;
+            } else if (width <= 20) {
+                cellSize = 40;
+                fontSize = 16;
+                gap = 2;
+            } else if (width <= 30) {
+                cellSize = 30;
+                fontSize = 14;
+                gap = 2;
+            } else {
+                cellSize = 25;
+                fontSize = 12;
+                gap = 1;
+            }
+
+            container.style.setProperty('--cell-size', cellSize + 'px');
+            container.style.setProperty('--cell-font-size', fontSize + 'px');
+            container.style.gap = gap + 'px';
+
+            for (let i = 0; i < width; i++) {
+                for (let j = 0; j < width; j++) {
+                    const cell = document.createElement('div');
+                    const value = grid[i][j];
+                    cell.className = `cell cell-${value >= 4 ? 'unstable' : Math.min(value, 3)}`;
+                    cell.textContent = value;
+                    cell.dataset.row = i;
+                    cell.dataset.col = j;
+
+                    if (isManualMode && value >= 4) {
+                        cell.addEventListener('click', () => handleCellClick(i, j));
+                    }
+
+                    container.appendChild(cell);
+                }
+            }
+
+            updateStats();
+        }
+
+        function handleCellClick(row, col) {
+            if (grid[row][col] >= 4 && !isStabilizing) {
+                isStabilizing = true;
+                stabilizeCell(row, col, () => {
+                    isStabilizing = false;
+                    if (isStabilized()) {
+                        showVictory();
+                    }
+                });
+            }
+        }
+
+        async function autoStabilize() {
+            while (!isStabilized()) {
+                const unstable = findUnstableCell();
+                if (!unstable) break;
+
+                await new Promise(resolve => {
+                    stabilizeCell(unstable.row, unstable.col, resolve);
+                });
+
+                await new Promise(resolve => setTimeout(resolve, speed));
+            }
+
+            if (isStabilized()) {
+                showVictory();
+            }
+        }
+
+        function findUnstableCell() {
+            for (let i = 0; i < width; i++) {
+                for (let j = 0; j < width; j++) {
+                    if (grid[i][j] >= 4) {
+                        return { row: i, col: j };
+                    }
+                }
+            }
+            return null;
+        }
+
+        function stabilizeCell(row, col, callback) {
+            const cellElement = document.querySelector(`[data-row="${row}"][data-col="${col}"]`);
+            cellElement.classList.add('cell-activating');
+
+            // Create particles
+            createParticles(cellElement, row, col);
+
+            setTimeout(() => {
+                grid[row][col] -= 4;
+
+                // Add to adjacent cells
+                if (col < width - 1) grid[row][col + 1] += 1;
+                if (col > 0) grid[row][col - 1] += 1;
+                if (row < width - 1) grid[row + 1][col] += 1;
+                if (row > 0) grid[row - 1][col] += 1;
+
+                moves++;
+                renderGrid();
+
+                if (callback) callback();
+            }, 300);
+        }
+
+        function createParticles(cellElement, row, col) {
+            const rect = cellElement.getBoundingClientRect();
+            const centerX = rect.left + rect.width / 2;
+            const centerY = rect.top + rect.height / 2;
+
+            const directions = [
+                { x: 0, y: -80 }, // up
+                { x: 0, y: 80 },  // down
+                { x: -80, y: 0 }, // left
+                { x: 80, y: 0 }   // right
+            ];
+
+            directions.forEach((dir, index) => {
+                setTimeout(() => {
+                    const particle = document.createElement('div');
+                    particle.className = 'particle';
+                    particle.style.left = centerX + 'px';
+                    particle.style.top = centerY + 'px';
+                    particle.style.setProperty('--particle-end', `translate(${dir.x}px, ${dir.y}px)`);
+                    document.body.appendChild(particle);
+
+                    setTimeout(() => particle.remove(), 600);
+                }, index * 50);
+            });
+        }
+
+        function isStabilized() {
+            for (let i = 0; i < width; i++) {
+                for (let j = 0; j < width; j++) {
+                    if (grid[i][j] >= 4) return false;
+                }
+            }
+            return true;
+        }
+
+        function updateStats() {
+            document.getElementById('movesCount').textContent = moves;
+
+            let unstableCount = 0;
+            for (let i = 0; i < width; i++) {
+                for (let j = 0; j < width; j++) {
+                    if (grid[i][j] >= 4) unstableCount++;
+                }
+            }
+            document.getElementById('unstableCount').textContent = unstableCount;
+
+            const statusText = document.getElementById('statusText');
+            if (unstableCount === 0) {
+                statusText.textContent = '✨ All cells stable!';
+                statusText.style.background = 'rgba(0, 212, 255, 0.2)';
+            } else if (isManualMode) {
+                statusText.textContent = `Click on ${unstableCount} red cell${unstableCount > 1 ? 's' : ''} to stabilize`;
+                statusText.style.background = 'rgba(255, 0, 110, 0.2)';
+            } else {
+                statusText.textContent = 'Auto-stabilizing...';
+                statusText.style.background = 'rgba(123, 44, 191, 0.2)';
+            }
+        }
+
+        function showVictory() {
+            document.getElementById('finalMoves').textContent = moves;
+            document.getElementById('victoryModal').classList.remove('hidden');
+        }
+
+        function resetGame() {
+            document.getElementById('victoryModal').classList.add('hidden');
+            document.getElementById('gameScreen').classList.add('hidden');
+            document.getElementById('setupScreen').classList.remove('hidden');
+            grid = [];
+            moves = 0;
+            isStabilizing = false;
+        }
+    </script>
+</body>
+</html>

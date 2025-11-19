@@ -12,10 +12,10 @@
   margin: 0;
   padding: 20px;
   text-shadow: -2px -2px 2px #000, 2px 2px 2px #fff;
-  animation: clignotementFond 0.5s steps(2, start) infinite,
-  clignotementTexte 0.7s steps(2, start) infinite,
-  vibrationGlobale 0.2s linear infinite,
-  echangeCouleurs 1s steps(2, start) infinite;
+  animation: clignotementFond 0.2s steps(2, start) infinite, /* Increased speed */
+  clignotementTexte 0.3s steps(2, start) infinite, /* Increased speed */
+  vibrationGlobale 0.1s linear infinite, /* Increased speed */
+  echangeCouleurs 0.2s steps(2, start) infinite; /* Increased speed */
   background-color: #FF1493; /* Initial background color */
   color: #ADFF2F; /* Initial text color */
   }
@@ -28,7 +28,7 @@
   margin-bottom: 30px;
   text-align: center;
   letter-spacing: 3px;
-  animation: clignotementTitre 0.6s steps(2, start) infinite;
+  animation: clignotementTitre 0.3s steps(2, start) infinite; /* Increased speed */
   color: #FFFF00; /* Initial heading color */
   }
  
@@ -38,7 +38,7 @@
   line-height: 1.8;
   text-indent: 30px;
   word-spacing: 5px;
-  animation: clignotementParagraphe 0.8s steps(2, start) infinite;
+  animation: clignotementParagraphe 0.4s steps(2, start) infinite; /* Increased speed */
   }
  
 
@@ -62,8 +62,8 @@
   img {
   border: 8px ridge #DC143C;
   margin: 20px;
-  animation: vibrer 0.5s linear infinite,
-  clignotementImage 0.9s steps(2, start) infinite;
+  animation: vibrer 0.25s linear infinite, /* Increased speed */
+  clignotementImage 0.45s steps(2, start) infinite; /* Increased speed */
   width: 200px;
   height: auto;
   box-shadow: 10px 10px 5px #888888;
@@ -81,7 +81,7 @@
   margin-bottom: 15px;
   padding: 10px;
   border-left: 10px solid #FF4500;
-  animation: clignotementListe 1.0s steps(2, start) infinite;
+  animation: clignotementListe 0.5s steps(2, start) infinite; /* Increased speed */
   background-color: rgba(255, 255, 0, 0.3); /* Initial list item background color */
   }
  
@@ -90,7 +90,7 @@
   font-weight: bolder;
   text-shadow: -1px -1px 0 #000, 1px 1px 0 #fff;
   font-style: italic;
-  animation: clignotementImportant 1.1s steps(2, start) infinite;
+  animation: clignotementImportant 0.55s steps(2, start) infinite; /* Increased speed */
   color: #BA55D3; /* Initial important text color */
   }
  
@@ -148,10 +148,10 @@
  
 
   @keyframes vibrationGlobale {
-  0% { transform: translate(1px, 1px) rotate(0.5deg); }
-  25% { transform: translate(-1px, -1px) rotate(-0.5deg); }
-  50% { transform: translate(1px, -1px) rotate(-0.5deg); }
-  75% { transform: translate(-1px, 1px) rotate(0.5deg); }
+  0% { transform: translate(2px, 2px) rotate(1deg); } /* Increased intensity */
+  25% { transform: translate(-2px, -2px) rotate(-1deg); } /* Increased intensity */
+  50% { transform: translate(2px, -2px) rotate(-1deg); } /* Increased intensity */
+  75% { transform: translate(-2px, 2px) rotate(1deg); } /* Increased intensity */
   100% { transform: translate(0, 0) rotate(0deg); }
   }
  

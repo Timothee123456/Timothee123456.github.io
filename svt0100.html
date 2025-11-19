@@ -1,61 +1,86 @@
 <!DOCTYPE html>
- <html lang="en">
+ <html lang="fr">
  <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>The Worst Website Ever</title>
+  <title>Le Site Web le Plus Horrible... Mais Éducatif!</title>
   <style>
   body {
-  background-color: yellow;
-  color: cyan;
-  font-family: 'Comic Sans MS', cursive, sans-serif;
-  font-size: 20px;
+  background-color: #FF00FF; /* Magenta, parce que pourquoi pas? */
+  color: #00FF00; /* Vert fluo, pour la lisibilité (ironique) */
+  font-family: 'Comic Sans MS', cursive, sans-serif; /* L'horreur incarnée */
+  font-size: 22px;
   text-align: center;
-  animation: flash 1s linear infinite;
+  animation: clignoter 2s linear infinite; /* Pour faire saigner les yeux */
+  margin: 0;
+  padding: 0;
   }
  
 
   h1 {
   font-size: 4em;
-  text-shadow: 2px 2px 5px red;
-  margin-top: 20px;
+  text-shadow: 3px 3px 5px #0000FF; /* Ombre bleue criarde */
+  margin-top: 10px;
+  margin-bottom: 20px;
   }
  
 
   p {
-  margin-bottom: 30px;
+  margin-bottom: 25px;
+  line-height: 1.6; /* Espacement illogique */
   }
  
 
   a {
-  color: magenta;
-  text-decoration: none;
+  color: #FFFF00; /* Jaune criard */
+  text-decoration: none; /* Parce que les liens soulignés, c'est trop conventionnel */
   font-weight: bold;
   }
  
 
   a:hover {
-  text-decoration: underline;
-  color: black;
-  background-color: lime;
+  color: #000000; /* Noir soudain */
+  background-color: #FFC0CB; /* Rose bonbon */
+  text-decoration: overline; /* Soulignement au-dessus, la classe! */
   }
  
 
   img {
-  border: 5px dashed purple;
-  margin: 20px;
-  animation: rotate 2s linear infinite;
+  border: 5px dotted #FFA500; /* Orange pointillé, l'élégance à l'état pur */
+  margin: 15px;
+  animation: rotation 4s linear infinite; /* Rotation lente et hypnotique */
+  width: 150px; /* Taille arbitraire */
+  height: auto;
   }
  
 
-  @keyframes flash {
-  0% { background-color: yellow; color: cyan; }
-  50% { background-color: red; color: blue; }
-  100% { background-color: yellow; color: cyan; }
+  ul {
+  list-style-type: square; /* Puces carrées, évidemment */
+  margin-left: 40px;
+  text-align: left;
   }
  
 
-  @keyframes rotate {
+  li {
+  margin-bottom: 10px;
+  }
+ 
+
+  .important {
+  color: #FF0000; /* Rouge vif pour les points importants */
+  font-weight: bolder;
+  text-shadow: 1px 1px 2px #FFFFFF; /* Ombre blanche pour faire ressortir */
+  }
+ 
+
+  @keyframes clignoter {
+  0% { background-color: #FF00FF; color: #00FF00; }
+  50% { background-color: #00FF00; color: #FF00FF; }
+  100% { background-color: #FF00FF; color: #00FF00; }
+  }
+ 
+
+  @keyframes rotation {
   from {
   transform: rotate(0deg);
   }
@@ -66,11 +91,35 @@
   </style>
  </head>
  <body>
-  <h1>Welcome to the Most Awful Website!</h1>
-  <p>Prepare to have your eyes assaulted by terrible design choices.</p>
-  <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/47/PNG_transparency_demonstration.png/640px-PNG_transparency_demonstration.png" alt="Rotating Image" width="200">
-  <p>
-  <a href="https://www.example.com">Click here for more disappointment!</a>
-  </p>
+  <h1>Bienvenue dans le Cours de Science le Plus... Spécial!</h1>
+  <p>Préparez-vous à un voyage scientifique... mémorable.  Ce site est conçu pour être inoubliable, et pas forcément pour les bonnes raisons.  Mais au moins, vous apprendrez quelque chose (peut-être).</p>
+ 
+
+  <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/ff/Einstein_1921_by_F_Schmutzer_-_restoration.jpg/440px-Einstein_1921_by_F_Schmutzer_-_restoration.jpg" alt="Einstein qui tourne" width="150">
+ 
+
+  <h2>Leçon 1: La Photosynthèse (Version Simplifiée... Vraiment Simplifiée)</h2>
+  <p>La photosynthèse, c'est quand les plantes utilisent la lumière du soleil pour faire de la nourriture.  Imaginez que le soleil est un chef cuisinier et les plantes sont des petits gourmands.  Ils utilisent l'eau et le gaz carbonique (le truc que vous expirez) pour créer du sucre et de l'oxygène (le truc que vous respirez).  C'est magique!</p>
+ 
+
+  <p class="important">Point Important: Sans photosynthèse, pas de plantes, pas d'oxygène, pas de vous!  Alors, soyez reconnaissants envers vos amis les plantes.</p>
+ 
+
+  <h2>Leçon 2: Les États de la Matière (Avec des Couleurs!)</h2>
+  <p>La matière peut exister sous trois formes principales: solide, liquide et gazeux.  Pensez à la glace (solide), l'eau (liquide) et la vapeur (gazeux).  C'est comme un transformateur!  La chaleur peut changer l'état de la matière.  Par exemple, si vous chauffez de la glace, elle devient de l'eau.  Si vous chauffez l'eau, elle devient de la vapeur.</p>
+ 
+
+  <ul>
+  <li><span class="important">Solide:</span> Dur et a une forme définie.</li>
+  <li><span class="important">Liquide:</span> Prend la forme de son récipient.</li>
+  <li><span class="important">Gazeux:</span> Se répand partout!</li>
+  </ul>
+ 
+
+  <h2>Leçon 3: La Gravité (Pourquoi on Ne Flotte Pas)</h2>
+  <p>La gravité, c'est une force invisible qui nous attire vers le sol.  C'est pourquoi vous ne flottez pas dans l'espace comme un astronaute (à moins que vous soyez un astronaute, bien sûr).  La gravité est plus forte sur les objets plus gros.  C'est pourquoi la Terre a plus de gravité que votre chat.</p>
+ 
+
+  <p>Pour plus d'informations (si vous osez), <a href="https://www.example.com">cliquez ici</a>!</p>
  </body>
  </html>

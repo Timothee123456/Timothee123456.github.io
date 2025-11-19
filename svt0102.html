@@ -6,68 +6,72 @@
   <title>Le Site Web le Plus Horrible... Mais Éducatif! (Version Ultime)</title>
   <style>
   body {
-  background-color: #FF1493; /* Rose vif, parce que pourquoi pas? */
-  color: #ADFF2F; /* Vert chartreuse, pour une lisibilité défiante */
-  font-family: 'Impact', sans-serif; /* Police à l'impact visuel garanti */
+  font-family: 'Impact', sans-serif;
   font-size: 26px;
-  text-align: left; /* Aligné à gauche, pour déstabiliser */
-  animation: clignotementFond 0.5s steps(2, start) infinite, clignotementTexte 0.7s steps(2, start) infinite; /* Clignotement hypnotique */
+  text-align: left;
   margin: 0;
   padding: 20px;
-  text-shadow: -2px -2px 2px #000, 2px 2px 2px #fff; /* Ombre double face */
+  text-shadow: -2px -2px 2px #000, 2px 2px 2px #fff;
+  animation: clignotementFond 0.5s steps(2, start) infinite,
+  clignotementTexte 0.7s steps(2, start) infinite,
+  vibrationGlobale 0.2s linear infinite,
+  echangeCouleurs 1s steps(2, start) infinite;
+  background-color: #FF1493; /* Initial background color */
+  color: #ADFF2F; /* Initial text color */
   }
  
 
   h1 {
   font-size: 5em;
-  color: #FFFF00; /* Jaune criard */
-  text-shadow: 5px 5px 8px #8B008B; /* Ombre violet foncé */
+  text-shadow: 5px 5px 8px #8B008B;
   margin-top: 0;
   margin-bottom: 30px;
-  text-align: center; /* Centré, mais ça ne sauve rien */
-  letter-spacing: 3px; /* Espacement des lettres exagéré */
+  text-align: center;
+  letter-spacing: 3px;
   animation: clignotementTitre 0.6s steps(2, start) infinite;
+  color: #FFFF00; /* Initial heading color */
   }
  
 
   p {
   margin-bottom: 30px;
-  line-height: 1.8; /* Espacement illogique */
-  text-indent: 30px; /* Retrait de première ligne */
-  word-spacing: 5px; /* Espacement des mots excessif */
+  line-height: 1.8;
+  text-indent: 30px;
+  word-spacing: 5px;
   animation: clignotementParagraphe 0.8s steps(2, start) infinite;
   }
  
 
   a {
-  color: #00BFFF; /* Bleu turquoise */
-  text-decoration: blink; /* Clignotement insupportable */
+  text-decoration: blink;
   font-weight: bolder;
-  background-color: #FF69B4; /* Rose vif en arrière-plan */
   padding: 5px 10px;
-  border: 3px dashed #000080; /* Bordure pointillée bleu marine */
+  border: 3px dashed #000080;
+  color: #00BFFF; /* Initial link color */
+  background-color: #FF69B4; /* Initial link background color */
   }
  
 
   a:hover {
-  color: #FFFFFF; /* Blanc immaculé */
-  background-color: #800080; /* Violet foncé */
-  text-decoration: underline wavy #A52A2A; /* Soulignement ondulé marron */
+  color: #FFFFFF;
+  background-color: #800080;
+  text-decoration: underline wavy #A52A2A;
   }
  
 
   img {
-  border: 8px ridge #DC143C; /* Bordure en crête rouge cramoisi */
+  border: 8px ridge #DC143C;
   margin: 20px;
-  animation: vibrer 0.5s linear infinite, clignotementImage 0.9s steps(2, start) infinite; /* Vibration et clignotement */
-  width: 200px; /* Taille arbitraire */
+  animation: vibrer 0.5s linear infinite,
+  clignotementImage 0.9s steps(2, start) infinite;
+  width: 200px;
   height: auto;
-  box-shadow: 10px 10px 5px #888888; /* Ombre portée */
+  box-shadow: 10px 10px 5px #888888;
   }
  
 
   ul {
-  list-style-type: none; /* Suppression des puces */
+  list-style-type: none;
   margin-left: 50px;
   padding-left: 0;
   }
@@ -76,36 +80,37 @@
   li {
   margin-bottom: 15px;
   padding: 10px;
-  background-color: rgba(255, 255, 0, 0.3); /* Jaune transparent */
-  border-left: 10px solid #FF4500; /* Bordure gauche orange */
+  border-left: 10px solid #FF4500;
   animation: clignotementListe 1.0s steps(2, start) infinite;
+  background-color: rgba(255, 255, 0, 0.3); /* Initial list item background color */
   }
  
 
   .important {
-  color: #BA55D3; /* Orchidée foncé */
   font-weight: bolder;
-  text-shadow: -1px -1px 0 #000, 1px 1px 0 #fff; /* Ombre contrastée */
-  font-style: italic; /* Italique */
+  text-shadow: -1px -1px 0 #000, 1px 1px 0 #fff;
+  font-style: italic;
   animation: clignotementImportant 1.1s steps(2, start) infinite;
+  color: #BA55D3; /* Initial important text color */
   }
  
 
+  /* Keyframe Animations */
   @keyframes clignotementFond {
   0% { background-color: #FF1493; }
-  100% { background-color: #FF69B4; } /* Un autre rose pour le clignotement */
+  100% { background-color: #FF69B4; }
   }
  
 
   @keyframes clignotementTexte {
   0% { color: #ADFF2F; }
-  100% { color: #7CFC00; } /* Vert plus foncé pour le clignotement */
+  100% { color: #7CFC00; }
   }
  
 
   @keyframes clignotementTitre {
   0% { color: #FFFF00; }
-  100% { color: #FFD700; } /* Or pour le clignotement */
+  100% { color: #FFD700; }
   }
  
 
@@ -117,9 +122,9 @@
 
   @keyframes vibrer {
   0% { transform: translateX(0); }
-  25% { transform: translateX(5px); }
-  50% { transform: translateX(-5px); }
-  75% { transform: translateX(5px); }
+  25% { transform: translateX(2px); rotate(0.5deg); }
+  50% { transform: translateX(-2px); rotate(-0.5deg); }
+  75% { transform: translateX(2px); rotate(0.5deg); }
   100% { transform: translateX(0); }
   }
  
@@ -132,13 +137,34 @@
 
   @keyframes clignotementListe {
   0% { background-color: rgba(255, 255, 0, 0.3); }
-  100% { background-color: rgba(255, 215, 0, 0.5); } /* Jaune plus foncé */
+  100% { background-color: rgba(255, 215, 0, 0.5); }
   }
  
 
   @keyframes clignotementImportant {
   0% { color: #BA55D3; }
-  100% { color: #9400D3; } /* Violet plus foncé */
+  100% { color: #9400D3; }
+  }
+ 
+
+  @keyframes vibrationGlobale {
+  0% { transform: translate(1px, 1px) rotate(0.5deg); }
+  25% { transform: translate(-1px, -1px) rotate(-0.5deg); }
+  50% { transform: translate(1px, -1px) rotate(-0.5deg); }
+  75% { transform: translate(-1px, 1px) rotate(0.5deg); }
+  100% { transform: translate(0, 0) rotate(0deg); }
+  }
+ 
+
+  @keyframes echangeCouleurs {
+  0% {
+  background-color: #FF1493;
+  color: #ADFF2F;
+  }
+  100% {
+  background-color: #ADFF2F;
+  color: #FF1493;
+  }
   }
   </style>
  </head>

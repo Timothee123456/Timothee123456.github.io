@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Les figures de style | Lelivrescolaire.fr</title>
+    <style>
+        /* Global styles */
+        html, body {
+            margin: 0; 
+            padding: 0; 
+            text-rendering: optimizelegibility;
+            font-smooth: always;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            color: rgba(0,0,0,.8);
+            font-family: LatoWeb, sans-serif;
+            background-color: #f7faff;
+        }
+        
+        a { text-decoration: none; }
+        
+        /* Font definitions */
+        @font-face {
+            font-display: swap;
+            font-family: LatoWeb;
+            src: url("/assets/fonts/Lato-Italic.woff2") format("woff2"), url("/assets/fonts/Lato-Italic.woff") format("woff"), url("/assets/fonts/Lato-Italic.ttf") format("truetype");
+            font-style: italic;
+        }
+
+        @font-face {
+            font-display: swap;
+            font-family: LatoWeb;
+            src: url("/assets/fonts/Lato-Bold.woff2") format("woff2"), url("/assets/fonts/Lato-Bold.woff") format("woff"), url("/assets/fonts/Lato-Bold.ttf") format("truetype");
+            font-weight: 700;
+        }
+
+        @font-face {
+            font-display: swap;
+            font-family: LatoWeb;
+            src: url("/assets/fonts/Lato-Black.woff2") format("woff2"), url("/assets/fonts/Lato-Black.woff") format("woff"), url("/assets/fonts/Lato-Black.ttf") format("truetype");
+            font-weight: 900;
+        }
+
+        /* CSS Variables */
+        :root {
+            --size-index: 1;
+            --kitlineheightratio: 1;
+            --kitletterspacing: 0;
+            --kitfontfamily: LatoWeb, Arial, Helvetica, sans-serif;
+            
+            /* Stamp colors */
+            --stamp-light-blue2-bg: #e6f7ff;
+            --stamp-light-blue2-color: #1890ff;
+            --stamp-light-blue2-border: #91d5ff;
+            
+            --stamp-blue-bg: #EDFBFF;
+            --stamp-blue-color: #007DB6;
+            --stamp-blue-border: #007DB6;
+            
+            /* Text colors */
+            --text-main-color: #002e4d;
+            --white-color: #fff;
+            --gray-90-color: #002438;
+            --gray-5-color: #f7faff;
+            --gray-15-color: #ebeff7;
+            
+            /* Card colors */
+            --primary-10-color: #edfbff;
+        }
+
+        /* Main header styles */
+        .main-header {
+            background-color: var(--primary-10-color);
+            padding: 3rem 2rem;
+            text-align: center;
+            border-bottom: 1px solid var(--gray-15-color);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .stamp {
+            text-align: center;
+            vertical-align: middle;
+            margin: 0 8px 0 0;
+            display: inline-block;
+            background-color: var(--k-backgroundcolor);
+            color: var(--k-color);
+            border: var(--k-border);
+            font-weight: 700;
+        }
+
+        .stamp-blue {
+            --k-backgroundcolor: var(--stamp-blue-bg);
+            --k-color: var(--stamp-blue-color);
+            --k-border: var(--stamp-blue-border);
+            border-radius: calc(18 * var(--size-index, 1) * 1px);
+            min-width: 4px;
+            padding: 8px 16px;
+            font-size: calc(var(--size-index, 1) * 16px);
+            line-height: calc(var(--kitlineheightratio, 1) * 20 / 16);
+            letter-spacing: var(--kitletterspacing, 0);
+        }
+
+        h1 {
+            font-size: calc(var(--size-index, 1) * 42px);
+            line-height: calc(var(--kitlineheightratio, 1) * 48 / 42);
+            letter-spacing: var(--kitletterspacing, 0);
+            margin: 0;
+            color: var(--text-main-color);
+            font-weight: 900;
+        }
+
+        /* Card styles */
+        .card {
+            box-sizing: border-box;
+            width: 100%;
+            color: var(--text-main-color);
+            font-size: calc(var(--size-index, 1) * 16px);
+            line-height: calc(var(--kitlineheightratio, 1) * 20 / 16);
+            letter-spacing: var(--kitletterspacing, 0);
+            border-radius: 8px;
+            flex-direction: column;
+            justify-content: space-between;
+            display: flex;
+            background-color: var(--white-color);
+            box-shadow: 0px 4px 4px rgba(4, 34, 77, 0.12);
+            margin: 2rem auto;
+            max-width: 1200px;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0px 8px 16px rgba(4, 34, 77, 0.15);
+        }
+
+        .card-header {
+            background: inherit;
+            color: inherit;
+            --viewer-titles-color: inherit;
+            --stamp-margin: 0 8px 0 0;
+            --viewer-paragraph-color: var(--white-color);
+            --viewer-titles-margin: 0px;
+            padding: 24px;
+            border-bottom: 1px solid var(--gray-15-color);
+        }
+
+        .card-header h3 {
+            font-size: calc(var(--size-index, 1) * 20px);
+            line-height: calc(var(--kitlineheightratio, 1) * 24 / 20);
+            letter-spacing: var(--kitletterspacing, 0);
+            margin: 0;
+            font-weight: 700;
+            color: var(--text-main-color);
+            page-break-after: avoid;
+            break-after: avoid;
+            overflow-wrap: anywhere;
+            outline: none;
+        }
+
+        .stamp-light-blue {
+            --k-backgroundcolor: var(--stamp-light-blue2-bg);
+            --k-color: var(--stamp-light-blue2-color);
+            --k-border: var(--stamp-light-blue2-border);
+            border-radius: calc(18 * var(--size-index, 1) * 1px);
+            min-width: 4px;
+            padding: 8px 16px;
+            font-size: calc(var(--size-index, 1) * 16px);
+            line-height: calc(var(--kitlineheightratio, 1) * 20 / 16);
+            letter-spacing: var(--kitletterspacing, 0);
+        }
+
+        .card-body {
+            padding: 24px;
+            --viewer-header-padding: 0;
+        }
+
+        /* Table styles - EXACT STYLING */
+        .table-wrapper {
+            overflow-x: auto;
+            margin-bottom: 1.5rem;
+        }
+
+        table {
+            color: var(--text-main-color);
+            text-align: center;
+            border-collapse: collapse;
+            -webkit-hyphens: auto;
+            -moz-hyphens: auto;
+            -ms-hyphens: auto;
+            hyphens: auto;
+            table-layout: auto;
+            border: 1px;
+            width: 100%;
+            font-weight: 400;
+            min-width: 500px;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border: 2px solid rgba(0, 0, 0, .87);
+            display: table-cell;
+            vertical-align: inherit;
+            unicode-bidi: isolate;
+        }
+
+        /* FIXED: Apply light blue background to left column cells */
+        td:first-child {
+            background-color: rgb(237, 251, 255) !important;
+            border-color: rgb(0, 125, 182) !important;
+            color: rgba(0, 0, 0, 0.67) !important;
+            font-weight: bold;
+            width: 25%;
+        }
+
+        td:not(:first-child) {
+            background-color: white;
+        }
+
+        strong {
+            font-weight: bold;
+        }
+
+        i {
+            font-style: italic;
+        }
+
+        .blue-text {
+            color: #007DB6;
+        }
+
+        /* Footer styles */
+        .footer {
+            text-align: center;
+            padding: 2rem;
+            margin-top: 2rem;
+            color: var(--text-main-color);
+            font-size: calc(var(--size-index, 1) * 14px);
+            border-top: 1px solid var(--gray-15-color);
+            background-color: var(--primary-10-color);
+        }
+
+        .footer a {
+            color: #007DB6;
+            font-weight: bold;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .card {
+                margin: 1rem;
+            }
+            
+            .main-header {
+                padding: 2rem 1rem;
+            }
+            
+            h1 {
+                font-size: calc(var(--size-index, 1) * 32px);
+                line-height: calc(var(--kitlineheightratio, 1) * 36 / 32);
+            }
+            
+            th, td {
+                padding: 8px;
+            }
+        }
+
+        /* Container for all cards */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        /* Section title */
+        .section-title {
+            text-align: center;
+            margin: 2rem 0 1rem;
+            color: var(--text-main-color);
+            font-size: calc(var(--size-index, 1) * 20px);
+            line-height: calc(var(--kitlineheightratio, 1) * 24 / 20);
+            border-bottom: 2px solid #007DB6;
+            padding-bottom: 0.5rem;
+            display: inline-block;
+            width: 100%;
+            font-weight: 700;
+        }
+    </style>
+</head>
+<body>
+    <!-- Main Header -->
+    <div class="main-header">
+        <h1>Les figures de style</h1>
+    </div>
+
+    <div class="container">
+        <!-- Card 1: Figures de ressemblance et d'opposition -->
+        <div class="card">
+            <div class="card-header">
+                <h3>
+                    <div class="stamp stamp-light-blue">Les figures de ressemblance et d'opposition</div>
+                </h3>
+            </div>
+            <div class="card-body">
+                <!-- Table 1: Figures de ressemblance -->
+                <div class="table-wrapper">
+                    <table>
+                        <tbody>
+                            <tr>
+                                <td><strong>La comparaison</strong></td>
+                                <td><strong>rapproche</strong> un élément d'un autre à l'aide d'un <strong>outil de comparaison</strong> (<i>comme, tel, ainsi que, plus... que, autant que, semblable à</i>, etc.). <br>
+                                    <span class="blue-text"><i><u>Paul</u> est doux <strong>comme</strong> un <u>agneau</u></i></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>La métaphore</strong></td>
+                                <td><strong>rapproche</strong> un élément d'un autre <strong>directement</strong>, sans outil de comparaison. <span class="blue-text"><i>C'est un agneau !</i></span> Quand la métaphore se développe sur plusieurs lignes ou vers, on dit qu'elle est « <strong>filée</strong> ».</td>
+                            </tr>
+                            <tr>
+                                <td><strong>La personnification</strong></td>
+                                <td><strong>prête</strong> des caractéristiques <strong>humaines</strong> à un élément <strong>inanimé</strong> ou un <strong>animal</strong>.<br> 
+                                    <span class="blue-text"><i>Le crépuscule ami s'endort dans la vallée.</i></span> (A. de Vigny, « <i>La maison du berger</i> »)
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Une allégorie</strong></td>
+                                <td><strong>représente</strong> de manière <strong>concrète</strong> une réalité <strong>abstraite</strong>.<br> 
+                                    <span class="blue-text"><i>Cupidon est une allégorie de l'amour : les yeux bandés représentent l'aveuglement de l'amour, la flèche représente la blessure de l'amour.</i></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Une métonymie</strong></td>
+                                <td><strong>remplace un mot par un autre</strong> selon un lien logique (contenu/contenant ; œuvre/auteur ; partie/tout, matière/objet, etc.).<br> 
+                                    <span class="blue-text"><i>Boire un verre. Croiser le fer.</i></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>La périphrase</strong></td>
+                                <td><strong>remplace</strong> un mot par une <strong>expression de même sens.</strong><br> 
+                                    <span class="blue-text"><i>Il maîtrise parfaitement la langue de Shakespeare.</i></span> (= l'anglais)
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <!-- Table 2: Figures d'opposition -->
+                <div class="table-wrapper">
+                    <table>
+                        <tbody>
+                            <tr>
+                                <td><strong>L'antithèse</strong></td>
+                                <td><strong>rapproche deux éléments opposés</strong> pour souligner un contraste. <br>
+                                    <span class="blue-text"><i>Je vis, je meurs, je me brûle et me noie</i>. </span>(L. Labé)
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Un oxymore</strong></td>
+                                <td><strong>oppose</strong> deux mots <strong>juxtaposés</strong>.<br> 
+                                    <span class="blue-text"><i>Le <strong>soleil</strong> <strong>noir</strong> de la mélancolie</i> </span>(G. de Nerval, « <i>El Desdichado</i> »)
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>L'antiphrase</strong></td>
+                                <td>consiste à <strong>dire le contraire de ce que l'on veut vraiment exprimer</strong> ; elle est souvent ironique.<br> 
+                                    <span class="blue-text"><i>Prends ton temps surtout, hein !</i></span> = dépêche toi !
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 2: Figures d'amplification et d'atténuation -->
+        <div class="card">
+            <div class="card-header">
+                <h3>
+                    <div class="stamp stamp-light-blue">Les figures d'amplification et d'atténuation</div>
+                </h3>
+            </div>
+            <div class="card-body">
+                <div class="table-wrapper">
+                    <table>
+                        <tbody>
+                            <tr>
+                                <td><strong>L'hyperbole</strong></td>
+                                <td><strong>exagère</strong>, amplifie la réalité. <br>
+                                    <span class="blue-text"><i>Je meurs de soif.</i></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>L'accumulation</strong></td>
+                                <td>consiste à <strong>énumérer des éléments</strong> pour donner une impression de grande quantité ou pour insister sur un aspect.<br> 
+                                    <span class="blue-text"><i>Des liquides rouges, jaunes, verts, bruns, de toutes les nuances.</i></span>(G. de Maupassant, <i>Bel-Ami</i>)
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>La gradation</strong></td>
+                                <td>est une <strong>succession d'éléments ordonnés</strong> de manière croissante ou décroissante.<br> 
+                                    <span class="blue-text"><i>Va, cours, vole et nous venge</i></span>. (P. Corneille, <i>Le Cid</i>)
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>L'euphémisme</strong></td>
+                                <td><strong>atténue</strong> un propos désagréable ou choquant. <br>
+                                    <span class="blue-text"><i>Il nous a quittés</i></span>. (= il est mort)
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>La litote</strong></td>
+                                <td>consiste à <strong>dire moins</strong> pour <strong>suggérer plus</strong>.<br>
+                                    <span class="blue-text"><i> Va, je ne te hais point.</i></span> (= je t'aime) (P. Corneille, <i>Le Cid</i>)<br>
+                                    Au contraire de l'euphémisme, la litote n'a pas pour but d'atténuer le propos, mais de lui donner plus de force : on atténue ce qu'on dit pour amplifier ce que l'on veut dire.
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 3: Figures de répétition -->
+        <div class="card">
+            <div class="card-header">
+                <h3>
+                    <div class="stamp stamp-light-blue">Les figures de répétition</div>
+                </h3>
+            </div>
+            <div class="card-body">
+                <div class="table-wrapper">
+                    <table>
+                        <tbody>
+                            <tr>
+                                <td><strong>L'anaphore</strong></td>
+                                <td>est une <strong>répétition en début de phrase, de proposition ou de vers</strong>. Elle permet de mettre en valeur ce qui est répété ou de donner du rythme.<br>
+                                    <span class="blue-text"><i>Toujours aimer, toujours souffrir, toujours mourir.</i></span> (P. Corneille, <i>Suréna</i>)
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>L'assonance</strong></td>
+                                <td>consiste à <strong>répéter un son voyelle</strong> ; il s'agit d'une figure musicale, sonore.<br>
+                                    <span class="blue-text"><i>Tout m'afflige et me nuit et conspire à me nuire.</i></span> (J. Racine, <i>Phèdre</i>)
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>L'allitération</strong></td>
+                                <td>consiste à <strong>répéter un son consonne</strong> ; il s'agit d'une figure musicale, sonore.<br>
+                                    <span class="blue-text"><i>Pour qui Sont Ces Serpents qui Sifflent Sur nos têtes.</i></span> (J. Racine, <i>Andromaque</i>)
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>La paronomase</strong></td>
+                                <td>consiste à <strong>rapprocher des mots qui ont des sonorités identiques ou similaires</strong>. Elle est très utilisée dans le rap et le slam.<br>
+                                    <span class="blue-text"><i>Il pleure dans mon cœur comme il pleut sur la ville.</i></span> (P. Verlaine, <i>Romances sans paroles</i>)
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+  
+    <!-- Footer -->
+    <div class="footer">
+        <p>Source: <a href="https://www.lelivrescolaire.fr/page/16875979" target="_blank">lelivrescolaire.fr</a></p>
+    </div>
+</body>
+</html>

@@ -176,7 +176,7 @@
             --viewer-header-padding: 0;
         }
 
-        /* Table styles - EXACT STYLING */
+        /* Table styles - UPDATED WITH BLUE BORDERS */
         .table-wrapper {
             overflow-x: auto;
             margin-bottom: 1.5rem;
@@ -191,7 +191,7 @@
             -ms-hyphens: auto;
             hyphens: auto;
             table-layout: auto;
-            border: 1px;
+            border: 1px solid #007DB6; /* Added blue border to table */
             width: 100%;
             font-weight: 400;
             min-width: 500px;
@@ -200,7 +200,7 @@
         th, td {
             padding: 10px;
             text-align: left;
-            border: 2px solid rgba(0, 0, 0, .87);
+            border: 2px solid #007DB6; /* Changed to blue border */
             display: table-cell;
             vertical-align: inherit;
             unicode-bidi: isolate;
@@ -209,7 +209,7 @@
         /* FIXED: Apply light blue background to left column cells */
         td:first-child {
             background-color: rgb(237, 251, 255) !important;
-            border-color: rgb(0, 125, 182) !important;
+            border-color: #007DB6 !important; /* Changed to blue border */
             color: rgba(0, 0, 0, 0.67) !important;
             font-weight: bold;
             width: 25%;
@@ -217,6 +217,7 @@
 
         td:not(:first-child) {
             background-color: white;
+            border-color: #007DB6; /* Added blue border to other cells */
         }
 
         strong {

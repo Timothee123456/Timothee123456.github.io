@@ -56,6 +56,14 @@ iframe {
             background-color: #45a049;
         }
 
+        .blue {
+            background-color: #007BFF; /* Blue color */
+        }
+        
+        .blue:hover {
+            background-color: #0056b3; /* Darker blue on hover */
+        }
+
 
         /* Responsive adjustments */
         @media (max-width: 400px) {
@@ -75,16 +83,13 @@ iframe {
 <body>
     <div class="search-container" id="search-container">
         <input  id="search" type="text" placeholder="Search...">
+        <button type="submit" class="blue" onclick="hide_bar()">Hide</button>
         <button type="submit" onclick="navigate()">Search</button>
     </div>
 <iframe id="website-frame" src="https://timothee123456.github.io/main" class="iframe-container"></iframe>
 <script>
         function navigate() {
             let url = document.getElementById("search").value;
-            if (url == "titi") {
-                url = "https://eaglercraft.com/mc/1.8.8/";
-                document.getElementById("search-container").style.display = "none";
-            }
             if (!url.startsWith("http://") && !url.startsWith("https://")) {
                 url = "https://" + url;
             }
@@ -97,5 +102,9 @@ iframe {
                 navigate();
             }
         });
+
+    function hide_bar(){
+      document.getElementById("search-container").style.display = "none";
+    }
     </script>
 </html>

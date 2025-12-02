@@ -1,3 +1,5 @@
+<!DOCTYPE html>
+<html>
 <head>
   <title>Mes Sites</title>
 <style>
@@ -78,8 +80,8 @@ iframe {
 <body>
     <div class="search-container" id="search-container">
         <input  id="search" type="text" placeholder="Search...">
-        <button type="submit" class="blue" onclick="hide_bar()">Hide</button>
-        <button type="submit" onclick="navigate()">Search</button>
+        <button type="button" class="blue" onclick="hide_bar()">Hide</button>
+        <button type="button" onclick="navigate()">Search</button>
     </div>
 <iframe id="website-frame" src="https://timothee123456.github.io/main" class="iframe-container"></iframe>
 <script>
@@ -101,5 +103,26 @@ iframe {
     function hide_bar(){
       document.getElementById("search-container").style.display = "none";
     }
+
+
+    document.addEventListener('keydown', function(event) {
+      if (event.altKey && event.key === 's') {
+        // Prevent the default browser behavior
+        event.preventDefault();
+    
+        // Call your function here
+        show_hide_bar();
+      }
+    });
+  
+    function show_hide_bar(){
+      let container = document.getElementById("search-container")
+      if (container.style.display == "none"){
+        container.style.display = "flex"
+      } else {
+        container.style.display = "none"
+      }
+    }
     </script>
+</body>
 </html>

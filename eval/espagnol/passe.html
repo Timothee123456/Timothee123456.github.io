@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>¡Practica HABER! 🎯</title>
+    <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;700&family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Fredoka', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 25%, #f093fb 50%, #4facfe 75%, #00f2fe 100%);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+            min-height: 100vh;
+            padding: 20px;
+            color: #2d3748;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .container {
+            max-width: 900px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 20px 0;
+        }
+
+        h1 {
+            text-align: center;
+            color: white;
+            font-size: 4rem;
+            margin-bottom: 10px;
+            text-shadow: 4px 4px 8px rgba(0,0,0,0.3);
+            animation: bounce 2s ease infinite;
+            font-family: 'Baloo 2', cursive;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .subtitle {
+            text-align: center;
+            color: white;
+            font-size: 1.5rem;
+            margin-bottom: 40px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .tense-section {
+            background: white;
+            border-radius: 30px;
+            padding: 40px;
+            margin-bottom: 25px;
+            box-shadow: 0 15px 50px rgba(0,0,0,0.3);
+            transform: translateY(0);
+            transition: transform 0.3s ease;
+        }
+
+        .tense-section:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+        }
+
+        .tense-title {
+            font-size: 2.5rem;
+            color: #667eea;
+            margin-bottom: 30px;
+            text-align: center;
+            font-weight: 700;
+            position: relative;
+            padding-bottom: 15px;
+        }
+
+        .tense-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 120px;
+            height: 5px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            border-radius: 3px;
+        }
+
+        .conjugation-grid {
+            display: grid;
+            grid-template-columns: 180px 1fr;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .pronoun {
+            font-weight: 700;
+            font-size: 1.4rem;
+            color: #764ba2;
+            padding: 16px 24px;
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 5px 10px rgba(0,0,0,0.15);
+            transition: transform 0.2s ease;
+        }
+
+        .pronoun:hover {
+            transform: scale(1.05);
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 18px 24px;
+            font-size: 1.3rem;
+            border: 4px solid #e2e8f0;
+            border-radius: 20px;
+            font-family: 'Fredoka', sans-serif;
+            transition: all 0.3s ease;
+            background: #f7fafc;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            transform: scale(1.03);
+            box-shadow: 0 0 0 5px rgba(102, 126, 234, 0.3);
+        }
+
+        input[type="text"]:not(.correct):not(.incorrect):not(.almost-correct):focus {
+            border-color: #667eea;
+            background: white;
+        }
+
+        input.correct {
+            border-color: #48bb78;
+            background: #f0fff4;
+            animation: successPulse 0.5s ease;
+        }
+
+        input.incorrect {
+            border-color: #f56565;
+            background: #fff5f5;
+            animation: shake 0.5s ease;
+        }
+
+        input.almost-correct {
+            border-color: #ed8936;
+            background: #fffaf0;
+            animation: successPulse 0.5s ease;
+        }
+
+        @keyframes successPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        .answer {
+            display: none;
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #48bb78;
+            font-weight: 700;
+            font-size: 1.3rem;
+            background: white;
+            padding: 8px 15px;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+
+        .answer.orange {
+            color: #ed8936;
+        }
+
+        .answer.show {
+            display: block;
+            animation: fadeIn 0.4s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-50%) scale(0.7); }
+            to { opacity: 1; transform: translateY(-50%) scale(1); }
+        }
+
+        .button-container {
+            text-align: center;
+            margin-top: 35px;
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 20px 50px;
+            font-size: 1.5rem;
+            font-weight: 700;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-family: 'Baloo 2', cursive;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.25);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .btn-check {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+        }
+
+        .btn-check:hover {
+            transform: translateY(-5px) scale(1.08);
+            box-shadow: 0 12px 35px rgba(245, 87, 108, 0.5);
+        }
+
+        .btn-reset {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+        }
+
+        .btn-reset:hover {
+            transform: translateY(-5px) scale(1.08);
+            box-shadow: 0 12px 35px rgba(79, 172, 254, 0.5);
+        }
+
+        .btn-check:active, .btn-reset:active {
+            transform: translateY(-2px) scale(1.03);
+        }
+
+        .score {
+            text-align: center;
+            margin-top: 25px;
+            font-size: 1.8rem;
+            color: white;
+            font-weight: 700;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.3);
+            display: none;
+            padding: 20px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+        }
+
+        .score.show {
+            display: block;
+            animation: scaleIn 0.6s ease;
+        }
+
+        @keyframes scaleIn {
+            from { transform: scale(0) rotate(-10deg); opacity: 0; }
+            to { transform: scale(1) rotate(0); opacity: 1; }
+        }
+
+        .emoji {
+            font-size: 2.5rem;
+            display: inline-block;
+            animation: rotate 2s ease infinite;
+        }
+
+        @keyframes rotate {
+            0%, 100% { transform: rotate(-15deg); }
+            50% { transform: rotate(15deg); }
+        }
+
+        .info-text {
+            font-weight: 700;
+            font-size: 1.3rem;
+            color: #667eea;
+            padding: 18px 24px;
+            background: #f0f4ff;
+            border-radius: 20px;
+            border: 3px dashed #667eea;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.8rem;
+            }
+
+            .subtitle {
+                font-size: 1.2rem;
+            }
+
+            .conjugation-grid {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+
+            .tense-section {
+                padding: 25px;
+            }
+
+            button {
+                padding: 16px 35px;
+                font-size: 1.2rem;
+            }
+
+            input[type="text"] {
+                font-size: 1.1rem;
+                padding: 16px 20px;
+            }
+
+            .pronoun {
+                font-size: 1.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Pretérito Perfecto <span class="emoji">✨</span></h1>
+        <p class="subtitle">Révise la conjugaison et les mots de temps 🚀</p>
+
+        <!-- HABER -->
+        <div class="tense-section">
+            <h2 class="tense-title">HABER 🌟</h2>
+            <div class="conjugation-grid">
+                <div class="pronoun">Yo</div>
+                <div class="input-wrapper">
+                    <input type="text" data-answer="he" placeholder="...">
+                    <span class="answer">he</span>
+                </div>
+
+                <div class="pronoun">Tú</div>
+                <div class="input-wrapper">
+                    <input type="text" data-answer="has" placeholder="...">
+                    <span class="answer">has</span>
+                </div>
+
+                <div class="pronoun">Él/Ella</div>
+                <div class="input-wrapper">
+                    <input type="text" data-answer="ha" placeholder="...">
+                    <span class="answer">ha</span>
+                </div>
+
+                <div class="pronoun">Nosotros</div>
+                <div class="input-wrapper">
+                    <input type="text" data-answer="hemos" placeholder="...">
+                    <span class="answer">hemos</span>
+                </div>
+
+                <div class="pronoun">Vosotros</div>
+                <div class="input-wrapper">
+                    <input type="text" data-answer="habéis" placeholder="...">
+                    <span class="answer">habéis</span>
+                </div>
+
+                <div class="pronoun">Ellos/Ellas</div>
+                <div class="input-wrapper">
+                    <input type="text" data-answer="han" placeholder="...">
+                    <span class="answer">han</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mots de temps -->
+        <div class="tense-section">
+            <h2 class="tense-title">Mots de temps ⏰</h2>
+            <div class="conjugation-grid">
+                <div class="pronoun">Aujourd'hui</div>
+                <div class="input-wrapper">
+                    <input type="text" data-answer="hoy" placeholder="...">
+                    <span class="answer">hoy</span>
+                </div>
+
+                <div class="pronoun">Déjà</div>
+                <div class="input-wrapper">
+                    <input type="text" data-answer="ya" placeholder="...">
+                    <span class="answer">ya</span>
+                </div>
+
+                <div class="pronoun">Pas encore / Toujours pas</div>
+                <div class="input-wrapper">
+                    <input type="text" data-answer="todavía no" placeholder="...">
+                    <span class="answer">todavía no</span>
+                </div>
+
+                <div class="pronoun">Je viens de (il y a quelques secondes)</div>
+                <div class="input-wrapper">
+                    <input type="text" data-answer="hace un momento" placeholder="...">
+                    <span class="answer">hace un momento</span>
+                </div>
+
+                <div class="pronoun">Dernièrement</div>
+                <div class="input-wrapper">
+                    <input type="text" data-answer="últimamente" placeholder="...">
+                    <span class="answer">últimamente</span>
+                </div>
+
+                <div class="pronoun">Récemment</div>
+                <div class="input-wrapper">
+                    <input type="text" data-answer="recientemente" placeholder="...">
+                    <span class="answer">recientemente</span>
+                </div>
+
+                <div class="pronoun">Jamais</div>
+                <div class="input-wrapper">
+                    <input type="text" data-answer="nunca" placeholder="...">
+                    <span class="answer">nunca</span>
+                </div>
+
+                <div class="pronoun">As-tu déjà...?</div>
+                <div class="input-wrapper">
+                    <input type="text" data-answer="alguna vez" placeholder="..." style="padding-right: 80px;">
+                    <span class="answer" style="right: 60px;">alguna vez</span>
+                    <span style="position: absolute; right: 20px; top: 50%; transform: translateY(-50%); font-size: 1.3rem; font-weight: 700; color: #764ba2; pointer-events: none;">...?</span>
+                </div>
+
+                <div class="pronoun">Toujours</div>
+                <div class="input-wrapper">
+                    <input type="text" data-answer="siempre" placeholder="...">
+                    <span class="answer">siempre</span>
+                </div>
+
+                <div class="pronoun">Ce/Cette + mot de temps</div>
+                <div class="info-text">este / esta + mot de temps</div>
+            </div>
+        </div>
+
+        <div class="button-container">
+            <button class="btn-check" onclick="checkAnswers()">Corriger 🎯</button>
+            <button class="btn-reset" onclick="resetAll()">Recommencer 🔄</button>
+        </div>
+
+        <div class="score" id="score"></div>
+    </div>
+
+    <script>
+        function normalizeString(str) {
+            return str.toLowerCase().trim().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+        }
+
+        function checkAnswers() {
+            const inputs = document.querySelectorAll('input[type="text"]');
+            let correct = 0;
+            let total = inputs.length;
+
+            inputs.forEach(input => {
+                const userAnswer = input.value.toLowerCase().trim();
+                const correctAnswer = input.dataset.answer.toLowerCase().trim();
+                const userAnswerNoAccent = normalizeString(input.value);
+                const correctAnswerNoAccent = normalizeString(input.dataset.answer);
+                const answerSpan = input.nextElementSibling;
+
+                // 1. Réponse parfaite (avec accents corrects)
+                if (userAnswer === correctAnswer) {
+                    input.classList.remove('incorrect', 'almost-correct');
+                    input.classList.add('correct');
+                    answerSpan.classList.remove('show', 'orange');
+                    correct++;
+                }
+                // 2. Réponse correcte sans accents (orange avec correction)
+                else if (userAnswerNoAccent === correctAnswerNoAccent) {
+                    input.classList.remove('incorrect', 'correct');
+                    input.classList.add('almost-correct');
+                    answerSpan.classList.add('show', 'orange');
+                    correct++; // Compte quand même comme bon
+                }
+                // 3. Réponse incorrecte (rouge avec correction)
+                else {
+                    input.classList.remove('correct', 'almost-correct');
+                    input.classList.add('incorrect');
+                    answerSpan.classList.remove('orange');
+                    answerSpan.classList.add('show');
+                }
+            });
+
+            const percentage = Math.round((correct / total) * 100);
+            const scoreDiv = document.getElementById('score');
+
+            let emoji = '';
+            let message = '';
+
+            if (percentage === 100) {
+                emoji = '🎉🏆🎊';
+                message = '¡PERFECTO! Eres un maestro!';
+            } else if (percentage >= 80) {
+                emoji = '🌟😊✨';
+                message = '¡Muy bien! Casi perfecto!';
+            } else if (percentage >= 60) {
+                emoji = '👍💪🔥';
+                message = '¡Buen trabajo! Sigue así!';
+            } else {
+                emoji = '📚💪🎯';
+                message = '¡Ánimo! Inténtalo de nuevo!';
+            }
+
+            scoreDiv.innerHTML = `<div style="font-size: 3rem; margin-bottom: 10px;">${emoji}</div>${message}<br><span style="font-size: 2.2rem; margin-top: 10px; display: inline-block;">${correct}/${total}</span>`;
+            scoreDiv.classList.add('show');
+        }
+
+        function resetAll() {
+            const inputs = document.querySelectorAll('input[type="text"]');
+            inputs.forEach(input => {
+                input.value = '';
+                input.classList.remove('correct', 'incorrect', 'almost-correct');
+                const answerSpan = input.nextElementSibling;
+                answerSpan.classList.remove('show', 'orange');
+            });
+
+            const scoreDiv = document.getElementById('score');
+            scoreDiv.classList.remove('show');
+
+            // Focus sur le premier input
+            inputs[0].focus();
+        }
+
+        // Support pour la touche Enter
+        document.querySelectorAll('input[type="text"]').forEach((input, index, inputs) => {
+            input.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    if (index < inputs.length - 1) {
+                        inputs[index + 1].focus();
+                    } else {
+                        checkAnswers();
+                    }
+                }
+            });
+        });
+
+        // Focus automatique sur le premier champ
+        window.addEventListener('load', () => {
+            document.querySelector('input[type="text"]').focus();
+        });
+    </script>
+</body>
+</html>

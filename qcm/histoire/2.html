@@ -1,0 +1,885 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz - La République et la Citoyenneté</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#5D5CDE'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .question-enter {
+            animation: slideIn 0.3s ease-out;
+        }
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        .correct {
+            background-color: #10b981 !important;
+            border-color: #10b981 !important;
+            color: white !important;
+        }
+        .incorrect {
+            background-color: #ef4444 !important;
+            border-color: #ef4444 !important;
+            color: white !important;
+        }
+        .disabled {
+            pointer-events: none;
+            opacity: 0.6;
+        }
+    </style>
+</head>
+<body class="bg-white dark:bg-[#181818] text-gray-900 dark:text-gray-100 min-h-screen transition-colors">
+    <div class="container mx-auto px-4 py-8 max-w-3xl">
+        <!-- Header -->
+        <div class="text-center mb-8">
+            <h1 class="text-3xl md:text-4xl font-bold mb-2 text-primary">Quiz - La République et la Citoyenneté</h1>
+            <p class="text-gray-600 dark:text-gray-400 text-base">Testez vos connaissances sur les fondements de la République française et la citoyenneté</p>
+        </div>
+
+        <!-- Start Screen -->
+        <div id="startScreen" class="bg-gray-50 dark:bg-gray-800 rounded-lg shadow-lg p-8 text-center">
+            <div class="mb-6">
+                <svg class="w-20 h-20 mx-auto text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"/>
+                </svg>
+            </div>
+            <h2 class="text-2xl font-bold mb-4">Prêt à commencer ?</h2>
+            <p class="text-gray-600 dark:text-gray-400 mb-6 text-base">Ce quiz contient 18 questions sur la République et la Citoyenneté, incluant des questions à réponse textuelle.</p>
+            <button onclick="startQuiz()" class="bg-primary hover:bg-opacity-90 text-white font-semibold py-3 px-8 rounded-lg transition-all transform hover:scale-105 text-base">
+                Commencer le quiz
+            </button>
+            <div class="mt-6 text-sm text-gray-500 dark:text-gray-400">
+                <p class="mb-2">⌨️ Raccourcis clavier :</p>
+                <p><kbd class="px-2 py-1 bg-gray-200 dark:bg-gray-700 rounded text-xs">Entrée</kbd> pour commencer</p>
+            </div>
+        </div>
+
+        <!-- Quiz Screen -->
+        <div id="quizScreen" class="hidden">
+            <!-- Progress Bar -->
+            <div class="mb-6">
+                <div class="flex justify-between items-center mb-2">
+                    <span class="text-sm text-gray-600 dark:text-gray-400">Question <span id="currentQuestion">1</span> / <span id="totalQuestions">18</span></span>
+                    <span class="text-sm font-semibold text-primary"><span id="score">0</span> points</span>
+                </div>
+                <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2.5">
+                    <div id="progressBar" class="bg-primary h-2.5 rounded-full transition-all duration-300" style="width: 0%"></div>
+                </div>
+            </div>
+
+            <!-- Question Card -->
+            <div class="bg-gray-50 dark:bg-gray-800 rounded-lg shadow-lg p-6 md:p-8 mb-6 question-enter">
+                <h3 id="questionText" class="text-xl md:text-2xl font-bold mb-6 text-gray-900 dark:text-gray-100"></h3>
+                <div id="answersContainer" class="space-y-3"></div>
+            </div>
+
+            <!-- Feedback -->
+            <div id="feedback" class="hidden mb-6 p-4 rounded-lg">
+                <p id="feedbackText" class="font-semibold text-base"></p>
+                <p id="explanationText" class="mt-2 text-sm"></p>
+            </div>
+
+            <!-- Next Button -->
+            <div class="text-center">
+                <button id="nextBtn" onclick="nextQuestion()" class="hidden bg-primary hover:bg-opacity-90 text-white font-semibold py-3 px-8 rounded-lg transition-all text-base">
+                    Question suivante →
+                </button>
+                <div class="mt-4 text-sm text-gray-500 dark:text-gray-400">
+                    <p>⌨️ Raccourcis :
+                        <span id="quizShortcuts">
+                            <kbd class="px-2 py-1 bg-gray-200 dark:bg-gray-700 rounded text-xs">A-D</kbd> ou
+                            <kbd class="px-2 py-1 bg-gray-200 dark:bg-gray-700 rounded text-xs">1-4</kbd> pour répondre •
+                        </span>
+                        <kbd class="px-2 py-1 bg-gray-200 dark:bg-gray-700 rounded text-xs">Entrée</kbd> pour valider/continuer
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Results Screen -->
+        <div id="resultsScreen" class="hidden">
+            <div class="bg-gray-50 dark:bg-gray-800 rounded-lg shadow-lg p-8 text-center">
+                <div class="mb-6">
+                    <svg id="resultIcon" class="w-24 h-24 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                </div>
+                <h2 class="text-3xl font-bold mb-4">Quiz terminé !</h2>
+                <p class="text-xl mb-2">Votre score :</p>
+                <p id="finalScore" class="text-5xl font-bold text-primary mb-6">0/18</p>
+                <p id="resultMessage" class="text-gray-600 dark:text-gray-400 mb-8 text-base"></p>
+
+                <!-- Score Details -->
+                <div class="bg-white dark:bg-gray-700 rounded-lg p-6 mb-6">
+                    <h3 class="font-semibold mb-4 text-lg">Détails</h3>
+                    <div class="grid grid-cols-3 gap-4 text-center">
+                        <div>
+                            <p class="text-2xl font-bold text-green-500" id="correctCount">0</p>
+                            <p class="text-sm text-gray-600 dark:text-gray-400">Correctes</p>
+                        </div>
+                        <div>
+                            <p class="text-2xl font-bold text-red-500" id="incorrectCount">0</p>
+                            <p class="text-sm text-gray-600 dark:text-gray-400">Incorrectes</p>
+                        </div>
+                        <div>
+                            <p class="text-2xl font-bold text-primary" id="percentageScore">0%</p>
+                            <p class="text-sm text-gray-600 dark:text-gray-400">Réussite</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section des erreurs -->
+                <div id="mistakesSection" class="mt-6"></div>
+
+                <button onclick="restartQuiz()" class="bg-primary hover:bg-opacity-90 text-white font-semibold py-3 px-8 rounded-lg transition-all transform hover:scale-105 text-base">
+                    Recommencer le quiz
+                </button>
+                <div class="mt-4 text-sm text-gray-500 dark:text-gray-400">
+                    <p>⌨️ <kbd class="px-2 py-1 bg-gray-200 dark:bg-gray-700 rounded text-xs">Entrée</kbd> pour recommencer</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Dark mode detection
+        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            document.documentElement.classList.add('dark');
+        }
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
+            if (event.matches) {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+        });
+
+        // Quiz data
+        const quizData = [
+  {
+    "question": "Quelle institution internationale est créée au lendemain de la Première Guerre mondiale dans une volonté d'en finir avec la guerre par le droit ?",
+    "type": "multiple-choice",
+    "answers": [
+      "L'Organisation des Nations Unies (ONU)",
+      "Le Fonds Monétaire International (FMI)",
+      "La Société des Nations (SDN)",
+      "La Cour Internationale de Justice"
+    ],
+    "correct": 2,
+    "explanation": "Au lendemain de la Première Guerre mondiale, la Société des Nations (SDN) est créée dans la volonté d'en finir avec la guerre par le droit."
+  },
+  {
+    "question": "Quel événement majeur aux États-Unis en 1929 est identifié comme le début de la crise économique mondiale des années 30 ?",
+    "type": "multiple-choice",
+    "answers": [
+      "L'élection de Franklin D. Roosevelt",
+      "Le Krach Boursier (Jeudi noir)",
+      "La Grande Dépression",
+      "La faillite de la Banque fédérale"
+    ],
+    "correct": 1,
+    "explanation": "Le début des années 30 est marqué par une crise économique mondiale, initiée par le krach boursier, appelé 'Jeudi noir 1929', aux États-Unis."
+  },
+  {
+    "question": "Selon la définition donnée dans les sources, un régime totalitaire est une dictature qui contrôle l'ensemble de la société au moyen d'un parti unique, de la terreur, de la propagande, d'un contrôle de l'économie, d'une idéologie, et de quel autre élément ?",
+    "type": "multiple-choice",
+    "answers": [
+      "L'abolition de la peine de mort",
+      "La fabrique d'un homme nouveau",
+      "Le pluralisme politique",
+      "La séparation des pouvoirs"
+    ],
+    "correct": 1,
+    "explanation": "Un régime totalitaire contrôle l'ensemble de la société, notamment par la 'fabrique d'un homme nouveau'."
+  },
+  {
+    "question": "Lénine, chef du parti communiste de Russie, a mis en place une dictature car le régime bolchevik était menacé par quelle situation ?",
+    "type": "multiple-choice",
+    "answers": [
+      "L'invasion étrangère",
+      "La guerre civile (Blancs contre Rouges)",
+      "La Grande Famine",
+      "Le mécontentement des Koulaks"
+    ],
+    "correct": 1,
+    "explanation": "Lénine cherche à imposer l'autorité des Bolcheviks en mettant en place une dictature car le régime est menacé par la guerre civile (Blancs contre les Rouges) depuis la prise violente d'octobre 1917."
+  },
+  {
+    "question": "Quel poste Staline occupait-il à l'époque de Lénine qui lui a permis de s'imposer comme son héritier et de prendre le pouvoir en URSS ?",
+    "type": "multiple-choice",
+    "answers": [
+      "Chef de l'Armée Rouge",
+      "Commissaire du peuple à la défense",
+      "Secrétaire général du parti",
+      "Président du Soviet Suprême"
+    ],
+    "correct": 2,
+    "explanation": "Staline était Secrétaire général du parti, ce qui lui a permis de s'imposer comme dirigeant de l'URSS après la mort de Lénine en 1924."
+  },
+  {
+    "question": "Quel était le but principal du premier plan quinquennal en URSS, mis en place par Staline à partir de 1929 ?",
+    "type": "multiple-choice",
+    "answers": [
+      "Établir une société de consommation",
+      "Former l'URSS en un pays industriel puissant",
+      "Améliorer le niveau de vie des paysans",
+      "Diffuser la révolution mondiale"
+    ],
+    "correct": 1,
+    "explanation": "Les objectifs du 1er plan quinquennal étaient de 'former l'URSS en un pays industriel puissant' et de transformer l'URSS."
+  },
+  {
+    "question": "Qui étaient les \"Koulaks\" en URSS sous Staline, et quel sort leur était-il réservé ?",
+    "type": "multiple-choice",
+    "answers": [
+      "Les soldats de l'Armée Rouge ; ils étaient encadrés par le Parti",
+      "Les intellectuels ; ils étaient encouragés par la propagande",
+      "Les paysans aisés ; ils étaient liquidés ou expédiés au Goulag",
+      "Les membres du Parti communiste ; ils étaient promus"
+    ],
+    "correct": 2,
+    "explanation": "Les Koulaks (paysans aisés) sont les premières victimes de la répression stalinienne : ils sont liquidés ou expédiés dans des camps de concentration (Goulag)."
+  },
+  {
+    "question": "Quel est le nom donné aux grandes fermes collectives dans lesquelles Staline obligeait les paysans à entrer pour collectiviser l'agriculture ?",
+    "type": "multiple-choice",
+    "answers": [
+      "Les Soviets",
+      "Les Goulags",
+      "Les Kolkhozes",
+      "Les Sovkhozes"
+    ],
+    "correct": 2,
+    "explanation": "Staline oblige les paysans à entrer dans des grandes fermes collectives, appelées les kolkhozes."
+  },
+  {
+    "question": "La période de la \"Grande Terreur\" en URSS, marquée par une grande purge au sein même du parti communiste, s'est étendue sur quelles années ?",
+    "type": "multiple-choice",
+    "answers": [
+      "1917-1924",
+      "1929-1933",
+      "1936-1939",
+      "1941-1945"
+    ],
+    "correct": 2,
+    "explanation": "La Grande Terreur, durant laquelle Staline organise une grande purge, s'est déroulée de 1936 à 1939."
+  },
+  {
+    "question": "Selon les sources, comment Staline était-il couramment surnommé, renforçant son culte de la personnalité ?",
+    "type": "multiple-choice",
+    "answers": [
+      "Le Père du Peuple",
+      "L'homme de fer",
+      "L'homme d'acier",
+      "Le Petit Timonier"
+    ],
+    "correct": 2,
+    "explanation": "Staline était surnommé 'l'homme d'acier'."
+  },
+  {
+    "question": "Adolf Hitler, après son coup d'État manqué en 1923, a rédigé son livre qui expose son antisémitisme et son projet pour l'Allemagne. Quel est le titre de cet ouvrage ?",
+    "type": "multiple-choice",
+    "answers": [
+      "Unser Kampf",
+      "Mein Führer",
+      "Mein Kampf (Mon combat)",
+      "Deutschland über alles"
+    ],
+    "correct": 2,
+    "explanation": "Hitler a rédigé son volumineux Mein Kampf (Mon combat) en prison après le coup d'État manqué de 1923, exposant son antisémitisme et son projet pour l'Allemagne."
+  },
+  {
+    "question": "En quelle année Adolf Hitler est-il nommé Chancelier (chef du gouvernement) par le président Hindenburg, accédant ainsi au pouvoir par la voie démocratique ?",
+    "type": "multiple-choice",
+    "answers": [
+      "1923",
+      "1930",
+      "1933",
+      "1934"
+    ],
+    "correct": 2,
+    "explanation": "Hitler est nommé chancelier par le président Hindenburg le 30 janvier 1933, accédant ainsi au pouvoir démocratiquement."
+  },
+  {
+    "question": "Quel est le nom de la police politique nazie chargée d'arrêter les opposants (comme les communistes) et de les envoyer dans des camps de concentration ?",
+    "type": "multiple-choice",
+    "answers": [
+      "Le NKVD",
+      "Le Komintern",
+      "La Gestapo",
+      "La SS"
+    ],
+    "correct": 2,
+    "explanation": "Les opposants politiques, comme les communistes, sont arrêtés par la police politique (Gestapo) et les SS puis envoyés dans des camps de concentration."
+  },
+  {
+    "question": "Les lois antisémites de Nuremberg, interdisant notamment aux Allemands et aux Juifs de se marier pour \"éviter de souiller le sang aryen\", ont été promulguées en quelle année ?",
+    "type": "multiple-choice",
+    "answers": [
+      "1933",
+      "1935",
+      "1938",
+      "1939"
+    ],
+    "correct": 1,
+    "explanation": "Les Lois antisémites de Nuremberg ont été promulguées en 1935."
+  },
+  {
+    "question": "Quelle est la devise nazie, résumant l'idéal d'unité sous un chef unique ?",
+    "type": "multiple-choice",
+    "answers": [
+      "Travail, Famille, Patrie",
+      "Ein Volk, Ein Reich, Ein Führer",
+      "Deutschland Erwache",
+      "Proletarier aller Länder, vereinigt euch!"
+    ],
+    "correct": 1,
+    "explanation": "La devise nazie est : 'Ein volk, ein reich, ein fuhrer' (un peuple, un territoire, un chef)."
+  },
+  {
+    "question": "Quel concept, cher à Hitler, représente la nécessité de conquérir des territoires à l'Est pour loger toute personne parlant allemand ?",
+    "type": "multiple-choice",
+    "answers": [
+      "La Grande Allemagne",
+      "L'Espace vital (Lebensraum)",
+      "L'Autodafé",
+      "Le Pangermanisme"
+    ],
+    "correct": 1,
+    "explanation": "Hitler annonce ouvertement vouloir récupérer « l'espace vital » (Lebensraum) des Allemands, considérant que toute personne parlant allemand doit habiter dans ce 'reich'."
+  },
+  {
+    "question": "Quel terme est utilisé pour désigner l'annexion de l'Autriche par Hitler en mars 1938, en accord avec l'idée d'un \"reich\" ?",
+    "type": "multiple-choice",
+    "answers": [
+      "La Nuit des Longs Couteaux",
+      "Le Putsch de la Brasserie",
+      "L'Anschluss",
+      "La Conférence de Munich"
+    ],
+    "correct": 2,
+    "explanation": "L'annexion de l'Autriche en mars 1938 est appelée l'Anschluss."
+  },
+  {
+    "question": "Quelle organisation nazie était chargée de l'embrigadement de la jeunesse allemande afin de faire d'eux des \"purs nazis\" ?",
+    "type": "multiple-choice",
+    "answers": [
+      "Le Komsomol",
+      "La SA",
+      "La Hitlerjugend (Jeunesses hitlériennes)",
+      "Le Front du travail"
+    ],
+    "correct": 2,
+    "explanation": "Les organisations nazies qui embrigadent la jeunesse sont notamment la Hitlerjugend (Jeunesses hitlériennes)."
+  },
+  {
+    "question": "Quel événement, marqué par un véritable pogrom contre les Juifs, a eu lieu les 9 et 10 novembre 1938, intensifiant la violence d'État ?",
+    "type": "multiple-choice",
+    "answers": [
+      "Le Putsch de Munich",
+      "L'Autodafé des livres",
+      "La Nuit de Cristal",
+      "L'instauration des lois de Nuremberg"
+    ],
+    "correct": 2,
+    "explanation": "La Nuit de Cristal, les 9 et 10 novembre 1938, marque un véritable pogrom contre les Juifs, intensifiant la violence d'État."
+  },
+  {
+    "question": "Quel groupe de personnes, en plus des Juifs et opposants politiques, est mentionné comme étant persécuté par le régime nazi car il était accusé d'affaiblir la race aryenne ?",
+    "type": "multiple-choice",
+    "answers": [
+      "Les Catholiques",
+      "Les Slaves orientaux",
+      "Les Homosexuels et les handicapés",
+      "Les Témoins de Jéhovah"
+    ],
+    "correct": 2,
+    "explanation": "Les homosexuels et les handicapés, accusés d'affaiblir la race, sont persécutés par le régime nazi, au même titre que les Juifs et les Tsiganes."
+  },
+  {
+    "question": "Les livres qui déplaisaient au régime nazi étaient brûlés en public. Comment s'appelle cette action de destruction des ouvrages ?",
+    "type": "multiple-choice",
+    "answers": [
+      "Un autodafé",
+      "Un pogrom",
+      "Une purge",
+      "Un Holocauste"
+    ],
+    "correct": 0,
+    "explanation": "Les livres qui déplaisent sont brûlés (autodafés) par le régime nazi."
+  },
+  {
+    "question": "Quels sont les trois partis qui formaient la coalition du Front populaire, victorieuse aux élections de mai 1936 en France ?",
+    "type": "multiple-choice",
+    "answers": [
+      "Parti conservateur, Parti libéral, Parti républicain",
+      "PCF (communistes), SFIO (socialistes), Radicaux",
+      "Les ligues d'extrême droite",
+      "Les Centristes"
+    ],
+    "correct": 1,
+    "explanation": "La coalition du Front populaire était composée du PCF (communistes), de la SFIO (socialistes) et des Radicaux."
+  },
+  {
+    "question": "Quel acquis social majeur a été établi par les Accords Matignon de juin 1936 en faveur des ouvriers ?",
+    "type": "multiple-choice",
+    "answers": [
+      "La retraite à 60 ans",
+      "La semaine de 40 heures et deux semaines de congés payés",
+      "Le droit de grève illimité",
+      "L'abolition de la propriété privée"
+    ],
+    "correct": 1,
+    "explanation": "Les Accords Matignon ont notamment créé la semaine de 40 heures et deux semaines de congés payés annuels pour les ouvriers."
+  },
+  {
+    "question": "Quel était l'effet principal de la victoire du Front Populaire en France en 1936 concernant l'installation du totalitarisme ?",
+    "type": "multiple-choice",
+    "answers": [
+      "Elle a provoqué un coup d'État militaire",
+      "Elle a favorisé l'installation d'un régime fasciste",
+      "Elle a permis à la France de rester une démocratie",
+      "Elle a provoqué une guerre civile"
+    ],
+    "correct": 2,
+    "explanation": "Malgré la crise économique et la montée des mouvements fascistes, la victoire du Front Populaire a permis à la France de rester une démocratie."
+  },
+  {
+    "question": "Quel pourcentage du budget allemand représentait l'industrie d'armement en 1938, témoignant de la violation du traité de Versailles ?",
+    "type": "multiple-choice",
+    "answers": [
+      "10 %",
+      "35 %",
+      "50 %",
+      "74 %"
+    ],
+    "correct": 3,
+    "explanation": "L'industrie d'armement représentait 74 % du budget allemand en 1938, une illustration du réarmement et de la violation du traité de Versailles par Hitler."
+  },
+  {
+    "question": "Lors de la Conférence de Munich en 1938, quelles régions Hitler a-t-il pu annexer (avec l'accord de la France et de l'Angleterre qui cédaient à la paix) ?",
+    "type": "multiple-choice",
+    "answers": [
+      "L'Alsace-Lorraine",
+      "La Rhénanie",
+      "Les Sudètes",
+      "La Ruhr"
+    ],
+    "correct": 2,
+    "explanation": "À la conférence de Munich, la France et l'Angleterre ont cédé à l'Allemagne les Sudètes."
+  },
+  {
+    "question": "Qui était le chef nationaliste qui a mené le coup d'État en Espagne en 1936 contre le Front Populaire républicain, déclenchant la guerre civile ?",
+    "type": "multiple-choice",
+    "answers": [
+      "Juan Negrín",
+      "Francisco Franco",
+      "Emiliano Zapata",
+      "Primo de Rivera"
+    ],
+    "correct": 1,
+    "explanation": "La guerre civile espagnole a été déclenchée par le coup d'État du général Francisco Franco (nationaliste) contre le Front Populaire républicain en 1936."
+  },
+  {
+    "question": "Dans la Guerre d'Espagne (1936-1939), les régimes totalitaires (Allemagne et Italie) sont intervenus militairement pour soutenir quel camp ?",
+    "type": "multiple-choice",
+    "answers": [
+      "Les Républicains (Front Populaire)",
+      "Les Nationalistes (Franquistes)",
+      "Les Brigades Internationales",
+      "Les Anarchistes"
+    ],
+    "correct": 1,
+    "explanation": "Les régimes totalitaires (Allemagne et Italie) ont soutenu les Nationalistes (Franquistes) menés par Franco."
+  },
+  {
+    "question": "Selon la déclaration du président de la République espagnole Juan Negrín en 1938, l'intervention des États fascistes dans la Guerre d'Espagne visait à obtenir quoi en échange de l'écrasement du peuple espagnol ?",
+    "type": "multiple-choice",
+    "answers": [
+      "Des richesses minières",
+      "Des bases navales",
+      "Des positions stratégiques de valeur",
+      "Des accords commerciaux"
+    ],
+    "correct": 2,
+    "explanation": "L'Italie et l'Allemagne sont intervenues pour obtenir 'en échange de l'écrasement du peuple espagnol, des positions stratégiques de valeur'."
+  },
+  {
+    "question": "Par quel événement et à quelle date la Seconde Guerre mondiale est-elle déclenchée ?",
+    "type": "multiple-choice",
+    "answers": [
+      "L'annexion des Sudètes (1938)",
+      "L'invasion de la Pologne (1er septembre 1939)",
+      "La Conférence de Munich (1938)",
+      "L'entrée de l'Italie dans l'Axe (1939)"
+    ],
+    "correct": 1,
+    "explanation": "Le déclenchement de la Seconde Guerre mondiale est l'invasion de la Pologne le 1er septembre 1939."
+  }
+]
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let correctAnswers = 0;
+        let incorrectAnswers = 0;
+        let answered = false;
+        let userAnswers = []; // Stocker les réponses de l'élève
+        let currentShuffledAnswers = []; // Stores the shuffled answers for the current question, with their original indices
+
+        /**
+         * Shuffles an array in place using the Fisher-Yates (Knuth) algorithm.
+         * @param {Array} array The array to shuffle.
+         */
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]]; // Swap elements
+            }
+        }
+
+        /**
+         * Normalizes a text answer for comparison (lowercase, trim, single spaces, simplified date parts).
+         * @param {string} text The text to normalize.
+         * @returns {string} The normalized text.
+         */
+        function normalizeTextAnswer(text) {
+            // Convert to lowercase, trim whitespace
+            // Replace common date separators with space
+            // Replace multiple spaces with single space
+            // Remove "er", "ère", "ème", "e" after a digit (e.g., "1er mai" -> "1 mai")
+            return text.toLowerCase().trim()
+                       .replace(/(\d)\s*(er|ère|ème|e)\s*/g, '$1 ') // "1er mai" -> "1 mai"
+                       .replace(/[\.,\-\/]/g, ' ') // Replace punctuation with space
+                       .replace(/\s+/g, ' '); // Replace multiple spaces with single space
+        }
+
+        function startQuiz() {
+            document.getElementById('startScreen').classList.add('hidden');
+            document.getElementById('quizScreen').classList.remove('hidden');
+            currentQuestionIndex = 0;
+            score = 0;
+            correctAnswers = 0;
+            incorrectAnswers = 0;
+            answered = false;
+            userAnswers = []; // Réinitialiser les réponses
+            displayQuestion();
+        }
+
+        function displayQuestion() {
+            answered = false;
+            const question = quizData[currentQuestionIndex];
+
+            document.getElementById('currentQuestion').textContent = currentQuestionIndex + 1;
+            document.getElementById('totalQuestions').textContent = quizData.length;
+            document.getElementById('questionText').textContent = question.question;
+            document.getElementById('feedback').classList.add('hidden');
+            document.getElementById('nextBtn').classList.add('hidden');
+
+            // Update progress bar
+            const progress = ((currentQuestionIndex) / quizData.length) * 100;
+            document.getElementById('progressBar').style.width = progress + '%';
+
+            const answersContainer = document.getElementById('answersContainer');
+            answersContainer.innerHTML = ''; // Clear previous answers
+
+            // Update keyboard shortcuts display
+            const quizShortcuts = document.getElementById('quizShortcuts');
+            if (question.type === 'text') {
+                quizShortcuts.classList.add('hidden');
+            } else {
+                quizShortcuts.classList.remove('hidden');
+            }
+
+            if (question.type === 'text') {
+                // Display text input field
+                const input = document.createElement('input');
+                input.type = 'text';
+                input.id = 'textAnswerInput';
+                input.placeholder = 'Votre réponse...';
+                input.className = 'w-full p-4 rounded-lg border-2 border-gray-300 dark:border-gray-600 focus:border-primary focus:ring-primary focus:ring-1 outline-none transition-all text-base bg-white dark:bg-gray-800';
+                answersContainer.appendChild(input);
+
+                const submitButton = document.createElement('button');
+                submitButton.id = 'submitTextBtn';
+                submitButton.className = 'w-full mt-3 bg-primary hover:bg-opacity-90 text-white font-semibold py-3 px-8 rounded-lg transition-all text-base';
+                submitButton.textContent = 'Valider la réponse';
+                submitButton.onclick = () => handleAnswerSubmission();
+                answersContainer.appendChild(submitButton);
+
+                input.focus(); // Focus the input field
+            } else {
+                // Display multiple-choice buttons
+                const answersWithOriginalIndex = question.answers.map((text, originalIndex) => ({ text, originalIndex }));
+                
+                shuffleArray(answersWithOriginalIndex);
+                currentShuffledAnswers = answersWithOriginalIndex; // Store for later use in handleAnswerSubmission
+
+                currentShuffledAnswers.forEach((answerObj, shuffledIndex) => {
+                    const button = document.createElement('button');
+                    button.className = 'w-full text-left p-4 rounded-lg border-2 border-gray-300 dark:border-gray-600 hover:border-primary hover:bg-gray-100 dark:hover:bg-gray-700 transition-all text-base bg-white dark:bg-gray-800';
+                    button.innerHTML = `<span class="font-semibold">${String.fromCharCode(65 + shuffledIndex)}.</span> ${answerObj.text}`;
+                    button.onclick = () => handleAnswerSubmission(shuffledIndex); // Pass the shuffled index
+                    answersContainer.appendChild(button);
+                });
+            }
+        }
+
+        function handleAnswerSubmission(selectedShuffledIndex = null) {
+            if (answered) return; // Prevent double submission
+            answered = true;
+
+            const question = quizData[currentQuestionIndex];
+            const feedback = document.getElementById('feedback');
+            const feedbackText = document.getElementById('feedbackText');
+            const explanationText = document.getElementById('explanationText');
+
+            let isCorrect = false;
+            let userAnswerDisplay = ''; // To show user's input in results
+            let correctAnswerDisplay = ''; // To show correct answer in results
+
+            if (question.type === 'text') {
+                const textInput = document.getElementById('textAnswerInput');
+                const userInputValue = textInput.value;
+                userAnswerDisplay = userInputValue; // Store raw input for display
+                const normalizedUserInput = normalizeTextAnswer(userInputValue);
+                
+                // Check if normalized user input matches any of the correct answers
+                isCorrect = question.correct.some(correctStr => normalizeTextAnswer(correctStr) === normalizedUserInput);
+                correctAnswerDisplay = question.correct[0]; // Use the first correct answer for display
+
+                // Disable input and button
+                textInput.disabled = true;
+                document.getElementById('submitTextBtn').disabled = true;
+
+            } else { // Multiple-choice
+                const buttons = document.getElementById('answersContainer').children;
+                const selectedAnswerOriginalIndex = currentShuffledAnswers[selectedShuffledIndex].originalIndex;
+                const correctAnswerOriginalIndex = question.correct;
+                
+                isCorrect = (selectedAnswerOriginalIndex === correctAnswerOriginalIndex);
+                userAnswerDisplay = question.answers[selectedAnswerOriginalIndex]; // Store MC text for display
+                correctAnswerDisplay = question.answers[correctAnswerOriginalIndex];
+
+                // Disable all MC buttons
+                for (let btn of buttons) {
+                    btn.classList.add('disabled');
+                }
+
+                // Highlight correct/incorrect MC buttons
+                if (isCorrect) {
+                    buttons[selectedShuffledIndex].classList.add('correct');
+                } else {
+                    buttons[selectedShuffledIndex].classList.add('incorrect');
+                    const correctButtonShuffledIndex = currentShuffledAnswers.findIndex(
+                        ans => ans.originalIndex === correctAnswerOriginalIndex
+                    );
+                    if (correctButtonShuffledIndex !== -1) {
+                        buttons[correctButtonShuffledIndex].classList.add('correct');
+                    }
+                }
+            }
+
+            // Common feedback logic
+            if (isCorrect) {
+                score++;
+                correctAnswers++;
+                feedbackText.textContent = '✓ Correct !';
+                feedbackText.className = 'font-semibold text-green-600 dark:text-green-400 text-base';
+                feedback.className = 'mb-6 p-4 rounded-lg bg-green-50 dark:bg-green-900/30 border-2 border-green-500';
+            } else {
+                incorrectAnswers++;
+                feedbackText.textContent = '✗ Incorrect';
+                feedbackText.className = 'font-semibold text-red-600 dark:text-red-400 text-base';
+                feedback.className = 'mb-6 p-4 rounded-lg bg-red-50 dark:bg-red-900/30 border-2 border-red-500';
+            }
+
+            explanationText.textContent = question.explanation;
+            explanationText.className = 'mt-2 text-sm text-gray-700 dark:text-gray-300';
+            feedback.classList.remove('hidden');
+
+            document.getElementById('score').textContent = score;
+            document.getElementById('nextBtn').classList.remove('hidden');
+
+            // Store user's answer for results screen
+            userAnswers.push({
+                questionIndex: currentQuestionIndex,
+                userAnswer: userAnswerDisplay,
+                correctAnswer: correctAnswerDisplay,
+                isCorrect: isCorrect,
+                questionType: question.type
+            });
+        }
+
+        function nextQuestion() {
+            currentQuestionIndex++;
+
+            if (currentQuestionIndex < quizData.length) {
+                displayQuestion();
+            } else {
+                showResults();
+            }
+        }
+
+        function showResults() {
+            document.getElementById('quizScreen').classList.add('hidden');
+            document.getElementById('resultsScreen').classList.remove('hidden');
+
+            const percentage = Math.round((score / quizData.length) * 100);
+
+            document.getElementById('finalScore').textContent = `${score}/${quizData.length}`;
+            document.getElementById('correctCount').textContent = correctAnswers;
+            document.getElementById('incorrectCount').textContent = incorrectAnswers;
+            document.getElementById('percentageScore').textContent = percentage + '%';
+
+            // Result message
+            let message = '';
+            const resultIcon = document.getElementById('resultIcon');
+
+            if (percentage >= 90) {
+                message = 'Excellent ! Vous maîtrisez parfaitement les fondements de la République et de la Citoyenneté ! 🎉';
+                resultIcon.className = 'w-24 h-24 mx-auto text-green-500';
+            } else if (percentage >= 70) {
+                message = 'Très bien ! Vous avez de bonnes connaissances sur le sujet. 👍';
+                resultIcon.className = 'w-24 h-24 mx-auto text-blue-500';
+            } else if (percentage >= 50) {
+                message = 'Pas mal ! Continuez à réviser pour améliorer votre score. 📚';
+                resultIcon.className = 'w-24 h-24 mx-auto text-yellow-500';
+            } else {
+                message = 'Continuez vos révisions ! Relisez la fiche et réessayez. 💪';
+                resultIcon.className = 'w-24 h-24 mx-auto text-red-500';
+            }
+
+            document.getElementById('resultMessage').textContent = message;
+
+            // Afficher les erreurs de l'élève
+            displayMistakes();
+        }
+
+        function displayMistakes() {
+            const mistakesSection = document.getElementById('mistakesSection');
+            const mistakes = userAnswers.filter(answer => !answer.isCorrect);
+
+            if (mistakes.length === 0) {
+                mistakesSection.innerHTML = `
+                    <div class="bg-green-50 dark:bg-green-900/30 border-2 border-green-500 rounded-lg p-6">
+                        <h3 class="text-xl font-bold text-green-600 dark:text-green-400 mb-2">🎉 Parfait !</h3>
+                        <p class="text-gray-700 dark:text-gray-300 text-base">Vous n'avez fait aucune erreur ! Félicitations !</p>
+                    </div>
+                `;
+                return;
+            }
+
+            let html = `
+                <div class="bg-white dark:bg-gray-700 rounded-lg p-6 text-left">
+                    <h3 class="text-xl font-bold mb-4 text-red-500">📋 Vos erreurs (${mistakes.length})</h3>
+                    <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">Voici les questions où vous vous êtes trompé(e) :</p>
+                    <div class="space-y-4">
+            `;
+
+            mistakes.forEach((mistake, index) => {
+                const question = quizData[mistake.questionIndex];
+                html += `
+                    <div class="border-l-4 border-red-500 bg-red-50 dark:bg-red-900/20 p-4 rounded">
+                        <p class="font-semibold text-gray-900 dark:text-gray-100 mb-2">
+                            <span class="text-red-500">Question ${mistake.questionIndex + 1}:</span> ${question.question}
+                        </p>
+                        <div class="ml-4 space-y-1 text-sm">
+                            <p class="text-red-600 dark:text-red-400">
+                                ✗ <span class="font-medium">Votre réponse :</span> ${mistake.userAnswer || '[Non répondu]'}
+                            </p>
+                            <p class="text-green-600 dark:text-green-400">
+                                ✓ <span class="font-medium">Bonne réponse :</span> ${mistake.correctAnswer}
+                            </p>
+                            <p class="text-gray-600 dark:text-gray-400 italic mt-2">
+                                💡 ${question.explanation}
+                            </p>
+                        </div>
+                    </div>
+                `;
+            });
+
+            html += `
+                    </div>
+                </div>
+            `;
+
+            mistakesSection.innerHTML = html;
+        }
+
+        function restartQuiz() {
+            document.getElementById('resultsScreen').classList.add('hidden');
+            document.getElementById('startScreen').classList.remove('hidden');
+        }
+
+        // Gestion des touches clavier
+        document.addEventListener('keydown', (event) => {
+            const key = event.key.toLowerCase();
+            const quizScreen = document.getElementById('quizScreen');
+            const startScreen = document.getElementById('startScreen');
+            const resultsScreen = document.getElementById('resultsScreen');
+
+            // Enter pour commencer, suivant, ou recommencer
+            if (key === 'enter') {
+                if (!startScreen.classList.contains('hidden')) {
+                    startQuiz();
+                    event.preventDefault();
+                } else if (!quizScreen.classList.contains('hidden')) {
+                    const question = quizData[currentQuestionIndex];
+                    if (answered) { // Already answered, move to next
+                        nextQuestion();
+                    } else if (question.type === 'text') { // Text question, not answered, submit
+                        handleAnswerSubmission();
+                    }
+                    event.preventDefault();
+                } else if (!resultsScreen.classList.contains('hidden')) {
+                    restartQuiz();
+                    event.preventDefault();
+                }
+            }
+
+            // Touches 1-4 ou A-D pour sélectionner une réponse (seulement pour MC et si pas encore répondu)
+            if (!quizScreen.classList.contains('hidden') && !answered) {
+                const question = quizData[currentQuestionIndex];
+                if (question.type !== 'text') {
+                    let answerIndex = -1; // This will be the shuffled index
+
+                    // Touches numériques 1-4
+                    if (key >= '1' && key <= '4') {
+                        answerIndex = parseInt(key) - 1;
+                    }
+                    // Touches A-D
+                    else if (key === 'a') answerIndex = 0;
+                    else if (key === 'b') answerIndex = 1;
+                    else if (key === 'c') answerIndex = 2;
+                    else if (key === 'd') answerIndex = 3;
+
+                    // Check if the selected index is valid for the current shuffled answers
+                    if (answerIndex >= 0 && answerIndex < currentShuffledAnswers.length) {
+                        handleAnswerSubmission(answerIndex);
+                        event.preventDefault();
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

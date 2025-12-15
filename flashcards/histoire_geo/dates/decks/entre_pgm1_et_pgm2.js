@@ -11,7 +11,6 @@ export var flashcards = [
     { date: "Septembre 1935", event: "Lois de Nuremberg" },
     { date: "1936", event: "Remilitarisation de la Rhénanie" },
     { date: "Mars 1938", event: "Annexation de l'Autriche (L'Anschluss)" },
-    { date: "", event: "" },
     { date: "1938", event: "Annexation des Sudètes" },
     { date: "septembre 1938", event: "Accords de Munich" },
     { date: "1 septembre 1939", event: "Invasion de la Pologne - Début de le Seconde Guerre mondiale" },

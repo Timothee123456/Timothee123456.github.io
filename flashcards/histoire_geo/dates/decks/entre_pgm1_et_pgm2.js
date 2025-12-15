@@ -15,4 +15,12 @@ export var flashcards = [
     { date: "1938", event: "Annexation des Sudètes" },
     { date: "septembre 1938", event: "Accords de Munich" },
     { date: "1 septembre 1939", event: "Invasion de la Pologne - Début de le Seconde Guerre mondiale" },
+    { date: "1936", event: "Le Front populaire gagne les élections" },
+    { date: "8 juin 1936", event: "Signature des Accords de Matignon" },
+    { date: "1931", event: "Crise économique en France" },
+    { date: "1934", event: "Affaire Stavinsky" },
+    { date: "6 février 1934", event: "Émeutes/ ligues extrême droite" },
+    { date: "12 février 1934", event: "Manifestation des ouvriers" },
+    { date: "mai-juin 1936", event: "grèves joyeuses" },
+    { date: "21 juin 1937", event: "Démission de Léon Blum" },
 ];

@@ -251,7 +251,7 @@
                 // We need to ensure hskData is loaded before calling selectLevel
                 // For simplicity, we assume the module script runs after imports are ready.
                 // In a real app, you might want to await module loading or use a different pattern.
-                selectLevel(level, false);
+                window.selectLevel(level, false); // Use window.selectLevel
             }
             if (progress) {
                 wordProgress = progress;
@@ -397,7 +397,7 @@
 
 
             if (currentDeck.length === 0) {
-                showCustomAlert('No words available for learning! Try selecting a different level or you\'ve learned them all.');
+                window.showCustomAlert('No words available for learning! Try selecting a different level or you\'ve learned them all.'); // Use window.showCustomAlert
                 return;
             }
 
@@ -411,7 +411,7 @@
             const known = allWords.filter(w => wordProgress[w.id].status === 'known');
 
             if (known.length < 10) {
-                showCustomAlert('You need at least 10 known words to revise!');
+                window.showCustomAlert('You need at least 10 known words to revise!'); // Use window.showCustomAlert
                 return;
             }
 
@@ -431,10 +431,10 @@
 
         function showCard(index) {
             if (index >= currentDeck.length) {
-                closeFlashcards();
+                window.closeFlashcards(); // Use window.closeFlashcards
                 updateWordLists();
                 saveProgress();
-                showCustomAlert('Session complete!');
+                window.showCustomAlert('Session complete!'); // Use window.showCustomAlert
                 return;
             }
 
@@ -468,12 +468,6 @@
                     progress.lastCorrect = now;
                 } else if (progress.status === 'half') {
                     // Check if 24 hours have passed since first correct
-                    // For demonstration, we'll make this simpler: 2 correct in a row or 2 correct overall
-                    // A more robust SRS would use spaced repetition algorithms (e.g., SM-2)
-                    // For now, let's say if it's been half-known and marked correct, it moves to known.
-                    // Or, if you want a time component, keep the 24-hour check.
-                    // Let's simplify for this example: one correct after 'half' moves it to 'known'.
-                    // To keep the original logic, I'll retain the 24-hour check.
                     const hoursSinceFirst = (now - progress.firstCorrect) / (1000 * 60 * 60);
                     if (hoursSinceFirst >= 24) { // Original logic: needs 24 hours to pass
                         progress.status = 'known';
@@ -488,7 +482,6 @@
                 }
             } else { // Marked Incorrect
                 // If a known or half-known word is marked incorrect, move it back to unknown.
-                // This is a simple strategy; a real SRS might have more nuanced demotion.
                 if (progress.status === 'half' || progress.status === 'known') {
                     progress.status = 'unknown';
                     progress.firstCorrect = null; // Reset first correct for re-learning
@@ -521,6 +514,16 @@
             `;
             document.body.appendChild(modal);
         }
+
+        // Expose functions to the global scope for HTML inline event handlers
+        window.selectLevel = selectLevel;
+        window.resetLevel = resetLevel;
+        window.startLearn = startLearn;
+        window.startRevise = startRevise;
+        window.flipCard = flipCard;
+        window.markCard = markCard;
+        window.closeFlashcards = closeFlashcards;
+        window.showCustomAlert = showCustomAlert; // Also expose this for internal calls that might use window.showCustomAlert
 
         // Initialize on load
         // Defer loadProgress slightly to ensure hskData is fully populated from modules

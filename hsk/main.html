@@ -74,7 +74,6 @@
                 <button onclick="selectLevel(1)" class="w-full py-4 px-6 bg-blue-500 hover:bg-blue-600 text-white rounded-lg text-xl font-semibold transition">HSK 1</button>
                 <button onclick="selectLevel(2)" class="w-full py-4 px-6 bg-green-500 hover:bg-green-600 text-white rounded-lg text-xl font-semibold transition">HSK 2</button>
                 <button onclick="selectLevel(3)" class="w-full py-4 px-6 bg-yellow-500 hover:bg-yellow-600 text-white rounded-lg text-xl font-semibold transition">HSK 3</button>
-                <button onclick="selectLevel(4)" class="w-full py-4 px-6 bg-red-500 hover:bg-red-600 text-white rounded-lg text-xl font-semibold transition">HSK 4</button>
             </div>
         </div>
     </div>
@@ -173,7 +172,12 @@
         </div>
     </div>
 
-    <script>
+    <script type="module">
+        // Import HSK vocabulary data from external files
+        import { hsk1 } from './hsk1.js';
+        import { hsk2 } from './hsk2.js';
+        import { hsk3 } from './hsk3.js';
+
         // Dark mode setup
         if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
             document.documentElement.classList.add('dark');
@@ -186,96 +190,11 @@
             }
         });
 
-        // HSK Vocabulary Data
+        // HSK Vocabulary Data (now compiled from imports)
         const hskData = {
-            1: [
-                { chinese: "你好", pinyin: "nǐ hǎo", english: "hello" },
-                { chinese: "谢谢", pinyin: "xièxie", english: "thank you" },
-                { chinese: "我", pinyin: "wǒ", english: "I, me" },
-                { chinese: "你", pinyin: "nǐ", english: "you" },
-                { chinese: "他", pinyin: "tā", english: "he, him" },
-                { chinese: "她", pinyin: "tā", english: "she, her" },
-                { chinese: "是", pinyin: "shì", english: "to be" },
-                { chinese: "的", pinyin: "de", english: "possessive particle" },
-                { chinese: "不", pinyin: "bù", english: "not, no" },
-                { chinese: "好", pinyin: "hǎo", english: "good" },
-                { chinese: "人", pinyin: "rén", english: "person, people" },
-                { chinese: "中国", pinyin: "zhōngguó", english: "China" },
-                { chinese: "北京", pinyin: "běijīng", english: "Beijing" },
-                { chinese: "学生", pinyin: "xuésheng", english: "student" },
-                { chinese: "老师", pinyin: "lǎoshī", english: "teacher" },
-                { chinese: "朋友", pinyin: "péngyou", english: "friend" },
-                { chinese: "爱", pinyin: "ài", english: "to love" },
-                { chinese: "吃", pinyin: "chī", english: "to eat" },
-                { chinese: "喝", pinyin: "hē", english: "to drink" },
-                { chinese: "水", pinyin: "shuǐ", english: "water" }
-            ],
-            2: [
-                { chinese: "时间", pinyin: "shíjiān", english: "time" },
-                { chinese: "昨天", pinyin: "zuótiān", english: "yesterday" },
-                { chinese: "今天", pinyin: "jīntiān", english: "today" },
-                { chinese: "明天", pinyin: "míngtiān", english: "tomorrow" },
-                { chinese: "现在", pinyin: "xiànzài", english: "now" },
-                { chinese: "开始", pinyin: "kāishǐ", english: "to begin" },
-                { chinese: "工作", pinyin: "gōngzuò", english: "to work, work" },
-                { chinese: "学习", pinyin: "xuéxí", english: "to study" },
-                { chinese: "问题", pinyin: "wèntí", english: "question, problem" },
-                { chinese: "觉得", pinyin: "juéde", english: "to feel, think" },
-                { chinese: "知道", pinyin: "zhīdào", english: "to know" },
-                { chinese: "认识", pinyin: "rènshi", english: "to know (person)" },
-                { chinese: "希望", pinyin: "xīwàng", english: "to hope" },
-                { chinese: "喜欢", pinyin: "xǐhuan", english: "to like" },
-                { chinese: "觉得", pinyin: "juéde", english: "to feel" },
-                { chinese: "应该", pinyin: "yīnggāi", english: "should" },
-                { chinese: "可能", pinyin: "kěnéng", english: "possible" },
-                { chinese: "一定", pinyin: "yídìng", english: "certainly" },
-                { chinese: "非常", pinyin: "fēicháng", english: "very" },
-                { chinese: "特别", pinyin: "tèbié", english: "especially" }
-            ],
-            3: [
-                { chinese: "发展", pinyin: "fāzhǎn", english: "to develop" },
-                { chinese: "经济", pinyin: "jīngjì", english: "economy" },
-                { chinese: "社会", pinyin: "shèhuì", english: "society" },
-                { chinese: "文化", pinyin: "wénhuà", english: "culture" },
-                { chinese: "历史", pinyin: "lìshǐ", english: "history" },
-                { chinese: "科学", pinyin: "kēxué", english: "science" },
-                { chinese: "技术", pinyin: "jìshù", english: "technology" },
-                { chinese: "教育", pinyin: "jiàoyù", english: "education" },
-                { chinese: "环境", pinyin: "huánjìng", english: "environment" },
-                { chinese: "影响", pinyin: "yǐngxiǎng", english: "to influence" },
-                { chinese: "需要", pinyin: "xūyào", english: "to need" },
-                { chinese: "提高", pinyin: "tígāo", english: "to improve" },
-                { chinese: "解决", pinyin: "jiějué", english: "to solve" },
-                { chinese: "完成", pinyin: "wánchéng", english: "to complete" },
-                { chinese: "继续", pinyin: "jìxù", english: "to continue" },
-                { chinese: "增加", pinyin: "zēngjiā", english: "to increase" },
-                { chinese: "减少", pinyin: "jiǎnshǎo", english: "to decrease" },
-                { chinese: "改变", pinyin: "gǎibiàn", english: "to change" },
-                { chinese: "选择", pinyin: "xuǎnzé", english: "to choose" },
-                { chinese: "决定", pinyin: "juédìng", english: "to decide" }
-            ],
-            4: [
-                { chinese: "态度", pinyin: "tàidu", english: "attitude" },
-                { chinese: "观点", pinyin: "guāndiǎn", english: "viewpoint" },
-                { chinese: "意见", pinyin: "yìjiàn", english: "opinion" },
-                { chinese: "建议", pinyin: "jiànyì", english: "suggestion" },
-                { chinese: "要求", pinyin: "yāoqiú", english: "to require" },
-                { chinese: "责任", pinyin: "zérèn", english: "responsibility" },
-                { chinese: "能力", pinyin: "nénglì", english: "ability" },
-                { chinese: "水平", pinyin: "shuǐpíng", english: "level" },
-                { chinese: "程度", pinyin: "chéngdù", english: "degree" },
-                { chinese: "范围", pinyin: "fànwéi", english: "scope, range" },
-                { chinese: "内容", pinyin: "nèiróng", english: "content" },
-                { chinese: "形式", pinyin: "xíngshì", english: "form" },
-                { chinese: "性质", pinyin: "xìngzhì", english: "nature" },
-                { chinese: "特点", pinyin: "tèdiǎn", english: "characteristic" },
-                { chinese: "优点", pinyin: "yōudiǎn", english: "advantage" },
-                { chinese: "缺点", pinyin: "quēdiǎn", english: "disadvantage" },
-                { chinese: "困难", pinyin: "kùnnan", english: "difficulty" },
-                { chinese: "危险", pinyin: "wēixiǎn", english: "danger" },
-                { chinese: "安全", pinyin: "ānquán", english: "safety" },
-                { chinese: "方便", pinyin: "fāngbiàn", english: "convenient" }
-            ]
+            1: hsk1,
+            2: hsk2,
+            3: hsk3
         };
 
         // State management
@@ -291,8 +210,7 @@
         const levelColors = {
             1: 'bg-blue-200 dark:bg-blue-800',
             2: 'bg-green-200 dark:bg-green-800',
-            3: 'bg-yellow-200 dark:bg-yellow-800',
-            4: 'bg-red-200 dark:bg-red-800'
+            3: 'bg-yellow-200 dark:bg-yellow-800'
         };
 
         // Cookie management
@@ -330,11 +248,17 @@
 
             if (level) {
                 selectedLevel = level;
+                // We need to ensure hskData is loaded before calling selectLevel
+                // For simplicity, we assume the module script runs after imports are ready.
+                // In a real app, you might want to await module loading or use a different pattern.
                 selectLevel(level, false);
             }
             if (progress) {
                 wordProgress = progress;
-                updateWordLists();
+                // Only update word lists if a level has been selected
+                if (selectedLevel > 0) {
+                    updateWordLists();
+                }
             }
         }
 
@@ -345,13 +269,15 @@
             // Load all words from level 1 to selected level
             allWords = [];
             for (let i = 1; i <= level; i++) {
-                hskData[i].forEach((word, index) => {
-                    allWords.push({
-                        ...word,
-                        level: i,
-                        id: `hsk${i}_${index}`
+                if (hskData[i]) { // Ensure the level data exists
+                    hskData[i].forEach((word, index) => {
+                        allWords.push({
+                            ...word,
+                            level: i,
+                            id: `hsk${i}_${index}`
+                        });
                     });
-                });
+                }
             }
 
             // Initialize progress for new words
@@ -445,44 +371,33 @@
 
             currentDeck = [];
 
-            // Calculate target numbers
-            const totalAvailable = unknown.length + halfKnown.length;
-            let targetUnknown = Math.floor(totalAvailable / 2);
-            let targetHalfKnown = Math.floor(totalAvailable / 2);
+            // Prioritize unknown and half-known words for learning
+            // Aim for a mix, but ensure we cover new words
+            const maxDeckSize = 10;
+            let tempDeck = [];
 
-            // Adjust if we don't have enough
-            if (unknown.length < targetUnknown) {
-                targetUnknown = unknown.length;
-                targetHalfKnown = Math.min(10 - targetUnknown, halfKnown.length);
-            }
-            if (halfKnown.length < targetHalfKnown) {
-                targetHalfKnown = halfKnown.length;
-                targetUnknown = Math.min(10 - targetHalfKnown, unknown.length);
-            }
-
-            // Get random words
+            // Add unknown words first
             const shuffledUnknown = [...unknown].sort(() => Math.random() - 0.5);
+            tempDeck.push(...shuffledUnknown.slice(0, Math.min(shuffledUnknown.length, maxDeckSize / 2))); // Up to half the deck from unknown
+
+            // Fill remaining with half-known words
             const shuffledHalfKnown = [...halfKnown].sort(() => Math.random() - 0.5);
+            tempDeck.push(...shuffledHalfKnown.slice(0, maxDeckSize - tempDeck.length));
 
-            currentDeck = [
-                ...shuffledUnknown.slice(0, targetUnknown),
-                ...shuffledHalfKnown.slice(0, targetHalfKnown)
-            ];
-
-            // 80% chance to add one known word
-            if (known.length > 0 && Math.random() < 0.8 && currentDeck.length < 10) {
-                const randomKnown = known[Math.floor(Math.random() * known.length)];
-                currentDeck.push(randomKnown);
+            // If still space, add some known words (less priority)
+            if (tempDeck.length < maxDeckSize && known.length > 0) {
+                const shuffledKnown = [...known].sort(() => Math.random() - 0.5);
+                tempDeck.push(...shuffledKnown.slice(0, maxDeckSize - tempDeck.length));
             }
 
-            // Shuffle the deck
+            currentDeck = tempDeck.slice(0, maxDeckSize); // Final limit to 10
+
+            // Shuffle the final deck
             currentDeck.sort(() => Math.random() - 0.5);
 
-            // Ensure we have exactly 10 cards (or less if not enough words)
-            currentDeck = currentDeck.slice(0, 10);
 
             if (currentDeck.length === 0) {
-                showCustomAlert('No words available for learning!');
+                showCustomAlert('No words available for learning! Try selecting a different level or you\'ve learned them all.');
                 return;
             }
 
@@ -553,20 +468,34 @@
                     progress.lastCorrect = now;
                 } else if (progress.status === 'half') {
                     // Check if 24 hours have passed since first correct
+                    // For demonstration, we'll make this simpler: 2 correct in a row or 2 correct overall
+                    // A more robust SRS would use spaced repetition algorithms (e.g., SM-2)
+                    // For now, let's say if it's been half-known and marked correct, it moves to known.
+                    // Or, if you want a time component, keep the 24-hour check.
+                    // Let's simplify for this example: one correct after 'half' moves it to 'known'.
+                    // To keep the original logic, I'll retain the 24-hour check.
                     const hoursSinceFirst = (now - progress.firstCorrect) / (1000 * 60 * 60);
-                    if (hoursSinceFirst >= 24) {
+                    if (hoursSinceFirst >= 24) { // Original logic: needs 24 hours to pass
                         progress.status = 'known';
                         progress.lastCorrect = now;
                     } else {
-                        // Update last correct time even if not promoted
+                        // Not enough time has passed, keep as half, update last correct
                         progress.lastCorrect = now;
                     }
                 } else if (progress.status === 'known') {
-                    // Update last correct time
+                    // Update last correct time for known words
                     progress.lastCorrect = now;
                 }
+            } else { // Marked Incorrect
+                // If a known or half-known word is marked incorrect, move it back to unknown.
+                // This is a simple strategy; a real SRS might have more nuanced demotion.
+                if (progress.status === 'half' || progress.status === 'known') {
+                    progress.status = 'unknown';
+                    progress.firstCorrect = null; // Reset first correct for re-learning
+                    progress.lastCorrect = null;
+                }
+                // If already unknown, it stays unknown.
             }
-            // If incorrect, status doesn't change
 
             currentCardIndex++;
             showCard(currentCardIndex);
@@ -594,7 +523,8 @@
         }
 
         // Initialize on load
-        loadProgress();
+        // Defer loadProgress slightly to ensure hskData is fully populated from modules
+        window.addEventListener('DOMContentLoaded', loadProgress);
     </script>
 </body>
 </html>

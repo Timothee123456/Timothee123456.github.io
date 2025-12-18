@@ -1,4 +1,4 @@
-export var flashcards = [
+export var hsk1 = [
   {chinese: "我", pinyin: "wǒ", french: "I, me"},
   {chinese: "我们", pinyin: "wǒmen", french: "we, us (pl.)"},
   {chinese: "你", pinyin: "nǐ", french: "you"},

@@ -1,5 +1,5 @@
 export var title = "Vocabulary List Act I Julius Caesar";
-export var date = "2026-01-22";
+export var number = 8
 
 export var vocabularyWords = [
     { word: "Herald", definition: "A person or thing that precedes or comes before; forerunner; harbinger" },

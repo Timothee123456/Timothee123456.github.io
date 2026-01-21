@@ -1,5 +1,5 @@
 export var title = "Second half of Act I, Scene 1 (pages 39-53)"
-export var date = "2025-10-13"
+export var number = 2
 
 export var vocabularyWords = [
     { word: "overcome", definition: "To surmount, surpass, or prevail over obstacles; to successfully deal with a difficult situation." },

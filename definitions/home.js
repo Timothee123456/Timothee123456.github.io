@@ -1,0 +1,148 @@
+
+import { lightColors, darkColors } from './colors.js';
+
+if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+    document.documentElement.classList.add('dark');
+}
+window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
+    if (event.matches) {
+        document.documentElement.classList.add('dark');
+    } else {
+        document.documentElement.classList.remove('dark');
+    }
+});
+
+function openVocSet(link) {
+    window.location.href = link;
+}
+
+// Function to fetch the list of JavaScript files in the current directory
+async function getFlashcardFiles() {
+    try {
+        const response = await fetch('https://api.github.com/repos/Timothee123456/Timothee123456.github.io/contents/definitions/sia/sets'); // Fetch the current directory
+        const data = await response.json();
+
+        // Filter for .js files and map to get the download URLs
+        const fileNames = data
+            .filter(item => item.name.endsWith('.js'))
+            .map(item => {
+                let url = item.download_url;
+                const prefixToRemove = "https://raw.githubusercontent.com/Timothee123456/Timothee123456.github.io/main/definitions/sia/sets/";
+                const suffixToRemove = ".js";
+
+                if (url.startsWith(prefixToRemove)) {
+                    url = url.slice(prefixToRemove.length);
+                }
+                if (url.endsWith(suffixToRemove)) {
+                    url = url.substring(0, url.length - suffixToRemove.length);
+                }
+
+                return url;
+            });
+        return fileNames;
+    } catch (error) {
+        console.error("Could not fetch file list:", error);
+        return [];
+    }
+}
+
+// Function to fetch the colors from colors.js
+
+
+async function sortFilesWithNumber(jsFiles){
+    let jsFilesDictionary = []
+    for (const jsFile of jsFiles) {
+        // Dynamically import the JS file
+        try {
+            // Construct the full URL to the JS file on GitHub
+            const jsFileURL = `./sets/${jsFile}.js`;
+            const module = await import(jsFileURL);
+
+            // Extract number from the imported module
+            const number = module.number;
+            jsFilesDictionary.push({name: jsFile, number: number})
+            
+        } catch (error) {
+            console.error(`Error loading or processing ${jsFile}:`, error);
+        }
+    }
+
+    // Sort files by number (biggest to smallest)
+    jsFilesDictionary.sort((a, b) => {
+        return b.number - a.number; // Sort by number
+    });
+    const jsFilesSorted = jsFilesDictionary.map(item => item.name); // Extract the 'name' property from each object
+    return jsFilesSorted
+}
+
+
+async function loadFlashcardData() {
+    const gridContainer = document.querySelector('.grid');
+    gridContainer.innerHTML = ''; // Clear existing content
+
+    // Fetch all JS files in the directory
+    const jsFiles = await getFlashcardFiles();
+    console.log(jsFiles);
+    // Sort files by number
+    const jsFilesSorted = await sortFilesWithNumber(jsFiles);
+    console.log(jsFilesSorted);
+    
+    // Fetch colors
+    let colorIndex = 0; // Initialize color index
+
+    for (const jsFile of jsFilesSorted) {
+        // Dynamically import the JS file
+        try {
+            const jsFileURL = `./sets/${jsFile}.js`;
+            const module = await import(jsFileURL);
+
+            // Extract data from the imported module
+            const title = module.title;
+            const number = module.number;
+
+            let color;
+            const isDarkMode = document.documentElement.classList.contains('dark');
+
+            if (isDarkMode) {
+                color = darkColors[colorIndex % darkColors.length];
+            } else {
+                color = lightColors[colorIndex % lightColors.length];
+            }
+
+            colorIndex++; // Increment color index for the next card
+
+            const vocabularyWords = module.vocabularyWords;
+            const cardCount = vocabularyWords.length;
+            const link = `main?set=${jsFile}`; // Create the link
+
+            // Create the flashcard set element
+            const vocSet = document.createElement('div');
+            vocSet.className = "flashcard-set bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 p-6 cursor-pointer transition-all duration-300 hover:shadow-xl";
+            vocSet.onclick = function() { openVocSet(link); };
+            vocSet.style.backgroundColor = color;
+
+            const textCenter = document.createElement('div');
+            textCenter.className = "text-center";
+
+            const heading = document.createElement('h3');
+            heading.className = "text-xl font-bold text-gray-800 dark:text-white mb-2";
+            heading.textContent = title + " (" + number + ")";
+
+            const cardCountElement = document.createElement('p');
+            cardCountElement.className = "text-gray-600 dark:text-gray-400";
+            cardCountElement.textContent = cardCount + " cards";
+
+            textCenter.appendChild(heading);
+            textCenter.appendChild(cardCountElement);
+            vocSet.appendChild(textCenter);
+            gridContainer.appendChild(vocSet);
+
+        } catch (error) {
+            console.error(`Error loading or processing ${jsFile}:`, error);
+        }
+    }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    loadFlashcardData();
+});

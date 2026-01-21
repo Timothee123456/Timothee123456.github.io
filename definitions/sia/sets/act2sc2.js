@@ -1,5 +1,5 @@
 export var title = "Act II, Scene 2 (pages 96-109)"
-export var date = "2025-10-16"
+export var number = 5
 
 export var vocabularyWords = [
     { word: "presumably", definition: "Probably; in all likelihood; by reasonable assumption." },

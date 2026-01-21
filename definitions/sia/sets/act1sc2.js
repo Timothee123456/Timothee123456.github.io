@@ -1,5 +1,5 @@
 export var title = "Act I, Scene 2 (pages 54-75)"
-export var date = "2025-10-14"
+export var number = 3
 
 export var vocabularyWords = [
     { word: "idle", definition: "Not engaged in work or activity; doing nothing." },

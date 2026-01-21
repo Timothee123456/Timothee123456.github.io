@@ -1,5 +1,5 @@
 export var title = "Act II, Scene 3 (pages 110-130)"
-export var date = "2025-10-17"
+export var number = 6
 
 export var vocabularyWords = [
     { word: "exuberance", definition: "A state of extreme and unrestrained happiness; joyous enthusiasm." },

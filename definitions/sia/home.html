@@ -156,7 +156,8 @@
 
                 const heading = document.createElement('h3');
                 heading.className = "text-xl font-bold text-gray-800 dark:text-white mb-1";
-                heading.textContent = folderName;
+                const displayName = folderName.replace(/_/g, ' ');
+                heading.textContent = displayName;
 
                 const typeLabel = document.createElement('p');
                 typeLabel.className = "text-gray-600 dark:text-gray-400 text-sm";

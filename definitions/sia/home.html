@@ -27,15 +27,25 @@
                 document.documentElement.classList.remove('dark');
             }
             // Reload data to apply correct card colors based on new theme
-            loadFlashcardData(currentPath);
+            loadFlashcardData();
         });
 
         // Base path for the flashcard sets on GitHub
         const GITHUB_REPO_OWNER = 'Timothee123456';
         const GITHUB_REPO_NAME = 'Timothee123456.github.io';
-        const GITHUB_BASE_CONTENT_PATH = 'definitions/sia/sets';
 
-        let currentPath = GITHUB_BASE_CONTENT_PATH; // Tracks the current directory being viewed
+        // This is the full path on the GitHub repository for the root of the flashcard sets.
+        // Used for GitHub API calls.
+        const GITHUB_API_ROOT_PATH = 'definitions/sia/sets';
+
+        // This is the path relative to the HTML document's location where the 'sets' directory starts.
+        // Based on your error, the HTML is likely in 'https://timothee123456.github.io/definitions/sia/',
+        // so 'sets' is a direct child directory from the HTML's perspective.
+        const LOCAL_IMPORT_ROOT_PATH = 'sets';
+
+        // These variables track the current directory for both API calls and local imports
+        let currentGithubApiPath = GITHUB_API_ROOT_PATH;
+        let currentLocalImportPath = LOCAL_IMPORT_ROOT_PATH;
 
         /**
          * Navigates to a specific flashcard set.
@@ -47,19 +57,19 @@
 
         /**
          * Fetches the contents (files and folders) of a given path from the GitHub repository.
-         * @param {string} path The relative path within the GitHub repository.
+         * @param {string} githubPath The relative path within the GitHub repository for API access.
          * @returns {Promise<{files: string[], folders: string[]}>} An object containing arrays of filenames (without .js) and folder names.
          */
-        async function getDirectoryContents(path) {
+        async function getDirectoryContents(githubPath) {
             try {
-                const githubApiUrl = `https://api.github.com/repos/${GITHUB_REPO_OWNER}/${GITHUB_REPO_NAME}/contents/${path}`;
+                const githubApiUrl = `https://api.github.com/repos/${GITHUB_REPO_OWNER}/${GITHUB_REPO_NAME}/contents/${githubPath}`;
                 const response = await fetch(githubApiUrl);
 
                 if (!response.ok) {
                     if (response.status === 404) {
-                        console.warn(`Path not found on GitHub: ${path}`);
+                        console.warn(`Path not found on GitHub: ${githubPath}`);
                     } else {
-                        throw new Error(`GitHub API error: ${response.statusText} for path: ${path}`);
+                        throw new Error(`GitHub API error: ${response.statusText} for path: ${githubPath}`);
                     }
                     return { files: [], folders: [] };
                 }
@@ -75,7 +85,7 @@
 
                 return { files, folders };
             } catch (error) {
-                console.error(`Could not fetch directory contents for path ${path}:`, error);
+                console.error(`Could not fetch directory contents for path ${githubPath}:`, error);
                 return { files: [], folders: [] };
             }
         }
@@ -83,20 +93,21 @@
         /**
          * Sorts an array of JavaScript filenames based on a 'number' export from their modules.
          * @param {string[]} jsFiles An array of JavaScript filenames (without .js extension).
-         * @param {string} currentDirectoryPath The full path to the directory containing these files.
+         * @param {string} localImportPath The path relative to the HTML document for importing.
          * @returns {Promise<string[]>} A promise that resolves to the sorted array of filenames.
          */
-        async function sortFilesWithNumber(jsFiles, currentDirectoryPath) {
+        async function sortFilesWithNumber(jsFiles, localImportPath) {
             let jsFilesDictionary = [];
             for (const jsFile of jsFiles) {
                 try {
-                    // Construct the full relative URL for dynamic import
-                    const relativeImportPath = `./${currentDirectoryPath}/${jsFile}.js`;
-                    const module = await import(relativeImportPath);
+                    // Construct the full relative URL for dynamic import.
+                    // This path must be relative to the HTML document's base URL.
+                    const jsModuleURL = `./${localImportPath}/${jsFile}.js`;
+                    const module = await import(jsModuleURL);
                     const number = module.number;
                     jsFilesDictionary.push({ name: jsFile, number: number });
                 } catch (error) {
-                    console.error(`Error loading or processing ${jsFile} from ${currentDirectoryPath}:`, error);
+                    console.error(`Error loading or processing ${jsFile} from ${localImportPath}:`, error);
                     // If module fails to load or has no number, add it with a low number to appear last
                     jsFilesDictionary.push({ name: jsFile, number: -1 });
                 }
@@ -109,14 +120,13 @@
 
         /**
          * Renders the contents of the current directory (folders and flashcard sets).
-         * @param {string} path The path to load contents from. Defaults to `currentPath`.
          */
-        async function loadFlashcardData(path = currentPath) {
+        async function loadFlashcardData() {
             const gridContainer = document.querySelector('.grid');
             gridContainer.innerHTML = ''; // Clear existing content
 
-            // Add back button if not in the root path
-            if (path !== GITHUB_BASE_CONTENT_PATH) {
+            // Add back button if not in the root path for imports
+            if (currentLocalImportPath !== LOCAL_IMPORT_ROOT_PATH) {
                 const backButton = document.createElement('button');
                 backButton.className = "col-span-full flex items-center justify-center p-4 bg-gray-200 dark:bg-gray-700 rounded-xl shadow-lg border border-gray-300 dark:border-gray-600 cursor-pointer transition-all duration-300 hover:shadow-xl hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-800 dark:text-white font-bold mb-4";
                 backButton.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-5 h-5 mr-2">
@@ -126,7 +136,7 @@
                 gridContainer.appendChild(backButton);
             }
 
-            const { files: jsFiles, folders } = await getDirectoryContents(path);
+            const { files: jsFiles, folders } = await getDirectoryContents(currentGithubApiPath);
 
             // Render folders first
             for (const folderName of folders) {
@@ -160,19 +170,21 @@
             }
 
             // Sort flashcard files by number
-            const jsFilesSorted = await sortFilesWithNumber(jsFiles, path);
+            const jsFilesSorted = await sortFilesWithNumber(jsFiles, currentLocalImportPath);
             
             let colorIndex = 0; // Initialize color index for flashcards
             for (const jsFile of jsFilesSorted) {
                 try {
-                    // Construct the full relative URL for dynamic import
-                    const jsFileURL = `./${path}/${jsFile}.js`;
-                    const module = await import(jsFileURL);
+                    // Construct the full relative URL for dynamic import.
+                    // This path must be relative to the HTML document's base URL.
+                    const jsModuleURL = `./${currentLocalImportPath}/${jsFile}.js`;
+                    const module = await import(jsModuleURL);
 
                     const title = module.title;
                     const vocabularyWords = module.vocabularyWords || []; // Ensure it's an array
                     const cardCount = vocabularyWords.length;
-                    const link = `main?set=${path}/${jsFile}`; // Link should include the full path to the set
+                    // The link to the main page should include the full path from the root of the repo
+                    const link = `main?set=${currentGithubApiPath}/${jsFile}`;
 
                     let color;
                     const isDarkMode = document.documentElement.classList.contains('dark');
@@ -206,7 +218,7 @@
                     gridContainer.appendChild(vocSet);
 
                 } catch (error) {
-                    console.error(`Error loading or processing ${jsFile} from path ${path}:`, error);
+                    console.error(`Error loading or processing ${jsFile} from path ${currentLocalImportPath}:`, error);
                     // Optionally, render a placeholder for failed loads or skip
                 }
             }
@@ -217,22 +229,26 @@
          * @param {string} folderName The name of the folder to navigate into.
          */
         function navigateIntoFolder(folderName) {
-            currentPath = `${currentPath}/${folderName}`;
-            loadFlashcardData(currentPath);
+            currentLocalImportPath = `${currentLocalImportPath}/${folderName}`;
+            currentGithubApiPath = `${currentGithubApiPath}/${folderName}`;
+            loadFlashcardData();
         }
 
         /**
          * Navigates back to the parent directory.
          */
         function navigateBack() {
-            const pathSegments = currentPath.split('/');
-            const rootPathSegments = GITHUB_BASE_CONTENT_PATH.split('/');
+            const localImportPathSegments = currentLocalImportPath.split('/');
+            const githubApiPathSegments = currentGithubApiPath.split('/');
 
-            // Ensure we don't go above the defined root path
-            if (pathSegments.length > rootPathSegments.length) {
-                pathSegments.pop(); // Remove the last segment (current folder)
-                currentPath = pathSegments.join('/');
-                loadFlashcardData(currentPath);
+            // Ensure we don't go above the defined root path for imports
+            // The length check ensures we don't pop off segments if we're already at the root
+            if (localImportPathSegments.length > LOCAL_IMPORT_ROOT_PATH.split('/').length) {
+                localImportPathSegments.pop(); // Remove the last segment (current folder)
+                githubApiPathSegments.pop(); // Remove the last segment (current folder)
+                currentLocalImportPath = localImportPathSegments.join('/');
+                currentGithubApiPath = githubApiPathSegments.join('/');
+                loadFlashcardData();
             }
         }
 
@@ -240,7 +256,6 @@
         document.addEventListener('DOMContentLoaded', function() {
             loadFlashcardData();
         });
-    </script>
     </script>
 
     <!-- Home Page -->

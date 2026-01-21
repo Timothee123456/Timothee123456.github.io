@@ -16,7 +16,7 @@
     <script type="module">
         import { lightColors, darkColors } from './colors.js';
 
-        
+        // Theme switching logic
         if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
             document.documentElement.classList.add('dark');
         }
@@ -26,95 +26,153 @@
             } else {
                 document.documentElement.classList.remove('dark');
             }
+            // Reload data to apply correct card colors based on new theme
+            loadFlashcardData(currentPath);
         });
 
+        // Base path for the flashcard sets on GitHub
+        const GITHUB_REPO_OWNER = 'Timothee123456';
+        const GITHUB_REPO_NAME = 'Timothee123456.github.io';
+        const GITHUB_BASE_CONTENT_PATH = 'definitions/sia/sets';
+
+        let currentPath = GITHUB_BASE_CONTENT_PATH; // Tracks the current directory being viewed
+
+        /**
+         * Navigates to a specific flashcard set.
+         * @param {string} link The URL to the main flashcard page with the set parameter.
+         */
         function openVocSet(link) {
             window.location.href = link;
         }
 
-        // Function to fetch the list of JavaScript files in the current directory
-        async function getFlashcardFiles() {
+        /**
+         * Fetches the contents (files and folders) of a given path from the GitHub repository.
+         * @param {string} path The relative path within the GitHub repository.
+         * @returns {Promise<{files: string[], folders: string[]}>} An object containing arrays of filenames (without .js) and folder names.
+         */
+        async function getDirectoryContents(path) {
             try {
-                const response = await fetch('https://api.github.com/repos/Timothee123456/Timothee123456.github.io/contents/definitions/sia/sets'); // Fetch the current directory
+                const githubApiUrl = `https://api.github.com/repos/${GITHUB_REPO_OWNER}/${GITHUB_REPO_NAME}/contents/${path}`;
+                const response = await fetch(githubApiUrl);
+
+                if (!response.ok) {
+                    if (response.status === 404) {
+                        console.warn(`Path not found on GitHub: ${path}`);
+                    } else {
+                        throw new Error(`GitHub API error: ${response.statusText} for path: ${path}`);
+                    }
+                    return { files: [], folders: [] };
+                }
                 const data = await response.json();
 
-                // Filter for .js files and map to get the download URLs
-                const fileNames = data
-                    .filter(item => item.name.endsWith('.js'))
-                    .map(item => {
-                        let url = item.download_url;
-                        const prefixToRemove = "https://raw.githubusercontent.com/Timothee123456/Timothee123456.github.io/main/definitions/sia/sets/";
-                        const suffixToRemove = ".js";
+                const files = data
+                    .filter(item => item.type === 'file' && item.name.endsWith('.js'))
+                    .map(item => item.name.slice(0, -3)); // Remove .js extension
 
-                        if (url.startsWith(prefixToRemove)) {
-                            url = url.slice(prefixToRemove.length);
-                        }
-                        if (url.endsWith(suffixToRemove)) {
-                            url = url.substring(0, url.length - suffixToRemove.length);
-                        }
+                const folders = data
+                    .filter(item => item.type === 'dir')
+                    .map(item => item.name);
 
-                        return url;
-                    });
-                return fileNames;
+                return { files, folders };
             } catch (error) {
-                console.error("Could not fetch file list:", error);
-                return [];
+                console.error(`Could not fetch directory contents for path ${path}:`, error);
+                return { files: [], folders: [] };
             }
         }
 
-        // Function to fetch the colors from colors.js
-
-
-        async function sortFilesWithNumber(jsFiles){
-            let jsFilesDictionary = []
+        /**
+         * Sorts an array of JavaScript filenames based on a 'number' export from their modules.
+         * @param {string[]} jsFiles An array of JavaScript filenames (without .js extension).
+         * @param {string} currentDirectoryPath The full path to the directory containing these files.
+         * @returns {Promise<string[]>} A promise that resolves to the sorted array of filenames.
+         */
+        async function sortFilesWithNumber(jsFiles, currentDirectoryPath) {
+            let jsFilesDictionary = [];
             for (const jsFile of jsFiles) {
-                // Dynamically import the JS file
                 try {
-                    // Construct the full URL to the JS file on GitHub
-                    const jsFileURL = `./sets/${jsFile}.js`;
-                    const module = await import(jsFileURL);
-
-                    // Extract number from the imported module
+                    // Construct the full relative URL for dynamic import
+                    const relativeImportPath = `./${currentDirectoryPath}/${jsFile}.js`;
+                    const module = await import(relativeImportPath);
                     const number = module.number;
-                    jsFilesDictionary.push({name: jsFile, number: number})
-                    
+                    jsFilesDictionary.push({ name: jsFile, number: number });
                 } catch (error) {
-                    console.error(`Error loading or processing ${jsFile}:`, error);
+                    console.error(`Error loading or processing ${jsFile} from ${currentDirectoryPath}:`, error);
+                    // If module fails to load or has no number, add it with a low number to appear last
+                    jsFilesDictionary.push({ name: jsFile, number: -1 });
                 }
             }
 
             // Sort files by number (biggest to smallest)
-            jsFilesDictionary.sort((a, b) => {
-                return b.number - a.number; // Sort by number
-            });
-            const jsFilesSorted = jsFilesDictionary.map(item => item.name); // Extract the 'name' property from each object
-            return jsFilesSorted
+            jsFilesDictionary.sort((a, b) => b.number - a.number);
+            return jsFilesDictionary.map(item => item.name);
         }
-        
 
-        async function loadFlashcardData() {
+        /**
+         * Renders the contents of the current directory (folders and flashcard sets).
+         * @param {string} path The path to load contents from. Defaults to `currentPath`.
+         */
+        async function loadFlashcardData(path = currentPath) {
             const gridContainer = document.querySelector('.grid');
             gridContainer.innerHTML = ''; // Clear existing content
 
-            // Fetch all JS files in the directory
-            const jsFiles = await getFlashcardFiles();
-            console.log(jsFiles);
-            // Sort files by number
-            const jsFilesSorted = await sortFilesWithNumber(jsFiles);
-            console.log(jsFilesSorted);
-            
-            // Fetch colors
-            let colorIndex = 0; // Initialize color index
+            // Add back button if not in the root path
+            if (path !== GITHUB_BASE_CONTENT_PATH) {
+                const backButton = document.createElement('button');
+                backButton.className = "col-span-full flex items-center justify-center p-4 bg-gray-200 dark:bg-gray-700 rounded-xl shadow-lg border border-gray-300 dark:border-gray-600 cursor-pointer transition-all duration-300 hover:shadow-xl hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-800 dark:text-white font-bold mb-4";
+                backButton.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-5 h-5 mr-2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 15L3 9m0 0l6-6M3 9h12a6 6 0 010 12h-3" />
+                </svg>Retour`;
+                backButton.onclick = navigateBack;
+                gridContainer.appendChild(backButton);
+            }
 
+            const { files: jsFiles, folders } = await getDirectoryContents(path);
+
+            // Render folders first
+            for (const folderName of folders) {
+                const folderElement = document.createElement('div');
+                folderElement.className = "flashcard-set rounded-xl shadow-lg border p-6 cursor-pointer transition-all duration-300 hover:shadow-xl";
+                folderElement.classList.add('bg-blue-100', 'dark:bg-blue-900', 'border-blue-200', 'dark:border-blue-800'); // Specific colors for folders
+                folderElement.onclick = () => navigateIntoFolder(folderName);
+
+                const textCenter = document.createElement('div');
+                textCenter.className = "text-center";
+
+                const icon = document.createElement('div');
+                icon.className = "mb-2 text-blue-500 dark:text-blue-400";
+                icon.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-8 h-8 mx-auto">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12.75V12A2.25 2.25 0 014.5 9.75h15A2.25 2.25 0 0121.75 12v.75m-8.69-6.44l-1.262-1.262A1.5 1.5 0 0011.25 3h-6A2.25 2.25 0 003 5.25v13.5A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-19.5-3.75h19.5" />
+                </svg>`;
+
+                const heading = document.createElement('h3');
+                heading.className = "text-xl font-bold text-gray-800 dark:text-white mb-1";
+                heading.textContent = folderName;
+
+                const typeLabel = document.createElement('p');
+                typeLabel.className = "text-gray-600 dark:text-gray-400 text-sm";
+                typeLabel.textContent = "Dossier";
+
+                textCenter.appendChild(icon);
+                textCenter.appendChild(heading);
+                textCenter.appendChild(typeLabel);
+                folderElement.appendChild(textCenter);
+                gridContainer.appendChild(folderElement);
+            }
+
+            // Sort flashcard files by number
+            const jsFilesSorted = await sortFilesWithNumber(jsFiles, path);
+            
+            let colorIndex = 0; // Initialize color index for flashcards
             for (const jsFile of jsFilesSorted) {
-                // Dynamically import the JS file
                 try {
-                    const jsFileURL = `./sets/${jsFile}.js`;
+                    // Construct the full relative URL for dynamic import
+                    const jsFileURL = `./${path}/${jsFile}.js`;
                     const module = await import(jsFileURL);
 
-                    // Extract data from the imported module
                     const title = module.title;
-                    const number = module.number;
+                    const vocabularyWords = module.vocabularyWords || []; // Ensure it's an array
+                    const cardCount = vocabularyWords.length;
+                    const link = `main?set=${path}/${jsFile}`; // Link should include the full path to the set
 
                     let color;
                     const isDarkMode = document.documentElement.classList.contains('dark');
@@ -124,18 +182,12 @@
                     } else {
                         color = lightColors[colorIndex % lightColors.length];
                     }
-
                     colorIndex++; // Increment color index for the next card
 
-                    const vocabularyWords = module.vocabularyWords;
-                    const cardCount = vocabularyWords.length;
-                    const link = `main?set=${jsFile}`; // Create the link
-
-                    // Create the flashcard set element
                     const vocSet = document.createElement('div');
                     vocSet.className = "flashcard-set bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 p-6 cursor-pointer transition-all duration-300 hover:shadow-xl";
                     vocSet.onclick = function() { openVocSet(link); };
-                    vocSet.style.backgroundColor = color;
+                    vocSet.style.backgroundColor = color; // Apply dynamic color
 
                     const textCenter = document.createElement('div');
                     textCenter.className = "text-center";
@@ -154,14 +206,41 @@
                     gridContainer.appendChild(vocSet);
 
                 } catch (error) {
-                    console.error(`Error loading or processing ${jsFile}:`, error);
+                    console.error(`Error loading or processing ${jsFile} from path ${path}:`, error);
+                    // Optionally, render a placeholder for failed loads or skip
                 }
             }
         }
 
+        /**
+         * Navigates into a specified subfolder.
+         * @param {string} folderName The name of the folder to navigate into.
+         */
+        function navigateIntoFolder(folderName) {
+            currentPath = `${currentPath}/${folderName}`;
+            loadFlashcardData(currentPath);
+        }
+
+        /**
+         * Navigates back to the parent directory.
+         */
+        function navigateBack() {
+            const pathSegments = currentPath.split('/');
+            const rootPathSegments = GITHUB_BASE_CONTENT_PATH.split('/');
+
+            // Ensure we don't go above the defined root path
+            if (pathSegments.length > rootPathSegments.length) {
+                pathSegments.pop(); // Remove the last segment (current folder)
+                currentPath = pathSegments.join('/');
+                loadFlashcardData(currentPath);
+            }
+        }
+
+        // Initial load of flashcard data when the DOM is ready
         document.addEventListener('DOMContentLoaded', function() {
             loadFlashcardData();
         });
+    </script>
     </script>
 
     <!-- Home Page -->

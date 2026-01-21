@@ -126,7 +126,7 @@ async function loadFlashcardData() {
 
             const heading = document.createElement('h3');
             heading.className = "text-xl font-bold text-gray-800 dark:text-white mb-2";
-            heading.textContent = title + " (" + number + ")";
+            heading.textContent = title;
 
             const cardCountElement = document.createElement('p');
             cardCountElement.className = "text-gray-600 dark:text-gray-400";

@@ -170,58 +170,54 @@
                 gridContainer.appendChild(folderElement);
             }
 
-            // Sort flashcard files by number
-            const jsFilesSorted = await sortFilesWithNumber(jsFiles, currentLocalImportPath);
-            
+            // Start loading flashcard files and render each as it becomes available
             let colorIndex = 0; // Initialize color index for flashcards
-            for (const jsFile of jsFilesSorted) {
-                try {
-                    // Construct the full relative URL for dynamic import.
-                    // This path must be relative to the HTML document's base URL.
-                    const jsModuleURL = `./${currentLocalImportPath}/${jsFile}.js`;
-                    const module = await import(jsModuleURL);
+            for (const jsFile of jsFiles) {
+                (async () => {
+                    try {
+                        const jsModuleURL = `./${currentLocalImportPath}/${jsFile}.js`;
+                        const module = await import(jsModuleURL);
 
-                    const title = module.title;
-                    const vocabularyWords = module.vocabularyWords || []; // Ensure it's an array
-                    const cardCount = vocabularyWords.length;
-                    // The link to the main page should include the full path from the root of the repo
-                    const link = `main?set=${jsFile}`;
+                        const title = module.title || jsFile;
+                        const vocabularyWords = module.vocabularyWords || []; // Ensure it's an array
+                        const cardCount = vocabularyWords.length;
+                        const link = `main?set=${jsFile}`;
 
-                    let color;
-                    const isDarkMode = document.documentElement.classList.contains('dark');
+                        let color;
+                        const isDarkMode = document.documentElement.classList.contains('dark');
+                        if (isDarkMode) {
+                            color = darkColors[colorIndex % darkColors.length];
+                        } else {
+                            color = lightColors[colorIndex % lightColors.length];
+                        }
+                        colorIndex++; // Increment color index for the next card
 
-                    if (isDarkMode) {
-                        color = darkColors[colorIndex % darkColors.length];
-                    } else {
-                        color = lightColors[colorIndex % lightColors.length];
+                        const vocSet = document.createElement('div');
+                        vocSet.className = "flashcard-set bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 p-6 cursor-pointer transition-all duration-300 hover:shadow-xl";
+                        vocSet.onclick = function() { openVocSet(link); };
+                        vocSet.style.backgroundColor = color; // Apply dynamic color
+
+                        const textCenter = document.createElement('div');
+                        textCenter.className = "text-center";
+
+                        const heading = document.createElement('h3');
+                        heading.className = "text-xl font-bold text-gray-800 dark:text-white mb-2";
+                        heading.textContent = title;
+
+                        const cardCountElement = document.createElement('p');
+                        cardCountElement.className = "text-gray-600 dark:text-gray-400";
+                        cardCountElement.textContent = cardCount + " cards";
+
+                        textCenter.appendChild(heading);
+                        textCenter.appendChild(cardCountElement);
+                        vocSet.appendChild(textCenter);
+                        gridContainer.appendChild(vocSet);
+
+                    } catch (error) {
+                        console.error(`Error loading or processing ${jsFile} from path ${currentLocalImportPath}:`, error);
+                        // Optionally, render a placeholder for failed loads or skip
                     }
-                    colorIndex++; // Increment color index for the next card
-
-                    const vocSet = document.createElement('div');
-                    vocSet.className = "flashcard-set bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 p-6 cursor-pointer transition-all duration-300 hover:shadow-xl";
-                    vocSet.onclick = function() { openVocSet(link); };
-                    vocSet.style.backgroundColor = color; // Apply dynamic color
-
-                    const textCenter = document.createElement('div');
-                    textCenter.className = "text-center";
-
-                    const heading = document.createElement('h3');
-                    heading.className = "text-xl font-bold text-gray-800 dark:text-white mb-2";
-                    heading.textContent = title;
-
-                    const cardCountElement = document.createElement('p');
-                    cardCountElement.className = "text-gray-600 dark:text-gray-400";
-                    cardCountElement.textContent = cardCount + " cards";
-
-                    textCenter.appendChild(heading);
-                    textCenter.appendChild(cardCountElement);
-                    vocSet.appendChild(textCenter);
-                    gridContainer.appendChild(vocSet);
-
-                } catch (error) {
-                    console.error(`Error loading or processing ${jsFile} from path ${currentLocalImportPath}:`, error);
-                    // Optionally, render a placeholder for failed loads or skip
-                }
+                })();
             }
         }
 

@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Révision - Mayas y Aztecas</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --maya-primary: #1e88e5;
+            --maya-secondary: #0d47a1;
+            --maya-bg: #e3f2fd;
+            --maya-accent: #64b5f6;
+            --aztec-primary: #f9a825;
+            --aztec-secondary: #e65100;
+            --aztec-bg: #fff8e1;
+            --aztec-accent: #ffcc02;
+            --text-dark: #263238;
+            --text-light: #ffffff;
+            --success-perfect: #2e7d32;
+            --success-almost: #81c784;
+            --error: #e53935;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            min-height: 100vh;
+            transition: background-color 0.5s ease;
+        }
+
+        body.maya-theme {
+            background: linear-gradient(135deg, var(--maya-bg) 0%, #bbdefb 100%);
+        }
+
+        body.aztec-theme {
+            background: linear-gradient(135deg, var(--aztec-bg) 0%, #ffecb3 100%);
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 15px 25px;
+            border: none;
+            border-radius: 15px 15px 0 0;
+            font-family: 'Fredoka', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            opacity: 0.6;
+        }
+
+        .tab-btn.maya {
+            background: linear-gradient(135deg, var(--maya-primary), var(--maya-secondary));
+            color: var(--text-light);
+        }
+
+        .tab-btn.aztec {
+            background: linear-gradient(135deg, var(--aztec-primary), var(--aztec-secondary));
+            color: var(--text-light);
+        }
+
+        .tab-btn.active {
+            opacity: 1;
+            transform: translateY(-5px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+        }
+
+        .card {
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .card.active {
+            display: block;
+        }
+
+        .card.maya {
+            background: linear-gradient(180deg, var(--maya-primary) 0%, var(--maya-primary) 60px, white 60px);
+            border: 3px solid var(--maya-secondary);
+        }
+
+        .card.aztec {
+            background: linear-gradient(180deg, var(--aztec-primary) 0%, var(--aztec-primary) 60px, white 60px);
+            border: 3px solid var(--aztec-secondary);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 30px;
+            color: white;
+        }
+
+        .card-header .dot {
+            width: 20px;
+            height: 20px;
+            background: #ff9800;
+            border-radius: 50%;
+            border: 2px solid rgba(255,255,255,0.5);
+        }
+
+        .card-header h1 {
+            font-family: 'Fredoka', sans-serif;
+            font-size: 1.8rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .form-content {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+        }
+
+        .field-group {
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 1px dashed #e0e0e0;
+        }
+
+        .field-group:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .field-label {
+            font-family: 'Fredoka', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .maya .field-label {
+            color: var(--maya-secondary);
+        }
+
+        .aztec .field-label {
+            color: var(--aztec-secondary);
+        }
+
+        .input-row {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 8px;
+            line-height: 2.2;
+        }
+
+        .input-row span {
+            font-weight: 600;
+            color: #546e7a;
+        }
+
+        input[type="text"], input[type="number"], textarea {
+            padding: 8px 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-family: 'Nunito', sans-serif;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            min-width: 60px;
+        }
+
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: var(--maya-primary);
+            box-shadow: 0 0 0 3px rgba(30, 136, 229, 0.2);
+        }
+
+        .aztec input:focus, .aztec textarea:focus, .aztec select:focus {
+            border-color: var(--aztec-primary);
+            box-shadow: 0 0 0 3px rgba(249, 168, 37, 0.2);
+        }
+
+        input.correct-perfect {
+            border-color: var(--success-perfect) !important;
+            background-color: #c8e6c9;
+        }
+
+        input.correct-almost {
+            border-color: var(--success-almost) !important;
+            background-color: #e8f5e9;
+        }
+
+        input.incorrect, textarea.incorrect, select.incorrect {
+            border-color: var(--error) !important;
+            background-color: #ffebee;
+        }
+
+        select {
+            padding: 8px 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-family: 'Nunito', sans-serif;
+            font-size: 1rem;
+            background: white;
+            cursor: pointer;
+        }
+
+        .verb-input {
+            width: 140px;
+            background-color: #f8f9fa;
+        }
+
+        .date-input {
+            width: 80px;
+            text-align: center;
+        }
+
+        .era-select {
+            width: 70px;
+        }
+
+        .correction {
+            margin-top: 10px;
+            padding: 12px 15px;
+            background: linear-gradient(135deg, #fff3e0, #ffe0b2);
+            border-left: 4px solid #ff9800;
+            border-radius: 0 10px 10px 0;
+            font-size: 0.95rem;
+            display: none;
+        }
+
+        .correction.show {
+            display: block;
+            animation: slideIn 0.3s ease;
+        }
+
+        .correction b {
+            color: #d84315;
+            text-decoration: underline;
+        }
+
+        .btn-container {
+            display: flex;
+            gap: 15px;
+            margin-top: 25px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            flex: 1;
+            min-width: 150px;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 12px;
+            font-family: 'Fredoka', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-check {
+            background: linear-gradient(135deg, var(--success-perfect), #1b5e20);
+            color: white;
+        }
+
+        .btn-reset {
+            background: linear-gradient(135deg, #78909c, #546e7a);
+            color: white;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .score-display {
+            text-align: center;
+            padding: 20px;
+            margin-top: 20px;
+            border-radius: 15px;
+            display: none;
+        }
+
+        .score-display.show {
+            display: block;
+            animation: bounceIn 0.5s ease;
+        }
+
+        .score-display.maya { background: var(--maya-primary); color: white; }
+        .score-display.aztec { background: var(--aztec-primary); color: white; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideIn { from { opacity: 0; transform: translateX(-20px); } to { opacity: 1; transform: translateX(0); } }
+        @keyframes bounceIn { 0% { transform: scale(0.8); opacity: 0; } 50% { transform: scale(1.05); } 100% { transform: scale(1); opacity: 1; } }
+
+        @media (max-width: 600px) {
+            .container { padding: 10px; }
+            .card { padding: 15px; }
+            .tab-btn { padding: 12px 10px; font-size: 0.9rem; }
+            .input-row { gap: 4px; }
+            .verb-input { width: 120px; }
+        }
+    </style>
+</head>
+<body class="maya-theme">
+    <div class="container">
+        <div class="tabs">
+            <button class="tab-btn maya active" onclick="switchTab('maya')">🏛️ MAYAS</button>
+            <button class="tab-btn aztec" onclick="switchTab('aztec')">🦅 AZTECAS</button>
+        </div>
+
+        <!-- MAYAS CARD -->
+        <div class="card maya active" id="maya-card">
+            <div class="card-header">
+                <div class="dot"></div>
+                <h1>MAYAS</h1>
+            </div>
+            <div class="form-content">
+                <!-- Periodo -->
+                <div class="field-group">
+                    <label class="field-label">Periodo:</label>
+                    <div class="input-row">
+                        <span>Ellos</span>
+                        <input type="text" id="maya-verb" class="verb-input" placeholder="vivaient">
+                        <span>de</span>
+                        <input type="text" id="maya-date1" class="date-input">
+                        <select id="maya-era1" class="era-select">
+                            <option value="">--</option>
+                            <option value="ac">a.C.</option>
+                            <option value="dc">d.C.</option>
+                        </select>
+                        <span>a</span>
+                        <input type="text" id="maya-date2" class="date-input">
+                        <select id="maya-era2" class="era-select">
+                            <option value="">--</option>
+                            <option value="ac">a.C.</option>
+                            <option value="dc">d.C.</option>
+                        </select>
+                    </div>
+                    <div class="correction" id="maya-periodo-correction">
+                        Corrección: Ellos <b>vivian</b> de <b>750</b> <b>a.C.</b> a <b>950</b> <b>d.C.</b>
+                    </div>
+                </div>
+
+                <!-- Ubicación -->
+                <div class="field-group">
+                    <label class="field-label">Ubicación:</label>
+                    <div class="input-row">
+                        <span>El imperio maya</span>
+                        <input type="text" id="maya-ubicacion-verb" class="verb-input" placeholder="se situait">
+                        <span>en el</span>
+                        <input type="text" id="maya-ubicacion1" style="width: 100px;">
+                        <span>de</span>
+                        <input type="text" id="maya-ubicacion2" style="width: 100px;">
+                        <span>y</span>
+                        <input type="text" id="maya-ubicacion3" style="width: 100px;">
+                        <span>,</span>
+                        <input type="text" id="maya-ubicacion4" style="width: 100px;">
+                        <span>,</span>
+                        <input type="text" id="maya-ubicacion5" style="width: 100px;">
+                        <span>y</span>
+                        <input type="text" id="maya-ubicacion6" style="width: 100px;">
+                    </div>
+                    <div class="correction" id="maya-ubicacion-correction">
+                        Corrección: El imperio maya <b>se situaba</b> en el <b>sureste</b> de <b>México</b> y <b>Guatemala</b>, <b>Honduras</b>, <b>El Salvador</b> y <b>Belice</b>
+                    </div>
+                </div>
+
+                <!-- Ciudades -->
+                <div class="field-group">
+                    <label class="field-label">Ciudades:</label>
+                    <div class="input-row">
+                        <input type="text" id="maya-ciudades-verb" class="verb-input" placeholder="Il y avait">
+                        <span>ciudades como</span>
+                        <input type="text" id="maya-ciudad1" style="width: 100px;">
+                        <span>y</span>
+                        <input type="text" id="maya-ciudad2" style="width: 130px;">
+                    </div>
+                    <div class="correction" id="maya-ciudades-correction">
+                        Corrección: <b>Había</b> ciudades como <b>Tikal</b> y <b>Chichén Itzá</b>
+                    </div>
+                </div>
+
+                <!-- Dioses -->
+                <div class="field-group">
+                    <label class="field-label">Dioses:</label>
+                    <div class="input-row">
+                        <span>Los dioses</span>
+                        <input type="text" id="maya-dioses-verb" class="verb-input" placeholder="étaient">
+                        <input type="text" id="maya-dios1" style="width: 100px;">
+                        <span>y</span>
+                        <input type="text" id="maya-dios2" style="width: 120px;">
+                    </div>
+                    <div class="correction" id="maya-dioses-correction">
+                        Corrección: Los dioses <b>eran</b> <b>Chaac</b> y <b>Kukulkán</b>
+                    </div>
+                </div>
+
+                <!-- Lengua -->
+                <div class="field-group">
+                    <label class="field-label">Lengua y palabras:</label>
+                    <div class="input-row">
+                        <input type="text" id="maya-lengua-verb" class="verb-input" placeholder="Ils parlaient">
+                        <input type="text" id="maya-lengua" style="width: 80px;">
+                        <span>y tenían</span>
+                        <input type="text" id="maya-escritura1" style="width: 100px;">
+                        <span>y</span>
+                        <input type="text" id="maya-escritura2" style="width: 120px;">
+                    </div>
+                    <div class="correction" id="maya-lengua-correction">
+                        Corrección: <b>Hablaban</b> <b>maya</b> y tenían <b>sílabas</b> y <b>pictogramas</b>
+                    </div>
+                </div>
+
+                <!-- Innovaciones -->
+                <div class="field-group">
+                    <label class="field-label">Innovaciones:</label>
+                    <div class="input-row">
+                        <input type="text" id="maya-innov-verb" class="verb-input" placeholder="Ils avaient">
+                        <span>el número</span>
+                        <input type="text" id="maya-numero" style="width: 50px;">
+                        <span>que les permitió tener conocimientos en</span>
+                        <input type="text" id="maya-ciencia1" style="width: 120px;">
+                        <span>y</span>
+                        <input type="text" id="maya-ciencia2" style="width: 130px;">
+                    </div>
+                    <div class="input-row" style="margin-top: 8px;">
+                        <span>También</span>
+                        <input type="text" id="maya-arqui-verb" class="verb-input" placeholder="Ils avaient">
+                        <input type="text" id="maya-arqui1" style="width: 80px;">
+                        <span>y</span>
+                        <input type="text" id="maya-arqui2" style="width: 100px;">
+                    </div>
+                    <div class="correction" id="maya-innovaciones-correction">
+                        Corrección: <b>Tenían</b> el número <b>0</b>... conocimientos en <b>astronomía</b> y <b>matemáticas</b>. También <b>tenían</b> <b>arcos</b> y <b>cúpulas</b>
+                    </div>
+                </div>
+
+                <!-- Gobierno -->
+                <div class="field-group">
+                    <label class="field-label">Forma de gobierno:</label>
+                    <div class="input-row">
+                        <input type="text" id="maya-gobierno-verb" class="verb-input" placeholder="Il y avait">
+                        <input type="text" id="maya-gobierno1" style="width: 100px;">
+                        <input type="text" id="maya-gobierno2" style="width: 100px;">
+                    </div>
+                    <div class="correction" id="maya-gobierno-correction">
+                        Corrección: <b>Había</b> <b>ciudades</b> <b>estado</b>
+                    </div>
+                </div>
+
+                <div class="btn-container">
+                    <button class="btn btn-check" onclick="checkAnswers('maya')">✓ Vérifier</button>
+                    <button class="btn btn-reset" onclick="resetForm('maya')">↺ Recommencer</button>
+                </div>
+                <div class="score-display maya" id="maya-score"></div>
+            </div>
+        </div>
+
+        <!-- AZTECAS CARD -->
+        <div class="card aztec" id="aztec-card">
+            <div class="card-header">
+                <div class="dot"></div>
+                <h1>AZTECAS</h1>
+            </div>
+            <div class="form-content">
+                <!-- Periodo -->
+                <div class="field-group">
+                    <label class="field-label">Periodo:</label>
+                    <div class="input-row">
+                        <span>Ellos</span>
+                        <input type="text" id="aztec-verb" class="verb-input" placeholder="vivaient">
+                        <span>de</span>
+                        <input type="text" id="aztec-date1" class="date-input">
+                        <span>a</span>
+                        <input type="text" id="aztec-date2" class="date-input">
+                        <span>(d.C.)</span>
+                    </div>
+                    <div class="correction" id="aztec-periodo-correction">
+                        Corrección: Ellos <b>vivian</b> de <b>1325</b> a <b>1521</b> (d.C.)
+                    </div>
+                </div>
+
+                <!-- Ubicación -->
+                <div class="field-group">
+                    <label class="field-label">Ubicación:</label>
+                    <div class="input-row">
+                        <span>Vivian del</span>
+                        <input type="text" id="aztec-ubicacion1" style="width: 90px;">
+                        <span>al</span>
+                        <input type="text" id="aztec-ubicacion2" style="width: 90px;">
+                        <span>de</span>
+                        <input type="text" id="aztec-ubicacion3" style="width: 100px;">
+                    </div>
+                    <div class="correction" id="aztec-ubicacion-correction">
+                        Corrección: Vivian del <b>Golfo</b> al <b>centro</b> de <b>México</b>
+                    </div>
+                </div>
+
+                <!-- Ciudades -->
+                <div class="field-group">
+                    <label class="field-label">Ciudades:</label>
+                    <div class="input-row">
+                        <span>La capital</span>
+                        <input type="text" id="aztec-ciudades-verb" class="verb-input" placeholder="était">
+                        <input type="text" id="aztec-ciudad" style="width: 160px;">
+                    </div>
+                    <div class="correction" id="aztec-ciudades-correction">
+                        Corrección: La capital <b>era</b> <b>Tenochtitlan</b>
+                    </div>
+                </div>
+
+                <!-- Dioses -->
+                <div class="field-group">
+                    <label class="field-label">Dioses:</label>
+                    <div class="input-row">
+                        <span>Los dioses</span>
+                        <input type="text" id="aztec-dioses-verb" class="verb-input" placeholder="étaient">
+                        <input type="text" id="aztec-dios1" style="width: 90px;">
+                        <span>,</span>
+                        <input type="text" id="aztec-dios2" style="width: 130px;">
+                        <span>y</span>
+                        <input type="text" id="aztec-dios3" style="width: 140px;">
+                    </div>
+                    <div class="correction" id="aztec-dioses-correction">
+                        Corrección: Los dioses <b>eran</b> <b>Tlaloc</b>, <b>Quetzalcóatl</b> y <b>Huitzilopochtli</b>
+                    </div>
+                </div>
+
+                <!-- Lengua -->
+                <div class="field-group">
+                    <label class="field-label">Lengua y palabras:</label>
+                    <div class="input-row">
+                        <input type="text" id="aztec-lengua-verb" class="verb-input" placeholder="Ils parlaient">
+                        <input type="text" id="aztec-lengua" style="width: 100px;">
+                    </div>
+                    <div class="input-row" style="margin-top: 8px; color: #546e7a; font-weight: 600;">
+                        <span>Palabras: tomatl, coyotl, chocolatl</span>
+                    </div>
+                    <div class="correction" id="aztec-lengua-correction">
+                        Corrección: <b>Hablaban</b> <b>Náhuatl</b>.
+                    </div>
+                </div>
+
+                <!-- Innovaciones -->
+                <div class="field-group">
+                    <label class="field-label">Innovaciones:</label>
+                    <div class="input-row">
+                        <input type="text" id="aztec-innov-verb" class="verb-input" placeholder="Ils ont inventé">
+                        <input type="text" id="aztec-innov" style="width: 120px;">
+                        <span>para cultivar en los</span>
+                        <input type="text" id="aztec-innov2" style="width: 100px;">
+                    </div>
+                    <div class="correction" id="aztec-innovaciones-correction">
+                        Corrección: <b>Inventaron</b> <b>chinampas</b> para cultivar en los <b>canales</b>
+                    </div>
+                </div>
+
+                <!-- Forma de gobierno -->
+                <div class="field-group">
+                    <label class="field-label">Forma de gobierno:</label>
+                    <div class="input-row">
+                        <span>Era un</span>
+                        <input type="text" id="aztec-gobierno1" style="width: 100px;">
+                        <span>, con un</span>
+                        <input type="text" id="aztec-gobierno2" class="verb-input" placeholder="empereur" style="width: 120px;">
+                        <span>,</span>
+                        <input type="text" id="aztec-emperador" style="width: 130px;">
+                    </div>
+                    <div class="correction" id="aztec-gobierno-correction">
+                        Corrección: Era un <b>imperio</b>, con un <b>emperador</b>, <b>Moctezuma</b>
+                    </div>
+                </div>
+
+                <div class="btn-container">
+                    <button class="btn btn-check" onclick="checkAnswers('aztec')">✓ Vérifier</button>
+                    <button class="btn btn-reset" onclick="resetForm('aztec')">↺ Recommencer</button>
+                </div>
+                <div class="score-display aztec" id="aztec-score"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function removeAccents(str) { return str.normalize('NFD').replace(/[\u0300-\u036f]/g, ''); }
+        function normalize(str) { return str.toLowerCase().trim().replace(/\s+/g, ' '); }
+
+        const answers = {
+            maya: {
+                verb: { exact: ['vivian'], noAccent: ['vivian'] },
+                date1: { exact: ['750'] }, era1: { exact: ['ac'] },
+                date2: { exact: ['950'] }, era2: { exact: ['dc'] },
+                ubicacionVerb: { exact: ['se situaba'] },
+                ubicacion1: { exact: ['sureste'] },
+                ubicacion2: { exact: ['méxico'], noAccent: ['mexico'] },
+                ubicacion3: { exact: ['guatemala'] },
+                ubicacion4: { exact: ['honduras'] },
+                ubicacion5: { exact: ['el salvador'] },
+                ubicacion6: { exact: ['belice'] },
+                ciudadesVerb: { exact: ['había'], noAccent: ['habia'] },
+                ciudad1: { exact: ['tikal', 'chichén itzá'], noAccent: ['tikal', 'chichen itza'] },
+                ciudad2: { exact: ['chichén itzá', 'tikal'], noAccent: ['chichen itza', 'tikal'] },
+                diososVerb: { exact: ['eran'] },
+                dios1: { exact: ['chaac', 'kukulkán'], noAccent: ['chaac', 'kukulkan'] },
+                dios2: { exact: ['kukulkán', 'chaac'], noAccent: ['kukulkan', 'chaac'] },
+                lenguaVerb: { exact: ['hablaban'] },
+                lengua: { exact: ['maya'] },
+                escritura1: { exact: ['sílabas', 'pictogramas'], noAccent: ['silabas', 'pictogramas'] },
+                escritura2: { exact: ['pictogramas', 'sílabas'], noAccent: ['pictogramas', 'silabas'] },
+                innovVerb: { exact: ['tenían'], noAccent: ['tenian'] },
+                numero: { exact: ['0', 'cero'] },
+                ciencia1: { exact: ['astronomía', 'matemáticas'], noAccent: ['astronomia', 'matematicas'] },
+                ciencia2: { exact: ['matemáticas', 'astronomía'], noAccent: ['matematicas', 'astronomia'] },
+                arquiVerb: { exact: ['tenían'], noAccent: ['tenian'] },
+                arqui1: { exact: ['arcos', 'cúpulas'], noAccent: ['arcos', 'cupulas'] },
+                arqui2: { exact: ['cúpulas', 'arcos'], noAccent: ['cupulas', 'arcos'] },
+                gobiernoVerb: { exact: ['había'], noAccent: ['habia'] },
+                gobierno1: { exact: ['ciudades'] },
+                gobierno2: { exact: ['estado'] }
+            },
+            aztec: {
+                verb: { exact: ['vivian'], noAccent: ['vivian'] },
+                date1: { exact: ['1325'] },
+                date2: { exact: ['1521'] },
+                ubicacion1: { exact: ['golfo'] },
+                ubicacion2: { exact: ['centro'] },
+                ubicacion3: { exact: ['méxico'], noAccent: ['mexico'] },
+                ciudadesVerb: { exact: ['era'] },
+                ciudad: { exact: ['tenochtitlan', 'tenochtitlán'], noAccent: ['tenochtitlan'] },
+                diososVerb: { exact: ['eran'] },
+                dios1: { exact: ['tlaloc', 'tláloc', 'quetzalcóatl', 'huitzilopochtli'], noAccent: ['tlaloc', 'quetzalcoatl', 'huitzilopochtli'] },
+                dios2: { exact: ['quetzalcóatl', 'tlaloc', 'huitzilopochtli'], noAccent: ['quetzalcoatl', 'tlaloc', 'huitzilopochtli'] },
+                dios3: { exact: ['huitzilopochtli', 'tlaloc', 'quetzalcóatl'], noAccent: ['huitzilopochtli', 'tlaloc', 'quetzalcoatl'] },
+                lenguaVerb: { exact: ['hablaban'] },
+                lengua: { exact: ['náhuatl'], noAccent: ['nahuatl'] },
+                innovVerb: { exact: ['inventaron'] },
+                innov: { exact: ['chinampas'] },
+                innov2: { exact: ['canales'] },
+                gobierno1: { exact: ['imperio'] },
+                gobierno2: { exact: ['emperador'] },
+                emperador: { exact: ['moctezuma'] }
+            }
+        };
+
+        function switchTab(tab) {
+            document.body.className = tab + '-theme';
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.card').forEach(card => card.classList.remove('active'));
+            document.querySelector('.tab-btn.' + tab).classList.add('active');
+            document.getElementById(tab + '-card').classList.add('active');
+        }
+
+        function checkField(inputId, answerKey, civ, isSelect = false) {
+            const element = document.getElementById(inputId);
+            const answerData = answers[civ][answerKey];
+            let value = isSelect ? element.value : normalize(element.value);
+            if (!value) return 0;
+            let isPerfect = answerData.exact.some(cv => normalize(cv) === value);
+            let isAlmost = false;
+            if (!isPerfect) {
+                const valueNoAccent = removeAccents(value);
+                const allAccepted = [...(answerData.exact || []), ...(answerData.noAccent || [])];
+                isAlmost = allAccepted.some(cv => removeAccents(normalize(cv)) === valueNoAccent);
+            }
+            element.classList.remove('correct-perfect', 'correct-almost', 'incorrect');
+            if (isPerfect) { element.classList.add('correct-perfect'); return 2; }
+            if (isAlmost) { element.classList.add('correct-almost'); return 1; }
+            element.classList.add('incorrect'); return 0;
+        }
+
+        function checkAnswers(civ) {
+            let results = [];
+            if (civ === 'maya') {
+                results.push(checkField('maya-verb', 'verb', 'maya'));
+                results.push(checkField('maya-date1', 'date1', 'maya'));
+                results.push(checkField('maya-era1', 'era1', 'maya', true));
+                results.push(checkField('maya-date2', 'date2', 'maya'));
+                results.push(checkField('maya-era2', 'era2', 'maya', true));
+                showCorrection('maya-periodo-correction', results.slice(0,5).some(r => r === 0));
+
+                let ubi = [checkField('maya-ubicacion-verb', 'ubicacionVerb', 'maya'), checkField('maya-ubicacion1', 'ubicacion1', 'maya'), checkField('maya-ubicacion2', 'maya-ubicacion2', 'maya'), checkField('maya-ubicacion3', 'ubicacion3', 'maya')];
+                results.push(...ubi); showCorrection('maya-ubicacion-correction', ubi.some(r => r === 0));
+
+                let ciu = [checkField('maya-ciudades-verb', 'ciudadesVerb', 'maya'), checkField('maya-ciudad1', 'ciudad1', 'maya'), checkField('maya-ciudad2', 'ciudad2', 'maya')];
+                results.push(...ciu); showCorrection('maya-ciudades-correction', ciu.some(r => r === 0));
+
+                let dio = [checkField('maya-dioses-verb', 'diososVerb', 'maya'), checkField('maya-dios1', 'dios1', 'maya'), checkField('maya-dios2', 'dios2', 'maya')];
+                results.push(...dio); showCorrection('maya-dioses-correction', dio.some(r => r === 0));
+
+                let len = [checkField('maya-lengua-verb', 'lenguaVerb', 'maya'), checkField('maya-lengua', 'lengua', 'maya'), checkField('maya-escritura1', 'escritura1', 'maya'), checkField('maya-escritura2', 'escritura2', 'maya')];
+                results.push(...len); showCorrection('maya-lengua-correction', len.some(r => r === 0));
+
+                let inn = [checkField('maya-innov-verb', 'innovVerb', 'maya'), checkField('maya-numero', 'numero', 'maya'), checkField('maya-ciencia1', 'ciencia1', 'maya'), checkField('maya-ciencia2', 'ciencia2', 'maya'), checkField('maya-arqui-verb', 'arquiVerb', 'maya'), checkField('maya-arqui1', 'arqui1', 'maya'), checkField('maya-arqui2', 'arqui2', 'maya')];
+                results.push(...inn); showCorrection('maya-innovaciones-correction', inn.some(r => r === 0));
+
+                let gob = [checkField('maya-gobierno-verb', 'gobiernoVerb', 'maya'), checkField('maya-gobierno1', 'gobierno1', 'maya'), checkField('maya-gobierno2', 'gobierno2', 'maya')];
+                results.push(...gob); showCorrection('maya-gobierno-correction', gob.some(r => r === 0));
+            } else {
+                let per = [checkField('aztec-verb', 'verb', 'aztec'), checkField('aztec-date1', 'date1', 'aztec'), checkField('aztec-date2', 'date2', 'aztec')];
+                results.push(...per); showCorrection('aztec-periodo-correction', per.some(r => r === 0));
+
+                let ubi = [checkField('aztec-ubicacion1', 'ubicacion1', 'aztec'), checkField('aztec-ubicacion2', 'ubicacion2', 'aztec'), checkField('aztec-ubicacion3', 'ubicacion3', 'aztec')];
+                results.push(...ubi); showCorrection('aztec-ubicacion-correction', ubi.some(r => r === 0));
+
+                let ciu = [checkField('aztec-ciudades-verb', 'ciudadesVerb', 'aztec'), checkField('aztec-ciudad', 'ciudad', 'aztec')];
+                results.push(...ciu); showCorrection('aztec-ciudades-correction', ciu.some(r => r === 0));
+
+                let dio = [checkField('aztec-dioses-verb', 'diososVerb', 'aztec'), checkField('aztec-dios1', 'dios1', 'aztec'), checkField('aztec-dios2', 'dios2', 'aztec'), checkField('aztec-dios3', 'dios3', 'aztec')];
+                results.push(...dio); showCorrection('aztec-dioses-correction', dio.some(r => r === 0));
+
+                let len = [checkField('aztec-lengua-verb', 'lenguaVerb', 'aztec'), checkField('aztec-lengua', 'lengua', 'aztec')];
+                results.push(...len); showCorrection('aztec-lengua-correction', len.some(r => r === 0));
+
+                let inn = [checkField('aztec-innov-verb', 'innovVerb', 'aztec'), checkField('aztec-innov', 'innov', 'aztec'), checkField('aztec-innov2', 'innov2', 'aztec')];
+                results.push(...inn); showCorrection('aztec-innovaciones-correction', inn.some(r => r === 0));
+
+                let gob = [checkField('aztec-gobierno1', 'gobierno1', 'aztec'), checkField('aztec-gobierno2', 'gobierno2', 'aztec'), checkField('aztec-emperador', 'emperador', 'aztec')];
+                results.push(...gob); showCorrection('aztec-gobierno-correction', gob.some(r => r === 0));
+            }
+            const scoreEl = document.getElementById(civ + '-score');
+            const total = results.length;
+            const correct = results.filter(r => r > 0).length;
+            scoreEl.innerHTML = `<h2>Score: ${correct}/${total} (${Math.round(correct/total*100)}%)</h2>`;
+            scoreEl.classList.add('show');
+        }
+
+        function showCorrection(id, show) {
+            const el = document.getElementById(id);
+            if (show) el.classList.add('show'); else el.classList.remove('show');
+        }
+
+        function resetForm(civ) {
+            const card = document.getElementById(civ + '-card');
+            card.querySelectorAll('input, select').forEach(el => {
+                if (el.tagName === 'SELECT') el.selectedIndex = 0; else el.value = '';
+                el.classList.remove('correct-perfect', 'correct-almost', 'incorrect');
+            });
+            card.querySelectorAll('.correction').forEach(el => el.classList.remove('show'));
+            document.getElementById(civ + '-score').classList.remove('show');
+        }
+    </script>
+</body>
+</html>

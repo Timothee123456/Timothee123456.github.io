@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Los Números - Révision Espagnol</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --red: #c62828;
+            --dark-red: #8e0000;
+            --light-bg: #fafafa;
+            --border: #333;
+            --correct: #2e7d32;
+            --incorrect: #c62828;
+        }
+
+        .dark {
+            --light-bg: #1a1a1a;
+            --border: #ccc;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Open Sans', sans-serif;
+            background: var(--light-bg);
+            min-height: 100vh;
+            padding: 10px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border: 3px solid var(--border);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .dark .container {
+            background: #2a2a2a;
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 15px;
+            border-bottom: 2px dashed #999;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .logo-box {
+            background: var(--red);
+            color: white;
+            padding: 8px 20px;
+            font-family: 'Fredoka One', cursive;
+            font-size: 1.4rem;
+            transform: skewX(-5deg);
+            box-shadow: 3px 3px 0 var(--dark-red);
+        }
+
+        .logo-box span {
+            display: block;
+            font-size: 0.6rem;
+            font-family: 'Open Sans', sans-serif;
+            text-align: center;
+            margin-top: 2px;
+        }
+
+        /* Numbers 0-9 */
+        .top-numbers {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 8px;
+            padding: 15px;
+            border: 2px solid var(--border);
+            margin: 10px;
+            border-radius: 5px;
+        }
+
+        .num-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 4px;
+        }
+
+        .num-item .number {
+            font-weight: 700;
+            font-size: 1.3rem;
+            color: var(--red);
+            min-width: 30px;
+        }
+
+        .num-item input {
+            width: 100%;
+            max-width: 160px;
+            padding: 8px 10px;
+            border: 2px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+            font-family: inherit;
+        }
+
+        .dark .num-item input {
+            background: #3a3a3a;
+            color: white;
+            border-color: #555;
+        }
+
+        .num-item input:focus {
+            outline: none;
+            border-color: var(--red);
+        }
+
+        .num-item input.correct {
+            border-color: var(--correct);
+            background: #e8f5e9;
+        }
+
+        .num-item input.incorrect {
+            border-color: var(--incorrect);
+            background: #ffebee;
+        }
+
+        .dark .num-item input.correct {
+            background: #1b5e20;
+        }
+
+        .dark .num-item input.incorrect {
+            background: #b71c1c;
+        }
+
+        /* Main grid sections */
+        .main-section {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            padding: 15px;
+            border-bottom: 2px dashed #999;
+        }
+
+        @media (max-width: 700px) {
+            .main-section {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .column h3 {
+            color: var(--red);
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+        }
+
+        .dark .column h3,
+        .dark .number {
+            color: #ff6b6b;
+        }
+
+        /* Attention box */
+        .attention-box {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            padding: 10px;
+            margin-top: 15px;
+            border-radius: 5px;
+            font-size: 0.8rem;
+        }
+
+        .dark .attention-box {
+            background: #4a3f00;
+            color: #ffc107;
+        }
+
+        .attention-box h4 {
+            color: var(--red);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            margin-bottom: 5px;
+        }
+
+        /* Tens row */
+        .tens-row {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+            padding: 15px;
+            border-bottom: 2px dashed #999;
+        }
+
+        /* Bottom sections */
+        .bottom-section {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            padding: 15px;
+        }
+
+        @media (max-width: 600px) {
+            .bottom-section {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Buttons */
+        .buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            padding: 15px;
+            flex-wrap: wrap;
+            background: var(--red);
+        }
+
+        .btn {
+            padding: 12px 25px;
+            font-size: 1rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .btn-check {
+            background: white;
+            color: var(--red);
+        }
+
+        .btn-reset {
+            background: var(--dark-red);
+            color: white;
+        }
+
+        .btn-show {
+            background: #ffc107;
+            color: #333;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        /* Score */
+        .score {
+            text-align: center;
+            padding: 15px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            background: #f5f5f5;
+        }
+
+        .dark .score {
+            background: #333;
+            color: white;
+        }
+
+        .score span {
+            color: var(--correct);
+        }
+
+        /* Info box */
+        .info-box {
+            background: #f0f0f0;
+            border: 2px solid #999;
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 0.75rem;
+            margin-top: 10px;
+        }
+
+        .dark .info-box {
+            background: #3a3a3a;
+            border-color: #555;
+            color: #ccc;
+        }
+
+        .info-box h4 {
+            color: var(--red);
+            margin-bottom: 5px;
+        }
+
+        .dark .info-box h4 {
+            color: #ff6b6b;
+        }
+
+        .dark body {
+            color: #eee;
+        }
+
+        .num-item input.previously-correct {
+            border-color: var(--correct);
+        }
+
+        .num-item input.previously-incorrect {
+            border-color: var(--incorrect);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo-box">
+                LOS NÚMEROS
+                <span>★ ProfeDeELE.es</span>
+            </div>
+        </div>
+
+        <!-- Numbers 0-9 -->
+        <div class="top-numbers" id="section-0-9">
+            <!-- Will be generated by JS -->
+        </div>
+
+        <!-- Numbers 10-41 -->
+        <div class="main-section">
+            <div class="column" id="section-10-19"></div>
+            <div class="column" id="section-20-29"></div>
+            <div class="column" id="section-30-41"></div>
+        </div>
+
+        <!-- Tens 50-90 -->
+        <div class="tens-row" id="section-tens"></div>
+
+        <!-- Hundreds and Thousands -->
+        <div class="bottom-section">
+            <div class="column" id="section-hundreds"></div>
+            <div class="column" id="section-thousands"></div>
+        </div>
+
+        <!-- Score display -->
+        <div class="score" id="score" style="display: none;">
+            Score: <span id="correct-count">0</span> / <span id="total-count">0</span>
+        </div>
+
+        <!-- Buttons -->
+        <div class="buttons">
+            <button class="btn btn-check" onclick="checkAnswers()">✓ Vérifier</button>
+            <button class="btn btn-show" id="show-answers-btn" onclick="toggleAnswers()">👁 Voir mes réponses</button>
+            <button class="btn btn-reset" onclick="resetAll()">↺ Réinitialiser</button>
+        </div>
+    </div>
+
+    <script>
+        // Dark mode detection
+        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            document.documentElement.classList.add('dark');
+        }
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
+            if (event.matches) {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+        });
+
+        // Number data
+        const numbers = {
+            0: 'cero', 1: 'uno', 2: 'dos', 3: 'tres', 4: 'cuatro',
+            5: 'cinco', 6: 'seis', 7: 'siete', 8: 'ocho', 9: 'nueve',
+            10: 'diez', 11: 'once', 12: 'doce', 13: 'trece', 14: 'catorce',
+            15: 'quince', 16: 'dieciséis', 17: 'diecisiete', 18: 'dieciocho', 19: 'diecinueve',
+            20: 'veinte', 21: 'veintiuno', 22: 'veintidós', 23: 'veintitrés', 24: 'veinticuatro',
+            25: 'veinticinco', 26: 'veintiséis', 27: 'veintisiete', 28: 'veintiocho', 29: 'veintinueve',
+            30: 'treinta', 31: 'treinta y uno', 32: 'treinta y dos', 33: 'treinta y tres',
+            34: 'treinta y cuatro', 35: 'treinta y cinco', 36: 'treinta y seis',
+            37: 'treinta y siete', 38: 'treinta y ocho', 39: 'treinta y nueve',
+            40: 'cuarenta', 41: 'cuarenta y uno',
+            50: 'cincuenta', 60: 'sesenta', 70: 'setenta', 80: 'ochenta', 90: 'noventa',
+            99: 'noventa y nueve',
+            100: 'cien', 101: 'ciento uno',
+            200: 'doscientos', 300: 'trescientos', 400: 'cuatrocientos',
+            500: 'quinientos', 600: 'seiscientos', 700: 'setecientos',
+            800: 'ochocientos', 900: 'novecientos',
+            1000: 'mil', 2000: 'dos mil', 10000: 'diez mil',
+            100000: 'cien mil', 1000000: 'un millón', 2000000: 'dos millones'
+        };
+
+        // Alternative accepted answers
+        const alternatives = {
+            16: ['dieciseis'],
+            22: ['veintidos'],
+            23: ['veintitres'],
+            26: ['veintiseis']
+        };
+
+        let answersVisible = false;
+        let savedAnswers = {};
+        let previouslyCorrect = {}; // Store which answers were previously correct
+
+        function createInput(num) {
+            const displayNum = num.toLocaleString('es-ES');
+            return `
+                <div class="num-item">
+                    <span class="number">${displayNum}</span>
+                    <input type="text" id="num-${num}" data-answer="${numbers[num]}" placeholder="..." autocomplete="off">
+                </div>
+            `;
+        }
+
+        function generateSections() {
+            // 0-9
+            let html = '';
+            for (let i = 0; i <= 9; i++) {
+                html += createInput(i);
+            }
+            document.getElementById('section-0-9').innerHTML = html;
+
+            // 10-19
+            html = '<h3>10-19</h3>';
+            for (let i = 10; i <= 19; i++) {
+                html += createInput(i);
+            }
+            document.getElementById('section-10-19').innerHTML = html;
+
+            // 20-29
+            html = '<h3>20-29</h3>';
+            for (let i = 20; i <= 29; i++) {
+                html += createInput(i);
+            }
+            document.getElementById('section-20-29').innerHTML = html;
+
+            // 30-41 + 99
+            html = '<h3>30-41</h3>';
+            for (let i = 30; i <= 41; i++) {
+                html += createInput(i);
+            }
+            html += createInput(99);
+            document.getElementById('section-30-41').innerHTML = html;
+
+            // Tens
+            html = '';
+            [50, 60, 70, 80, 90].forEach(num => {
+                html += createInput(num);
+            });
+            document.getElementById('section-tens').innerHTML = html;
+
+            // Hundreds
+            html = '<h3>100-900</h3>';
+            [100, 101, 200, 300, 400, 500, 600, 700, 800, 900].forEach(num => {
+                html += createInput(num);
+            });
+            document.getElementById('section-hundreds').innerHTML = html;
+
+            // Thousands
+            html = '<h3>1.000+</h3>';
+            [1000, 2000, 10000, 100000, 1000000, 2000000].forEach(num => {
+                html += createInput(num);
+            });
+            document.getElementById('section-thousands').innerHTML = html;
+        }
+
+        function normalizeText(text) {
+            return text.toLowerCase()
+                .trim()
+                .normalize('NFD')
+                .replace(/[\u0300-\u036f]/g, '');
+        }
+
+        function checkAnswers() {
+            const inputs = document.querySelectorAll('input[data-answer]');
+            let correct = 0;
+            let total = inputs.length;
+
+            inputs.forEach(input => {
+                const userAnswer = normalizeText(input.value);
+                const correctAnswer = normalizeText(input.dataset.answer);
+                const numId = input.id.replace('num-', '');
+                const alts = alternatives[numId] ? alternatives[numId].map(normalizeText) : [];
+
+                input.classList.remove('correct', 'incorrect', 'previously-correct', 'previously-incorrect');
+
+                if (userAnswer === '') {
+                    return;
+                }
+
+                let isCorrect = userAnswer === correctAnswer || alts.includes(userAnswer);
+
+                if (isCorrect) {
+                    input.classList.add('correct');
+                    correct++;
+                    previouslyCorrect[input.id] = 'correct'; // Store 'correct'
+                } else {
+                    input.classList.add('incorrect');
+                    previouslyCorrect[input.id] = 'incorrect'; // Store 'incorrect'
+                }
+            });
+
+            document.getElementById('score').style.display = 'block';
+            document.getElementById('correct-count').textContent = correct;
+            document.getElementById('total-count').textContent = total;
+            answersVisible = false; //hide answer will function as intended
+        }
+
+        function showAnswers() {
+            const inputs = document.querySelectorAll('input[data-answer]');
+            inputs.forEach(input => {
+                input.value = input.dataset.answer;
+                input.classList.remove('incorrect', 'previously-correct', 'previously-incorrect');
+                input.classList.add('correct');
+                previouslyCorrect[input.id] = 'correct'; // Mark all as correct when showing answers
+            });
+            document.getElementById('score').style.display = 'none';
+            checkAnswers(); // Call checkAnswers after showing the answers
+        }
+
+        function hideAnswers() {
+            const inputs = document.querySelectorAll('input[data-answer]');
+            inputs.forEach(input => {
+                const numId = input.id;
+                input.value = savedAnswers[numId] || ''; // Restore saved answer
+                input.classList.remove('correct', 'incorrect', 'previously-correct', 'previously-incorrect');
+
+                // Add 'previously-correct' or 'previously-incorrect' class based on previous state
+                if (previouslyCorrect[input.id] === 'correct') {
+                    input.classList.add('previously-correct');
+                } else if (previouslyCorrect[input.id] === 'incorrect') {
+                    input.classList.add('previously-incorrect');
+                }
+            });
+        }
+
+        function saveAnswers() {
+            savedAnswers = {};
+            const inputs = document.querySelectorAll('input[data-answer]');
+            inputs.forEach(input => {
+                const numId = input.id;
+                savedAnswers[numId] = input.value;
+            });
+        }
+
+        function toggleAnswers() {
+            const btn = document.getElementById('show-answers-btn');
+            if (!answersVisible) {
+                // If answers are not visible, save current answers and show correct answers
+                saveAnswers();
+                showAnswers();
+                btn.textContent = '👁 Voir mes réponses';
+                answersVisible = true;
+            } else {
+                // If answers are visible, hide correct answers and restore saved answers
+                hideAnswers();
+                btn.textContent = '👁 Voir les réponses';
+                answersVisible = false;
+            }
+        }
+
+        function resetAll() {
+            const inputs = document.querySelectorAll('input[data-answer]');
+            inputs.forEach(input => {
+                input.value = '';
+                input.classList.remove('correct', 'incorrect', 'previously-correct', 'previously-incorrect');
+            });
+            document.getElementById('score').style.display = 'none';
+            const btn = document.getElementById('show-answers-btn');
+            btn.textContent = '👁 Voir les réponses'; // Reset the button text
+            answersVisible = false;
+            savedAnswers = {}; // Clear saved answers
+            previouslyCorrect = {}; // Clear previously correct status
+        }
+
+        // Initialize
+        generateSections();
+    </script>
+</body>
+</html>

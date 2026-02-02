@@ -1,0 +1,873 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Spanish Numbers Practice</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-primary: #fef7e4;
+      --bg-secondary: #fff8e7;
+      --text-primary: #2d3436;
+      --text-secondary: #636e72;
+      --accent: #e17055;
+      --accent-light: #fab1a0;
+      --success: #00b894;
+      --success-light: #55efc4;
+      --error: #d63031;
+      --error-light: #ff7675;
+      --card-bg: #ffffff;
+      --shadow: rgba(225, 112, 85, 0.15);
+      --input-bg: #ffffff;
+      --input-border: #dfe6e9;
+    }
+
+    .dark {
+      --bg-primary: #1a1a2e;
+      --bg-secondary: #16213e;
+      --text-primary: #edf2f7;
+      --text-secondary: #a0aec0;
+      --accent: #f6ad55;
+      --accent-light: #ed8936;
+      --success: #48bb78;
+      --success-light: #68d391;
+      --error: #fc8181;
+      --error-light: #feb2b2;
+      --card-bg: #1e2a4a;
+      --shadow: rgba(0, 0, 0, 0.3);
+      --input-bg: #2d3a5a;
+      --input-border: #4a5568;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Nunito', sans-serif;
+      background: var(--bg-primary);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+      transition: background 0.3s ease;
+    }
+
+    .container {
+      max-width: 600px;
+      width: 100%;
+      animation: fadeIn 0.6s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    h1 {
+      font-size: 2.2rem;
+      font-weight: 800;
+      color: var(--accent);
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+    }
+
+    h1 .flag {
+      font-size: 2rem;
+    }
+
+    .subtitle {
+      color: var(--text-secondary);
+      font-size: 1rem;
+      font-weight: 600;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border-radius: 24px;
+      padding: 40px 30px;
+      box-shadow: 0 10px 40px var(--shadow);
+      margin-bottom: 20px;
+    }
+
+    .number-display {
+      text-align: center;
+      margin-bottom: 35px;
+    }
+
+    .number-label {
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: var(--text-secondary);
+      margin-bottom: 12px;
+      font-weight: 700;
+    }
+
+    .number {
+      font-size: 4rem;
+      font-weight: 800;
+      color: var(--text-primary);
+      line-height: 1;
+      animation: popIn 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    }
+
+    @keyframes popIn {
+      0% { transform: scale(0.5); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    .input-section {
+      margin-bottom: 25px;
+    }
+
+    .input-label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--text-secondary);
+      margin-bottom: 10px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .input-wrapper {
+      position: relative;
+    }
+
+    #answer-input {
+      width: 100%;
+      padding: 18px 20px;
+      font-size: 1.2rem;
+      font-family: 'Nunito', sans-serif;
+      font-weight: 600;
+      border: 3px solid var(--input-border);
+      border-radius: 16px;
+      background: var(--input-bg);
+      color: var(--text-primary);
+      outline: none;
+      transition: all 0.3s ease;
+    }
+
+    #answer-input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 4px var(--shadow);
+    }
+
+    #answer-input.correct {
+      border-color: var(--success);
+      background: linear-gradient(135deg, var(--success-light) 0%, transparent 100%);
+    }
+
+    #answer-input.incorrect {
+      border-color: var(--error);
+      animation: shake 0.5s ease;
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20%, 60% { transform: translateX(-8px); }
+      40%, 80% { transform: translateX(8px); }
+    }
+
+    .btn {
+      width: 100%;
+      padding: 18px;
+      font-size: 1.1rem;
+      font-family: 'Nunito', sans-serif;
+      font-weight: 700;
+      border: none;
+      border-radius: 16px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent-light) 100%);
+      color: white;
+      box-shadow: 0 6px 20px var(--shadow);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px var(--shadow);
+    }
+
+    .btn-primary:active {
+      transform: translateY(0);
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: var(--accent);
+      border: 3px solid var(--accent);
+      margin-top: 12px;
+    }
+
+    .btn-secondary:hover {
+      background: var(--accent);
+      color: white;
+    }
+
+    .feedback {
+      text-align: center;
+      padding: 20px;
+      border-radius: 16px;
+      margin-top: 20px;
+      display: none;
+      animation: slideUp 0.4s ease;
+    }
+
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .feedback.show {
+      display: block;
+    }
+
+    .feedback.correct {
+      background: linear-gradient(135deg, rgba(0, 184, 148, 0.15) 0%, rgba(85, 239, 196, 0.1) 100%);
+      border: 2px solid var(--success);
+    }
+
+    .feedback.incorrect {
+      background: linear-gradient(135deg, rgba(214, 48, 49, 0.15) 0%, rgba(255, 118, 117, 0.1) 100%);
+      border: 2px solid var(--error);
+    }
+
+    .feedback-icon {
+      font-size: 3.5rem;
+      margin-bottom: 10px;
+      font-weight: 800;
+    }
+
+    .feedback.correct .feedback-icon {
+      color: var(--success);
+    }
+
+    .feedback.incorrect .feedback-icon {
+      color: var(--error);
+    }
+
+    .feedback-text {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 8px;
+    }
+
+    .correct-answer {
+      font-size: 1.3rem;
+      font-weight: 800;
+      color: var(--accent);
+      padding: 10px 20px;
+      background: var(--bg-secondary);
+      border-radius: 12px;
+      display: inline-block;
+      margin-top: 8px;
+    }
+
+    .breakdown {
+      margin-top: 16px;
+      padding: 16px 20px;
+      background: var(--bg-secondary);
+      border-radius: 12px;
+      text-align: left;
+    }
+
+    .breakdown-title {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 10px;
+    }
+
+    .breakdown-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--input-border);
+    }
+
+    .breakdown-item:last-child {
+      border-bottom: none;
+    }
+
+    .breakdown-num {
+      font-weight: 800;
+      color: var(--accent);
+      min-width: 80px;
+      font-size: 1rem;
+    }
+
+    .breakdown-arrow {
+      color: var(--text-secondary);
+    }
+
+    .breakdown-word {
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .breakdown-note {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      font-style: italic;
+      margin-left: auto;
+    }
+
+    .stats {
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      padding: 20px;
+      background: var(--card-bg);
+      border-radius: 16px;
+      box-shadow: 0 4px 20px var(--shadow);
+    }
+
+    .stat {
+      text-align: center;
+    }
+
+    .stat-value {
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--accent);
+    }
+
+    .stat-label {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .stat.correct .stat-value {
+      color: var(--success);
+    }
+
+    .stat.incorrect .stat-value {
+      color: var(--error);
+    }
+
+    .hint-section {
+      margin-top: 20px;
+      text-align: center;
+    }
+
+    .hint-btn {
+      background: none;
+      border: none;
+      color: var(--text-secondary);
+      font-family: 'Nunito', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      padding: 8px 16px;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+    }
+
+    .hint-btn:hover {
+      background: var(--bg-secondary);
+      color: var(--accent);
+    }
+
+    .hint-text {
+      margin-top: 12px;
+      padding: 15px 20px;
+      background: var(--bg-secondary);
+      border-radius: 12px;
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+      display: none;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .hint-text.show {
+      display: block;
+    }
+
+    .difficulty-badge {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-top: 10px;
+    }
+
+    .difficulty-easy { background: #d4edda; color: #155724; }
+    .difficulty-medium { background: #fff3cd; color: #856404; }
+    .difficulty-hard { background: #f8d7da; color: #721c24; }
+    .dark .difficulty-easy { background: #1b4332; color: #95d5b2; }
+    .dark .difficulty-medium { background: #5c4d1e; color: #ffd166; }
+    .dark .difficulty-hard { background: #5c1e1e; color: #ff9999; }
+
+    @media (max-width: 480px) {
+      h1 { font-size: 1.8rem; }
+      .number { font-size: 3rem; }
+      .card { padding: 30px 20px; }
+      .stats { gap: 20px; }
+      .stat-value { font-size: 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1><span class="flag">🇪🇸</span> Números en Español</h1>
+      <p class="subtitle">Write the number in Spanish</p>
+    </header>
+
+    <div class="card">
+      <div class="number-display">
+        <div class="number-label">Translate this number</div>
+        <div class="number" id="current-number">42</div>
+        <div class="difficulty-badge difficulty-easy" id="difficulty-badge">Easy</div>
+      </div>
+
+      <div class="input-section">
+        <label class="input-label" for="answer-input">Your answer in Spanish</label>
+        <div class="input-wrapper">
+          <input
+            type="text"
+            id="answer-input"
+            placeholder="e.g., cuarenta y dos"
+            autocomplete="off"
+            autocapitalize="none"
+          >
+        </div>
+      </div>
+
+      <button class="btn btn-primary" id="check-btn">Check Answer</button>
+      <button class="btn btn-secondary" id="skip-btn">Skip → Next Number</button>
+
+      <div class="feedback" id="feedback">
+        <div class="feedback-icon" id="feedback-icon">✓</div>
+        <div class="feedback-text" id="feedback-text">Correct!</div>
+        <div class="correct-answer" id="correct-answer"></div>
+        <div class="breakdown" id="breakdown"></div>
+      </div>
+
+      <div class="hint-section">
+        <button class="hint-btn" id="hint-btn">💡 Show Hint</button>
+        <div class="hint-text" id="hint-text"></div>
+      </div>
+    </div>
+
+    <div class="stats">
+      <div class="stat correct">
+        <div class="stat-value" id="correct-count">0</div>
+        <div class="stat-label">Correct</div>
+      </div>
+      <div class="stat incorrect">
+        <div class="stat-value" id="incorrect-count">0</div>
+        <div class="stat-label">Incorrect</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value" id="streak-count">0</div>
+        <div class="stat-label">Streak 🔥</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Dark mode detection
+    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      document.documentElement.classList.add('dark');
+    }
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
+      if (event.matches) {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
+    });
+
+    // Spanish number conversion
+    const units = ['', 'uno', 'dos', 'tres', 'cuatro', 'cinco', 'seis', 'siete', 'ocho', 'nueve'];
+    const teens = ['diez', 'once', 'doce', 'trece', 'catorce', 'quince', 'dieciséis', 'diecisiete', 'dieciocho', 'diecinueve'];
+    const tens = ['', '', 'veinte', 'treinta', 'cuarenta', 'cincuenta', 'sesenta', 'setenta', 'ochenta', 'noventa'];
+    const hundreds = ['', 'ciento', 'doscientos', 'trescientos', 'cuatrocientos', 'quinientos', 'seiscientos', 'setecientos', 'ochocientos', 'novecientos'];
+
+    function numberToSpanish(n) {
+      if (n === 0) return 'cero';
+      if (n < 0) return 'menos ' + numberToSpanish(-n);
+
+      if (n === 100) return 'cien';
+
+      if (n < 10) return units[n];
+
+      if (n < 20) return teens[n - 10];
+
+      if (n < 30) {
+        if (n === 20) return 'veinte';
+        return 'veinti' + units[n % 10];
+      }
+
+      if (n < 100) {
+        const ten = Math.floor(n / 10);
+        const unit = n % 10;
+        if (unit === 0) return tens[ten];
+        return tens[ten] + ' y ' + units[unit];
+      }
+
+      if (n < 1000) {
+        const hundred = Math.floor(n / 100);
+        const remainder = n % 100;
+        if (remainder === 0) {
+          return n === 100 ? 'cien' : hundreds[hundred];
+        }
+        return hundreds[hundred] + ' ' + numberToSpanish(remainder);
+      }
+
+      if (n < 1000000) {
+        const thousands = Math.floor(n / 1000);
+        const remainder = n % 1000;
+        let result;
+        if (thousands === 1) {
+          result = 'mil';
+        } else {
+          result = numberToSpanish(thousands) + ' mil';
+        }
+        if (remainder > 0) {
+          result += ' ' + numberToSpanish(remainder);
+        }
+        return result;
+      }
+
+      if (n < 2000000) {
+        const millions = Math.floor(n / 1000000);
+        const remainder = n % 1000000;
+        let result;
+        if (millions === 1) {
+          result = 'un millón';
+        } else {
+          result = numberToSpanish(millions) + ' millones';
+        }
+        if (remainder > 0) {
+          result += ' ' + numberToSpanish(remainder);
+        }
+        return result;
+      }
+
+      return n.toString();
+    }
+
+    function generateNumber() {
+      const rand = Math.random() * 100;
+
+      if (rand < 75) {
+        // 75% chance: 0-100
+        return Math.floor(Math.random() * 101);
+      } else if (rand < 90) {
+        // 15% chance: 100-1000
+        return Math.floor(Math.random() * 900) + 100;
+      } else {
+        // 10% chance: 1000-10000
+        return Math.floor(Math.random() * 9000) + 1000;
+      }
+    }
+
+    function getDifficulty(n) {
+      if (n <= 100) return { level: 'Easy', class: 'difficulty-easy' };
+      if (n <= 1000) return { level: 'Medium', class: 'difficulty-medium' };
+      return { level: 'Hard', class: 'difficulty-hard' };
+    }
+
+    function getBreakdown(n) {
+      const parts = [];
+
+      if (n === 0) {
+        parts.push({ num: '0', word: 'cero', note: 'zero' });
+        return parts;
+      }
+
+      if (n < 10) {
+        const unitWords = ['', 'uno', 'dos', 'tres', 'cuatro', 'cinco', 'seis', 'siete', 'ocho', 'nueve'];
+        parts.push({ num: n.toString(), word: unitWords[n], note: 'unit' });
+        return parts;
+      }
+
+      if (n < 16) {
+        const teenWords = {
+          10: 'diez', 11: 'once', 12: 'doce', 13: 'trece', 14: 'catorce', 15: 'quince'
+        };
+        parts.push({ num: n.toString(), word: teenWords[n], note: 'special teen - memorize!' });
+        return parts;
+      }
+
+      if (n < 20) {
+        parts.push({ num: '10', word: 'dieci-', note: 'ten prefix' });
+        const unitPart = n - 10;
+        const unitWords = ['', 'uno→séis', 'dos', 'tres', 'cuatro', 'cinco', 'séis', 'siete', 'ocho', 'nueve'];
+        parts.push({ num: unitPart.toString(), word: unitWords[unitPart], note: 'combined as one word' });
+        return parts;
+      }
+
+      if (n < 30) {
+        parts.push({ num: '20', word: 'veinti-', note: 'twenty prefix' });
+        if (n > 20) {
+          const unitPart = n - 20;
+          const unitWords = ['', 'uno→ún', 'dos→dós', 'tres→trés', 'cuatro', 'cinco', 'seis→séis', 'siete', 'ocho', 'nueve'];
+          parts.push({ num: unitPart.toString(), word: unitWords[unitPart], note: 'combined as one word' });
+        }
+        return parts;
+      }
+
+      if (n < 100) {
+        const tensWords = ['', '', 'veinte', 'treinta', 'cuarenta', 'cincuenta', 'sesenta', 'setenta', 'ochenta', 'noventa'];
+        const tensDigit = Math.floor(n / 10);
+        const unitDigit = n % 10;
+        parts.push({ num: (tensDigit * 10).toString(), word: tensWords[tensDigit], note: 'tens' });
+        if (unitDigit > 0) {
+          parts.push({ num: '', word: 'y', note: '"and" connector' });
+          const unitWords = ['', 'uno', 'dos', 'tres', 'cuatro', 'cinco', 'seis', 'siete', 'ocho', 'nueve'];
+          parts.push({ num: unitDigit.toString(), word: unitWords[unitDigit], note: 'unit' });
+        }
+        return parts;
+      }
+
+      if (n < 1000) {
+        const hundredsWords = ['', 'ciento', 'doscientos', 'trescientos', 'cuatrocientos', 'quinientos', 'seiscientos', 'setecientos', 'ochocientos', 'novecientos'];
+        const hundredsDigit = Math.floor(n / 100);
+        const remainder = n % 100;
+
+        if (n === 100) {
+          parts.push({ num: '100', word: 'cien', note: 'exactly 100 (special form)' });
+        } else {
+          let note = 'hundreds';
+          if (hundredsDigit === 5) note = 'irregular: quinientos (not cincocientos)';
+          if (hundredsDigit === 7) note = 'irregular: setecientos (not sietecientos)';
+          if (hundredsDigit === 9) note = 'irregular: novecientos (not nuevecientos)';
+          parts.push({ num: (hundredsDigit * 100).toString(), word: hundredsWords[hundredsDigit], note: note });
+        }
+
+        if (remainder > 0) {
+          const remainderParts = getBreakdown(remainder);
+          parts.push(...remainderParts);
+        }
+        return parts;
+      }
+
+      if (n < 10000) {
+        const thousands = Math.floor(n / 1000);
+        const remainder = n % 1000;
+
+        if (thousands === 1) {
+          parts.push({ num: '1000', word: 'mil', note: 'one thousand (no "un")' });
+        } else {
+          const thousandWords = ['', 'uno', 'dos', 'tres', 'cuatro', 'cinco', 'seis', 'siete', 'ocho', 'nueve'];
+          parts.push({ num: thousands.toString(), word: thousandWords[thousands], note: 'thousands multiplier' });
+          parts.push({ num: '×1000', word: 'mil', note: 'thousand' });
+        }
+
+        if (remainder > 0) {
+          const remainderParts = getBreakdown(remainder);
+          parts.push(...remainderParts);
+        }
+        return parts;
+      }
+
+      return parts;
+    }
+
+    function renderBreakdown(n) {
+      const parts = getBreakdown(n);
+      let html = '<div class="breakdown-title">📖 How it\'s formed:</div>';
+
+      for (const part of parts) {
+        html += `
+          <div class="breakdown-item">
+            <span class="breakdown-num">${part.num}</span>
+            <span class="breakdown-arrow">→</span>
+            <span class="breakdown-word">${part.word}</span>
+            <span class="breakdown-note">${part.note}</span>
+          </div>
+        `;
+      }
+
+      html += `
+        <div class="breakdown-item" style="margin-top: 10px; padding-top: 12px; border-top: 2px solid var(--accent);">
+          <span class="breakdown-num">${n.toLocaleString()}</span>
+          <span class="breakdown-arrow">=</span>
+          <span class="breakdown-word" style="color: var(--accent);">${numberToSpanish(n)}</span>
+        </div>
+      `;
+
+      return html;
+    }
+
+    function getHint(n) {
+      const spanish = numberToSpanish(n);
+      const words = spanish.split(' ');
+      if (words.length <= 2) {
+        return `Starts with "${spanish.substring(0, 3)}..."`;
+      }
+      return `First word: "${words[0]}" (${words.length} words total)`;
+    }
+
+    function normalizeAnswer(str) {
+      return str
+        .toLowerCase()
+        .trim()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .replace(/\s+/g, ' ');
+    }
+
+    // State
+    let currentNumber = 0;
+    let correctCount = 0;
+    let incorrectCount = 0;
+    let streak = 0;
+
+    // DOM elements
+    const numberDisplay = document.getElementById('current-number');
+    const difficultyBadge = document.getElementById('difficulty-badge');
+    const answerInput = document.getElementById('answer-input');
+    const checkBtn = document.getElementById('check-btn');
+    const skipBtn = document.getElementById('skip-btn');
+    const feedback = document.getElementById('feedback');
+    const feedbackIcon = document.getElementById('feedback-icon');
+    const feedbackText = document.getElementById('feedback-text');
+    const correctAnswer = document.getElementById('correct-answer');
+    const hintBtn = document.getElementById('hint-btn');
+    const hintText = document.getElementById('hint-text');
+    const correctCountEl = document.getElementById('correct-count');
+    const incorrectCountEl = document.getElementById('incorrect-count');
+    const streakCountEl = document.getElementById('streak-count');
+    const breakdownEl = document.getElementById('breakdown');
+
+    function newRound() {
+      currentNumber = generateNumber();
+      const difficulty = getDifficulty(currentNumber);
+
+      numberDisplay.textContent = currentNumber.toLocaleString();
+      numberDisplay.style.animation = 'none';
+      numberDisplay.offsetHeight; // Trigger reflow
+      numberDisplay.style.animation = 'popIn 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55)';
+
+      difficultyBadge.textContent = difficulty.level;
+      difficultyBadge.className = 'difficulty-badge ' + difficulty.class;
+
+      answerInput.value = '';
+      answerInput.classList.remove('correct', 'incorrect');
+      answerInput.focus();
+
+      feedback.classList.remove('show', 'correct', 'incorrect');
+      hintText.classList.remove('show');
+      breakdownEl.innerHTML = '';
+
+      checkBtn.textContent = 'Check Answer';
+      checkBtn.onclick = checkAnswer;
+    }
+
+    function showAnswerAndNewRound() {
+        const correctSpanish = numberToSpanish(currentNumber);
+        feedback.classList.add('show', 'incorrect');
+        feedback.classList.remove('correct');
+        feedbackIcon.textContent = '✗';
+        feedbackText.textContent = 'The correct answer is:';
+        correctAnswer.textContent = correctSpanish;
+        correctAnswer.style.display = 'inline-block';
+        breakdownEl.innerHTML = renderBreakdown(currentNumber);
+        incorrectCount++;
+        streak = 0;
+        incorrectCountEl.textContent = incorrectCount;
+        streakCountEl.textContent = streak;
+        checkBtn.textContent = 'Next Number →';
+        checkBtn.onclick = newRound;
+    }
+
+    function checkAnswer() {
+      const userAnswer = normalizeAnswer(answerInput.value);
+      const correctSpanish = numberToSpanish(currentNumber);
+      const normalizedCorrect = normalizeAnswer(correctSpanish);
+
+      if (!userAnswer) {
+        answerInput.classList.add('incorrect');
+        setTimeout(() => answerInput.classList.remove('incorrect'), 500);
+        return;
+      }
+
+      const isCorrect = userAnswer === normalizedCorrect;
+
+      feedback.classList.add('show');
+
+      // Always show breakdown for learning
+      breakdownEl.innerHTML = renderBreakdown(currentNumber);
+
+      if (isCorrect) {
+        correctCount++;
+        streak++;
+        answerInput.classList.add('correct');
+        feedback.classList.add('correct');
+        feedback.classList.remove('incorrect');
+        feedbackIcon.textContent = '✓';
+        feedbackText.textContent = '¡Correcto!';
+        correctAnswer.style.display = 'none';
+
+        checkBtn.textContent = 'Next Number →';
+        checkBtn.onclick = newRound;
+      } else {
+        showAnswerAndNewRound();
+      }
+
+      correctCountEl.textContent = correctCount;
+      incorrectCountEl.textContent = incorrectCount;
+      streakCountEl.textContent = streak;
+    }
+
+    function showHint() {
+      hintText.textContent = getHint(currentNumber);
+      hintText.classList.toggle('show');
+    }
+
+    // Event listeners
+    checkBtn.addEventListener('click', checkAnswer);
+    skipBtn.addEventListener('click', showAnswerAndNewRound);
+    hintBtn.addEventListener('click', showHint);
+
+    answerInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        if (checkBtn.textContent === 'Check Answer') {
+          checkAnswer();
+        } else {
+          newRound();
+        }
+      }
+      // Initialize
+
+newRound();
+
+</script>
+
+</body>
+
+</html>

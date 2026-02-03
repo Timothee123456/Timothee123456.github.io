@@ -689,7 +689,7 @@
                 results.push(checkField('maya-era2', 'era2', 'maya', true));
                 showCorrection('maya-periodo-correction', results.slice(0,5).some(r => r === 0));
 
-                let ubi = [checkField('maya-ubicacion-verb', 'ubicacionVerb', 'maya'), checkField('maya-ubicacion1', 'ubicacion1', 'maya'), checkField('maya-ubicacion2', 'ubicacion2', 'maya'), checkField('ubicacion3', 'ubicacion3', 'maya'), checkField('ubicacion4', 'ubicacion4', 'maya'), checkField('ubicacion5', 'ubicacion5', 'maya')];
+                let ubi = [checkField('maya-ubicacion-verb', 'ubicacionVerb', 'maya'), checkField('maya-ubicacion1', 'ubicacion1', 'maya'), checkField('maya-ubicacion2', 'ubicacion2', 'maya'), checkField('maya-ubicacion3', 'ubicacion3', 'maya'), checkField('maya-ubicacion4', 'ubicacion4', 'maya'), checkField('maya-ubicacion5', 'ubicacion5', 'maya')];
                 results.push(...ubi); showCorrection('maya-ubicacion-correction', ubi.some(r => r === 0));
 
                 let ciu = [checkField('maya-ciudades-verb', 'ciudadesVerb', 'maya'), checkField('maya-ciudad1', 'ciudad1', 'maya'), checkField('maya-ciudad2', 'ciudad2', 'maya')];

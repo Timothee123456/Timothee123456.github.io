@@ -606,10 +606,10 @@
                 ubicacionVerb: { exact: ['se situaba'] },
                 ubicacion1: { exact: ['sureste'] },
                 ubicacion2: { exact: ['méxico'], noAccent: ['mexico'] },
-                ubicacion3: { exact: ['guatemala'] },
-                ubicacion4: { exact: ['honduras'] },
-                ubicacion5: { exact: ['el salvador'] },
-                ubicacion6: { exact: ['belice'] },
+                ubicacion3: { exact: ['belice', 'el salvador', 'honduras', 'guatemala'] },
+                ubicacion4: { exact: ['belice', 'el salvador', 'honduras', 'guatemala'] },
+                ubicacion5: { exact: ['belice', 'el salvador', 'honduras', 'guatemala'] },
+                ubicacion6: { exact: ['belice', 'el salvador', 'honduras', 'guatemala'] },
                 ciudadesVerb: { exact: ['había'], noAccent: ['habia'] },
                 ciudad1: { exact: ['tikal', 'chichén itzá'], noAccent: ['tikal', 'chichen itza'] },
                 ciudad2: { exact: ['chichén itzá', 'tikal'], noAccent: ['chichen itza', 'tikal'] },
@@ -689,7 +689,7 @@
                 results.push(checkField('maya-era2', 'era2', 'maya', true));
                 showCorrection('maya-periodo-correction', results.slice(0,5).some(r => r === 0));
 
-                let ubi = [checkField('maya-ubicacion-verb', 'ubicacionVerb', 'maya'), checkField('maya-ubicacion1', 'ubicacion1', 'maya'), checkField('maya-ubicacion2', 'maya-ubicacion2', 'maya'), checkField('maya-ubicacion3', 'ubicacion3', 'maya')];
+                let ubi = [checkField('maya-ubicacion-verb', 'ubicacionVerb', 'maya'), checkField('maya-ubicacion1', 'ubicacion1', 'maya'), checkField('maya-ubicacion2', 'ubicacion2', 'maya'), checkField('ubicacion3', 'ubicacion3', 'maya'), checkField('ubicacion4', 'ubicacion4', 'maya'), checkField('ubicacion5', 'ubicacion5', 'maya')];
                 results.push(...ubi); showCorrection('maya-ubicacion-correction', ubi.some(r => r === 0));
 
                 let ciu = [checkField('maya-ciudades-verb', 'ciudadesVerb', 'maya'), checkField('maya-ciudad1', 'ciudad1', 'maya'), checkField('maya-ciudad2', 'ciudad2', 'maya')];

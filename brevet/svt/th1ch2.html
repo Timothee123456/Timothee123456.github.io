@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Word Guessing Exercise</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            padding: 40px 20px;
+            max-width: 800px;
+            margin: 0 auto;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+        
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 2em;
+        }
+        
+        h2 {
+            color: #555;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            font-size: 1.5em;
+        }
+        
+        h3 {
+            color: #666;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            font-size: 1.2em;
+        }
+        
+        p {
+            margin-bottom: 15px;
+            color: #444;
+            font-size: 1.1em;
+        }
+        
+        .word-input {
+            padding: 6px 12px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            font-size: 1em;
+            min-width: 150px;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+        
+        .word-input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        .word-input.correct {
+            border-color: #10b981;
+            background-color: #f0fdf4;
+        }
+        
+        .word-input.incorrect {
+            border-color: #ef4444;
+            background-color: #fef2f2;
+        }
+        
+        .feedback {
+            display: inline-block;
+            margin-left: 10px;
+            font-weight: 600;
+            font-size: 0.95em;
+        }
+        
+        .feedback.correct {
+            color: #10b981;
+        }
+        
+        .feedback.incorrect {
+            color: #ef4444;
+        }
+        
+        .controls {
+            margin-top: 30px;
+            padding-top: 30px;
+            border-top: 2px solid #eee;
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        
+        button {
+            padding: 12px 24px;
+            font-size: 1em;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+        
+        .check-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .check-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+        
+        .reset-btn {
+            background: #f3f4f6;
+            color: #333;
+        }
+        
+        .reset-btn:hover {
+            background: #e5e7eb;
+        }
+        
+        .score {
+            font-size: 1.2em;
+            font-weight: 700;
+            color: #667eea;
+            margin-left: auto;
+        }
+        
+        .next-btn {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            display: none;
+        }
+        
+        .next-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(16, 185, 129, 0.3);
+        }
+        
+        .page {
+            animation: fadeIn 0.3s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @media (max-width: 600px) {
+            body {
+                padding: 20px 10px;
+            }
+            
+            .container {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 1.5em;
+            }
+            
+            .controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .score {
+                margin-left: 0;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div id="content">
+            
+      <div class="page" id="page1" style="display: block;">
+        <h1>Chapitre 2 : Les réactions immunitaires</h1><br><h2>I) L’inflammation : une réaction immunitaire <input type="text" id="page1_word1" class="word-input" data-page="1" autocomplete="off"> au début d’une infection (Activité 1)</h2><p>⮚ Lors d’une infection, l’organisme réagit et met en place une <strong>réaction immunitaire</strong> <input type="text" id="page1_word2" class="word-input" data-page="1" autocomplete="off"> : c’est la <input type="text" id="page1_word3" class="word-input" data-page="1" autocomplete="off"> (ou <strong>inflammation</strong>).</p><p>⮚ Cette réaction inflammatoire est déclenchée par des <input type="text" id="page1_word4" class="word-input" data-page="1" autocomplete="off"> qui reconnaissent les micro-organismes et attirent des cellules spécialisées du système immunitaire dans la zone infectée : les <input type="text" id="page1_word5" class="word-input" data-page="1" autocomplete="off">.</p><p>⮚ Les <input type="text" id="page1_word6" class="word-input" data-page="1" autocomplete="off"> sortent des vaisseaux sanguins, absorbent et digèrent les microorganismes, puis rejettent les déchets : c’est la <input type="text" id="page1_word7" class="word-input" data-page="1" autocomplete="off">. Elle permet le plus souvent de stopper l’infection.</p><p>Si la réaction inflammatoire ne suffit pas et que l’infection se développe malgré tout, des symptômes de la lutte contre cette infection persistante apparaissent. La <strong>réaction immunitaire</strong> de l’organisme se manifeste alors également par le gonflement des <strong>ganglions lymphatiques</strong> et l’apparition de <strong>fièvre</strong>.</p><p>Des symptômes (ganglions gonflés, fièvre) sont le signe que d’autres réactions immunitaires, plus <input type="text" id="page1_word8" class="word-input" data-page="1" autocomplete="off"> et plus globales que la phagocytose, se mettent en place. Elles impliquent d’autres globules blancs : les <input type="text" id="page1_word9" class="word-input" data-page="1" autocomplete="off">.</p>
+      </div>
+    
+      <div class="page" id="page2" style="display: none;">
+        <h2>II) Des réactions immunitaires globales plus lentes avec les lymphocytes</h2><br><h3>A) Le rôle des <input type="text" id="page2_word1" class="word-input" data-page="2" autocomplete="off"> (Activité 2 A)</h3><p>⮚ Si la réaction inflammatoire ne suffit pas et que l’infection persiste, une <strong>réponse immunitaire <input type="text" id="page2_word2" class="word-input" data-page="2" autocomplete="off"></strong> apparaît au bout de quelques jours.</p><p>⮚ Après reconnaissance des <input type="text" id="page2_word3" class="word-input" data-page="2" autocomplete="off"> de l’agent infectieux, les <input type="text" id="page2_word4" class="word-input" data-page="2" autocomplete="off"> sont activés, se multiplient et produisent des <input type="text" id="page2_word5" class="word-input" data-page="2" autocomplete="off"> <input type="text" id="page2_word6" class="word-input" data-page="2" autocomplete="off"> ne reconnaissant que l’agent infectieux en cause. </p><p>⮚ Ces <input type="text" id="page2_word7" class="word-input" data-page="2" autocomplete="off">, en se fixant sur les <input type="text" id="page2_word8" class="word-input" data-page="2" autocomplete="off"> reconnus, forment avec ces derniers un complexe « <input type="text" id="page2_word9" class="word-input" data-page="2" autocomplete="off"> » qui provoque une <strong>agglutination</strong> et neutralise les micro-organismes qui sont ensuite détruits par phagocytose.</p><h3>B) Les lymphocytes T et la lutte contre les virus (Activité 2B)</h3><br>⮚ Lorsqu’un <input type="text" id="page2_word10" class="word-input" data-page="2" autocomplete="off"> a pénétré à l’intérieur des cellules, ce sont les <input type="text" id="page2_word11" class="word-input" data-page="2" autocomplete="off"> qui agissent. Ils reconnaissent les cellules infectées par un virus par contact (reconnaissance <input type="text" id="page2_word12" class="word-input" data-page="2" autocomplete="off"> de l’antigène viral) et libèrent une substance qui perfore la membrane et détruisent les cellules.</p><p>⮚ Les débris sont ensuite <input type="text" id="page2_word13" class="word-input" data-page="2" autocomplete="off">. La quantité de virus diminue et l’infection virale s’arrête.</p>
+      </div>
+    
+      <div class="page" id="page3" style="display: none;">
+        <h2>À retenir</h2><p>⮚ L’organisme réagit à la présence de micro-organismes pathogènes grâce à son <input type="text" id="page3_word1" class="word-input" data-page="3" autocomplete="off">.</p><p>⮚ Une <input type="text" id="page3_word2" class="word-input" data-page="3" autocomplete="off"> rapide et locale, l’<input type="text" id="page3_word3" class="word-input" data-page="3" autocomplete="off">, fait intervenir les <input type="text" id="page3_word4" class="word-input" data-page="3" autocomplete="off"> : ils détruisent les micro-organismes par <input type="text" id="page3_word5" class="word-input" data-page="3" autocomplete="off">. Cela permet le plus souvent de stopper l’infection.</p><p>⮚ Si l’infection se poursuit, des <input type="text" id="page3_word6" class="word-input" data-page="3" autocomplete="off"> plus lentes font intervenir des <input type="text" id="page3_word7" class="word-input" data-page="3" autocomplete="off"> spécifiques d’un <input type="text" id="page3_word8" class="word-input" data-page="3" autocomplete="off">. Les <input type="text" id="page3_word9" class="word-input" data-page="3" autocomplete="off"> produisent des <input type="text" id="page3_word10" class="word-input" data-page="3" autocomplete="off"> qui neutralisent les <input type="text" id="page3_word11" class="word-input" data-page="3" autocomplete="off">. Les <input type="text" id="page3_word12" class="word-input" data-page="3" autocomplete="off"> détruisent par contact les cellules infectées par les virus.</p>
+      </div>
+    
+        </div>
+        
+        <div class="controls">
+            <button class="check-btn" onclick="checkAnswers()">Check Answers</button>
+            <button class="reset-btn" onclick="resetExercise()">Reset</button>
+            <button class="next-btn" id="nextBtn" onclick="nextPage()">Next Page</button>
+            <div class="score" id="score"></div>
+        </div>
+    </div>
+    
+    <script>
+        const correctAnswers = [["locale","localisée","réaction inflammatoire","cellules sentinelles","phagocytes","phagocytes","phagocytose","lentes","lymphocytes"],["anticorps","spécifique","antigènes","lymphocytes B","anticorps","spécifiques","anticorps","antigènes","antigène-anticorps","virus","lymphocytes T","spécifique","phagocytés"],["système immunitaire","réaction immunitaire","inflammation","phagocytes","phagocytose","réactions immunitaires","lymphocytes","antigène","lymphocytes B","anticorps","antigènes","lymphocytes T"]];
+        const translations = {"checkAnswers":"Check Answers","reset":"Reset","score":"Score","correct":"Correct!","incorrect":"Incorrect. The answer is","nextPage":"Next Page"};
+        const totalPages = 3;
+        let currentPage = 1;
+        
+        function checkAnswers() {
+            let correctCount = 0;
+            const pageAnswers = correctAnswers[currentPage - 1];
+            const totalWords = pageAnswers.length;
+            
+            // Remove existing feedback on current page
+            document.querySelectorAll(`#page${currentPage} .feedback`).forEach(el => el.remove());
+            
+            pageAnswers.forEach((answer, index) => {
+                const input = document.getElementById(`page${currentPage}_word${index + 1}`);
+                const userAnswer = input.value.trim();
+                const isCorrect = userAnswer.toLowerCase() === answer.toLowerCase();
+                
+                if (isCorrect) {
+                    correctCount++;
+                    input.classList.remove('incorrect');
+                    input.classList.add('correct');
+                    
+                    const feedback = document.createElement('span');
+                    feedback.className = 'feedback correct';
+                    feedback.textContent = '✓';
+                    input.parentNode.insertBefore(feedback, input.nextSibling);
+                } else {
+                    input.classList.remove('correct');
+                    input.classList.add('incorrect');
+                    
+                    const feedback = document.createElement('span');
+                    feedback.className = 'feedback incorrect';
+                    feedback.textContent = '✕ ' + answer;
+                    input.parentNode.insertBefore(feedback, input.nextSibling);
+                }
+            });
+            
+            document.getElementById('score').textContent = translations.score + ': ' + correctCount + '/' + totalWords;
+            
+            // Show next button if not on last page
+            if (currentPage < totalPages) {
+                document.getElementById('nextBtn').style.display = 'block';
+            }
+        }
+        
+        function nextPage() {
+            if (currentPage < totalPages) {
+                // Hide current page
+                document.getElementById('page' + currentPage).style.display = 'none';
+                
+                // Show next page
+                currentPage++;
+                document.getElementById('page' + currentPage).style.display = 'block';
+                
+                // Hide next button and reset score
+                document.getElementById('nextBtn').style.display = 'none';
+                document.getElementById('score').textContent = '';
+                
+                // Scroll to top
+                window.scrollTo(0, 0);
+            }
+        }
+        
+        function resetExercise() {
+            // Clear all inputs on current page
+            document.querySelectorAll(`#page${currentPage} .word-input`).forEach(input => {
+                input.value = '';
+                input.classList.remove('correct', 'incorrect');
+            });
+            
+            // Remove feedback on current page
+            document.querySelectorAll(`#page${currentPage} .feedback`).forEach(el => el.remove());
+            
+            // Clear score and hide next button
+            document.getElementById('score').textContent = '';
+            document.getElementById('nextBtn').style.display = 'none';
+        }
+        
+        // Allow Enter key to check answers
+        document.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                checkAnswers();
+            }
+        });
+    </script>
+</body>
+</html>

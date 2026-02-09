@@ -17,9 +17,4 @@ export var vocabularyWords = [
     { word: "Disclose", definition: "To make known; reveal or uncover; to cause to appear; allow to be seen" },
     { word: "Petition", definition: "A formal request, often bearing the names of a number of those making a request." },
     { word: "Contagion", definition: "The communication of disease by direct or indirect contact" },
-    { word: "Emulate", definition: "To try to equal or excel; imitate with effort to equal or surpass" },
-    { word: "Yearn", definition: "To have an earnest or strong desire; long; to feel tenderness; be moved or attracted" },
-    { word: "Beseech", definition: "To implore urgently; to beg eagerly for; solicit" },
-    { word: "Disjoin", definition: "To undo or prevent the junction or union of; disunite; separate" },
-    { word: "Ascend", definition: "To move, climb or go upward; mount; rise; to slant upward." }
 ];

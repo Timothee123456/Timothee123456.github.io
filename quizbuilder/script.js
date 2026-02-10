@@ -9,13 +9,18 @@ validateBtn.addEventListener('click', () => {
         const correctAnswer = textbox.getAttribute('answer').trim().toLowerCase();
         
         // Remove previous validation classes
-        textbox.classList.remove('correct', 'incorrect');
+        textbox.classList.remove('correct', 'incorrect', 'empty');
         
         // Add validation class
         if (userAnswer === correctAnswer) {
             textbox.classList.add('correct');
         } else if (userAnswer !== '') {
             textbox.classList.add('incorrect');
+        } else {
+            // Empty answer - show correct answer in red
+            textbox.classList.add('empty');
+            textbox.value = textbox.getAttribute('answer');
+            textbox.readOnly = true;
         }
     });
 });
@@ -24,7 +29,8 @@ validateBtn.addEventListener('click', () => {
 resetBtn.addEventListener('click', () => {
     textboxElements.forEach(textbox => {
         textbox.value = '';
-        textbox.classList.remove('correct', 'incorrect');
+        textbox.classList.remove('correct', 'incorrect', 'empty');
+        textbox.readOnly = false;
     });
 });
 

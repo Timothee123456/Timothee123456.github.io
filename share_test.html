@@ -3,27 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WebRTC Screen Share (Manual Signaling)</title>
+    <title>Fast WebRTC Screen Share</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        .video-container {
-            background: #1a1a1a;
-            border-radius: 8px;
-            overflow: hidden;
-            aspect-ratio: 16 / 9;
-        }
-        video {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-        }
+        .video-container { background: #1a1a1a; border-radius: 8px; overflow: hidden; aspect-ratio: 16 / 9; }
+        video { width: 100%; height: 100%; object-fit: contain; }
     </style>
 </head>
 <body class="bg-gray-100 min-h-screen p-4 md:p-8">
     <div class="max-w-4xl mx-auto bg-white shadow-xl rounded-xl p-6">
         <h1 class="text-2xl font-bold text-gray-800 mb-6 border-b pb-2">Screen Sharing (Manual Signaling)</h1>
 
-        <!-- Mode Selection -->
         <div id="modeSelection" class="flex gap-4 mb-6">
             <button id="senderButton" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg transition">I want to SHARE my screen</button>
             <button id="receiverButton" class="flex-1 bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-lg transition">I want to VIEW a screen</button>
@@ -31,7 +21,6 @@
 
         <div id="mainInterface" class="hidden">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <!-- Video Section -->
                 <div>
                     <h2 id="roleTitle" class="text-lg font-semibold mb-2 text-gray-700">Role: Undefined</h2>
                     <div class="video-container shadow-inner">
@@ -41,13 +30,12 @@
                         <button id="startSharingButton" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">1. Capture Screen</button>
                         <button id="createOfferButton" class="bg-purple-500 text-white px-4 py-2 rounded hover:bg-purple-600 disabled:opacity-50" disabled>2. Create Offer</button>
                     </div>
-                    <p id="statusMessage" class="mt-2 text-sm text-gray-500 italic">Waiting for interaction...</p>
+                    <p id="statusMessage" class="mt-2 text-sm text-gray-600 font-medium">Waiting for interaction...</p>
                 </div>
 
-                <!-- Signaling Section -->
                 <div class="flex flex-col">
-                    <label for="combinedData" class="block text-sm font-medium text-gray-700 mb-1">Signaling Data (SDP + ICE):</label>
-                    <textarea id="combinedData" class="flex-1 p-3 border rounded-lg font-mono text-xs bg-gray-50 focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Paste data here or copy from here..."></textarea>
+                    <label for="combinedData" class="block text-sm font-medium text-gray-700 mb-1">Signaling Data:</label>
+                    <textarea id="combinedData" class="flex-1 p-3 border rounded-lg font-mono text-xs bg-gray-50 focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Paste data here..."></textarea>
                     
                     <div class="mt-4 flex gap-2">
                         <button id="processDataButton" class="flex-1 bg-indigo-600 text-white font-bold py-2 rounded hover:bg-indigo-700">Process Pasted Data</button>
@@ -55,45 +43,29 @@
                     </div>
                 </div>
             </div>
-
-            <div class="mt-8 p-4 bg-blue-50 rounded-lg border border-blue-100">
-                <h3 class="font-bold text-blue-800 mb-2">Instructions:</h3>
-                <ol id="instructions" class="text-sm text-blue-700 list-decimal ml-5 space-y-1">
-                    <!-- Instructions will be injected here -->
-                </ol>
-            </div>
             
-            <button id="resetButton" class="mt-6 text-red-500 text-sm hover:underline">Reset Connection</button>
+            <button id="resetButton" class="mt-6 text-red-500 text-sm hover:underline">Reset / Start Over</button>
         </div>
     </div>
 
     <script>
         const iceServers = [{ urls: 'stun:stun.l.google.com:19302' }];
-        
         let pc = null;
         let localStream = null;
         let isSender = false;
 
-        // UI Elements
         const modeSelection = document.getElementById('modeSelection');
         const mainInterface = document.getElementById('mainInterface');
         const roleTitle = document.getElementById('roleTitle');
         const mainVideo = document.getElementById('mainVideo');
         const combinedDataTextarea = document.getElementById('combinedData');
         const statusMessage = document.getElementById('statusMessage');
-        const instructions = document.getElementById('instructions');
         const senderControls = document.getElementById('senderControls');
-
-        // Buttons
-        const senderButton = document.getElementById('senderButton');
-        const receiverButton = document.getElementById('receiverButton');
         const startSharingButton = document.getElementById('startSharingButton');
         const createOfferButton = document.getElementById('createOfferButton');
         const processDataButton = document.getElementById('processDataButton');
         const copyButton = document.getElementById('copyButton');
         const resetButton = document.getElementById('resetButton');
-
-        // --- Initialization ---
 
         senderButton.onclick = () => setupMode(true);
         receiverButton.onclick = () => setupMode(false);
@@ -103,134 +75,106 @@
             isSender = sender;
             modeSelection.classList.add('hidden');
             mainInterface.classList.remove('hidden');
-            
-            if (isSender) {
-                roleTitle.innerText = "Role: Sender (Broadcaster)";
-                senderControls.classList.remove('hidden');
-                instructions.innerHTML = `
-                    <li>Click 'Capture Screen' to select a window.</li>
-                    <li>Click 'Create Offer'. Wait for data to appear in the box.</li>
-                    <li>Copy the data and send it to the Receiver.</li>
-                    <li>Paste the Receiver's 'Answer' back here and click 'Process'.</li>
-                `;
-            } else {
-                roleTitle.innerText = "Role: Receiver (Viewer)";
-                instructions.innerHTML = `
-                    <li>Wait for the Sender to send you their 'Offer' data.</li>
-                    <li>Paste it into the box and click 'Process Pasted Data'.</li>
-                    <li>Wait for your 'Answer' data to be generated in the box.</li>
-                    <li>Copy your data and send it back to the Sender.</li>
-                `;
-            }
+            roleTitle.innerText = isSender ? "Role: Sender" : "Role: Receiver";
+            if (isSender) senderControls.classList.remove('hidden');
+            statusMessage.innerText = isSender ? "Step 1: Capture your screen" : "Waiting for Offer from sender...";
         }
-
-        // --- Core WebRTC Logic ---
 
         function createPeerConnection() {
             pc = new RTCPeerConnection({ iceServers });
-
+            
             pc.oniceconnectionstatechange = () => {
-                statusMessage.innerText = `Connection State: ${pc.iceConnectionState}`;
+                statusMessage.innerText = `Connection: ${pc.iceConnectionState}`;
             };
 
             pc.ontrack = (event) => {
-                console.log("Received remote track");
                 if (!isSender) {
                     mainVideo.srcObject = event.streams[0];
-                    statusMessage.innerText = "Receiving stream!";
+                    statusMessage.innerText = "Connected! Stream active.";
                 }
             };
 
-            // If sender, add the stream
             if (isSender && localStream) {
                 localStream.getTracks().forEach(track => pc.addTrack(track, localStream));
             }
         }
 
-        async function startSharing() {
+        // The "Magic" function that waits for ICE but has a fast timeout
+        async function waitForIceGathering(peerConnection) {
+            return new Promise((resolve) => {
+                if (peerConnection.iceGatheringState === 'complete') {
+                    resolve();
+                } else {
+                    const checkState = () => {
+                        if (peerConnection.iceGatheringState === 'complete') {
+                            peerConnection.removeEventListener('icegatheringstatechange', checkState);
+                            resolve();
+                        }
+                    };
+                    peerConnection.addEventListener('icegatheringstatechange', checkState);
+                    // Force resolve after 2 seconds if gathering is slow
+                    setTimeout(resolve, 2000);
+                }
+            });
+        }
+
+        startSharingButton.onclick = async () => {
             try {
                 localStream = await navigator.mediaDevices.getDisplayMedia({ video: true });
                 mainVideo.srcObject = localStream;
-                mainVideo.muted = true;
                 createOfferButton.disabled = false;
-                startSharingButton.disabled = true;
-                statusMessage.innerText = "Screen captured. Ready to create offer.";
-            } catch (e) {
-                console.error(e);
-                alert("Failed to capture screen.");
-            }
-        }
+                statusMessage.innerText = "Step 2: Create Offer";
+            } catch (e) { alert("Capture failed"); }
+        };
 
-        async function createOffer() {
+        createOfferButton.onclick = async () => {
             createOfferButton.disabled = true;
-            statusMessage.innerText = "Gathering ICE candidates... please wait.";
+            statusMessage.innerText = "Generating Offer (max 2 seconds)...";
             
             createPeerConnection();
-            
             const offer = await pc.createOffer();
             await pc.setLocalDescription(offer);
 
-            // Wait for ICE gathering to complete for a single-string exchange
-            pc.onicecandidate = (event) => {
-                if (!event.candidate) {
-                    // Gathering finished
-                    const payload = {
-                        sdp: pc.localDescription,
-                        candidates: [] // In this simplified version, we wait for full SDP which includes candidates
-                    };
-                    // Note: In modern browsers, setLocalDescription with no args gathers candidates into the SDP
-                    combinedDataTextarea.value = JSON.stringify(payload);
-                    statusMessage.innerText = "Offer created! Copy the text and send it to the Receiver.";
-                }
-            };
-        }
+            // Wait for ICE (with our 2s timeout)
+            await waitForIceGathering(pc);
 
-        async function processData() {
+            const payload = { sdp: pc.localDescription };
+            combinedDataTextarea.value = JSON.stringify(payload);
+            statusMessage.innerText = "Offer Ready! Copy and send to Receiver.";
+        };
+
+        processDataButton.onclick = async () => {
             const rawData = combinedDataTextarea.value.trim();
-            if (!rawData) return alert("Please paste data first.");
+            if (!rawData) return;
 
             try {
                 const data = JSON.parse(rawData);
-                
                 if (!pc) createPeerConnection();
 
                 if (data.sdp.type === 'offer') {
-                    // RECEIVER SIDE
-                    statusMessage.innerText = "Processing Offer... generating Answer.";
+                    statusMessage.innerText = "Offer received. Generating Answer...";
                     await pc.setRemoteDescription(new RTCSessionDescription(data.sdp));
                     const answer = await pc.createAnswer();
                     await pc.setLocalDescription(answer);
 
-                    pc.onicecandidate = (event) => {
-                        if (!event.candidate) {
-                            const payload = { sdp: pc.localDescription };
-                            combinedDataTextarea.value = JSON.stringify(payload);
-                            statusMessage.innerText = "Answer created! Copy this back to the Sender.";
-                        }
-                    };
+                    await waitForIceGathering(pc);
+                    
+                    combinedDataTextarea.value = JSON.stringify({ sdp: pc.localDescription });
+                    statusMessage.innerText = "Answer Ready! Copy and send back to Sender.";
                 } else if (data.sdp.type === 'answer') {
-                    // SENDER SIDE
-                    statusMessage.innerText = "Processing Answer... connecting.";
+                    statusMessage.innerText = "Processing Answer...";
                     await pc.setRemoteDescription(new RTCSessionDescription(data.sdp));
                 }
             } catch (e) {
-                console.error(e);
-                alert("Error processing data. Ensure you copied the full text block.");
+                alert("Invalid data format.");
             }
-        }
+        };
 
-        // --- Helpers ---
-
-        startSharingButton.onclick = startSharing;
-        createOfferButton.onclick = createOffer;
-        processDataButton.onclick = processData;
-        
         copyButton.onclick = () => {
             combinedDataTextarea.select();
             document.execCommand('copy');
-            const originalText = copyButton.innerText;
             copyButton.innerText = "Copied!";
-            setTimeout(() => copyButton.innerText = originalText, 2000);
+            setTimeout(() => copyButton.innerText = "Copy", 2000);
         };
     </script>
 </body>

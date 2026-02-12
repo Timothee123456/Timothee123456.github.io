@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>School Firewall Bypass (TURN Mode)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .video-container { background: #000; border-radius: 12px; overflow: hidden; aspect-ratio: 16 / 9; position: relative; border: 2px solid #334155; }
+        video { width: 100%; height: 100%; object-fit: contain; }
+        .log-entry { border-left: 3px solid transparent; padding: 2px 8px; font-family: monospace; font-size: 11px; }
+        .log-info { border-color: #3b82f6; color: #93c5fd; }
+        .log-success { border-color: #10b981; color: #6ee7b7; }
+        .log-error { border-color: #ef4444; color: #fca5a5; }
+        .log-warn { border-color: #f59e0b; color: #fcd34d; }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-200 min-h-screen p-4">
+    <div class="max-w-5xl mx-auto">
+        <header class="mb-6 flex justify-between items-end">
+            <div>
+                <h1 class="text-2xl font-black text-white tracking-tight">FIREWALL <span class="text-orange-500">BYPASS</span></h1>
+                <p class="text-xs text-slate-500 uppercase font-bold">WebRTC Relay Mode (TURN Enabled)</p>
+            </div>
+            <div id="statusBadge" class="px-3 py-1 rounded bg-slate-800 text-[10px] font-bold border border-slate-700">OFFLINE</div>
+        </header>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Left Column: Media -->
+            <div class="space-y-4">
+                <div class="video-container shadow-2xl">
+                    <video id="v" autoplay playsinline muted></video>
+                    <div id="vPlaceholder" class="absolute inset-0 flex items-center justify-center bg-slate-900 text-slate-500 text-sm">
+                        No active stream
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-2">
+                    <button id="btnShare" class="bg-orange-600 hover:bg-orange-500 p-3 rounded-lg font-bold text-sm transition">1. Share Screen</button>
+                    <button id="btnInit" class="bg-blue-600 hover:bg-blue-500 p-3 rounded-lg font-bold text-sm transition">2. Create Offer</button>
+                </div>
+                
+                <div class="bg-slate-900 p-4 rounded-xl border border-slate-800">
+                    <h3 class="text-xs font-bold text-slate-500 mb-2 uppercase">Connection Health</h3>
+                    <div class="flex gap-4">
+                        <div class="flex-1">
+                            <div class="text-[10px] text-slate-500">ICE Candidates</div>
+                            <div id="iceCount" class="text-xl font-mono">0</div>
+                        </div>
+                        <div class="flex-1 border-l border-slate-800 pl-4">
+                            <div class="text-[10px] text-slate-500">Relay (TURN)</div>
+                            <div id="turnStatus" class="text-xl font-mono text-slate-600">NO</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column: Signaling -->
+            <div class="flex flex-col space-y-4">
+                <div class="bg-slate-900 p-4 rounded-xl border border-slate-800 flex flex-col h-64">
+                    <label class="text-[10px] font-bold text-slate-500 uppercase mb-2">Signaling Exchange</label>
+                    <textarea id="sigBox" class="flex-1 bg-black rounded p-3 text-xs font-mono text-orange-400 outline-none border border-slate-800 focus:border-orange-500/50" placeholder="Paste Offer/Answer here..."></textarea>
+                    <div class="flex gap-2 mt-2">
+                        <button id="btnProcess" class="flex-1 bg-slate-100 text-black py-2 rounded font-bold text-xs hover:bg-white">Process Input</button>
+                        <button id="btnCopy" class="bg-slate-800 px-4 py-2 rounded text-xs hover:bg-slate-700">Copy</button>
+                    </div>
+                </div>
+
+                <div class="bg-black rounded-xl p-4 flex-1 border border-slate-900 overflow-hidden flex flex-col min-h-[200px]">
+                    <div class="text-[10px] text-slate-600 font-bold mb-2">DEBUG LOG</div>
+                    <div id="log" class="flex-1 overflow-y-auto space-y-1"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Using a public test TURN server. 
+        // WARNING: These are public and may be unreliable.
+        const config = {
+            iceServers: [
+                { urls: 'stun:stun.l.google.com:19302' },
+                { 
+                    urls: 'turn:openrelay.metered.ca:80', 
+                    username: 'openrelayproject', 
+                    password: 'openrelayproject' 
+                },
+                { 
+                    urls: 'turn:openrelay.metered.ca:443', 
+                    username: 'openrelayproject', 
+                    password: 'openrelayproject' 
+                },
+                { 
+                    urls: 'turn:openrelay.metered.ca:443?transport=tcp', 
+                    username: 'openrelayproject', 
+                    password: 'openrelayproject' 
+                }
+            ],
+            iceCandidatePoolSize: 10
+        };
+
+        let pc = null;
+        let stream = null;
+        let iceCount = 0;
+
+        const log = (m, t='info') => {
+            const d = document.createElement('div');
+            d.className = `log-entry log-${t}`;
+            d.innerText = `[${new Date().toLocaleTimeString()}] ${m}`;
+            const l = document.getElementById('log');
+            l.appendChild(d);
+            l.scrollTop = l.scrollHeight;
+        };
+
+        const updateStatus = (s) => {
+            const b = document.getElementById('statusBadge');
+            b.innerText = s.toUpperCase();
+            const colors = {
+                'connected': 'bg-emerald-500/20 text-emerald-500 border-emerald-500/50',
+                'failed': 'bg-red-500/20 text-red-500 border-red-500/50',
+                'checking': 'bg-blue-500/20 text-blue-500 border-blue-500/50',
+                'disconnected': 'bg-orange-500/20 text-orange-500 border-orange-500/50'
+            };
+            b.className = `px-3 py-1 rounded text-[10px] font-bold border transition ${colors[s] || 'bg-slate-800 text-slate-500 border-slate-700'}`;
+        };
+
+        function createPC() {
+            if (pc) return;
+            pc = new RTCPeerConnection(config);
+            
+            pc.onicecandidate = (e) => {
+                if (e.candidate) {
+                    iceCount++;
+                    document.getElementById('iceCount').innerText = iceCount;
+                    const type = e.candidate.candidate.split(' ')[7];
+                    if (type === 'relay') {
+                        document.getElementById('turnStatus').innerText = 'YES';
+                        document.getElementById('turnStatus').classList.add('text-emerald-500');
+                        log("TURN Relay Candidate found! This bypasses firewalls.", "success");
+                    }
+                    log(`Candidate: ${type}`);
+                } else {
+                    log("Gathering finished. Copy the code now.", "success");
+                    document.getElementById('sigBox').value = JSON.stringify({sdp: pc.localDescription});
+                }
+            };
+
+            pc.oniceconnectionstatechange = () => {
+                updateStatus(pc.iceConnectionState);
+                log(`ICE State: ${pc.iceConnectionState}`, pc.iceConnectionState === 'failed' ? 'error' : 'info');
+            };
+
+            pc.ontrack = (e) => {
+                log("Remote stream received!", "success");
+                document.getElementById('v').srcObject = e.streams[0];
+                document.getElementById('vPlaceholder').classList.add('hidden');
+            };
+
+            if (stream) {
+                stream.getTracks().forEach(t => pc.addTrack(t, stream));
+            }
+        }
+
+        document.getElementById('btnShare').onclick = async () => {
+            try {
+                stream = await navigator.mediaDevices.getDisplayMedia({video:true});
+                document.getElementById('v').srcObject = stream;
+                document.getElementById('vPlaceholder').classList.add('hidden');
+                log("Screen captured.");
+            } catch (e) { log(e.message, 'error'); }
+        };
+
+        document.getElementById('btnInit').onclick = async () => {
+            createPC();
+            const offer = await pc.createOffer();
+            await pc.setLocalDescription(offer);
+            log("Offer created. Gathering candidates...");
+        };
+
+        document.getElementById('btnProcess').onclick = async () => {
+            const raw = document.getElementById('sigBox').value;
+            if (!raw) return;
+            try {
+                const data = JSON.parse(raw);
+                if (data.sdp.type === 'offer') {
+                    createPC();
+                    await pc.setRemoteDescription(new RTCSessionDescription(data.sdp));
+                    const answer = await pc.createAnswer();
+                    await pc.setLocalDescription(answer);
+                    log("Offer processed. Answer generated.", "success");
+                } else {
+                    await pc.setRemoteDescription(new RTCSessionDescription(data.sdp));
+                    log("Answer processed. Connecting...", "success");
+                }
+            } catch (e) { log("Invalid Data: " + e.message, 'error'); }
+        };
+
+        document.getElementById('btnCopy').onclick = () => {
+            document.getElementById('sigBox').select();
+            document.execCommand('copy');
+            log("Copied to clipboard.");
+        };
+    </script>
+</body>
+</html>

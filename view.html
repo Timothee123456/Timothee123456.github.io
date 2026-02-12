@@ -23,6 +23,7 @@
             width: 100%; /* Full width */
             height: 100%; /* Full height */
             object-fit: contain; /* Maintain aspect ratio and fit within container */
+            box-sizing: border-box; /* Include border in the element's total width and height */
         }
         #start {
             padding: 20px 40px;
@@ -37,7 +38,7 @@
             background-color: #367c39;
         }
         .bordered {
-            border: 1px solid #ddd; /* Light grey border */
+            border: 1px solid black; /* Light grey border */
         }
     </style>
 </head>
@@ -56,7 +57,7 @@
 
         // Function to get URL parameters
         function getParameterByName(name, url = window.location.href) {
-            name = name.replace(/[\[\]]/g, '\\$&');
+            name = name.replace(/[[]]/g, '\\$&');
             var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
                 results = regex.exec(url);
             if (!results) return null;

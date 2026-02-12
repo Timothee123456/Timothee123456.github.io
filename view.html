@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Tab Viewer</title>
+    <style>
+        body { 
+            font-family: sans-serif; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center; /* Center content vertically */
+            padding: 0;
+            margin: 0;
+            height: 100vh;
+            overflow: hidden;
+        }
+        #previewContainer {
+            width: 100%;
+            height: 100%;
+            display: none; /* Initially hidden */
+        }
+        video { 
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            object-fit: contain; /* Maintain aspect ratio and fit within container */
+        }
+        #start {
+            padding: 20px 40px;
+            font-size: 24px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        #start:hover {
+            background-color: #367c39;
+        }
+    </style>
+</head>
+<body>
+
+    <button id="start">Select Tab to Watch</button>
+
+    <div id="previewContainer">
+        <video id="preview" autoplay></video>
+    </div>
+
+    <script>
+        const video = document.getElementById('preview');
+        const startBtn = document.getElementById('start');
+        const previewContainer = document.getElementById('previewContainer');
+
+        // 1. Ask user for permission to see another tab
+        startBtn.onclick = async () => {
+            try {
+                const stream = await navigator.mediaDevices.getDisplayMedia({
+                    video: { displaySurface: "browser" }, // Hints to focus on tabs
+                    audio: false
+                });
+                video.srcObject = stream;
+                video.onloadedmetadata = () => {
+                    video.play();
+                };
+                startBtn.style.display = 'none'; // Hide the button
+                previewContainer.style.display = 'block'; // Show the video container
+            } catch (err) {
+                console.error("Error: " + err);
+                alert("Permission denied."); // Simple alert for error
+            }
+        };
+    </script>
+</body>
+</html>

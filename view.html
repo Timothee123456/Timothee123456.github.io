@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Tab Viewer</title>
+    <title>Tab Reader AI</title>
     <style>
         body { 
             font-family: sans-serif; 
@@ -36,6 +36,9 @@
         #start:hover {
             background-color: #367c39;
         }
+        .bordered {
+            border: 1px solid #ddd; /* Light grey border */
+        }
     </style>
 </head>
 <body>
@@ -50,6 +53,23 @@
         const video = document.getElementById('preview');
         const startBtn = document.getElementById('start');
         const previewContainer = document.getElementById('previewContainer');
+
+        // Function to get URL parameters
+        function getParameterByName(name, url = window.location.href) {
+            name = name.replace(/[\[\]]/g, '\\$&');
+            var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
+                results = regex.exec(url);
+            if (!results) return null;
+            if (!results[2]) return '';
+            return decodeURIComponent(results[2].replace(/\+/g, ' '));
+        }
+
+        // Check for the 'border' parameter
+        const addBorder = getParameterByName('border') === 'true';
+
+        if (addBorder) {
+            video.classList.add('bordered');
+        }
 
         // 1. Ask user for permission to see another tab
         startBtn.onclick = async () => {

@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Screen Sharing (No Backend)</title>
+    <style>
+        body { font-family: sans-serif; }
+        video { width: 640px; height: 480px; border: 1px solid #ccc; }
+    </style>
+</head>
+<body>
+    <h1>Screen Sharing (No Backend)</h1>
+
+    <video id="localVideo" autoplay muted></video>
+    <video id="remoteVideo" autoplay></video>
+
+    <button id="startButton">Start Sharing</button>
+    <button id="callButton" disabled>Call</button>
+    <button id="hangupButton" disabled>Hang Up</button>
+
+    <p>Instructions: Share the offer/answer text below with the other person.  Paste their response in the appropriate box.</p>
+
+    <label for="offer">Offer (Copy and share this):</label><br>
+    <textarea id="offer" rows="4" cols="50" readonly></textarea><br>
+
+    <label for="answer">Answer (Paste their answer here):</label><br>
+    <textarea id="answer" rows="4" cols="50"></textarea>
+    <button id="setAnswer">Set Answer</button><br>
+
+    <label for="iceCandidates">ICE Candidates (Copy and share this):</label><br>
+    <textarea id="iceCandidates" rows="4" cols="50" readonly></textarea><br>
+
+    <label for="remoteIceCandidates">Remote ICE Candidates (Paste their ICE Candidates here):</label><br>
+    <textarea id="remoteIceCandidates" rows="4" cols="50"></textarea>
+    <button id="setRemoteIceCandidates">Set Remote ICE Candidates</button><br>
+
+    <script>
+        const localVideo = document.getElementById('localVideo');
+const remoteVideo = document.getElementById('remoteVideo');
+const startButton = document.getElementById('startButton');
+const callButton = document.getElementById('callButton');
+const hangupButton = document.getElementById('hangupButton');
+const offerTextarea = document.getElementById('offer');
+const answerTextarea = document.getElementById('answer');
+const setAnswerButton = document.getElementById('setAnswer');
+const iceCandidatesTextarea = document.getElementById('iceCandidates');
+const remoteIceCandidatesTextarea = document.getElementById('remoteIceCandidates');
+const setRemoteIceCandidatesButton = document.getElementById('setRemoteIceCandidates');
+
+let pc = null; // RTCPeerConnection
+let localStream = null;
+let iceCandidates = [];
+
+// STUN server configuration (Google's public STUN server)
+const iceServers = [{ urls: 'stun:stun.l.google.com:19302' }];
+
+startButton.addEventListener('click', startSharing);
+callButton.addEventListener('click', call);
+hangupButton.addEventListener('click', hangup);
+setAnswerButton.addEventListener('click', setRemoteDescription);
+setRemoteIceCandidatesButton.addEventListener('click', setRemoteIce);
+
+async function startSharing() {
+    try {
+        localStream = await navigator.mediaDevices.getDisplayMedia({ video: true, audio: false });
+        localVideo.srcObject = localStream;
+        callButton.disabled = false;
+        startButton.disabled = true;
+    } catch (e) {
+        console.error('Error getting media: ', e);
+    }
+}
+
+async function call() {
+    callButton.disabled = true;
+    hangupButton.disabled = false;
+
+    pc = new RTCPeerConnection({ iceServers: iceServers });
+
+    // Collect ICE candidates
+    pc.onicecandidate = (event) => {
+        if (event.candidate) {
+            iceCandidates.push(event.candidate);
+            iceCandidatesTextarea.value = JSON.stringify(iceCandidates);
+        } else {
+            console.log('All ICE candidates have been gathered.');
+        }
+    };
+
+    pc.ontrack = (event) => {
+        remoteVideo.srcObject = event.streams[0];
+    };
+
+    localStream.getTracks().forEach(track => {
+        pc.addTrack(track, localStream);
+    });
+
+    try {
+        const offer = await pc.createOffer();
+        await pc.setLocalDescription(offer);
+        offerTextarea.value = offer.sdp; // Display the offer SDP
+    } catch (e) {
+        console.error('Error creating offer: ', e);
+    }
+}
+
+async function setRemoteDescription() {
+    try {
+        await pc.setRemoteDescription({ type: 'answer', sdp: answerTextarea.value });
+    } catch (e) {
+        console.error('Error setting remote description: ', e);
+    }
+}
+
+async function setRemoteIce() {
+    try {
+        const remoteIce = JSON.parse(remoteIceCandidatesTextarea.value);
+        remoteIce.forEach(async (candidate) => {
+            await pc.addIceCandidate(candidate);
+        });
+    } catch (e) {
+        console.error('Error adding remote ICE candidate: ', e);
+    }
+}
+
+function hangup() {
+    if (pc) {
+        pc.close();
+        pc = null;
+    }
+    if (localStream) {
+        localStream.getTracks().forEach(track => track.stop());
+        localVideo.srcObject = null;
+        localStream = null;
+    }
+
+    callButton.disabled = false;
+    hangupButton.disabled = true;
+    startButton.disabled = false;
+    offerTextarea.value = '';
+    answerTextarea.value = '';
+    iceCandidatesTextarea.value = '';
+    remoteIceCandidatesTextarea.value = '';
+    iceCandidates = [];
+}
+    </script>
+</body>
+</html>

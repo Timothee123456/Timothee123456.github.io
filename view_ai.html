@@ -72,60 +72,52 @@
 
         // 2. The Analysis Function
         async function runAnalysis() {
-            const key = document.getElementById('apiKey').value;
-            const userPrompt = document.getElementById('prompt').value || "What is visible in this screenshot?";
+    const key = document.getElementById('apiKey').value;
+    const userPrompt = document.getElementById('prompt').value || "What is visible?";
 
-            if (!streamActive) return;
-            if (!key) {
-                statusDiv.innerText = "Error: Missing API Key";
-                return;
-            }
+    if (!streamActive || !key) return;
 
-            statusDiv.innerText = "Capturing & Sending...";
-            analyzeBtn.innerText = "ANALYZING...";
+    // 1. Capture frame
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+    const base64Image = canvas.toDataURL('image/jpeg', 0.6).split(',')[1]; // Get just the data part
 
-            // Capture frame
-            canvas.width = video.videoWidth;
-            canvas.height = video.videoHeight;
-            const ctx = canvas.getContext('2d');
-            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-            const base64Image = canvas.toDataURL('image/jpeg', 0.7); // 0.7 quality to stay under size limits
+    // 2. Use a CORS Proxy URL
+    const proxyUrl = "https://corsproxy.io/?";
+    const targetUrl = "https://api.poe.com/v1/chat/completions";
 
-            try {
-                const openai = new OpenAI({
-                    apiKey: key,
-                    baseURL: "https://api.poe.com/v1",
-                    dangerouslyAllowBrowser: true // Required for client-side usage
-                });
+    try {
+        const response = await fetch(proxyUrl + encodeURIComponent(targetUrl), {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${key}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                model: "gemini-2.0-flash",
+                messages: [
+                    {
+                        role: "user",
+                        content: [
+                            { type: "text", text: userPrompt },
+                            {
+                                type: "image_url",
+                                image_url: { url: `data:image/jpeg;base64,${base64Image}` }
+                            }
+                        ]
+                    }
+                ]
+            })
+        });
 
-                const response = await openai.chat.completions.create({
-                    model: "gemini-2.0-flash", // Using gemini-2.0-flash as requested
-                    messages: [
-                        {
-                            role: "user",
-                            content: [
-                                { type: "text", text: userPrompt },
-                                {
-                                    type: "image_url",
-                                    image_url: {
-                                        url: base64Image,
-                                    },
-                                },
-                            ],
-                        },
-                    ],
-                });
-
-                responseDiv.innerText = response.choices[0].message.content;
-                statusDiv.innerText = "Analysis complete.";
-            } catch (err) {
-                console.error(err);
-                responseDiv.innerText = "Error: " + err.message;
-                statusDiv.innerText = "Failed.";
-            } finally {
-                analyzeBtn.innerText = "Step 2: HOVER TO ANALYZE";
-            }
-        }
+        const data = await response.json();
+        responseDiv.innerText = data.choices[0].message.content;
+    } catch (err) {
+        responseDiv.innerText = "CORS Error: " + err.message;
+    }
+}
 
         // 3. Hover Trigger
         let debounceTimer;

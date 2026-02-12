@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebRTC Precision Screen Share</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .video-container { background: #000; border-radius: 12px; overflow: hidden; aspect-ratio: 16 / 9; position: relative; }
+        video { width: 100%; height: 100%; object-fit: contain; }
+        .error-pulse { animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: .5; } }
+    </style>
+</head>
+<body class="bg-slate-50 min-h-screen p-4 font-sans">
+    <div class="max-w-5xl mx-auto">
+        <!-- Header -->
+        <div class="bg-white shadow-sm border-b p-6 rounded-t-xl flex justify-between items-center">
+            <h1 class="text-xl font-bold text-slate-800">Screen Share <span class="text-blue-600">Pro</span></h1>
+            <div id="connectionBadge" class="px-3 py-1 rounded-full text-xs font-bold bg-slate-200 text-slate-600">DISCONNECTED</div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="bg-white shadow-xl rounded-b-xl p-6 grid grid-cols-1 lg:grid-cols-12 gap-8">
+            
+            <!-- Left Column: Video & Controls -->
+            <div class="lg:col-span-7 space-y-6">
+                <div id="modeSelection" class="bg-blue-50 p-6 rounded-xl border border-blue-100">
+                    <h2 class="text-blue-800 font-bold mb-4">Choose your role:</h2>
+                    <div class="flex gap-4">
+                        <button id="senderButton" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-bold transition shadow-lg shadow-blue-200">I am the Sender</button>
+                        <button id="receiverButton" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white py-3 rounded-lg font-bold transition shadow-lg shadow-emerald-200">I am the Receiver</button>
+                    </div>
+                </div>
+
+                <div id="mainInterface" class="hidden space-y-4">
+                    <div class="video-container shadow-2xl border-4 border-slate-800">
+                        <video id="mainVideo" autoplay playsinline muted></video>
+                        <div id="videoOverlay" class="absolute inset-0 flex items-center justify-center bg-slate-900 text-white text-sm">
+                            Waiting for stream...
+                        </div>
+                    </div>
+
+                    <div id="senderControls" class="hidden flex flex-wrap gap-2">
+                        <button id="startSharingButton" class="bg-slate-800 text-white px-6 py-2 rounded-lg hover:bg-slate-700 transition">1. Select Screen</button>
+                        <button id="createOfferButton" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-500 disabled:opacity-50 transition" disabled>2. Generate Offer</button>
+                    </div>
+
+                    <div class="bg-amber-50 border-l-4 border-amber-400 p-4">
+                        <h3 class="text-amber-800 font-bold text-sm mb-1">Current Instructions:</h3>
+                        <ol id="instructions" class="text-xs text-amber-700 list-decimal ml-4 space-y-1">
+                            <!-- Injected -->
+                        </ol>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column: Signaling & Errors -->
+            <div class="lg:col-span-5 flex flex-col space-y-4">
+                <div class="flex flex-col flex-1">
+                    <div class="flex justify-between items-end mb-2">
+                        <label class="text-sm font-bold text-slate-700">Signaling Data</label>
+                        <button id="copyButton" class="text-xs text-blue-600 hover:underline">Copy to clipboard</button>
+                    </div>
+                    <textarea id="combinedData" class="w-full flex-1 min-h-[200px] p-3 border rounded-lg font-mono text-[10px] bg-slate-50 focus:ring-2 focus:ring-blue-500 outline-none resize-none" placeholder="Paste Offer/Answer here..."></textarea>
+                    <button id="processDataButton" class="w-full mt-3 bg-indigo-600 text-white font-bold py-3 rounded-lg hover:bg-indigo-700 transition shadow-lg shadow-indigo-100">Process Data</button>
+                </div>
+
+                <!-- Error Console -->
+                <div class="bg-slate-900 rounded-lg p-4 h-48 overflow-y-auto font-mono text-[11px]">
+                    <div class="flex justify-between border-b border-slate-700 pb-1 mb-2">
+                        <span class="text-slate-400 uppercase tracking-widest">System Log</span>
+                        <button onclick="document.getElementById('errorLog').innerHTML=''" class="text-slate-500 hover:text-white">Clear</button>
+                    </div>
+                    <div id="errorLog" class="space-y-1">
+                        <div class="text-blue-400">[System] Application initialized.</div>
+                    </div>
+                </div>
+                
+                <button id="resetButton" class="text-center text-xs text-slate-400 hover:text-red-500 transition">Reset All Connections</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Configuration
+        const iceServers = [{ urls: 'stun:stun.l.google.com:19302' }];
+        let pc = null;
+        let localStream = null;
+        let isSender = false;
+
+        // UI Elements
+        const logContainer = document.getElementById('errorLog');
+        const badge = document.getElementById('connectionBadge');
+        const combinedDataTextarea = document.getElementById('combinedData');
+        const mainVideo = document.getElementById('mainVideo');
+        const videoOverlay = document.getElementById('videoOverlay');
+
+        // --- Logging & Error Handling ---
+        function log(msg, type = 'info') {
+            const entry = document.createElement('div');
+            const time = new Date().toLocaleTimeString([], { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' });
+            
+            if (type === 'error') entry.className = 'text-red-400 font-bold';
+            else if (type === 'success') entry.className = 'text-emerald-400';
+            else if (type === 'warn') entry.className = 'text-amber-400';
+            else entry.className = 'text-slate-300';
+
+            entry.innerHTML = `[${time}] ${msg}`;
+            logContainer.appendChild(entry);
+            logContainer.scrollTop = logContainer.scrollHeight;
+        }
+
+        function updateBadge(state) {
+            badge.innerText = state.toUpperCase();
+            const colors = {
+                'connected': 'bg-emerald-100 text-emerald-700',
+                'failed': 'bg-red-100 text-red-700',
+                'connecting': 'bg-blue-100 text-blue-700',
+                'disconnected': 'bg-slate-200 text-slate-600'
+            };
+            badge.className = `px-3 py-1 rounded-full text-xs font-bold ${colors[state] || colors.disconnected}`;
+        }
+
+        // --- Setup Logic ---
+        document.getElementById('senderButton').onclick = () => setupRole(true);
+        document.getElementById('receiverButton').onclick = () => setupRole(false);
+        document.getElementById('resetButton').onclick = () => location.reload();
+
+        function setupRole(sender) {
+            isSender = sender;
+            document.getElementById('modeSelection').classList.add('hidden');
+            document.getElementById('mainInterface').classList.remove('hidden');
+            
+            const inst = document.getElementById('instructions');
+            if (isSender) {
+                document.getElementById('senderControls').classList.remove('hidden');
+                inst.innerHTML = `
+                    <li>Click 'Select Screen' to choose what to share.</li>
+                    <li>Click 'Generate Offer' and wait for the code.</li>
+                    <li>Copy the code and send it to the Receiver.</li>
+                    <li>Paste the Receiver's Answer back here and click 'Process'.</li>`;
+                log("Role set: SENDER. Awaiting screen capture.");
+            } else {
+                inst.innerHTML = `
+                    <li>Paste the 'Offer' code from the Sender into the box.</li>
+                    <li>Click 'Process Data'.</li>
+                    <li>An 'Answer' code will appear. Copy and send it to the Sender.</li>`;
+                log("Role set: RECEIVER. Awaiting Offer from sender.");
+            }
+        }
+
+        // --- WebRTC Core ---
+        function createPC() {
+            try {
+                pc = new RTCPeerConnection({ iceServers });
+                log("WebRTC Object created successfully.");
+
+                pc.oniceconnectionstatechange = () => {
+                    log(`ICE State: ${pc.iceConnectionState}`, pc.iceConnectionState === 'failed' ? 'error' : 'info');
+                    updateBadge(pc.iceConnectionState);
+                };
+
+                pc.onicegatheringstatechange = () => {
+                    log(`Gathering State: ${pc.iceGatheringState}`);
+                };
+
+                pc.ontrack = (event) => {
+                    log("Remote track detected!", "success");
+                    mainVideo.srcObject = event.streams[0];
+                    videoOverlay.classList.add('hidden');
+                };
+
+                if (isSender && localStream) {
+                    localStream.getTracks().forEach(track => {
+                        pc.addTrack(track, localStream);
+                        log(`Track added: ${track.kind}`);
+                    });
+                }
+            } catch (e) {
+                log(`Critical PC Error: ${e.message}`, "error");
+            }
+        }
+
+        async function waitIce() {
+            if (pc.iceGatheringState === 'complete') return;
+            log("Waiting for network discovery (max 2s)...");
+            return new Promise(res => {
+                const timer = setTimeout(() => {
+                    log("Discovery timeout reached, using partial candidates.", "warn");
+                    res();
+                }, 2000);
+                pc.addEventListener('icegatheringstatechange', () => {
+                    if (pc.iceGatheringState === 'complete') {
+                        clearTimeout(timer);
+                        log("Discovery complete.", "success");
+                        res();
+                    }
+                }, { once: true });
+            });
+        }
+
+        // --- Button Actions ---
+        document.getElementById('startSharingButton').onclick = async () => {
+            try {
+                if (!navigator.mediaDevices || !navigator.mediaDevices.getDisplayMedia) {
+                    throw new Error("Your browser or connection (non-HTTPS) doesn't support screen sharing.");
+                }
+                localStream = await navigator.mediaDevices.getDisplayMedia({ video: true });
+                mainVideo.srcObject = localStream;
+                videoOverlay.classList.add('hidden');
+                document.getElementById('createOfferButton').disabled = false;
+                log("Screen captured successfully.", "success");
+            } catch (e) {
+                log(`Capture Error: ${e.name} - ${e.message}`, "error");
+            }
+        };
+
+        document.getElementById('createOfferButton').onclick = async () => {
+            try {
+                if (!localStream) throw new Error("No screen capture found. Capture screen first.");
+                createPC();
+                const offer = await pc.createOffer();
+                await pc.setLocalDescription(offer);
+                await waitIce();
+                
+                combinedDataTextarea.value = JSON.stringify({ sdp: pc.localDescription });
+                log("Offer generated. Copy the text now.", "success");
+            } catch (e) {
+                log(`Offer Error: ${e.message}`, "error");
+            }
+        };
+
+        document.getElementById('processDataButton').onclick = async () => {
+            const raw = combinedDataTextarea.value.trim();
+            if (!raw) {
+                log("Process Error: Text box is empty.", "error");
+                return;
+            }
+
+            try {
+                const data = JSON.parse(raw);
+                if (!data.sdp || !data.sdp.type) throw new Error("Invalid format: Missing SDP type.");
+
+                if (data.sdp.type === 'offer') {
+                    if (isSender) throw new Error("You are the Sender, but you pasted an Offer. You need an Answer.");
+                    
+                    log("Processing Offer...");
+                    createPC();
+                    await pc.setRemoteDescription(new RTCSessionDescription(data.sdp));
+                    const answer = await pc.createAnswer();
+                    await pc.setLocalDescription(answer);
+                    await waitIce();
+                    
+                    combinedDataTextarea.value = JSON.stringify({ sdp: pc.localDescription });
+                    log("Answer generated. Send this back to the Sender.", "success");
+                } 
+                else if (data.sdp.type === 'answer') {
+                    if (!isSender) throw new Error("You are the Receiver, but you pasted an Answer. You need an Offer.");
+                    if (!pc) throw new Error("PeerConnection not initialized. Did you create an Offer first?");
+                    
+                    log("Processing Answer...");
+                    await pc.setRemoteDescription(new RTCSessionDescription(data.sdp));
+                    log("Handshake complete. Connecting...", "success");
+                }
+            } catch (e) {
+                log(`Data Error: ${e.message}`, "error");
+                if (e.name === 'SyntaxError') log("Hint: You didn't copy the whole JSON block.", "warn");
+            }
+        };
+
+        document.getElementById('copyButton').onclick = () => {
+            combinedDataTextarea.select();
+            document.execCommand('copy');
+            log("Data copied to clipboard.");
+        };
+    </script>
+</body>
+</html>

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Locked Focus Page</title>
+    <style>
+        body { font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; background: #f0f0f0; }
+        #content { text-align: center; }
+        button { padding: 15px 30px; font-size: 20px; cursor: pointer; background: #4285f4; color: white; border: none; border-radius: 5px; }
+        /* Style for when the page is fullscreen */
+        :fullscreen { background-color: white; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+    </style>
+</head>
+<body>
+
+    <div id="content">
+        <h1>Focus Mode</h1>
+        <p>Click below to lock this page into full screen.</p>
+        <button onclick="startLock()">Start Locked Session</button>
+    </div>
+
+    <script>
+        const EXIT_PASSWORD = "1234"; // Set your password here
+
+        function startLock() {
+            // Request fullscreen for the entire document
+            document.documentElement.requestFullscreen().catch(err => {
+                alert(`Error: ${err.message}`);
+            });
+        }
+
+        // Listen for whenever the user tries to exit fullscreen
+        document.addEventListener('fullscreenchange', () => {
+            if (!document.fullscreenElement) {
+                // The user exited fullscreen (usually by pressing Esc)
+                let attempt = prompt("Enter password to exit focus mode:");
+                
+                if (attempt === EXIT_PASSWORD) {
+                    alert("Unlocked! You may now leave.");
+                } else {
+                    alert("Incorrect password. Returning to full screen.");
+                    startLock(); // Force back into fullscreen
+                }
+            }
+        });
+    </script>
+</body>
+</html>

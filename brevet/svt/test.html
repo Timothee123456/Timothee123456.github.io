@@ -1,79 +1,76 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <title>Secure Focus Mode</title>
     <style>
         body, html { margin: 0; padding: 0; height: 100%; font-family: 'Segoe UI', sans-serif; background: #121212; color: white; overflow: hidden; }
-        
-        /* The Lock Screen Overlay */
-        #lockScreen {
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.95); z-index: 10000;
-            flex-direction: column; align-items: center; justify-content: center;
-        }
-
-        .lock-box { background: #1e1e1e; padding: 40px; border-radius: 15px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        
-        input[type="password"] {
-            padding: 12px; width: 200px; border-radius: 5px; border: 1px solid #333;
-            background: #2d2d2d; color: white; font-size: 18px; text-align: center; margin: 20px 0;
-        }
-
-        button {
-            padding: 10px 25px; background: #4285f4; color: white; border: none;
-            border-radius: 5px; cursor: pointer; font-weight: bold;
-        }
-
-        /* Initial Start Screen */
-        #startContainer { display: flex; height: 100%; align-items: center; justify-content: center; }
+        #startScreen { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; }
+        #lockOverlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.98); z-index: 10000; flex-direction: column; align-items: center; justify-content: center; }
+        .box { background: #1e1e1e; padding: 40px; border-radius: 15px; text-align: center; border: 1px solid #333; }
+        button { padding: 12px 24px; background: #4285f4; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; margin-top: 15px; }
+        input { padding: 12px; width: 200px; border-radius: 5px; border: 1px solid #333; background: #2d2d2d; color: white; text-align: center; font-size: 20px; }
+        #stats { margin-top: 20px; color: #888; font-size: 14px; }
     </style>
 </head>
 <body>
 
-    <div id="startContainer">
-        <button onclick="lockPage()">Click to Enter Secure Mode</button>
+    <div id="startScreen">
+        <h1>Focus Mode</h1>
+        <p>Click to lock the Escape key (requires 2-second hold to exit).</p>
+        <button onclick="activateLock()">Enter Secure Mode</button>
     </div>
 
-    <!-- This is your custom lock screen -->
-    <div id="lockScreen">
-        <div class="lock-box">
-            <h2>Device Locked</h2>
-            <p>Enter PIN to exit focus mode</p>
+    <div id="lockOverlay">
+        <div class="box">
+            <h2>⚠️ Unauthorized Escape Attempt</h2>
+            <p>Enter PIN to return to your work:</p>
             <input type="password" id="pinInput" placeholder="••••">
             <br>
-            <button onclick="checkPin()">Unlock</button>
+            <button onclick="verifyPin()">Unlock Content</button>
+            <div id="stats">Escape attempts detected: <span id="failCount">0</span></div>
         </div>
     </div>
 
     <script>
-        const PIN = "1234";
-        const lockScreen = document.getElementById('lockScreen');
+        const SECRET_PIN = "1234";
+        let escapes = 0;
 
-        function lockPage() {
-            document.documentElement.requestFullscreen().then(() => {
-                document.getElementById('startContainer').style.display = 'none';
-            });
+        async function activateLock() {
+            try {
+                // Request Fullscreen first (required for Keyboard Lock)
+                await document.documentElement.requestFullscreen();
+                
+                // Request Keyboard Lock for the 'Escape' key
+                if (navigator.keyboard && navigator.keyboard.lock) {
+                    await navigator.keyboard.lock(["Escape"]);
+                }
+                
+                document.getElementById('startScreen').style.display = 'none';
+                document.getElementById('lockOverlay').style.display = 'none';
+            } catch (err) {
+                console.error("Lock failed:", err);
+            }
         }
 
-        // Detect when someone tries to leave Fullscreen
+        // Listen for when someone holds ESC for 2 seconds to force exit
         document.addEventListener('fullscreenchange', () => {
             if (!document.fullscreenElement) {
-                // Show the custom lock screen overlay
-                lockScreen.style.display = 'flex';
+                escapes++;
+                document.getElementById('failCount').innerText = escapes;
+                document.getElementById('lockOverlay').style.display = 'flex';
                 document.getElementById('pinInput').focus();
             }
         });
 
-        function checkPin() {
+        function verifyPin() {
             const input = document.getElementById('pinInput');
-            if (input.value === PIN) {
-                lockScreen.style.display = 'none';
+            if (input.value === SECRET_PIN) {
+                activateLock(); // Re-lock the screen and return to work
                 input.value = "";
-                alert("Unlocked successfully!");
             } else {
-                alert("Wrong PIN! Locking again.");
+                alert("Incorrect PIN.");
                 input.value = "";
-                lockPage(); // Force back to fullscreen
-                lockScreen.style.display = 'none';
             }
         }
     </script>

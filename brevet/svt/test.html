@@ -1,47 +1,81 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Locked Focus Page</title>
     <style>
-        body { font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; background: #f0f0f0; }
-        #content { text-align: center; }
-        button { padding: 15px 30px; font-size: 20px; cursor: pointer; background: #4285f4; color: white; border: none; border-radius: 5px; }
-        /* Style for when the page is fullscreen */
-        :fullscreen { background-color: white; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        body, html { margin: 0; padding: 0; height: 100%; font-family: 'Segoe UI', sans-serif; background: #121212; color: white; overflow: hidden; }
+        
+        /* The Lock Screen Overlay */
+        #lockScreen {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.95); z-index: 10000;
+            flex-direction: column; align-items: center; justify-content: center;
+        }
+
+        .lock-box { background: #1e1e1e; padding: 40px; border-radius: 15px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        
+        input[type="password"] {
+            padding: 12px; width: 200px; border-radius: 5px; border: 1px solid #333;
+            background: #2d2d2d; color: white; font-size: 18px; text-align: center; margin: 20px 0;
+        }
+
+        button {
+            padding: 10px 25px; background: #4285f4; color: white; border: none;
+            border-radius: 5px; cursor: pointer; font-weight: bold;
+        }
+
+        /* Initial Start Screen */
+        #startContainer { display: flex; height: 100%; align-items: center; justify-content: center; }
     </style>
 </head>
 <body>
 
-    <div id="content">
-        <h1>Focus Mode</h1>
-        <p>Click below to lock this page into full screen.</p>
-        <button onclick="startLock()">Start Locked Session</button>
+    <div id="startContainer">
+        <button onclick="lockPage()">Click to Enter Secure Mode</button>
+    </div>
+
+    <!-- This is your custom lock screen -->
+    <div id="lockScreen">
+        <div class="lock-box">
+            <h2>Device Locked</h2>
+            <p>Enter PIN to exit focus mode</p>
+            <input type="password" id="pinInput" placeholder="••••">
+            <br>
+            <button onclick="checkPin()">Unlock</button>
+        </div>
     </div>
 
     <script>
-        const EXIT_PASSWORD = "1234"; // Set your password here
+        const PIN = "1234";
+        const lockScreen = document.getElementById('lockScreen');
 
-        function startLock() {
-            // Request fullscreen for the entire document
-            document.documentElement.requestFullscreen().catch(err => {
-                alert(`Error: ${err.message}`);
+        function lockPage() {
+            document.documentElement.requestFullscreen().then(() => {
+                document.getElementById('startContainer').style.display = 'none';
             });
         }
 
-        // Listen for whenever the user tries to exit fullscreen
+        // Detect when someone tries to leave Fullscreen
         document.addEventListener('fullscreenchange', () => {
             if (!document.fullscreenElement) {
-                // The user exited fullscreen (usually by pressing Esc)
-                let attempt = prompt("Enter password to exit focus mode:");
-                
-                if (attempt === EXIT_PASSWORD) {
-                    alert("Unlocked! You may now leave.");
-                } else {
-                    alert("Incorrect password. Returning to full screen.");
-                    startLock(); // Force back into fullscreen
-                }
+                // Show the custom lock screen overlay
+                lockScreen.style.display = 'flex';
+                document.getElementById('pinInput').focus();
             }
         });
+
+        function checkPin() {
+            const input = document.getElementById('pinInput');
+            if (input.value === PIN) {
+                lockScreen.style.display = 'none';
+                input.value = "";
+                alert("Unlocked successfully!");
+            } else {
+                alert("Wrong PIN! Locking again.");
+                input.value = "";
+                lockPage(); // Force back to fullscreen
+                lockScreen.style.display = 'none';
+            }
+        }
     </script>
 </body>
 </html>

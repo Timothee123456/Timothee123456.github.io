@@ -61,29 +61,29 @@
 
         async function startFocusMode() {
             let rawUrl = document.getElementById('urlInput').value;
-            
-            // Auto-fix URL (add https if missing)
             if (!rawUrl.startsWith('http')) {
                 rawUrl = 'https://' + rawUrl;
             }
-
+        
             try {
-                // 1. Trigger Fullscreen
+                // 1. Enter Fullscreen
                 await document.documentElement.requestFullscreen();
-
-                // 2. Lock Keyboard (Esc and F4)
+        
+                // 2. Lock Keys (Using the correct DOMStrings)
                 if (navigator.keyboard && navigator.keyboard.lock) {
-                    await navigator.keyboard.lock(["Escape", "Fullscreen"]);
+                    // We use F11 because that is what the Chromebook F4 key sends
+                    await navigator.keyboard.lock(["Escape", "F11"]);
                 }
-
-                // 3. Load URL and Switch Views
+        
+                // 3. UI Changes
                 frame.src = rawUrl;
                 frame.style.display = 'block';
                 setup.style.display = 'none';
                 overlay.style.display = 'none';
-
+        
             } catch (err) {
-                alert("Fullscreen failed. Please ensure you are clicking the button.");
+                console.error("Lock error:", err);
+                alert("Make sure you are using HTTPS or localhost for Keyboard Lock to work.");
             }
         }
 

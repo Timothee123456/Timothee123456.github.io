@@ -1,78 +1,138 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>P2P Chromebook Chat</title>
+    <!-- We use two different CDNs in case one is blocked by your school -->
     <script src="https://cdn.jsdelivr.net"></script>
     <style>
-        body { font-family: sans-serif; display: flex; flex-direction: column; height: 100vh; margin: 0; padding: 20px; box-sizing: border-box; }
-        #chat { flex: 1; border: 1px solid #ccc; overflow-y: auto; padding: 10px; margin-bottom: 10px; background: #f9f9f9; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f0f2f5; display: flex; flex-direction: column; height: 100vh; margin: 0; padding: 20px; box-sizing: border-box; }
+        .container { max-width: 600px; margin: 0 auto; width: 100%; display: flex; flex-direction: column; height: 100%; }
+        h2 { color: #1a73e8; margin-top: 0; }
+        #my-id { background: #fff; padding: 5px 10px; border-radius: 4px; border: 1px solid #ddd; font-family: monospace; font-weight: bold; }
+        #chat { flex: 1; border: 1px solid #ddd; overflow-y: auto; padding: 15px; margin: 15px 0; background: white; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
         .controls { display: flex; gap: 10px; margin-bottom: 10px; }
-        input { padding: 8px; flex: 1; }
-        button { padding: 8px 15px; cursor: pointer; background: #4285f4; color: white; border: none; border-radius: 4px; }
+        input { padding: 12px; border: 1px solid #ddd; border-radius: 6px; flex: 1; outline: none; }
+        input:focus { border-color: #4285f4; }
+        button { padding: 12px 20px; cursor: pointer; background: #4285f4; color: white; border: none; border-radius: 6px; font-weight: bold; transition: background 0.2s; }
+        button:hover { background: #3367d6; }
+        .msg { margin-bottom: 8px; line-height: 1.4; }
+        .system { color: #888; font-style: italic; font-size: 0.9em; }
     </style>
 </head>
 <body>
-    <h2>Your ID: <span id="my-id">...</span></h2>
+
+<div class="container">
+    <h2>Your ID: <span id="my-id">Loading...</span></h2>
     
     <div class="controls">
         <input type="text" id="receiver-id" placeholder="Paste Friend's ID here">
-        <button onclick="connectToPeer()">Connect & Chat</button>
+        <button id="connect-btn">Connect</button>
     </div>
 
-    <div id="chat"></div>
+    <div id="chat">
+        <div class="msg system">Welcome! Share your ID with a friend to start.</div>
+    </div>
 
     <div class="controls">
-        <input type="text" id="message-input" placeholder="Type a message...">
-        <button onclick="sendMessage()">Send</button>
+        <input type="text" id="message-input" placeholder="Type a message..." autocomplete="off">
+        <button id="send-btn">Send</button>
     </div>
+</div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const peer = new Peer(); // Connects to the public PeerJS handshake server
-            let conn;
-    
-            // Display your ID so you can share it
-            peer.on('open', (id) => {
-                document.getElementById('my-id').innerText = id;
-            });
-    
-            // Listen for incoming connections (Friend connects to you)
-            peer.on('connection', (connection) => {
-                conn = connection;
-                setupChat();
-            });
-    
-            // Function to initiate connection (You connect to friend)
-            function connectToPeer() {
-                const remoteId = document.getElementById('receiver-id').value;
+<script>
+    // Wait for the page and PeerJS library to fully load
+    document.addEventListener('DOMContentLoaded', () => {
+        
+        // Initialize Peer
+        const peer = new Peer(); 
+        let conn = null;
+
+        const myIdDisplay = document.getElementById('my-id');
+        const chatBox = document.getElementById('chat');
+        const receiverInput = document.getElementById('receiver-id');
+        const messageInput = document.getElementById('message-input');
+        const connectBtn = document.getElementById('connect-btn');
+        const sendBtn = document.getElementById('send-btn');
+
+        // 1. Display your ID once connected to the PeerServer
+        peer.on('open', (id) => {
+            myIdDisplay.innerText = id;
+            console.log('My peer ID is: ' + id);
+        });
+
+        // 2. Handle incoming connection (Friend connects to you)
+        peer.on('connection', (incomingConn) => {
+            conn = incomingConn;
+            setupChatListeners();
+        });
+
+        // 3. Connect to a friend (You connect to them)
+        connectBtn.onclick = () => {
+            const remoteId = receiverInput.value.trim();
+            if (remoteId) {
+                appendMessage("System", "Attempting to connect...", "system");
                 conn = peer.connect(remoteId);
-                setupChat();
+                setupChatListeners();
             }
-    
-            function setupChat() {
-                conn.on('data', (data) => {
-                    appendMessage("Friend: " + data);
-                });
-                conn.on('open', () => {
-                    appendMessage("--- Connected ---");
-                });
-            }
-    
-            function sendMessage() {
-                const msg = document.getElementById('message-input').value;
-                if (conn && conn.open) {
-                    conn.send(msg);
-                    appendMessage("You: " + msg);
-                    document.getElementById('message-input').value = "";
-                }
-            }
-    
-            function appendMessage(text) {
-                const chat = document.getElementById('chat');
-                chat.innerHTML += `<div>${text}</div>`;
-                chat.scrollTop = chat.scrollHeight;
+        };
+
+        // 4. Send message function
+        function doSend() {
+            const msg = messageInput.value.trim();
+            if (conn && conn.open && msg) {
+                conn.send(msg);
+                appendMessage("You", msg);
+                messageInput.value = "";
+            } else if (!conn || !conn.open) {
+                appendMessage("System", "Not connected to anyone.", "system");
             }
         }
-    </script>
+
+        sendBtn.onclick = doSend;
+
+        // Allow pressing "Enter" to send
+        messageInput.onkeypress = (e) => { if(e.key === 'Enter') doSend(); };
+
+        // 5. Setup data listeners for the connection
+        function setupChatListeners() {
+            conn.on('open', () => {
+                appendMessage("System", "Connected to friend!", "system");
+            });
+
+            conn.on('data', (data) => {
+                appendMessage("Friend", data);
+            });
+
+            conn.on('close', () => {
+                appendMessage("System", "Connection closed.", "system");
+                conn = null;
+            });
+
+            conn.on('error', (err) => {
+                appendMessage("System", "Connection error: " + err, "system");
+            });
+        }
+
+        // Helper to show messages in the UI
+        function appendMessage(sender, text, type = "") {
+            const msgDiv = document.createElement('div');
+            msgDiv.className = "msg " + type;
+            msgDiv.innerHTML = `<strong>${sender}:</strong> ${text}`;
+            chatBox.appendChild(msgDiv);
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        // Error handling for the Peer object
+        peer.on('error', (err) => {
+            appendMessage("System", "Peer error: " + err.type, "system");
+            if(err.type === 'browser-incompatible') {
+                appendMessage("System", "Your browser does not support WebRTC.", "system");
+            }
+        });
+    });
+</script>
+
 </body>
 </html>

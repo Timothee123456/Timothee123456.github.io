@@ -2,7 +2,7 @@
 <html>
 <head>
     <title>P2P Chromebook Chat</title>
-    <script src="https://unpkg.com"></script>
+    <script src="https://cdn.jsdelivr.net"></script>
     <style>
         body { font-family: sans-serif; display: flex; flex-direction: column; height: 100vh; margin: 0; padding: 20px; box-sizing: border-box; }
         #chat { flex: 1; border: 1px solid #ccc; overflow-y: auto; padding: 10px; margin-bottom: 10px; background: #f9f9f9; }
@@ -27,49 +27,51 @@
     </div>
 
     <script>
-        const peer = new Peer(); // Connects to the public PeerJS handshake server
-        let conn;
-
-        // Display your ID so you can share it
-        peer.on('open', (id) => {
-            document.getElementById('my-id').innerText = id;
-        });
-
-        // Listen for incoming connections (Friend connects to you)
-        peer.on('connection', (connection) => {
-            conn = connection;
-            setupChat();
-        });
-
-        // Function to initiate connection (You connect to friend)
-        function connectToPeer() {
-            const remoteId = document.getElementById('receiver-id').value;
-            conn = peer.connect(remoteId);
-            setupChat();
-        }
-
-        function setupChat() {
-            conn.on('data', (data) => {
-                appendMessage("Friend: " + data);
+        document.addEventListener('DOMContentLoaded', () => {
+            const peer = new Peer(); // Connects to the public PeerJS handshake server
+            let conn;
+    
+            // Display your ID so you can share it
+            peer.on('open', (id) => {
+                document.getElementById('my-id').innerText = id;
             });
-            conn.on('open', () => {
-                appendMessage("--- Connected ---");
+    
+            // Listen for incoming connections (Friend connects to you)
+            peer.on('connection', (connection) => {
+                conn = connection;
+                setupChat();
             });
-        }
-
-        function sendMessage() {
-            const msg = document.getElementById('message-input').value;
-            if (conn && conn.open) {
-                conn.send(msg);
-                appendMessage("You: " + msg);
-                document.getElementById('message-input').value = "";
+    
+            // Function to initiate connection (You connect to friend)
+            function connectToPeer() {
+                const remoteId = document.getElementById('receiver-id').value;
+                conn = peer.connect(remoteId);
+                setupChat();
             }
-        }
-
-        function appendMessage(text) {
-            const chat = document.getElementById('chat');
-            chat.innerHTML += `<div>${text}</div>`;
-            chat.scrollTop = chat.scrollHeight;
+    
+            function setupChat() {
+                conn.on('data', (data) => {
+                    appendMessage("Friend: " + data);
+                });
+                conn.on('open', () => {
+                    appendMessage("--- Connected ---");
+                });
+            }
+    
+            function sendMessage() {
+                const msg = document.getElementById('message-input').value;
+                if (conn && conn.open) {
+                    conn.send(msg);
+                    appendMessage("You: " + msg);
+                    document.getElementById('message-input').value = "";
+                }
+            }
+    
+            function appendMessage(text) {
+                const chat = document.getElementById('chat');
+                chat.innerHTML += `<div>${text}</div>`;
+                chat.scrollTop = chat.scrollHeight;
+            }
         }
     </script>
 </body>

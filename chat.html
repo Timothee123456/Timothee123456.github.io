@@ -9,14 +9,54 @@
         #chat { flex: 1; border: 1px solid #333; background: #000; overflow-y: auto; padding: 10px; margin: 10px 0; border-radius: 8px; }
         .controls { display: flex; gap: 10px; margin-bottom: 10px; }
         input { padding: 10px; border-radius: 5px; border: 1px solid #444; background: #222; color: white; flex: 1; }
-        button { padding: 10px; cursor: pointer; background: #007bff; color: white; border: none; border-radius: 5px; font-size: 1em; } /* Added font-size */
+        button { padding: 10px; cursor: pointer; background: #007bff; color: white; border: none; border-radius: 5px; font-size: 1em; }
         #debug-log { font-size: 10px; color: #555; height: 50px; overflow: auto; border-top: 1px solid #333; padding-top: 5px; }
         .error { color: #ff4444; }
         .success { color: #00ff00; }
         #file-input { display: none; } /* Hide the default file input */
-        .file-button { padding: 10px; cursor: pointer; background: #28a745; color: white; border: none; border-radius: 5px; font-size: 1em; } /* Added font-size */
+        .file-button { padding: 10px; cursor: pointer; background: #28a745; color: white; border: none; border-radius: 5px; font-size: 1em; }
         .file-display { margin-top: 10px; }
         .file-display img { max-width: 200px; max-height: 200px; }
+
+        /* Styles for the loading overlay */
+        #loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black */
+            display: none; /* Hidden by default */
+            justify-content: center;
+            align-items: center;
+            z-index: 1000; /* Ensure it's on top */
+            color: white;
+            font-size: 1.2em;
+        }
+
+        #loading-message {
+            background-color: #333;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        #progress-bar {
+            width: 100%;
+            height: 10px;
+            background-color: #555;
+            border-radius: 5px;
+            margin-top: 10px;
+            overflow: hidden; /* Hide the overflowing part */
+        }
+
+        #progress-bar-fill {
+            width: 0%; /* Initial width is 0 */
+            height: 100%;
+            background-color: #4CAF50; /* Green */
+            border-radius: 5px;
+            transition: width 0.1s ease; /* Smooth transition */
+        }
     </style>
 </head>
 <body>
@@ -42,6 +82,18 @@
 
     <div id="debug-log">Debug info will appear here...</div>
     <div id="file-display" class="file-display"></div>
+
+    <!-- Loading Overlay -->
+    <div id="loading-overlay">
+        <div id="loading-message">
+            Uploading file...
+            <div id="progress-bar">
+                <div id="progress-bar-fill"></div>
+            </div>
+            <div id="progress-percent">0%</div>
+            <div id="estimated-time"></div>
+        </div>
+    </div>
 
     <script>
         function log(msg, isError = false) {
@@ -217,33 +269,99 @@
                 document.getElementById('chat').appendChild(div);
             }
 
+            // Show loading overlay
+            function showLoadingOverlay() {
+                document.getElementById('loading-overlay').style.display = 'flex';
+            }
+
+            // Hide loading overlay
+            function hideLoadingOverlay() {
+                document.getElementById('loading-overlay').style.display = 'none';
+            }
+
+            // Update progress bar
+            function updateProgressBar(percent) {
+                document.getElementById('progress-bar-fill').style.width = percent + '%';
+                document.getElementById('progress-percent').innerText = percent.toFixed(0) + '%';
+            }
+
+            // Update estimated time
+            function updateEstimatedTime(seconds) {
+                const minutes = Math.floor(seconds / 60);
+                const remainingSeconds = Math.floor(seconds % 60);
+                const timeString = `${minutes}m ${remainingSeconds}s`;
+                document.getElementById('estimated-time').innerText = `Estimated time remaining: ${timeString}`;
+            }
+
             // File Sending Logic
             document.getElementById('file-input').addEventListener('change', (event) => {
                 const file = event.target.files[0];
                 if (file) {
                     const reader = new FileReader();
+                    const fileSize = file.size; // in bytes
+                    const chunkSize = 16384; // Adjust chunk size as needed (16KB)
+                    let offset = 0;
+                    let startTime = null;
+                    let totalTime = 0;
+
+                    // Show loading overlay
+                    showLoadingOverlay();
 
                     reader.onload = (e) => {
-                        const fileData = e.target.result;
-                        const fileName = file.name;
-                        const fileType = file.type.startsWith('image') ? 'image' : 'document';
+                        const chunk = e.target.result;
 
                         if (conn && conn.open) {
-                            conn.send({ fileType: fileType, fileName: fileName, fileData: fileData });
+                            conn.send({
+                                fileType: file.type.startsWith('image') ? 'image' : 'document',
+                                fileName: file.name,
+                                fileData: chunk,
+                                offset: offset,
+                                totalSize: fileSize,
+                                last: offset + chunkSize >= fileSize
+                            });
 
-                            if (fileType === 'image') {
-                                appendImage("You", fileData);
+                            const currentTime = new Date().getTime();
+                            if (startTime === null) {
+                                startTime = currentTime;
                             } else {
-                                appendDocument("You", fileName, fileData);
+                                const elapsedTime = currentTime - startTime;
+                                totalTime += elapsedTime;
                             }
 
-                            log(`Sending file: ${fileName} (${fileType})`);
+                            offset += chunkSize;
+
+                            const progress = (offset / fileSize) * 100;
+                            updateProgressBar(progress);
+
+                            if (offset < fileSize) {
+                                readNextChunk();
+                            } else {
+                                // File transfer complete
+                                hideLoadingOverlay();
+                                log(`Sending file: ${file.name} complete.`);
+                                if (file.type.startsWith('image')) {
+                                    appendImage("You", e.target.result);
+                                } else {
+                                    appendDocument("You", file.name, e.target.result);
+                                }
+                            }
                         } else {
+                            hideLoadingOverlay();
                             log("File send failed: No open connection.", true);
                         }
                     };
 
-                    reader.readAsDataURL(file); // Read as Data URL for both images and documents
+                    reader.onerror = () => {
+                        hideLoadingOverlay();
+                        log("Error reading file.", true);
+                    };
+
+                    function readNextChunk() {
+                        const slice = file.slice(offset, offset + chunkSize);
+                        reader.readAsDataURL(slice);
+                    }
+
+                    readNextChunk();
                 }
             });
         };

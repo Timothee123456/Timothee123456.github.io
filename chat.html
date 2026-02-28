@@ -13,23 +13,23 @@
         #debug-log { font-size: 10px; color: #555; height: 50px; overflow: auto; border-top: 1px solid #333; padding-top: 5px; }
         .error { color: #ff4444; }
         .success { color: #00ff00; }
-        #file-input { display: none; } /* Hide the default file input */
+        #file-input { display: none; }
         .file-button { padding: 10px; cursor: pointer; background: #28a745; color: white; border: none; border-radius: 5px; font-size: 1em; }
         .file-display { margin-top: 10px; }
         .file-display img { max-width: 200px; max-height: 200px; }
-
-        /* Styles for the loading overlay */
+        .file-progress { margin-top: 5px; font-size: 12px; color: #888; }
+        
         #loading-overlay {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black */
-            display: none; /* Hidden by default */
+            background-color: rgba(0, 0, 0, 0.5);
+            display: none;
             justify-content: center;
             align-items: center;
-            z-index: 1000; /* Ensure it's on top */
+            z-index: 1000;
             color: white;
             font-size: 1.2em;
         }
@@ -39,6 +39,7 @@
             padding: 20px;
             border-radius: 8px;
             text-align: center;
+            min-width: 300px;
         }
 
         #progress-bar {
@@ -47,15 +48,15 @@
             background-color: #555;
             border-radius: 5px;
             margin-top: 10px;
-            overflow: hidden; /* Hide the overflowing part */
+            overflow: hidden;
         }
 
         #progress-bar-fill {
-            width: 0%; /* Initial width is 0 */
+            width: 0%;
             height: 100%;
-            background-color: #4CAF50; /* Green */
+            background-color: #4CAF50;
             border-radius: 5px;
-            transition: width 0.1s ease; /* Smooth transition */
+            transition: width 0.1s ease;
         }
     </style>
 </head>
@@ -86,12 +87,12 @@
     <!-- Loading Overlay -->
     <div id="loading-overlay">
         <div id="loading-message">
-            Uploading file...
+            Sending file...
             <div id="progress-bar">
                 <div id="progress-bar-fill"></div>
             </div>
             <div id="progress-percent">0%</div>
-            <div id="estimated-time"></div>
+            <div id="file-size-display"></div>
         </div>
     </div>
 
@@ -101,6 +102,9 @@
             d.innerHTML += `<div class="${isError ? 'error' : ''}">[${new Date().toLocaleTimeString()}] ${msg}</div>`;
             d.scrollTop = d.scrollHeight;
         }
+
+        // Store incoming file chunks
+        let incomingFiles = {};
 
         // Function to generate a random alphanumeric ID
         function generateId(length) {
@@ -124,22 +128,22 @@
 
             log("PeerJS Library found. Initializing...");
 
-            let fastMode = false; // Start in secure mode (long IDs)
+            let fastMode = false;
             let myPeerId = null;
             let peer = null;
             let conn = null;
 
             function initializePeer() {
                 if (peer) {
-                    peer.destroy(); // Destroy the old peer object
+                    peer.destroy();
                 }
 
                 if (fastMode) {
-                    myPeerId = generateId(5); // Use a 5-character ID in fast mode
+                    myPeerId = generateId(5);
                     log("Fast Mode: Generated ID: " + myPeerId);
                     peer = new Peer(myPeerId);
                 } else {
-                    myPeerId = null; // Let PeerJS generate a secure ID
+                    myPeerId = null;
                     log("Secure Mode: Using PeerJS generated ID");
                     peer = new Peer();
                 }
@@ -160,7 +164,7 @@
                     if (err.type === 'peer-unavailable') log("Error: Friend's ID not found.", true);
                     if (err.type === 'unavailable-id' && fastMode) {
                         log("ID Collision! Retrying with new ID...", true);
-                        initializePeer(); // Retry with a new ID
+                        initializePeer();
                     }
                 });
 
@@ -184,7 +188,7 @@
                     modeSwitchBtn.innerText = "Switch to Fast Mode (Less Secure)";
                 }
                 log("Switching Mode. Re-initializing Peer...");
-                initializePeer(); // Re-initialize Peer with the new mode
+                initializePeer();
             };
 
             // Handling Outbound Connection
@@ -198,7 +202,7 @@
             // Connect on Enter Key Press in Receiver ID Input
             document.getElementById('receiver-id').addEventListener('keydown', (event) => {
                 if (event.key === 'Enter') {
-                    event.preventDefault(); // Prevent form submission
+                    event.preventDefault();
                     const rid = document.getElementById('receiver-id').value;
                     log("Attempting to connect to: " + rid + " (via Enter key)");
                     conn = peer.connect(rid);
@@ -211,18 +215,95 @@
                     log("Handshake complete. Connection Open.");
                     appendMsg("System", "Connected!");
                 });
+                
                 conn.on('data', (data) => {
                     if (typeof data === 'string') {
                         // Handle text messages
                         appendMsg("Friend", data);
-                    } else if (data.fileType === 'image') {
-                        // Handle image files
-                        appendImage("Friend", data.fileData);
-                    } else if (data.fileType === 'document') {
-                        // Handle document files (display filename)
-                        appendDocument("Friend", data.fileName, data.fileData);
+                    } else if (data.type === 'file-chunk') {
+                        // Handle file chunks
+                        handleFileChunk(data);
                     }
                 });
+            }
+
+            // Handle incoming file chunks
+            function handleFileChunk(data) {
+                const fileId = data.fileId;
+                
+                // Initialize file tracking if not exists
+                if (!incomingFiles[fileId]) {
+                    incomingFiles[fileId] = {
+                        chunks: [],
+                        receivedSize: 0,
+                        fileName: data.fileName,
+                        fileType: data.fileType,
+                        totalSize: data.totalSize,
+                        lastUpdate: Date.now()
+                    };
+                    
+                    // Show receiving progress in chat
+                    appendMsg("System", `Receiving file: ${data.fileName} (${formatFileSize(data.totalSize)})`);
+                }
+                
+                // Store chunk
+                incomingFiles[fileId].chunks[data.chunkIndex] = data.fileData;
+                incomingFiles[fileId].receivedSize += data.chunkDataSize;
+                
+                // Update progress every few chunks to avoid too many messages
+                if (data.chunkIndex % 5 === 0) {
+                    const percent = (incomingFiles[fileId].receivedSize / data.totalSize * 100).toFixed(1);
+                    log(`Receiving ${data.fileName}: ${percent}%`);
+                }
+                
+                // Check if file is complete
+                if (data.lastChunk) {
+                    // Verify we have all chunks
+                    const expectedChunks = Math.ceil(data.totalSize / data.chunkSize);
+                    if (incomingFiles[fileId].chunks.length === expectedChunks && 
+                        incomingFiles[fileId].receivedSize === data.totalSize) {
+                        assembleFile(fileId);
+                    } else {
+                        // Check for missing chunks after a delay (in case chunks arrived out of order)
+                        setTimeout(() => {
+                            if (incomingFiles[fileId] && incomingFiles[fileId].receivedSize === data.totalSize) {
+                                assembleFile(fileId);
+                            }
+                        }, 1000);
+                    }
+                }
+            }
+
+            // Assemble file from chunks
+            function assembleFile(fileId) {
+                const fileData = incomingFiles[fileId];
+                if (!fileData) return;
+                
+                try {
+                    // Combine all chunks
+                    const combinedData = fileData.chunks.join('');
+                    
+                    // Display based on file type
+                    if (fileData.fileType.startsWith('image/')) {
+                        appendImage("Friend", combinedData);
+                    } else {
+                        appendDocument("Friend", fileData.fileName, combinedData);
+                    }
+                    
+                    log(`File received successfully: ${fileData.fileName}`);
+                    
+                    // Clean up
+                    delete incomingFiles[fileId];
+                } catch (error) {
+                    log(`Error assembling file: ${error}`, true);
+                }
+            }
+
+            // Format file size for display
+            function formatFileSize(bytes) {
+                if (bytes < 1024) return bytes + ' B';
+                if (bytes < 1048576) return (bytes / 1024).toFixed(1) + ' KB';
+                return (bytes / 1048576).toFixed(1) + ' MB';
             }
 
             document.getElementById('send-btn').onclick = () => {
@@ -231,42 +312,45 @@
 
             document.getElementById('message-input').addEventListener('keydown', (event) => {
                 if (event.key === 'Enter') {
-                    event.preventDefault(); // Prevent the default action (newline)
+                    event.preventDefault();
                     sendMessage();
                 }
             });
 
             function sendMessage() {
-                const val = document.getElementById('message-input').value;
-                if (conn && conn.open) {
+                const val = document.getElementById('message-input').value.trim();
+                if (val && conn && conn.open) {
                     conn.send(val);
                     appendMsg("You", val);
                     document.getElementById('message-input').value = "";
-                } else {
+                } else if (!conn || !conn.open) {
                     log("Send failed: No open connection.", true);
                 }
             }
 
             function appendMsg(sender, text) {
                 document.getElementById('chat').innerHTML += `<div><strong>${sender}:</strong> ${text}</div>`;
+                document.getElementById('chat').scrollTop = document.getElementById('chat').scrollHeight;
             }
 
             function appendImage(sender, imageData) {
-                document.getElementById('chat').innerHTML += `<div><strong>${sender}:</strong><br><img src="${imageData}" alt="Image"></div>`;
+                document.getElementById('chat').innerHTML += `<div><strong>${sender}:</strong><br><img src="${imageData}" style="max-width: 300px; max-height: 300px; border-radius: 5px;" alt="Image"></div>`;
+                document.getElementById('chat').scrollTop = document.getElementById('chat').scrollHeight;
             }
 
             function appendDocument(sender, fileName, fileData) {
-                // Create a download link for the document
                 const downloadLink = document.createElement('a');
                 downloadLink.href = fileData;
                 downloadLink.download = fileName;
                 downloadLink.textContent = fileName;
+                downloadLink.style.color = '#4CAF50';
 
                 const div = document.createElement('div');
-                div.innerHTML = `<strong>${sender}:</strong><br>`;
+                div.innerHTML = `<strong>${sender}:</strong> `;
                 div.appendChild(downloadLink);
 
                 document.getElementById('chat').appendChild(div);
+                document.getElementById('chat').scrollTop = document.getElementById('chat').scrollHeight;
             }
 
             // Show loading overlay
@@ -277,92 +361,101 @@
             // Hide loading overlay
             function hideLoadingOverlay() {
                 document.getElementById('loading-overlay').style.display = 'none';
+                document.getElementById('progress-bar-fill').style.width = '0%';
+                document.getElementById('progress-percent').innerText = '0%';
             }
 
             // Update progress bar
             function updateProgressBar(percent) {
                 document.getElementById('progress-bar-fill').style.width = percent + '%';
-                document.getElementById('progress-percent').innerText = percent.toFixed(0) + '%';
+                document.getElementById('progress-percent').innerText = percent.toFixed(1) + '%';
             }
 
-            // Update estimated time
-            function updateEstimatedTime(seconds) {
-                const minutes = Math.floor(seconds / 60);
-                const remainingSeconds = Math.floor(seconds % 60);
-                const timeString = `${minutes}m ${remainingSeconds}s`;
-                document.getElementById('estimated-time').innerText = `Estimated time remaining: ${timeString}`;
-            }
-
-            // File Sending Logic
+            // File Sending Logic - CHUNKED TRANSFER WITH REASSEMBLY
             document.getElementById('file-input').addEventListener('change', (event) => {
                 const file = event.target.files[0];
-                if (file) {
-                    const reader = new FileReader();
-                    const fileSize = file.size; // in bytes
-                    const chunkSize = 16384; // Adjust chunk size as needed (16KB)
-                    let offset = 0;
-                    let startTime = null;
-                    let totalTime = 0;
-
-                    // Show loading overlay
-                    showLoadingOverlay();
-
-                    reader.onload = (e) => {
-                        const chunk = e.target.result;
-
-                        if (conn && conn.open) {
-                            conn.send({
-                                fileType: file.type.startsWith('image') ? 'image' : 'document',
-                                fileName: file.name,
-                                fileData: chunk,
-                                offset: offset,
-                                totalSize: fileSize,
-                                last: offset + chunkSize >= fileSize
-                            });
-
-                            const currentTime = new Date().getTime();
-                            if (startTime === null) {
-                                startTime = currentTime;
-                            } else {
-                                const elapsedTime = currentTime - startTime;
-                                totalTime += elapsedTime;
-                            }
-
-                            offset += chunkSize;
-
-                            const progress = (offset / fileSize) * 100;
-                            updateProgressBar(progress);
-
-                            if (offset < fileSize) {
-                                readNextChunk();
-                            } else {
-                                // File transfer complete
-                                hideLoadingOverlay();
-                                log(`Sending file: ${file.name} complete.`);
-                                if (file.type.startsWith('image')) {
-                                    appendImage("You", e.target.result);
-                                } else {
-                                    appendDocument("You", file.name, e.target.result);
-                                }
-                            }
-                        } else {
-                            hideLoadingOverlay();
-                            log("File send failed: No open connection.", true);
-                        }
-                    };
-
-                    reader.onerror = () => {
-                        hideLoadingOverlay();
-                        log("Error reading file.", true);
-                    };
-
-                    function readNextChunk() {
-                        const slice = file.slice(offset, offset + chunkSize);
-                        reader.readAsDataURL(slice);
-                    }
-
-                    readNextChunk();
+                if (!file) return;
+                
+                if (!conn || !conn.open) {
+                    log("File send failed: No open connection.", true);
+                    return;
                 }
+
+                // Generate unique ID for this file transfer
+                const fileId = Date.now() + '-' + Math.random().toString(36).substr(2, 9);
+                const fileSize = file.size;
+                const chunkSize = 64 * 1024; // 64KB chunks (increased from 16KB for efficiency)
+                let offset = 0;
+                let chunkIndex = 0;
+                
+                // Show file info
+                document.getElementById('file-size-display').innerText = `Size: ${formatFileSize(fileSize)}`;
+                showLoadingOverlay();
+                log(`Starting file transfer: ${file.name} (${formatFileSize(fileSize)})`);
+
+                const reader = new FileReader();
+
+                reader.onload = (e) => {
+                    const chunk = e.target.result;
+                    
+                    // Send chunk with metadata
+                    conn.send({
+                        type: 'file-chunk',
+                        fileId: fileId,
+                        fileName: file.name,
+                        fileType: file.type,
+                        fileData: chunk,
+                        chunkIndex: chunkIndex,
+                        chunkSize: chunkSize,
+                        chunkDataSize: chunk.length,
+                        offset: offset,
+                        totalSize: fileSize,
+                        lastChunk: offset + chunkSize >= fileSize
+                    });
+
+                    offset += chunkSize;
+                    
+                    const progress = Math.min(100, (offset / fileSize) * 100);
+                    updateProgressBar(progress);
+
+                    if (offset < fileSize) {
+                        // Read next chunk with slight delay to avoid overwhelming the connection
+                        chunkIndex++;
+                        setTimeout(() => readNextChunk(), 10);
+                    } else {
+                        // Transfer complete
+                        hideLoadingOverlay();
+                        log(`File sent successfully: ${file.name}`);
+                        
+                        // Show preview if it's an image
+                        if (file.type.startsWith('image/')) {
+                            const previewReader = new FileReader();
+                            previewReader.onload = (previewEvent) => {
+                                appendImage("You", previewEvent.target.result);
+                            };
+                            previewReader.readAsDataURL(file);
+                        } else {
+                            appendDocument("You", file.name, URL.createObjectURL(file));
+                        }
+                        
+                        // Reset file input
+                        document.getElementById('file-input').value = '';
+                    }
+                };
+
+                reader.onerror = () => {
+                    hideLoadingOverlay();
+                    log("Error reading file chunk.", true);
+                    document.getElementById('file-input').value = '';
+                };
+
+                function readNextChunk() {
+                    const slice = file.slice(offset, Math.min(offset + chunkSize, fileSize));
+                    reader.readAsDataURL(slice);
+                }
+
+                // Start reading first chunk
+                readNextChunk();
             });
         };
     </script>

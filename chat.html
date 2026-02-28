@@ -9,12 +9,12 @@
         #chat { flex: 1; border: 1px solid #333; background: #000; overflow-y: auto; padding: 10px; margin: 10px 0; border-radius: 8px; }
         .controls { display: flex; gap: 10px; margin-bottom: 10px; }
         input { padding: 10px; border-radius: 5px; border: 1px solid #444; background: #222; color: white; flex: 1; }
-        button { padding: 10px; cursor: pointer; background: #007bff; color: white; border: none; border-radius: 5px; }
+        button { padding: 10px; cursor: pointer; background: #007bff; color: white; border: none; border-radius: 5px; font-size: 1em; } /* Added font-size */
         #debug-log { font-size: 10px; color: #555; height: 50px; overflow: auto; border-top: 1px solid #333; padding-top: 5px; }
         .error { color: #ff4444; }
         .success { color: #00ff00; }
         #file-input { display: none; } /* Hide the default file input */
-        .file-button { padding: 10px; cursor: pointer; background: #28a745; color: white; border: none; border-radius: 5px; }
+        .file-button { padding: 10px; cursor: pointer; background: #28a745; color: white; border: none; border-radius: 5px; font-size: 1em; } /* Added font-size */
         .file-display { margin-top: 10px; }
         .file-display img { max-width: 200px; max-height: 200px; }
     </style>
@@ -142,6 +142,17 @@
                 conn = peer.connect(rid);
                 setupChat();
             };
+
+            // Connect on Enter Key Press in Receiver ID Input
+            document.getElementById('receiver-id').addEventListener('keydown', (event) => {
+                if (event.key === 'Enter') {
+                    event.preventDefault(); // Prevent form submission
+                    const rid = document.getElementById('receiver-id').value;
+                    log("Attempting to connect to: " + rid + " (via Enter key)");
+                    conn = peer.connect(rid);
+                    setupChat();
+                }
+            });
 
             function setupChat() {
                 conn.on('open', () => {

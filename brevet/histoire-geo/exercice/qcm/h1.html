@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QCM Histoire</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#5D5CDE',
+                        correct: '#4CAF50',
+                        incorrect: '#F44336',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .option-label {
+            transition: all 0.3s ease;
+        }
+        .option-label:hover {
+            transform: translateX(5px);
+        }
+        .option-radio:checked + .option-label {
+            border-color: var(--option-selected-color);
+            background-color: var(--option-selected-bg);
+        }
+        html.dark {
+            --option-selected-color: #7776e7;
+            --option-selected-bg: rgba(93, 92, 222, 0.2);
+        }
+        html {
+            --option-selected-color: #5D5CDE;
+            --option-selected-bg: rgba(93, 92, 222, 0.1);
+        }
+    </style>
+</head>
+<body class="bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200 min-h-screen">
+    <div class="container mx-auto px-4 py-8 max-w-3xl">
+        <header class="mb-8 text-center">
+            <h1 class="text-3xl font-bold mb-2 text-primary">QCM Histoire</h1>
+            <p class="text-gray-600 dark:text-gray-400">Testez vos connaissances sur la colonisation et le commerce au XVIIIe siècle</p>
+            <button id="theme-toggle" class="absolute top-4 right-4 p-2 rounded-full bg-gray-200 dark:bg-gray-700">
+                <svg id="light-icon" class="w-6 h-6 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                </svg>
+                <svg id="dark-icon" class="w-6 h-6 block dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+                </svg>
+            </button>
+        </header>
+
+        <main>
+            <div id="intro-screen" class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-6">
+                <h2 class="text-2xl font-bold mb-4">Bienvenue au Quiz d'Histoire</h2>
+                <p class="mb-6">Ce quiz contient 20 questions sur l'histoire de la colonisation, l'esclavage et le commerce au XVIIIe siècle.</p>
+                <button id="start-button" class="w-full py-3 px-4 bg-primary text-white rounded-lg font-semibold hover:bg-opacity-90 transition-all">
+                    Commencer le Quiz
+                </button>
+            </div>
+
+            <div id="quiz-container" class="hidden">
+                <div class="flex justify-between items-center mb-4">
+                    <div class="text-sm font-medium">
+                        Question <span id="current-question">1</span>/<span id="total-questions">20</span>
+                    </div>
+                    <div class="text-sm font-medium">
+                        Score: <span id="score">0</span>
+                    </div>
+                </div>
+
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-6">
+                    <h2 id="question-text" class="text-xl font-semibold mb-4"></h2>
+                    <div id="options-container" class="space-y-3">
+                        <!-- Options will be populated by JavaScript -->
+                    </div>
+                </div>
+
+                <div id="feedback" class="hidden rounded-lg p-4 mb-6 text-center font-medium"></div>
+
+                <div class="flex justify-between">
+                    <button id="prev-button" class="py-2 px-4 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg font-medium hover:bg-gray-300 dark:hover:bg-gray-600 transition-all hidden">
+                        Question précédente
+                    </button>
+                    <button id="next-button" class="py-2 px-4 bg-primary text-white rounded-lg font-medium hover:bg-opacity-90 transition-all hidden ml-auto">
+                        Question suivante
+                    </button>
+                </div>
+            </div>
+
+            <div id="results-screen" class="hidden bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 text-center">
+                <h2 class="text-2xl font-bold mb-4">Résultats</h2>
+                <div class="text-6xl font-bold text-primary mb-4"><span id="final-score">0</span>/<span id="max-score">20</span></div>
+                <p id="score-message" class="mb-6 text-lg"></p>
+                <div id="answers-breakdown" class="mb-6 text-left space-y-3">
+                    <!-- Will be populated by JavaScript -->
+                </div>
+                <button id="restart-button" class="w-full py-3 px-4 bg-primary text-white rounded-lg font-semibold hover:bg-opacity-90 transition-all">
+                    Recommencer le Quiz
+                </button>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Quiz data
+        const quizData = [
+            {
+                question: "Qu'est-ce qu'une plantation ?",
+                options: [
+                    "Une petite ferme familiale",
+                    "Un grand domaine spécialisé dans certaines cultures avec de la main-d'œuvre esclave",
+                    "Un marché local",
+                    "Une ville portuaire"
+                ],
+                answer: 1  // Index of correct answer (b)
+            },
+            {
+                question: "Qu'est-ce qu'une colonie ?",
+                options: [
+                    "Un pays indépendant",
+                    "Un territoire occupé, exploité et administré par une puissance étrangère",
+                    "Une alliance entre pays",
+                    "Une région autonome"
+                ],
+                answer: 1 // (b)
+            },
+            {
+                question: "Qu'est-ce qu'une métropole ?",
+                options: [
+                    "Une capitale d'un pays",
+                    "Une puissance étrangère qui possède une colonie",
+                    "Un marché central",
+                    "Une ville portuaire importante"
+                ],
+                answer: 1 // (b)
+            },
+            {
+                question: "Qu'est-ce qu'un esclave ?",
+                options: [
+                    "Un travailleur libre",
+                    "Une personne privée de sa liberté, qui appartient à un maître",
+                    "Un commerçant",
+                    "Un marin"
+                ],
+                answer: 1 // (b)
+            },
+            {
+                question: "Entre quelles années la traite atlantique a-t-elle été interrompue, selon le texte ?",
+                options: [
+                    "1650-1750",
+                    "1700-1800",
+                    "1792-1814",
+                    "1800-1850"
+                ],
+                answer: 2 // (c)
+            },
+            {
+                question: "Combien d'esclaves ont été transportés en Amérique à la fin du XVIIIe siècle ?",
+                options: [
+                    "1 million",
+                    "4 millions",
+                    "8 millions",
+                    "12 millions"
+                ],
+                answer: 2 // (c)
+            },
+            {
+                question: "Quel est le nom donné au commerce triangulaire impliquant l'Europe, l'Afrique et l'Amérique ?",
+                options: [
+                    "Commerce équitable",
+                    "Commerce bilatéral",
+                    "Commerce triangulaire",
+                    "Commerce en droiture"
+                ],
+                answer: 2 // (c)
+            },
+            {
+                question: "Quels produits coloniaux étaient exportés vers l'Europe ?",
+                options: [
+                    "Tissus et armes",
+                    "Esclaves",
+                    "Sucre, café, tabac, coton, or, cacao",
+                    "Vin et céréales"
+                ],
+                answer: 2 // (c)
+            },
+            {
+                question: "Quels produits étaient marchandés en Afrique contre des esclaves ?",
+                options: [
+                    "Sucre et café",
+                    "Marchandises pour l'achat d'esclaves (tissus, fer, armes, alcool)",
+                    "Or et argent",
+                    "Vin et céréales"
+                ],
+                answer: 1 // (b)
+            },
+            {
+                question: "Quels pays étaient les principaux marchands d'esclaves ?",
+                options: [
+                    "France, Espagne, Italie",
+                    "Portugal, Grande-Bretagne, France",
+                    "Allemagne, Russie, Autriche",
+                    "Chine, Japon, Inde"
+                ],
+                answer: 1 // (b)
+            },
+            {
+                question: "Quel code autorisait certains châtiments corporels dans les colonies françaises ?",
+                options: [
+                    "Code civil",
+                    "Code pénal",
+                    "Code Noir",
+                    "Code de la route"
+                ],
+                answer: 2 // (c)
+            },
+            {
+                question: "Quelle était la durée de vie moyenne d'un esclave dans les colonies ?",
+                options: [
+                    "20 ans",
+                    "Plus de dix ans en moyenne",
+                    "30 ans",
+                    "40 ans"
+                ],
+                answer: 1 // (b)
+            },
+            {
+                question: "Qui a critiqué l'esclavage dans l'Esprit des Lois ?",
+                options: [
+                    "Voltaire",
+                    "Rousseau",
+                    "Montesquieu",
+                    "Diderot"
+                ],
+                answer: 2 // (c)
+            },
+            {
+                question: "Quelle société a créé la première société pour l'abolition de l'esclavage ?",
+                options: [
+                    "Les Jacobins",
+                    "Les Quakers",
+                    "Les Girondins",
+                    "Les Templiers"
+                ],
+                answer: 1 // (b)
+            },
+            {
+                question: "Quels auteurs ont écrit sur les impacts économiques du grand commerce ?",
+                options: [
+                    "Marx et Engels",
+                    "Adam Smith et Arthur Young",
+                    "Keynes et Friedman",
+                    "Ricardo et Malthus"
+                ],
+                answer: 1 // (b)
+            },
+            {
+                question: "Qu'est-ce qu'un négociant ?",
+                options: [
+                    "Un artisan",
+                    "Un marchand qui fait du commerce de gros",
+                    "Un agriculteur",
+                    "Un marin"
+                ],
+                answer: 1 // (b)
+            },
+            {
+                question: "Qu'est-ce qu'un armateur ?",
+                options: [
+                    "Un soldat",
+                    "Une personne qui possède et équipe des navires de commerce",
+                    "Un banquier",
+                    "Un avocat"
+                ],
+                answer: 1 // (b)
+            },
+            {
+                question: "Qu'est-ce que le \"commerce en droiture\" ?",
+                options: [
+                    "Un commerce illégal",
+                    "Circulation de marchandises en ligne directe entre le port de départ et le port d'arrivée",
+                    "Un commerce triangulaire",
+                    "Un commerce local"
+                ],
+                answer: 1 // (b)
+            },
+            {
+                question: "Qu'est-ce qu'une compagnie de commerce ?",
+                options: [
+                    "Une petite entreprise familiale",
+                    "Une grande société commerciale qui obtient de l'État le monopole du commerce avec certaines colonies",
+                    "Un groupe de pirates",
+                    "Une association de consommateurs"
+                ],
+                answer: 1 // (b)
+            },
+            {
+                question: "Quel est le problème principal abordé dans le texte concernant le XVIIIe siècle ?",
+                options: [
+                    "Comment se développe le commerce international et quelle place y tient la traite négrière",
+                    "Les avancées scientifiques du XVIIIe siècle",
+                    "Les révolutions politiques en Europe",
+                    "L'essor de l'agriculture"
+                ],
+                answer: 0 // (a)
+            },
+        ];
+
+        // App state
+        let currentQuestion = 0;
+        let score = 0;
+        let userAnswers = new Array(quizData.length).fill(null);
+        let answered = false;
+
+        // DOM Elements
+        const introScreen = document.getElementById('intro-screen');
+        const quizContainer = document.getElementById('quiz-container');
+        const resultsScreen = document.getElementById('results-screen');
+        const questionText = document.getElementById('question-text');
+        const optionsContainer = document.getElementById('options-container');
+        const currentQuestionEl = document.getElementById('current-question');
+        const totalQuestionsEl = document.getElementById('total-questions');
+        const scoreEl = document.getElementById('score');
+        const finalScoreEl = document.getElementById('final-score');
+        const maxScoreEl = document.getElementById('max-score');
+        const scoreMessageEl = document.getElementById('score-message');
+        const answersBreakdownEl = document.getElementById('answers-breakdown');
+        const feedbackEl = document.getElementById('feedback');
+        const startButton = document.getElementById('start-button');
+        const nextButton = document.getElementById('next-button');
+        const prevButton = document.getElementById('prev-button');
+        const restartButton = document.getElementById('restart-button');
+        const themeToggle = document.getElementById('theme-toggle');
+
+        // Initialize the quiz
+        function initQuiz() {
+            totalQuestionsEl.textContent = quizData.length;
+            maxScoreEl.textContent = quizData.length;
+            
+            // Event listeners
+            startButton.addEventListener('click', startQuiz);
+            nextButton.addEventListener('click', goToNextQuestion);
+            prevButton.addEventListener('click', goToPrevQuestion);
+            restartButton.addEventListener('click', restartQuiz);
+            themeToggle.addEventListener('click', toggleTheme);
+            
+            // Check preferred color scheme
+            if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                document.documentElement.classList.add('dark');
+            }
+            
+            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
+                if (event.matches) {
+                    document.documentElement.classList.add('dark');
+                } else {
+                    document.documentElement.classList.remove('dark');
+                }
+            });
+        }
+
+        // Start the quiz
+        function startQuiz() {
+            introScreen.classList.add('hidden');
+            quizContainer.classList.remove('hidden');
+            loadQuestion();
+        }
+
+        // Load the current question
+        function loadQuestion() {
+            answered = userAnswers[currentQuestion] !== null;
+            
+            questionText.textContent = quizData[currentQuestion].question;
+            currentQuestionEl.textContent = currentQuestion + 1;
+            optionsContainer.innerHTML = '';
+            
+            // Create options
+            const options = quizData[currentQuestion].options;
+            const optionLetters = ['a', 'b', 'c', 'd'];
+            
+            options.forEach((option, index) => {
+                const isCorrect = index === quizData[currentQuestion].answer;
+                const isSelected = userAnswers[currentQuestion] === index;
+                
+                const optionDiv = document.createElement('div');
+                optionDiv.className = 'flex items-start';
+                
+                const optionHTML = `
+                    <input type="radio" id="option-${index}" name="answer" 
+                           class="option-radio hidden" value="${index}" 
+                           ${isSelected ? 'checked' : ''} 
+                           ${answered ? 'disabled' : ''}>
+                    <label for="option-${index}" 
+                           class="option-label flex-1 flex items-start p-3 border-2 rounded-lg cursor-pointer
+                                  ${answered && isSelected ? (isCorrect ? 'bg-green-100 dark:bg-green-900 border-correct' : 'bg-red-100 dark:bg-red-900 border-incorrect') : 'border-gray-300 dark:border-gray-600'}">
+                        <span class="font-bold mr-2">(${optionLetters[index]})</span>
+                        <span>${option}</span>
+                        ${answered && isCorrect ? 
+                          '<span class="ml-auto text-correct">✓</span>' : 
+                          (answered && isSelected && !isCorrect ? 
+                           '<span class="ml-auto text-incorrect">✗</span>' : '')}
+                    </label>
+                `;
+                
+                optionDiv.innerHTML = optionHTML;
+                optionsContainer.appendChild(optionDiv);
+                
+                // Add event listener to the new option
+                if (!answered) {
+                    const radioInput = optionDiv.querySelector(`#option-${index}`);
+                    radioInput.addEventListener('change', () => selectAnswer(index));
+                }
+            });
+            
+            // Update navigation buttons
+            updateNavigationButtons();
+            
+            // Hide feedback if moving to a new unanswered question
+            if (!answered) {
+                feedbackEl.classList.add('hidden');
+            } else {
+                showFeedback(userAnswers[currentQuestion] === quizData[currentQuestion].answer);
+            }
+        }
+
+        // Select an answer
+        function selectAnswer(selectedIndex) {
+            answered = true;
+            const isCorrect = selectedIndex === quizData[currentQuestion].answer;
+            
+            // Save the user's answer
+            userAnswers[currentQuestion] = selectedIndex;
+            
+            // Update score if correct and not previously answered correctly
+            if (isCorrect) {
+                score++;
+                scoreEl.textContent = score;
+            }
+            
+            // Show feedback
+            showFeedback(isCorrect);
+            
+            // Disable all options
+            const radioInputs = optionsContainer.querySelectorAll('input[type="radio"]');
+            radioInputs.forEach(input => {
+                input.disabled = true;
+            });
+            
+            // Update the labels to show correct/incorrect
+            const labels = optionsContainer.querySelectorAll('label');
+            labels.forEach((label, index) => {
+                if (index === quizData[currentQuestion].answer) {
+                    label.classList.add('bg-green-100', 'dark:bg-green-900', 'border-correct');
+                    label.innerHTML += '<span class="ml-auto text-correct">✓</span>';
+                } else if (index === selectedIndex) {
+                    label.classList.add('bg-red-100', 'dark:bg-red-900', 'border-incorrect');
+                    label.innerHTML += '<span class="ml-auto text-incorrect">✗</span>';
+                }
+            });
+            
+            // Update navigation buttons
+            updateNavigationButtons();
+        }
+
+        // Show feedback
+        function showFeedback(isCorrect) {
+            feedbackEl.classList.remove('hidden', 'bg-green-100', 'bg-red-100', 'dark:bg-green-900', 'dark:bg-red-900', 'text-green-800', 'text-red-800', 'dark:text-green-200', 'dark:text-red-200');
+            
+            if (isCorrect) {
+                feedbackEl.classList.add('bg-green-100', 'dark:bg-green-900', 'text-green-800', 'dark:text-green-200');
+                feedbackEl.textContent = 'Correct ! 👍';
+            } else {
+                feedbackEl.classList.add('bg-red-100', 'dark:bg-red-900', 'text-red-800', 'dark:text-red-200');
+                feedbackEl.textContent = 'Incorrect. La bonne réponse est : ' + 
+                    ['(a)', '(b)', '(c)', '(d)'][quizData[currentQuestion].answer];
+            }
+        }
+
+        // Go to the next question
+        function goToNextQuestion() {
+            if (currentQuestion < quizData.length - 1) {
+                currentQuestion++;
+                loadQuestion();
+            } else {
+                showResults();
+            }
+        }
+
+        // Go to the previous question
+        function goToPrevQuestion() {
+            if (currentQuestion > 0) {
+                currentQuestion--;
+                loadQuestion();
+            }
+        }
+
+        // Update navigation buttons
+        function updateNavigationButtons() {
+            prevButton.classList.toggle('hidden', currentQuestion === 0);
+            
+            if (answered) {
+                nextButton.classList.remove('hidden');
+                nextButton.textContent = currentQuestion === quizData.length - 1 ? 'Voir les résultats' : 'Question suivante';
+            } else {
+                nextButton.classList.add('hidden');
+            }
+        }
+
+        // Show results
+        function showResults() {
+            quizContainer.classList.add('hidden');
+            resultsScreen.classList.remove('hidden');
+            
+            // Update final score
+            finalScoreEl.textContent = score;
+            
+            // Show score message
+            const percentage = (score / quizData.length) * 100;
+            let message = '';
+            
+            if (percentage === 100) {
+                message = 'Parfait ! Vous avez tout bon !';
+            } else if (percentage >= 80) {
+                message = 'Excellent ! Vous maîtrisez bien le sujet.';
+            } else if (percentage >= 60) {
+                message = 'Bien ! Vous avez de bonnes connaissances sur le sujet.';
+            } else if (percentage >= 40) {
+                message = 'Pas mal. Vous pourriez améliorer vos connaissances sur ce sujet.';
+            } else {
+                message = 'Il vous faut encore réviser ce sujet.';
+            }
+            
+            scoreMessageEl.textContent = message;
+            
+            // Show answers breakdown
+            answersBreakdownEl.innerHTML = '';
+            
+            quizData.forEach((q, index) => {
+                const userAnswer = userAnswers[index];
+                const isCorrect = userAnswer === q.answer;
+                const optionLetters = ['a', 'b', 'c', 'd'];
+                
+                const breakdownItem = document.createElement('div');
+                breakdownItem.className = `p-3 rounded-lg ${isCorrect ? 'bg-green-100 dark:bg-green-900/30' : 'bg-red-100 dark:bg-red-900/30'}`;
+                
+                breakdownItem.innerHTML = `
+                    <p class="font-medium">${index + 1}. ${q.question}</p>
+                    <p class="mt-1">
+                        <span class="font-medium">Votre réponse:</span> 
+                        ${userAnswer !== null ? `(${optionLetters[userAnswer]}) ${q.options[userAnswer]}` : 'Non répondu'}
+                    </p>
+                    ${!isCorrect ? `
+                    <p class="mt-1">
+                        <span class="font-medium">Réponse correcte:</span> 
+                        (${optionLetters[q.answer]}) ${q.options[q.answer]}
+                    </p>` : ''}
+                `;
+                
+                answersBreakdownEl.appendChild(breakdownItem);
+            });
+        }
+
+        // Restart the quiz
+        function restartQuiz() {
+            currentQuestion = 0;
+            score = 0;
+            userAnswers = new Array(quizData.length).fill(null);
+            answered = false;
+            
+            scoreEl.textContent = score;
+            
+            resultsScreen.classList.add('hidden');
+            quizContainer.classList.remove('hidden');
+            
+            loadQuestion();
+        }
+
+        // Toggle theme
+        function toggleTheme() {
+            document.documentElement.classList.toggle('dark');
+        }
+
+        // Initialize when DOM is loaded
+        document.addEventListener('DOMContentLoaded', initQuiz);
+    </script>
+</body>
+</html>

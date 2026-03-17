@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Word Guessing Exercise</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            padding: 40px 20px;
+            max-width: 800px;
+            margin: 0 auto;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+        
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 2em;
+        }
+        
+        h2 {
+            color: #555;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            font-size: 1.5em;
+        }
+        
+        h3 {
+            color: #666;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            font-size: 1.2em;
+        }
+        
+        p {
+            margin-bottom: 15px;
+            color: #444;
+            font-size: 1.1em;
+        }
+        
+        .word-input {
+            padding: 6px 12px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            font-size: 1em;
+            min-width: 150px;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+        
+        .word-input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        .word-input.correct {
+            border-color: #10b981;
+            background-color: #f0fdf4;
+        }
+        
+        .word-input.incorrect {
+            border-color: #ef4444;
+            background-color: #fef2f2;
+        }
+        
+        .feedback {
+            display: inline-block;
+            margin-left: 10px;
+            font-weight: 600;
+            font-size: 0.95em;
+        }
+        
+        .feedback.correct {
+            color: #10b981;
+        }
+        
+        .feedback.incorrect {
+            color: #ef4444;
+        }
+        
+        .controls {
+            margin-top: 30px;
+            padding-top: 30px;
+            border-top: 2px solid #eee;
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        
+        button {
+            padding: 12px 24px;
+            font-size: 1em;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+        
+        .check-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .check-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+        
+        .reset-btn {
+            background: #f3f4f6;
+            color: #333;
+        }
+        
+        .reset-btn:hover {
+            background: #e5e7eb;
+        }
+        
+        .score {
+            font-size: 1.2em;
+            font-weight: 700;
+            color: #667eea;
+            margin-left: auto;
+        }
+        
+        .next-btn {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            display: none;
+        }
+        
+        .next-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(16, 185, 129, 0.3);
+        }
+        
+        .page {
+            animation: fadeIn 0.3s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @media (max-width: 600px) {
+            body {
+                padding: 20px 10px;
+            }
+            
+            .container {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 1.5em;
+            }
+            
+            .controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .score {
+                margin-left: 0;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div id="content">
+            
+      <div class="page" id="page1" style="display: block;">
+        <h1><strong><u>Chapitre 0 - Révisions: Tension, Intensité et lois dans un circuit électrique</u></strong></h1><h2><strong><u>I-La tension électrique</u></strong></h2><p>⮚ La tension électrique (notée <input type="text" id="page1_word1" class="word-input" data-page="1" autocomplete="off">) s'exprime en <input type="text" id="page1_word2" class="word-input" data-page="1" autocomplete="off"> (<input type="text" id="page1_word3" class="word-input" data-page="1" autocomplete="off">) et se mesure avec un <input type="text" id="page1_word4" class="word-input" data-page="1" autocomplete="off"> branché en <input type="text" id="page1_word5" class="word-input" data-page="1" autocomplete="off"> aux bornes d'un dipôle.</p><p>⮚ Les <input type="text" id="page1_word6" class="word-input" data-page="1" autocomplete="off"> isolés ont une <input type="text" id="page1_word7" class="word-input" data-page="1" autocomplete="off"> entre leurs bornes, contrairement aux récepteurs isolés. Cette tension permet la mise en circulation d'un courant électrique dans un circuit fermé.</p><p>⮚ Un récepteur fonctionne correctement si la tension entre ses bornes est proche de sa tension <input type="text" id="page1_word8" class="word-input" data-page="1" autocomplete="off"> (indiquée par le fabricant) : on dit alors que le générateur et le récepteur sont <input type="text" id="page1_word9" class="word-input" data-page="1" autocomplete="off">. Si la tension entre ses bornes est trop élevée, il y a <input type="text" id="page1_word10" class="word-input" data-page="1" autocomplete="off"> et le récepteur peut être rapidement détruit.</p><h2><strong><u>II-L'intensité du courant électrique</u></strong></h2><p>⮚ L'intensité du courant (notée <input type="text" id="page1_word11" class="word-input" data-page="1" autocomplete="off">) s'exprime en <input type="text" id="page1_word12" class="word-input" data-page="1" autocomplete="off"> (<input type="text" id="page1_word13" class="word-input" data-page="1" autocomplete="off">) et se mesure avec un <input type="text" id="page1_word14" class="word-input" data-page="1" autocomplete="off"> branché en <input type="text" id="page1_word15" class="word-input" data-page="1" autocomplete="off">.</p><p>⮚ L'intensité du courant est <input type="text" id="page1_word16" class="word-input" data-page="1" autocomplete="off"> si le circuit est <em>ouvert</em>.</p><p>⮚ Si la tension entre les bornes d'un récepteur est proche de sa tension nominale, alors ce récepteur est traversé par un courant d'intensité voisine de son <input type="text" id="page1_word17" class="word-input" data-page="1" autocomplete="off">. Le récepteur fonctionne correctement.</p><p>⮚ Si la l'intensité du courant est trop forte, il y a <input type="text" id="page1_word18" class="word-input" data-page="1" autocomplete="off"> et risque de destruction du récepteur.</p><h2><strong><u>III-Les lois des tensions</u></strong></h2><p>⮚ La tension aux bornes du générateur est égale à la somme des tensions aux bornes des différents récepteurs branchés en série : c'est la loi d'<input type="text" id="page1_word19" class="word-input" data-page="1" autocomplete="off"> des tensions.<br>    <em>UG = U1 <input type="text" id="page1_word20" class="word-input" data-page="1" autocomplete="off"> U2</em></p><p>⮚ La tension est la même aux bornes de dipôles branchés en dérivation : c'est la loi d'<input type="text" id="page1_word21" class="word-input" data-page="1" autocomplete="off"> des tensions.</p><p>    <em>UG = U1 <input type="text" id="page1_word22" class="word-input" data-page="1" autocomplete="off"> U2</em></p><p>    <em>Remarque: Les lois des tensions sont valables quels que soient la position et le nombre de récepteurs dans le circuit.</em></p><h2><strong><u>IV-Lois des intensités du courant électrique</u></strong></h2><p>⮚ L'intensité du courant qui traverse des dipôles branchés en <strong>série</strong> est identique : c'est la loi d'<input type="text" id="page1_word23" class="word-input" data-page="1" autocomplete="off"> des intensités.</p><p>    <em>IG = I1 <input type="text" id="page1_word24" class="word-input" data-page="1" autocomplete="off"> I2</em></p><p>⮚ L'intensité du courant dans la branche principale est égale à la somme des intensités des courants dans les branches dérivées : c'est la loi d'<input type="text" id="page1_word25" class="word-input" data-page="1" autocomplete="off"> des intensités dans un circuit avec dérivation.</p><p>    <em>IG = I1 <input type="text" id="page1_word26" class="word-input" data-page="1" autocomplete="off"> I2</em></p><p>⮚ Plus le nombre de récepteurs branchés en dérivation augmente, plus l'intensité du courant dans la branche principale est élevée : il y a risque de <strong>surintensité</strong>, ce qui peut entraîner un échauffement des conducteurs et un incendie.</p><p>    <em>Remarque: Les lois des intensités sont valables quels que soient la position et le nombre de récepteurs dans le circuit.</em></p>
+      </div>
+    
+        </div>
+        
+        <div class="controls">
+            <button class="check-btn" onclick="checkAnswers()">Check Answers</button>
+            <button class="reset-btn" onclick="resetExercise()">Reset</button>
+            <button class="next-btn" id="nextBtn" onclick="nextPage()">Next Page</button>
+            <div class="score" id="score"></div>
+        </div>
+    </div>
+    
+    <script>
+        const correctAnswers = [["U","volts","V","voltmètre","dérivation","générateurs","tension","nominale","adaptés","surtension","I","ampères","A","ampèremètre","série","nulle","intensité nominale","surintensité<","additivité","+","unicité","=","unicité","=","additivité","+"]];
+        const translations = {"checkAnswers":"Check Answers","reset":"Reset","score":"Score","correct":"Correct!","incorrect":"Incorrect. The answer is","nextPage":"Next Page"};
+        const totalPages = 1;
+        let currentPage = 1;
+        
+        function checkAnswers() {
+            let correctCount = 0;
+            const pageAnswers = correctAnswers[currentPage - 1];
+            const totalWords = pageAnswers.length;
+            
+            // Remove existing feedback on current page
+            document.querySelectorAll(`#page${currentPage} .feedback`).forEach(el => el.remove());
+            
+            pageAnswers.forEach((answer, index) => {
+                const input = document.getElementById(`page${currentPage}_word${index + 1}`);
+                const userAnswer = input.value.trim();
+                const isCorrect = userAnswer.toLowerCase() === answer.toLowerCase();
+                
+                if (isCorrect) {
+                    correctCount++;
+                    input.classList.remove('incorrect');
+                    input.classList.add('correct');
+                    
+                    const feedback = document.createElement('span');
+                    feedback.className = 'feedback correct';
+                    feedback.textContent = '✓';
+                    input.parentNode.insertBefore(feedback, input.nextSibling);
+                } else {
+                    input.classList.remove('correct');
+                    input.classList.add('incorrect');
+                    
+                    const feedback = document.createElement('span');
+                    feedback.className = 'feedback incorrect';
+                    feedback.textContent = '✕ ' + answer;
+                    input.parentNode.insertBefore(feedback, input.nextSibling);
+                }
+            });
+            
+            document.getElementById('score').textContent = translations.score + ': ' + correctCount + '/' + totalWords;
+            
+            // Show next button if not on last page
+            if (currentPage < totalPages) {
+                document.getElementById('nextBtn').style.display = 'block';
+            }
+        }
+        
+        function nextPage() {
+            if (currentPage < totalPages) {
+                // Hide current page
+                document.getElementById('page' + currentPage).style.display = 'none';
+                
+                // Show next page
+                currentPage++;
+                document.getElementById('page' + currentPage).style.display = 'block';
+                
+                // Hide next button and reset score
+                document.getElementById('nextBtn').style.display = 'none';
+                document.getElementById('score').textContent = '';
+                
+                // Scroll to top
+                window.scrollTo(0, 0);
+            }
+        }
+        
+        function resetExercise() {
+            // Clear all inputs on current page
+            document.querySelectorAll(`#page${currentPage} .word-input`).forEach(input => {
+                input.value = '';
+                input.classList.remove('correct', 'incorrect');
+            });
+            
+            // Remove feedback on current page
+            document.querySelectorAll(`#page${currentPage} .feedback`).forEach(el => el.remove());
+            
+            // Clear score and hide next button
+            document.getElementById('score').textContent = '';
+            document.getElementById('nextBtn').style.display = 'none';
+        }
+        
+        // Allow Enter key to check answers
+        document.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                checkAnswers();
+            }
+        });
+    </script>
+</body>
+</html>

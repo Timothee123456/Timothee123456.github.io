@@ -1,0 +1,1065 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QCM — Génétique : du Génotype au Phénotype</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f5f0e8;
+    --bg2: #ece5d8;
+    --card: #fffdf8;
+    --text: #2c2416;
+    --text2: #6b5d4d;
+    --accent: #b8432f;
+    --accent2: #d4673a;
+    --green: #3a7d44;
+    --green-bg: #e8f5ea;
+    --red: #b8432f;
+    --red-bg: #fceae7;
+    --blue: #2d6a8f;
+    --blue-bg: #e4f0f8;
+    --border: #d9cfc0;
+    --shadow: rgba(44, 36, 22, 0.08);
+    --progress-bg: #d9cfc0;
+    --option-hover: #f7f2ea;
+    --correct-border: #3a7d44;
+    --wrong-border: #b8432f;
+    --explain-bg: #fdf6ed;
+    --dna-color: rgba(184, 67, 47, 0.06);
+  }
+  html.dark {
+    --bg: #1a1510;
+    --bg2: #231d14;
+    --card: #2a2218;
+    --text: #e8dcc8;
+    --text2: #a89880;
+    --accent: #e06b4f;
+    --accent2: #e8845a;
+    --green: #5cb86a;
+    --green-bg: #1e2e1f;
+    --red: #e06b4f;
+    --red-bg: #2e1c18;
+    --blue: #5fa8d3;
+    --blue-bg: #1a2a36;
+    --border: #3d3428;
+    --shadow: rgba(0,0,0,0.25);
+    --progress-bg: #3d3428;
+    --option-hover: #332a1e;
+    --correct-border: #5cb86a;
+    --wrong-border: #e06b4f;
+    --explain-bg: #2e2618;
+    --dna-color: rgba(224,107,79,0.04);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Outfit', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background:
+      repeating-linear-gradient(0deg, transparent, transparent 39px, var(--dna-color) 39px, var(--dna-color) 40px),
+      repeating-linear-gradient(90deg, transparent, transparent 39px, var(--dna-color) 39px, var(--dna-color) 40px);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .container {
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 20px 16px 40px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* HEADER */
+  .header {
+    text-align: center;
+    margin-bottom: 28px;
+    animation: fadeDown 0.6s ease;
+  }
+  .header-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 56px; height: 56px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    border-radius: 16px;
+    margin-bottom: 14px;
+    box-shadow: 0 4px 16px rgba(184,67,47,0.2);
+  }
+  .header-icon i { color: #fff; font-size: 24px; }
+  .header h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 26px;
+    color: var(--text);
+    line-height: 1.2;
+    margin-bottom: 6px;
+  }
+  .header p {
+    font-size: 14px;
+    color: var(--text2);
+    font-weight: 400;
+  }
+
+  /* PROGRESS */
+  .progress-section {
+    background: var(--card);
+    border-radius: 16px;
+    padding: 16px 20px;
+    margin-bottom: 20px;
+    border: 1px solid var(--border);
+    box-shadow: 0 2px 8px var(--shadow);
+  }
+  .progress-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    font-size: 14px;
+    font-weight: 500;
+  }
+  .progress-top .q-num { color: var(--accent); font-weight: 600; }
+  .progress-top .score { color: var(--text2); }
+  .score .correct-count { color: var(--green); font-weight: 600; }
+  .score .wrong-count { color: var(--red); font-weight: 600; }
+  .progress-bar {
+    width: 100%;
+    height: 8px;
+    background: var(--progress-bg);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    border-radius: 4px;
+    transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    width: 0%;
+  }
+
+  /* QUESTION CARD */
+  .question-card {
+    background: var(--card);
+    border-radius: 20px;
+    padding: 24px 20px;
+    border: 1px solid var(--border);
+    box-shadow: 0 4px 20px var(--shadow);
+    animation: slideUp 0.45s ease;
+  }
+  .question-tag {
+    display: inline-block;
+    background: var(--blue-bg);
+    color: var(--blue);
+    font-size: 11px;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 20px;
+    margin-bottom: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .question-text {
+    font-size: 17px;
+    font-weight: 500;
+    line-height: 1.55;
+    margin-bottom: 20px;
+    color: var(--text);
+  }
+
+  /* OPTIONS */
+  .options { display: flex; flex-direction: column; gap: 10px; }
+  .option-btn {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    width: 100%;
+    padding: 14px 16px;
+    background: var(--bg);
+    border: 2px solid var(--border);
+    border-radius: 14px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: left;
+    font-family: 'Outfit', sans-serif;
+    font-size: 15px;
+    color: var(--text);
+    line-height: 1.45;
+  }
+  .option-btn:hover:not(.disabled) {
+    background: var(--option-hover);
+    border-color: var(--accent);
+    transform: translateY(-1px);
+  }
+  .option-btn:active:not(.disabled) { transform: translateY(0); }
+  .option-letter {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 30px; height: 30px;
+    border-radius: 10px;
+    background: var(--card);
+    border: 1.5px solid var(--border);
+    font-weight: 600;
+    font-size: 13px;
+    color: var(--text2);
+    flex-shrink: 0;
+    transition: all 0.25s;
+  }
+  .option-content { padding-top: 4px; flex: 1; }
+
+  .option-btn.correct {
+    border-color: var(--correct-border);
+    background: var(--green-bg);
+  }
+  .option-btn.correct .option-letter {
+    background: var(--green);
+    color: #fff;
+    border-color: var(--green);
+  }
+  .option-btn.wrong {
+    border-color: var(--wrong-border);
+    background: var(--red-bg);
+  }
+  .option-btn.wrong .option-letter {
+    background: var(--red);
+    color: #fff;
+    border-color: var(--red);
+  }
+  .option-btn.disabled { cursor: default; opacity: 0.65; pointer-events: none; }
+  .option-btn.correct.disabled, .option-btn.wrong.disabled { opacity: 1; }
+  .option-btn.highlight-correct {
+    border-color: var(--correct-border);
+    background: var(--green-bg);
+    opacity: 1 !important;
+  }
+  .option-btn.highlight-correct .option-letter {
+    background: var(--green);
+    color: #fff;
+    border-color: var(--green);
+  }
+
+  /* EXPLANATION */
+  .explanation {
+    margin-top: 16px;
+    padding: 16px;
+    background: var(--explain-bg);
+    border-radius: 14px;
+    border-left: 4px solid var(--accent);
+    animation: fadeIn 0.35s ease;
+  }
+  .explanation-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+    font-size: 14px;
+    color: var(--accent);
+    margin-bottom: 8px;
+  }
+  .explanation-text {
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--text2);
+  }
+
+  /* NEXT BUTTON */
+  .next-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    margin-top: 18px;
+    padding: 14px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    color: #fff;
+    border: none;
+    border-radius: 14px;
+    font-family: 'Outfit', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 4px 12px rgba(184,67,47,0.2);
+    animation: fadeIn 0.35s ease;
+  }
+  .next-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(184,67,47,0.3); }
+  .next-btn:active { transform: translateY(0); }
+
+  /* RESULTS */
+  .results-card {
+    background: var(--card);
+    border-radius: 20px;
+    padding: 32px 24px;
+    border: 1px solid var(--border);
+    box-shadow: 0 4px 24px var(--shadow);
+    text-align: center;
+    animation: scaleIn 0.5s ease;
+  }
+  .results-icon {
+    width: 72px; height: 72px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 18px;
+    font-size: 32px;
+  }
+  .results-icon.great { background: var(--green-bg); color: var(--green); }
+  .results-icon.okay { background: var(--blue-bg); color: var(--blue); }
+  .results-icon.poor { background: var(--red-bg); color: var(--red); }
+  .results-card h2 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 24px;
+    margin-bottom: 6px;
+  }
+  .results-card .subtitle {
+    color: var(--text2);
+    font-size: 15px;
+    margin-bottom: 24px;
+  }
+  .score-ring {
+    position: relative;
+    width: 140px; height: 140px;
+    margin: 0 auto 24px;
+  }
+  .score-ring svg {
+    width: 100%; height: 100%;
+    transform: rotate(-90deg);
+  }
+  .score-ring circle {
+    fill: none;
+    stroke-width: 10;
+    stroke-linecap: round;
+  }
+  .score-ring .ring-bg { stroke: var(--progress-bg); }
+  .score-ring .ring-fill {
+    stroke: var(--green);
+    stroke-dasharray: 408;
+    stroke-dashoffset: 408;
+    transition: stroke-dashoffset 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .score-ring .ring-fill.poor { stroke: var(--red); }
+  .score-ring .ring-fill.okay { stroke: var(--blue); }
+  .score-label {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    font-family: 'DM Serif Display', serif;
+    font-size: 36px;
+    color: var(--text);
+  }
+  .score-label span { font-size: 16px; color: var(--text2); }
+  .stats-row {
+    display: flex;
+    justify-content: center;
+    gap: 32px;
+    margin-bottom: 24px;
+  }
+  .stat { text-align: center; }
+  .stat-value { font-size: 24px; font-weight: 700; }
+  .stat-value.green { color: var(--green); }
+  .stat-value.red { color: var(--red); }
+  .stat-label { font-size: 12px; color: var(--text2); margin-top: 2px; }
+  .retry-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 14px 32px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    color: #fff;
+    border: none;
+    border-radius: 14px;
+    font-family: 'Outfit', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 4px 12px rgba(184,67,47,0.2);
+  }
+  .retry-btn:hover { transform: translateY(-2px); }
+
+  .review-section {
+    margin-top: 24px;
+    text-align: left;
+  }
+  .review-title {
+    font-weight: 600;
+    font-size: 15px;
+    color: var(--red);
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .review-item {
+    background: var(--red-bg);
+    border-radius: 12px;
+    padding: 14px;
+    margin-bottom: 10px;
+    border: 1px solid var(--wrong-border);
+    border-left: 4px solid var(--red);
+  }
+  .review-q {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 6px;
+    color: var(--text);
+  }
+  .review-answer {
+    font-size: 13px;
+    color: var(--green);
+    font-weight: 500;
+  }
+
+  /* ANIMATIONS */
+  @keyframes fadeDown {
+    from { opacity: 0; transform: translateY(-16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  @keyframes scaleIn {
+    from { opacity: 0; transform: scale(0.92); }
+    to { opacity: 1; transform: scale(1); }
+  }
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    20% { transform: translateX(-6px); }
+    40% { transform: translateX(6px); }
+    60% { transform: translateX(-4px); }
+    80% { transform: translateX(4px); }
+  }
+  .shake { animation: shake 0.45s ease; }
+
+  @keyframes pop {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.08); }
+    100% { transform: scale(1); }
+  }
+  .pop { animation: pop 0.35s ease; }
+
+  /* START SCREEN */
+  .start-card {
+    background: var(--card);
+    border-radius: 20px;
+    padding: 36px 24px;
+    border: 1px solid var(--border);
+    box-shadow: 0 4px 24px var(--shadow);
+    text-align: center;
+    animation: scaleIn 0.5s ease;
+  }
+  .start-card h2 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 22px;
+    margin-bottom: 12px;
+  }
+  .start-card p {
+    font-size: 14px;
+    color: var(--text2);
+    line-height: 1.6;
+    margin-bottom: 8px;
+  }
+  .start-info {
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+    margin: 20px 0 24px;
+  }
+  .start-info-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+  }
+  .start-info-item i {
+    font-size: 20px;
+    color: var(--accent);
+  }
+  .start-info-item .label { font-size: 12px; color: var(--text2); }
+  .start-info-item .value { font-size: 16px; font-weight: 600; }
+  .start-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 16px 40px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    color: #fff;
+    border: none;
+    border-radius: 14px;
+    font-family: 'Outfit', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.25s;
+    box-shadow: 0 6px 20px rgba(184,67,47,0.25);
+  }
+  .start-btn:hover { transform: translateY(-3px); box-shadow: 0 8px 28px rgba(184,67,47,0.35); }
+
+  .hidden { display: none !important; }
+
+  /* Confetti */
+  .confetti-piece {
+    position: fixed;
+    width: 10px; height: 10px;
+    top: -10px;
+    z-index: 100;
+    border-radius: 2px;
+    animation: confettiFall linear forwards;
+    pointer-events: none;
+  }
+  @keyframes confettiFall {
+    0% { top: -10px; opacity: 1; }
+    100% { top: 105vh; opacity: 0; }
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <div class="header">
+    <div class="header-icon"><i class="fas fa-dna"></i></div>
+    <h1>Génétique : du Génotype au Phénotype</h1>
+    <p>Thème 2 — Le vivant et son évolution</p>
+  </div>
+
+  <!-- START SCREEN -->
+  <div id="startScreen" class="start-card">
+    <h2>Prêt à tester tes connaissances ?</h2>
+    <p>Un QCM exigeant basé sur le cours.<br>Il faut bien maîtriser chaque notion pour réussir !</p>
+    <div class="start-info">
+      <div class="start-info-item">
+        <i class="fas fa-list-ol"></i>
+        <div class="value">30</div>
+        <div class="label">Questions</div>
+      </div>
+      <div class="start-info-item">
+        <i class="fas fa-fire"></i>
+        <div class="value">Difficile</div>
+        <div class="label">Niveau</div>
+      </div>
+      <div class="start-info-item">
+        <i class="fas fa-lightbulb"></i>
+        <div class="value">Oui</div>
+        <div class="label">Explications</div>
+      </div>
+    </div>
+    <button class="start-btn" onclick="startQuiz()">
+      <i class="fas fa-play"></i> Commencer le QCM
+    </button>
+  </div>
+
+  <!-- QUIZ SECTION -->
+  <div id="quizSection" class="hidden">
+    <div class="progress-section">
+      <div class="progress-top">
+        <span class="q-num" id="qNum">Question 1/30</span>
+        <span class="score">
+          <span class="correct-count" id="correctCount">0</span> ✓ &nbsp;
+          <span class="wrong-count" id="wrongCount">0</span> ✗
+        </span>
+      </div>
+      <div class="progress-bar">
+        <div class="progress-fill" id="progressFill"></div>
+      </div>
+    </div>
+    <div id="questionContainer"></div>
+  </div>
+
+  <!-- RESULTS SECTION -->
+  <div id="resultsSection" class="hidden"></div>
+</div>
+
+<script>
+// Dark mode detection
+if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+  document.documentElement.classList.add('dark');
+}
+window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
+  if (event.matches) {
+    document.documentElement.classList.add('dark');
+  } else {
+    document.documentElement.classList.remove('dark');
+  }
+});
+
+const questions = [
+  {
+    q: "Comment appelle-t-on les caractères communs à tous les individus d'une même espèce ?",
+    options: ["Les caractères individuels", "Les caractères spécifiques", "Le phénotype", "Les caractères héréditaires"],
+    correct: 1,
+    tag: "Caractères héréditaires",
+    explanation: "Les caractères communs à tous les individus d'une même espèce sont appelés caractères d'espèce ou caractères spécifiques. Ils permettent de distinguer une espèce d'une autre."
+  },
+  {
+    q: "Parmi ces exemples, lequel est un caractère individuel et NON un caractère spécifique ?",
+    options: ["Avoir des poumons", "Avoir un squelette interne", "Avoir le groupe sanguin A", "Avoir des cellules avec un noyau"],
+    correct: 2,
+    tag: "Caractères héréditaires",
+    explanation: "Le groupe sanguin varie d'un individu à l'autre au sein de l'espèce humaine : c'est un caractère individuel. Les autres exemples (poumons, squelette interne, cellules à noyau) sont partagés par tous les humains et sont donc des caractères spécifiques."
+  },
+  {
+    q: "Que désigne exactement le phénotype d'un individu ?",
+    options: ["L'ensemble de ses gènes", "L'ensemble de ses chromosomes", "L'ensemble de ses caractères observables", "Uniquement ses caractères héréditaires"],
+    correct: 2,
+    tag: "Phénotype",
+    explanation: "Le phénotype désigne l'ensemble des caractères observables chez un individu. Il ne se limite pas aux caractères héréditaires : il inclut aussi les modifications dues à l'environnement."
+  },
+  {
+    q: "Le bronzage est-il un caractère héréditaire ?",
+    options: ["Oui, car il modifie le phénotype", "Oui, car il est transmis par les parents", "Non, car il est lié à l'environnement et n'est pas transmissible", "Non, car il ne modifie pas le phénotype"],
+    correct: 2,
+    tag: "Hérédité",
+    explanation: "Le bronzage modifie bien le phénotype (la peau change de couleur), mais il est dû aux conditions environnementales (exposition au soleil). Il n'est pas transmissible à la descendance : ce n'est donc pas un caractère héréditaire."
+  },
+  {
+    q: "Où est localisée l'information génétique dans la cellule ?",
+    options: ["Dans la membrane cellulaire", "Dans le cytoplasme", "Dans le noyau", "Dans les ribosomes"],
+    correct: 2,
+    tag: "Information génétique",
+    explanation: "L'information génétique qui permet la réalisation des caractères héréditaires est localisée dans le noyau de toutes les cellules de l'individu."
+  },
+  {
+    q: "Quel est le support de l'information génétique dans le noyau ?",
+    options: ["Les protéines", "Les chromosomes", "La membrane nucléaire", "Le cytoplasme"],
+    correct: 1,
+    tag: "Chromosomes",
+    explanation: "Dans le noyau, l'information génétique est localisée dans les chromosomes. Plus précisément, c'est l'ADN qui compose les chromosomes qui est le support de l'information génétique."
+  },
+  {
+    q: "Combien de chromosomes possède une cellule humaine au total ?",
+    options: ["23", "44", "46", "48"],
+    correct: 2,
+    tag: "Chromosomes",
+    explanation: "Chaque cellule humaine possède 23 paires de chromosomes, soit 46 chromosomes au total."
+  },
+  {
+    q: "Combien de PAIRES de chromosomes possède une cellule humaine ?",
+    options: ["22", "23", "44", "46"],
+    correct: 1,
+    tag: "Chromosomes",
+    explanation: "Une cellule humaine possède 23 paires de chromosomes (donc 46 chromosomes au total). Attention à ne pas confondre le nombre de paires (23) et le nombre total de chromosomes (46)."
+  },
+  {
+    q: "Quels sont les chromosomes sexuels chez une femme ?",
+    options: ["X et Y", "Y et Y", "X et X", "Pas de chromosomes sexuels"],
+    correct: 2,
+    tag: "Chromosomes sexuels",
+    explanation: "La femme possède deux chromosomes sexuels identiques : X et X. C'est l'homme qui possède deux chromosomes sexuels différents : X et Y."
+  },
+  {
+    q: "Qu'est-ce qui différencie le caryotype d'un homme de celui d'une femme ?",
+    options: ["Le nombre total de chromosomes", "La 23ᵉ paire de chromosomes", "Le nombre de paires de chromosomes", "La taille des chromosomes"],
+    correct: 1,
+    tag: "Chromosomes sexuels",
+    explanation: "Seule la 23ᵉ paire de chromosomes (chromosomes sexuels) diffère : XX chez la femme, XY chez l'homme. Le nombre total de chromosomes (46) et le nombre de paires (23) sont identiques."
+  },
+  {
+    q: "Comment appelle-t-on l'ensemble des chromosomes d'une cellule classés par paires de chromosomes homologues ?",
+    options: ["Le phénotype", "Le génome", "Le caryotype", "Le génotype"],
+    correct: 2,
+    tag: "Caryotype",
+    explanation: "Le caryotype est l'ensemble des chromosomes d'une cellule ordonnés par paires de chromosomes homologues. Il permet de visualiser le nombre et la forme des chromosomes."
+  },
+  {
+    q: "De quoi est composé chaque chromosome ?",
+    options: ["De protéines uniquement", "D'une ou deux longues molécules d'ADN", "De membrane cellulaire", "De cytoplasme condensé"],
+    correct: 1,
+    tag: "ADN",
+    explanation: "Chaque chromosome est composé d'une ou de deux longues molécules d'ADN (acide désoxyribonucléique). L'ADN est le support moléculaire de l'information génétique."
+  },
+  {
+    q: "Que signifie l'acronyme ADN ?",
+    options: ["Acide dénaturé nucléaire", "Acide désoxyribonucléique", "Assemblage de noyaux décomposés", "Amine double nucléotidique"],
+    correct: 1,
+    tag: "ADN",
+    explanation: "ADN signifie Acide DésoxyriboNucléique. C'est la molécule qui constitue les chromosomes et porte l'information génétique."
+  },
+  {
+    q: "Dans une cellule en division, sous quelle forme se trouve l'ADN ?",
+    options: ["Déroulé en longs filaments", "Condensé (fortement enroulé) formant des chromosomes visibles", "Dissous dans le cytoplasme", "Absent car il est transmis aux cellules filles"],
+    correct: 1,
+    tag: "ADN et division",
+    explanation: "Dans une cellule en division, l'ADN est condensé (fortement enroulé sur lui-même) ce qui permet de distinguer les chromosomes. Dans une cellule qui ne se divise pas, l'ADN est déroulé en longs filaments."
+  },
+  {
+    q: "Dans une cellule qui ne se divise PAS, peut-on observer les chromosomes au microscope ?",
+    options: ["Oui, les chromosomes sont toujours visibles", "Non, car l'ADN est déroulé en longs filaments", "Non, car les chromosomes n'existent pas en dehors de la division", "Oui, mais ils sont plus petits"],
+    correct: 1,
+    tag: "ADN et division",
+    explanation: "On ne peut pas distinguer les chromosomes dans une cellule qui ne se divise pas, car l'ADN est complètement déroulé en très longs filaments. Mais attention : les chromosomes sont pourtant bien présents, simplement sous forme non condensée !"
+  },
+  {
+    q: "Affirmation : « Les chromosomes n'existent que lorsque la cellule se divise. » Cette phrase est :",
+    options: ["Vraie", "Fausse : ils existent toujours mais ne sont visibles que pendant la division", "Fausse : ils n'existent jamais réellement", "Vraie seulement pour les chromosomes sexuels"],
+    correct: 1,
+    tag: "ADN et division",
+    explanation: "Cette affirmation est fausse. Les chromosomes (et donc l'ADN) sont toujours présents dans le noyau, même quand la cellule ne se divise pas. Simplement, hors division, l'ADN est déroulé et les chromosomes ne sont pas visibles au microscope."
+  },
+  {
+    q: "Quelle est la différence entre information héréditaire et information génétique ?",
+    options: ["Ce sont deux choses complètement différentes", "L'information héréditaire est dans le noyau, la génétique dans le cytoplasme", "Ce sont deux noms pour désigner la même chose", "L'information génétique ne concerne que les gènes, pas les chromosomes"],
+    correct: 2,
+    tag: "Information génétique",
+    explanation: "L'information héréditaire et l'information génétique sont deux termes désignant la même chose : l'information localisée dans le noyau des cellules qui permet la réalisation des caractères héréditaires."
+  },
+  {
+    q: "Le développement musculaire obtenu par l'entraînement sportif est-il transmissible à la descendance ?",
+    options: ["Oui, car les muscles font partie du phénotype", "Oui, si les deux parents sont sportifs", "Non, car c'est une modification liée à l'environnement", "Oui, mais seulement partiellement"],
+    correct: 2,
+    tag: "Hérédité",
+    explanation: "Le développement musculaire est une modification du phénotype liée aux conditions environnementales (l'entraînement). Comme le bronzage, il n'est pas transmissible à la descendance : ce n'est pas un caractère héréditaire."
+  },
+  {
+    q: "Un individu a les yeux bleus. Ce caractère fait partie de :",
+    options: ["Son caryotype uniquement", "Son génotype uniquement", "Son phénotype", "Son information environnementale"],
+    correct: 2,
+    tag: "Phénotype",
+    explanation: "La couleur des yeux est un caractère observable : il fait donc partie du phénotype de l'individu. Le phénotype correspond à l'ensemble de tous les caractères observables."
+  },
+  {
+    q: "L'information génétique d'un individu est présente dans :",
+    options: ["Uniquement les cellules du cerveau", "Uniquement les cellules reproductrices", "Le noyau de toutes ses cellules", "Uniquement les cellules sanguines"],
+    correct: 2,
+    tag: "Information génétique",
+    explanation: "L'information génétique est localisée dans le noyau de TOUTES les cellules de l'individu, pas seulement certaines. Chaque cellule contient l'intégralité de l'information génétique."
+  },
+  {
+    q: "Un homme possède les chromosomes sexuels :",
+    options: ["X et X", "Y et Y", "X et Y", "Ni X ni Y"],
+    correct: 2,
+    tag: "Chromosomes sexuels",
+    explanation: "L'homme possède deux chromosomes sexuels différents : X et Y. C'est la femme qui possède deux chromosomes X identiques."
+  },
+  {
+    q: "Parmi ces propositions, laquelle définit correctement un caractère héréditaire ?",
+    options: ["Un caractère qui change avec l'environnement", "Un caractère observable uniquement chez les parents", "Un caractère transmis des parents à la descendance de génération en génération", "Un caractère qui apparaît uniquement à l'âge adulte"],
+    correct: 2,
+    tag: "Hérédité",
+    explanation: "Un caractère héréditaire est un caractère transmis par les parents de génération en génération. Il ne dépend pas de l'âge ou de l'environnement, mais bien de l'information génétique reçue des parents."
+  },
+  {
+    q: "Pourquoi les individus d'une même espèce ne sont-ils pas tous identiques ?",
+    options: ["Parce qu'ils n'ont pas le même nombre de chromosomes", "Parce qu'ils vivent dans des environnements identiques", "Parce qu'ils présentent des caractères individuels différents", "Parce qu'ils appartiennent à des espèces différentes"],
+    correct: 2,
+    tag: "Caractères héréditaires",
+    explanation: "Au sein d'une même espèce, chaque individu présente des caractères individuels qui le rendent différent des autres (couleur des pétales, groupe sanguin, etc.). Tous partagent les caractères spécifiques, mais diffèrent par leurs caractères individuels."
+  },
+  {
+    q: "La couleur des pétales d'une fleur est un exemple de :",
+    options: ["Caractère spécifique", "Caractère individuel", "Modification environnementale non héréditaire", "Caryotype"],
+    correct: 1,
+    tag: "Caractères héréditaires",
+    explanation: "La couleur des pétales varie d'un individu à l'autre au sein d'une même espèce de plante : c'est un caractère individuel. Un caractère spécifique serait, par exemple, le fait d'avoir des pétales (commun à toute l'espèce)."
+  },
+  {
+    q: "Qu'est-ce qui distingue un caractère héréditaire d'une modification due à l'environnement ?",
+    options: ["Le caractère héréditaire n'est pas observable", "La modification environnementale est toujours visible", "Le caractère héréditaire est transmissible à la descendance, pas la modification environnementale", "Il n'y a aucune différence"],
+    correct: 2,
+    tag: "Hérédité",
+    explanation: "La différence clé est la transmissibilité : un caractère héréditaire est transmis aux descendants via l'information génétique, alors qu'une modification due à l'environnement (bronzage, muscles) ne l'est pas."
+  },
+  {
+    q: "Un chromosome en forme de bâtonnet visible au microscope indique que la cellule est :",
+    options: ["En phase de repos", "En cours de division", "Morte", "En phase de croissance"],
+    correct: 1,
+    tag: "ADN et division",
+    explanation: "Les chromosomes ne sont visibles sous forme de bâtonnets au microscope que lorsque la cellule est en division, car l'ADN est alors condensé (fortement enroulé). Hors division, l'ADN est déroulé."
+  },
+  {
+    q: "Laquelle de ces affirmations sur le caryotype est FAUSSE ?",
+    options: ["Il présente les chromosomes ordonnés par paires", "Homme et femme ont le même nombre total de chromosomes", "Il permet de distinguer les chromosomes homologues", "La femme possède les chromosomes X et Y"],
+    correct: 3,
+    tag: "Caryotype",
+    explanation: "C'est l'homme qui possède les chromosomes X et Y, pas la femme. La femme possède deux chromosomes X identiques. Toutes les autres affirmations sont correctes."
+  },
+  {
+    q: "Si une cellule humaine possède 45 chromosomes au lieu de 46, on peut dire que :",
+    options: ["C'est normal, il y a une marge d'erreur", "Son caryotype est anormal", "Elle a perdu un caractère spécifique", "C'est une cellule mâle car il manque un X"],
+    correct: 1,
+    tag: "Caryotype",
+    explanation: "Une cellule humaine normale possède exactement 46 chromosomes (23 paires). Si elle en possède 45, son caryotype est anormal, ce qui peut entraîner des anomalies. Ce n'est pas normal et ce n'est pas lié au sexe."
+  },
+  {
+    q: "L'ADN d'une cellule qui ne se divise pas est :",
+    options: ["Absent du noyau", "Condensé en chromosomes visibles", "Déroulé en très longs filaments", "Présent uniquement dans le cytoplasme"],
+    correct: 2,
+    tag: "ADN",
+    explanation: "Quand la cellule ne se divise pas, les molécules d'ADN sont complètement déroulées en très longs filaments dans le noyau. L'ADN est bien toujours là, mais sous forme non condensée."
+  },
+  {
+    q: "Quelle proposition est correcte concernant les caractères spécifiques et le phénotype ?",
+    options: ["Les caractères spécifiques ne font pas partie du phénotype", "Le phénotype inclut les caractères spécifiques ET les caractères individuels", "Le phénotype ne comprend que les caractères héréditaires", "Les caractères spécifiques varient d'un individu à l'autre"],
+    correct: 1,
+    tag: "Phénotype",
+    explanation: "Le phénotype est l'ensemble des caractères observables. Il inclut donc à la fois les caractères spécifiques (communs à l'espèce) et les caractères individuels (propres à chaque individu), qu'ils soient héréditaires ou non."
+  }
+];
+
+let currentQuestion = 0;
+let correctAnswers = 0;
+let wrongAnswers = 0;
+let wrongList = [];
+let shuffledQuestions = [];
+
+function shuffleArray(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function startQuiz() {
+  shuffledQuestions = shuffleArray(questions);
+  currentQuestion = 0;
+  correctAnswers = 0;
+  wrongAnswers = 0;
+  wrongList = [];
+  document.getElementById('startScreen').classList.add('hidden');
+  document.getElementById('resultsSection').classList.add('hidden');
+  document.getElementById('quizSection').classList.remove('hidden');
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const q = shuffledQuestions[currentQuestion];
+  const total = shuffledQuestions.length;
+  const letters = ['A', 'B', 'C', 'D'];
+
+  document.getElementById('qNum').textContent = "Question " + (currentQuestion + 1) + "/" + total;
+  document.getElementById('correctCount').textContent = correctAnswers;
+  document.getElementById('wrongCount').textContent = wrongAnswers;
+  document.getElementById('progressFill').style.width = ((currentQuestion / total) * 100) + "%";
+
+  const optionIndices = [...Array(q.options.length).keys()];
+  const shuffledOptionMap = shuffleArray(optionIndices);
+
+  const container = document.getElementById('questionContainer');
+  container.innerHTML = "";
+
+  const card = document.createElement('div');
+  card.className = 'question-card';
+
+  const tag = document.createElement('div');
+  tag.className = 'question-tag';
+  tag.textContent = q.tag;
+  card.appendChild(tag);
+
+  const text = document.createElement('div');
+  text.className = 'question-text';
+  text.textContent = q.q;
+  card.appendChild(text);
+
+  const optionsDiv = document.createElement('div');
+  optionsDiv.className = 'options';
+  optionsDiv.id = 'optionsContainer';
+
+  shuffledOptionMap.forEach(function(origIdx, dispIdx) {
+    const btn = document.createElement('button');
+    btn.className = 'option-btn';
+    btn.setAttribute('data-orig-idx', origIdx);
+
+    const letterDiv = document.createElement('div');
+    letterDiv.className = 'option-letter';
+    letterDiv.textContent = letters[dispIdx];
+
+    const contentDiv = document.createElement('div');
+    contentDiv.className = 'option-content';
+    contentDiv.textContent = q.options[origIdx];
+
+    btn.appendChild(letterDiv);
+    btn.appendChild(contentDiv);
+    btn.addEventListener('click', function() { selectAnswer(origIdx, btn, shuffledOptionMap); });
+    optionsDiv.appendChild(btn);
+  });
+
+  card.appendChild(optionsDiv);
+  container.appendChild(card);
+}
+
+function selectAnswer(selectedOrigIdx, selectedBtn, shuffledOptionMap) {
+  const q = shuffledQuestions[currentQuestion];
+  const allBtns = document.querySelectorAll('.option-btn');
+  const isCorrect = selectedOrigIdx === q.correct;
+
+  allBtns.forEach(function(btn) {
+    const origIdx = parseInt(btn.getAttribute('data-orig-idx'));
+    if (origIdx === q.correct) {
+      if (isCorrect) {
+        btn.classList.add('correct');
+      } else {
+        btn.classList.add('highlight-correct');
+      }
+    }
+    if (btn === selectedBtn && !isCorrect) {
+      btn.classList.add('wrong');
+    }
+    if (origIdx !== q.correct && btn !== selectedBtn) {
+      btn.classList.add('disabled');
+    }
+  });
+
+  if (isCorrect) {
+    correctAnswers++;
+    selectedBtn.classList.add('pop');
+  } else {
+    wrongAnswers++;
+    selectedBtn.classList.add('shake');
+    wrongList.push({
+      question: q.q,
+      correctAnswer: q.options[q.correct],
+      explanation: q.explanation
+    });
+  }
+
+  document.getElementById('correctCount').textContent = correctAnswers;
+  document.getElementById('wrongCount').textContent = wrongAnswers;
+
+  const card = document.querySelector('.question-card');
+
+  if (!isCorrect) {
+    const explDiv = document.createElement('div');
+    explDiv.className = 'explanation';
+    const explTitle = document.createElement('div');
+    explTitle.className = 'explanation-title';
+    explTitle.innerHTML = '<i class="fas fa-book-open"></i> Explication';
+    const explText = document.createElement('div');
+    explText.className = 'explanation-text';
+    explText.textContent = q.explanation;
+    explDiv.appendChild(explTitle);
+    explDiv.appendChild(explText);
+    card.appendChild(explDiv);
+  }
+
+  const nextBtn = document.createElement('button');
+  nextBtn.className = 'next-btn';
+  const isLast = currentQuestion >= shuffledQuestions.length - 1;
+  nextBtn.innerHTML = isLast
+    ? '<i class="fas fa-trophy"></i> Voir les résultats'
+    : '<i class="fas fa-arrow-right"></i> Question suivante';
+  nextBtn.addEventListener('click', function() {
+    if (isLast) {
+      showResults();
+    } else {
+      currentQuestion++;
+      renderQuestion();
+    }
+  });
+  card.appendChild(nextBtn);
+}
+
+function showResults() {
+  document.getElementById('quizSection').classList.add('hidden');
+  const total = shuffledQuestions.length;
+  const pct = Math.round((correctAnswers / total) * 100);
+  let grade, icon, msg;
+  if (pct >= 80) {
+    grade = 'great';
+    icon = 'fa-crown';
+    msg = 'Excellent ! Tu maîtrises très bien ce chapitre.';
+    launchConfetti();
+  } else if (pct >= 50) {
+    grade = 'okay';
+    icon = 'fa-thumbs-up';
+    msg = 'Pas mal ! Mais quelques notions sont à revoir.';
+  } else {
+    grade = 'poor';
+    icon = 'fa-book';
+    msg = 'Il faut revoir le cours plus attentivement.';
+  }
+
+  const circumference = 2 * Math.PI * 65;
+  const offset = circumference * (1 - pct / 100);
+  const ringClass = pct >= 80 ? '' : pct >= 50 ? 'okay' : 'poor';
+
+  let reviewHTML = '';
+  if (wrongList.length > 0) {
+    reviewHTML = '<div class="review-section"><div class="review-title"><i class="fas fa-times-circle"></i> Questions ratées (' + wrongList.length + ')</div>';
+    wrongList.forEach(function(item) {
+      reviewHTML += '<div class="review-item"><div class="review-q">' + escapeHTML(item.question) + '</div><div class="review-answer"><i class="fas fa-check"></i> ' + escapeHTML(item.correctAnswer) + '</div><div style="font-size:12px;color:var(--text2);margin-top:6px;">' + escapeHTML(item.explanation) + '</div></div>';
+    });
+    reviewHTML += '</div>';
+  }
+
+  const resultsSection = document.getElementById('resultsSection');
+  resultsSection.classList.remove('hidden');
+  resultsSection.innerHTML =
+    '<div class="results-card">' +
+      '<div class="results-icon ' + grade + '"><i class="fas ' + icon + '"></i></div>' +
+      '<h2>Résultat du QCM</h2>' +
+      '<p class="subtitle">' + msg + '</p>' +
+      '<div class="score-ring">' +
+        '<svg viewBox="0 0 140 140">' +
+          '<circle class="ring-bg" cx="70" cy="70" r="65"></circle>' +
+          '<circle class="ring-fill ' + ringClass + '" cx="70" cy="70" r="65" id="ringFill" style="stroke-dasharray:' + circumference + ';stroke-dashoffset:' + circumference + '"></circle>' +
+        '</svg>' +
+        '<div class="score-label">' + pct + '<span>%</span></div>' +
+      '</div>' +
+      '<div class="stats-row">' +
+        '<div class="stat"><div class="stat-value green">' + correctAnswers + '</div><div class="stat-label">Bonnes réponses</div></div>' +
+        '<div class="stat"><div class="stat-value red">' + wrongAnswers + '</div><div class="stat-label">Erreurs</div></div>' +
+      '</div>' +
+      '<button class="retry-btn" onclick="resetQuiz()"><i class="fas fa-redo"></i> Recommencer</button>' +
+      reviewHTML +
+    '</div>';
+
+  setTimeout(function() {
+    const ring = document.getElementById('ringFill');
+    if (ring) {
+      ring.style.strokeDashoffset = offset;
+    }
+  }, 100);
+}
+
+function resetQuiz() {
+  document.getElementById('resultsSection').classList.add('hidden');
+  document.getElementById('startScreen').classList.remove('hidden');
+}
+
+function escapeHTML(str) {
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
+}
+
+function launchConfetti() {
+  const colors = ['#b8432f','#d4673a','#3a7d44','#2d6a8f','#e8b84b','#8b5cf6'];
+  for (let i = 0; i < 50; i++) {
+    const piece = document.createElement('div');
+    piece.className = 'confetti-piece';
+    piece.style.left = Math.random() * 100 + 'vw';
+    piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+    piece.style.width = (6 + Math.random() * 8) + 'px';
+    piece.style.height = (6 + Math.random() * 8) + 'px';
+    piece.style.animationDuration = (2 + Math.random() * 2) + 's';
+    piece.style.animationDelay = (Math.random() * 1.5) + 's';
+    piece.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+    piece.style.transform = 'rotate(' + Math.random() * 360 + 'deg)';
+    document.body.appendChild(piece);
+    setTimeout(function() { piece.remove(); }, 5000);
+  }
+}
+</script>
+
+</body>
+</html>

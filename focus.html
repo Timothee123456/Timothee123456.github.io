@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Custom Focus Mode</title>
+    <style>
+        body, html { margin: 0; padding: 0; height: 100%; background: #121212; color: white; font-family: 'Segoe UI', sans-serif; overflow: hidden; }
+        
+        /* Start Screen */
+        #setup { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; text-align: center; padding: 20px; }
+        .url-input { padding: 15px; width: 80%; max-width: 500px; border-radius: 8px; border: 1px solid #333; background: #1e1e1e; color: white; font-size: 1.1rem; margin-bottom: 20px; outline: none; }
+        .url-input:focus { border-color: #4285f4; }
+        
+        button { padding: 15px 40px; font-size: 1.1rem; cursor: pointer; background: #4285f4; color: white; border: none; border-radius: 8px; font-weight: bold; }
+        button:hover { background: #357abd; }
+
+        /* The Website Viewport */
+        #focus-container { display: none; width: 100vw; height: 100vh; border: none; background: white; }
+
+        /* Lock Overlay (The "Trap") */
+        #lockOverlay { 
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            background: rgba(0,0,0,0.98); z-index: 10000; flex-direction: column; 
+            align-items: center; justify-content: center; 
+        }
+        .box { background: #1e1e1e; padding: 40px; border-radius: 15px; border: 1px solid #333; text-align: center; box-shadow: 0 0 50px rgba(0,0,0,0.5); }
+        .pin-input { padding: 12px; margin: 20px 0; border-radius: 5px; border: 1px solid #444; background: #2d2d2d; color: white; text-align: center; font-size: 1.5rem; width: 150px; }
+    </style>
+</head>
+<body>
+
+    <!-- 1. SETUP SCREEN -->
+    <div id="setup">
+        <h1>Focus Mode Shell</h1>
+        <p>Enter a URL to lock into fullscreen:</p>
+        <input type="text" id="urlInput" class="url-input" placeholder="example.com" value="wikipedia.org">
+        <br>
+        <button onclick="startFocusMode()">LOCK & FOCUS</button>
+        <p style="color: #666; font-size: 0.9rem; margin-top: 20px;">Esc and F4 will be disabled (requires 2s hold to exit).</p>
+    </div>
+
+    <!-- 2. THE WEBSITE IFRAME -->
+    <iframe id="focus-container" src=""></iframe>
+
+    <!-- 3. LOCK OVERLAY -->
+    <div id="lockOverlay">
+        <div class="box">
+            <h2 style="color: #ff4d4d;">⚠️ Focus Interrupted</h2>
+            <p>To return to your session, enter your PIN:</p>
+            <input type="password" id="pinInput" class="pin-input" placeholder="••••">
+            <br>
+            <button onclick="verifyPin()">RE-LOCK SCREEN</button>
+        </div>
+    </div>
+
+    <script>
+        const PIN = "1234"; // Change your exit PIN here
+        const frame = document.getElementById('focus-container');
+        const setup = document.getElementById('setup');
+        const overlay = document.getElementById('lockOverlay');
+
+        async function startFocusMode() {
+            let rawUrl = document.getElementById('urlInput').value;
+            if (!rawUrl.startsWith('http')) {
+                rawUrl = 'https://' + rawUrl;
+            }
+        
+            try {
+                // 1. Enter Fullscreen
+                await document.documentElement.requestFullscreen();
+        
+                // 2. Lock Keys (Using the correct DOMStrings)
+                if (navigator.keyboard && navigator.keyboard.lock) {
+                    // We use F11 because that is what the Chromebook F4 key sends
+                    await navigator.keyboard.lock(["Escape", "F11"]);
+                }
+        
+                // 3. UI Changes
+                frame.src = rawUrl;
+                frame.style.display = 'block';
+                setup.style.display = 'none';
+                overlay.style.display = 'none';
+        
+            } catch (err) {
+                console.error("Lock error:", err);
+                alert("Make sure you are using HTTPS or localhost for Keyboard Lock to work.");
+            }
+        }
+
+        // Detect if user holds ESC for 2 seconds
+        document.addEventListener('fullscreenchange', () => {
+            if (!document.fullscreenElement) {
+                overlay.style.display = 'flex';
+                document.getElementById('pinInput').focus();
+            }
+        });
+
+        function verifyPin() {
+            const input = document.getElementById('pinInput');
+            if (input.value === PIN) {
+                startFocusMode(); // Re-lock
+                input.value = "";
+            } else {
+                alert("Incorrect PIN.");
+                input.value = "";
+            }
+        }
+
+        // Prevent standard F4 press while on this page
+        window.onkeydown = function(e) {
+            if (e.key === "F4" || e.keyCode === 121) {
+                e.preventDefault();
+                return false;
+            }
+        };
+    </script>
+</body>
+</html>

@@ -1,5 +1,5 @@
-export var title = "Tous les vêtements";
-export var date = "2026-04-9";
+export var title = "Tous les vêtements à écrire";
+export var date = "2026-04-10";
 
 export var flashcards = [
   { chinese: "衣服", pinyin: "yī fu", french: "vêtements" },

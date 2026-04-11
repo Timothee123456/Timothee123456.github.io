@@ -42,5 +42,100 @@ export var flashcards = [
     {chinese: "围巾", pinyin: "wéi jīn", french: "écharpe"},
     {chinese: "手套", pinyin: "shǒu tào", french: "gants"},
     {chinese: "皮带", pinyin: "pí dài", french: "ceinture"},
-    {chinese: "领带", pinyin: "lǐng dài", french: "cravate"}
+    {chinese: "领带", pinyin: "lǐng dài", french: "cravate"},
+  {
+    "chinese": "棉",
+    "pinyin": "mián",
+    "french": "coton"
+  },
+  {
+    "chinese": "毛",
+    "pinyin": "máo",
+    "french": "laine"
+  },
+  {
+    "chinese": "丝绸",
+    "pinyin": "sī chóu",
+    "french": "soie"
+  },
+  {
+    "chinese": "皮",
+    "pinyin": "pí",
+    "french": "cuir"
+  },
+  {
+    "chinese": "大",
+    "pinyin": "féi",
+    "french": "ample"
+  },
+  {
+    "chinese": "合身",
+    "pinyin": "hé shēn",
+    "french": "ajusté"
+  },
+  {
+    "chinese": "紧",
+    "pinyin": "jǐn",
+    "french": "moulant"
+  },
+  {
+    "chinese": "时髦",
+    "pinyin": "shí máo",
+    "french": "à la mode"
+  },
+  {
+    "chinese": "舒服",
+    "pinyin": "shū fu",
+    "french": "confortable"
+  },
+  {
+    "chinese": "正装",
+    "pinyin": "zhèng zhuāng",
+    "french": "tenue formelle"
+  },
+  {
+    "chinese": "休闲",
+    "pinyin": "xiū xián",
+    "french": "décontracté"
+  },
+  {
+    "chinese": "清新",
+    "pinyin": "qīng xīn",
+    "french": "style de fraîcheur"
+  },
+  {
+    "chinese": "穿",
+    "pinyin": "chuān",
+    "french": "porter/mettre"
+  },
+  {
+    "chinese": "戴",
+    "pinyin": "dài",
+    "french": "porter/mettre les accessoires"
+  },
+  {
+    "chinese": "脱",
+    "pinyin": "tuō",
+    "french": "enlever"
+  },
+  {
+    "chinese": "试穿",
+    "pinyin": "shì chuān",
+    "french": "essayer"
+  },
+   {
+    "chinese": "买",
+    "pinyin": "mǎi",
+    "french": "acheter"
+  },
+  {
+    "chinese": "换",
+    "pinyin": "huàn",
+    "french": "changer"
+  },
+  {
+    "chinese": "洗",
+    "pinyin": "xǐ",
+    "french": "laver"
+  },
 ];

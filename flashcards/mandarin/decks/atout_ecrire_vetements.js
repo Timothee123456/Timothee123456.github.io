@@ -34,6 +34,11 @@ export var flashcards = [
     "french": "cuir"
   },
   {
+    "chinese": "大",
+    "pinyin": "féi",
+    "french": "ample"
+  },
+  {
     "chinese": "舒服",
     "pinyin": "shū fu",
     "french": "confortable"

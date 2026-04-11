@@ -23,4 +23,39 @@ export var flashcards = [
   { chinese: "皮鞋", pinyin: "pí xié", french: "chaussures en cuir" },
     {chinese: "手套", pinyin: "shǒu tào", french: "gants"},
     {chinese: "皮带", pinyin: "pí dài", french: "ceinture"},
+  {
+    "chinese": "毛",
+    "pinyin": "máo",
+    "french": "laine"
+  },
+  {
+    "chinese": "皮",
+    "pinyin": "pí",
+    "french": "cuir"
+  },
+  {
+    "chinese": "舒服",
+    "pinyin": "shū fu",
+    "french": "confortable"
+  },
+  {
+    "chinese": "穿",
+    "pinyin": "chuān",
+    "french": "porter/mettre"
+  },
+  {
+    "chinese": "戴",
+    "pinyin": "dài",
+    "french": "porter/mettre les accessoires"
+  },
+   {
+    "chinese": "买",
+    "pinyin": "mǎi",
+    "french": "acheter"
+  },
+  {
+    "chinese": "洗",
+    "pinyin": "xǐ",
+    "french": "laver"
+  },
 ];

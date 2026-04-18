@@ -1,5 +1,5 @@
 export var title = "Lesson 3 - HSK 3";
-export var date = "2026-04-18";
+export var date = "2026-04-20";
 
 export var flashcards = [
   { chinese: "还是", pinyin: "háishi", french: "ou bien, encore" },

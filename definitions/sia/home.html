@@ -181,7 +181,17 @@
                         const title = module.title || jsFile;
                         const vocabularyWords = module.vocabularyWords || []; // Ensure it's an array
                         const cardCount = vocabularyWords.length;
-                        const link = `main?set=${jsFile}`;
+                        
+                        // Build the relative path for the 'set' query parameter.
+                        // Remove the leading 'sets/' from currentLocalImportPath to get the path inside the sets root.
+                        let relativeSetPath = '';
+                        if (currentLocalImportPath !== LOCAL_IMPORT_ROOT_PATH) {
+                            // Remove the base 'sets/' prefix and any trailing slash
+                            relativeSetPath = currentLocalImportPath.replace(LOCAL_IMPORT_ROOT_PATH + '/', '');
+                        }
+                        // Combine: if there is a relative folder path, add it followed by a slash, then the filename.
+                        const setParam = relativeSetPath ? `${relativeSetPath}/${jsFile}` : jsFile;
+                        const link = `main?set=${setParam}`;
 
                         let color;
                         const isDarkMode = document.documentElement.classList.contains('dark');

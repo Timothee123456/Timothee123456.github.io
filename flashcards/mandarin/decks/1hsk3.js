@@ -1,4 +1,4 @@
-export var title = "Day 1 - HSK 3";
+export var title = "Lesson 1 - HSK 3";
 export var date = "2026-04-18";
 
 export var flashcards = [

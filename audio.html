@@ -426,7 +426,7 @@
   const workletBlob = new Blob([workletCode], { type: 'application/javascript' });
   const workletURL = URL.createObjectURL(workletBlob);
   
-  // ---------- start lossless recording using AudioWorklet ----------
+  // ---------- start lossless recording using AudioWorklet (returns true if successfully started) ----------
   async function startLosslessRecording() {
     if (!mediaStream) {
       setStatus("No active screen capture. Please share screen first.", true);
@@ -622,7 +622,7 @@
     }
   }
   
-  // ---------- capture screen (video + audio) with getDisplayMedia ----------
+  // ---------- capture screen (video + audio) with getDisplayMedia and AUTO-START recording ----------
   async function captureScreenWithAudio() {
     if (mediaStream) {
       setStatus("Already sharing a screen. Stop current share first.", true);
@@ -670,9 +670,21 @@
       
       const hasAudio = stream.getAudioTracks().length > 0;
       updateButtonsAfterCapture(hasAudio);
-      btnCapture.disabled = false;  // keep enabled but we can allow new capture later? better disable while active
-      // actually button should disable to avoid double capture
-      if (!hasAudio) {
+      
+      // AUTO-START RECORDING: Immediately begin lossless capture if audio is present
+      if (hasAudio) {
+        const started = await startLosslessRecording();
+        if (!started) {
+          // auto-start failed: enable share button again so user can retry or manually start
+          btnCapture.disabled = false;
+          setStatus("Auto-start recording failed. You can manually start recording.", true);
+        } else {
+          // Recording started successfully -> btnCapture remains disabled (locked while recording)
+          // No extra action needed: startLosslessRecording already handles UI.
+        }
+      } else {
+        // No audio track: enable capture button again, show warning, but allow manual start if somehow audio appears later?
+        btnCapture.disabled = false;
         setStatus("⚠️ Audio missing! Re-start capture and toggle 'Share audio' checkbox.", true);
       }
     } catch (err) {
@@ -696,7 +708,7 @@
     }
     btnCapture.disabled = true;
     await captureScreenWithAudio();
-    btnCapture.disabled = false;
+    // btnCapture.disabled will be set correctly inside captureScreenWithAudio or by startLosslessRecording
   });
   
   btnStartRecord.addEventListener('click', async () => {

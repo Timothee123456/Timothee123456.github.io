@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-  <title>Screen Audio Capture · Lossless WAV Download</title>
+  <title>Screen Audio Capture · Lossless WAV + Waveform Trim</title>
   <style>
     * {
       box-sizing: border-box;
-      user-select: none; /* avoid accidental selection on buttons */
+      user-select: none;
     }
 
     body {
@@ -22,7 +22,7 @@
     }
 
     .capture-card {
-      max-width: 800px;
+      max-width: 900px;
       width: 100%;
       background: rgba(18, 25, 40, 0.85);
       backdrop-filter: blur(12px);
@@ -187,6 +187,94 @@
       text-align: center;
       margin-top: 24px;
     }
+
+    /* Waveform editor panel */
+    .waveform-editor {
+      background: #0b111fcc;
+      backdrop-filter: blur(8px);
+      border-radius: 1.5rem;
+      padding: 1.2rem;
+      margin-top: 1.2rem;
+      border: 1px solid #3d5a80;
+      transition: all 0.2s;
+    }
+
+    .waveform-canvas-container {
+      background: #01050f;
+      border-radius: 1rem;
+      padding: 8px;
+      margin-bottom: 16px;
+    }
+
+    canvas {
+      width: 100%;
+      height: 140px;
+      background: #0a0f1a;
+      border-radius: 0.75rem;
+      display: block;
+    }
+
+    .trim-controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      align-items: center;
+      margin: 12px 0;
+    }
+
+    .trim-slider-group {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .trim-slider-group label {
+      font-size: 0.7rem;
+      font-weight: 500;
+      color: #bfd9ff;
+    }
+
+    input[type="range"] {
+      width: 100%;
+      background: #1e2a44;
+      height: 4px;
+      border-radius: 10px;
+      -webkit-appearance: none;
+    }
+
+    input[type="range"]:focus {
+      outline: none;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 16px;
+      height: 16px;
+      background: #5d9eff;
+      border-radius: 50%;
+      cursor: pointer;
+      box-shadow: 0 0 4px white;
+    }
+
+    .filename-input {
+      background: #101a2c;
+      border: 1px solid #2e4a77;
+      padding: 8px 14px;
+      border-radius: 40px;
+      color: white;
+      font-family: monospace;
+      font-size: 0.8rem;
+      width: 100%;
+      margin: 8px 0;
+    }
+
+    .editor-actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 12px;
+      justify-content: flex-end;
+    }
   </style>
 </head>
 <body>
@@ -195,7 +283,7 @@
     🎤 Screen Audio Capture
     <span class="recording-badge" id="liveBadge" style="display: none;"><span class="red-dot"></span> RECORDING</span>
   </h1>
-  <div class="sub">Lossless PCM capture · WAV download · true system audio quality</div>
+  <div class="sub">Lossless PCM capture · WAV download · trim & rename</div>
 
   <div class="preview-area">
     <video id="previewVideo" muted autoplay playsinline></video>
@@ -208,8 +296,34 @@
   <div class="button-group">
     <button id="btnCapture" class="primary">🖥️ Share Screen + Audio</button>
     <button id="btnStartRecord" disabled>🔴 Start Lossless Recording</button>
-    <button id="btnStopRecord" disabled>⏹️ Stop & Download WAV</button>
+    <button id="btnStopRecord" disabled>⏹️ Stop & Edit Trim</button>
     <button id="btnStopShare" disabled>❌ Stop Sharing</button>
+  </div>
+
+  <!-- Waveform editor panel (hidden by default) -->
+  <div id="waveformEditor" class="waveform-editor" style="display: none;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+      <span style="font-weight: 600;">🎚️ Waveform & Trim</span>
+      <span id="trimInfo" style="font-size: 0.7rem; background:#00000055; padding: 4px 10px; border-radius: 20px;">0.0s - 0.0s</span>
+    </div>
+    <div class="waveform-canvas-container">
+      <canvas id="waveformCanvas" width="800" height="140" style="width:100%; height:140px"></canvas>
+    </div>
+    <div class="trim-controls">
+      <div class="trim-slider-group">
+        <label>✂️ Trim Start <span id="startTrimLabel">0.0</span> s</label>
+        <input type="range" id="trimStartSlider" min="0" max="1" step="0.001" value="0">
+      </div>
+      <div class="trim-slider-group">
+        <label>✂️ Trim End <span id="endTrimLabel">0.0</span> s</label>
+        <input type="range" id="trimEndSlider" min="0" max="1" step="0.001" value="1">
+      </div>
+    </div>
+    <input type="text" id="fileNameInput" class="filename-input" placeholder="filename.wav" value="screen_audio_lossless.wav">
+    <div class="editor-actions">
+      <button id="closeEditorBtn" class="danger">🗑️ Cancel / Close</button>
+      <button id="downloadTrimmedBtn" class="primary">⬇️ Download Trimmed WAV</button>
+    </div>
   </div>
 
   <hr />
@@ -219,7 +333,7 @@
   </div>
   <div class="footer-note">
     ✅ Make sure to CHECK "Share Audio" in the system picker. <br>
-    🎙️ Captures stereo/multi‑channel at native sample rate → lossless WAV.
+    🎙️ Captures stereo/multi‑channel → after stop you can trim waveform & rename.
   </div>
 </div>
 
@@ -235,21 +349,40 @@
   const durationSpan = document.getElementById('durationInfo');
   const liveBadge = document.getElementById('liveBadge');
 
+  // waveform editor elements
+  const waveformEditor = document.getElementById('waveformEditor');
+  const waveformCanvas = document.getElementById('waveformCanvas');
+  const trimStartSlider = document.getElementById('trimStartSlider');
+  const trimEndSlider = document.getElementById('trimEndSlider');
+  const startTrimLabel = document.getElementById('startTrimLabel');
+  const endTrimLabel = document.getElementById('endTrimLabel');
+  const fileNameInput = document.getElementById('fileNameInput');
+  const closeEditorBtn = document.getElementById('closeEditorBtn');
+  const downloadTrimmedBtn = document.getElementById('downloadTrimmedBtn');
+  const trimInfoSpan = document.getElementById('trimInfo');
+
   // ---------- global state ----------
-  let mediaStream = null;            // current screen capture stream (video+audio)
-  let audioContext = null;           // AudioContext for lossless PCM capture
+  let mediaStream = null;
+  let audioContext = null;
   let workletNode = null;
   let mediaSourceNode = null;
   let isRecordingActive = false;
   let recordingStartTime = 0;
   let durationInterval = null;
 
-  // Buffers for lossless accumulation (per channel, array of Float32Array chunks)
-  let perChannelChunks = [];         // each index = channel, value = array of Float32Array blocks
+  // captured audio data after stop (for editing)
+  let capturedChannelData = [];    // array of Float32Array per channel
+  let capturedSampleRate = 0;
+  let capturedTotalSamples = 0;
+  let capturedNumChannels = 0;
+  let originalDuration = 0;
+
+  // Buffers during recording
+  let perChannelChunks = [];
   let activeChannelCount = 0;
   let sampleRateValue = 0;
 
-  // ---------- helper: update status, enable/disable UI ----------
+  // ---------- helper ----------
   function setStatus(text, isError = false) {
     statusDiv.innerHTML = isError ? `⚠️ ${text}` : `✨ ${text}`;
     statusDiv.style.borderLeftColor = isError ? '#ff6b6b' : '#2b7fff';
@@ -260,7 +393,7 @@
       btnStartRecord.disabled = false;
       btnStopShare.disabled = false;
       if (!hasAudio) {
-        setStatus("⚠️ No audio track detected! Make sure you checked 'Share Audio' during selection.", true);
+        setStatus("⚠️ No audio track detected! Make sure you checked 'Share Audio'.", true);
         btnStartRecord.disabled = true;
       } else {
         setStatus("✅ Screen capture active with Audio! Ready to start lossless recording.");
@@ -269,44 +402,28 @@
       btnStartRecord.disabled = true;
       btnStopShare.disabled = true;
     }
-    btnStopRecord.disabled = true;    // recording not started yet
-    liveBadge.style.display = 'none';
-  }
-
-  function resetRecordingUI() {
-    if (durationInterval) {
-      clearInterval(durationInterval);
-      durationInterval = null;
-    }
-    isRecordingActive = false;
-    btnStartRecord.disabled = (mediaStream === null || !mediaStream.getAudioTracks().length);
     btnStopRecord.disabled = true;
     liveBadge.style.display = 'none';
-    if (!isRecordingActive) durationSpan.innerText = '0.0';
   }
 
-  // stop all tracks, release stream
   async function stopScreenSharing() {
+    if (isRecordingActive) {
+      setStatus("Please stop recording first before ending share.", true);
+      return;
+    }
     if (mediaStream) {
-      mediaStream.getTracks().forEach(track => {
-        track.stop();
-      });
+      mediaStream.getTracks().forEach(track => track.stop());
       mediaStream = null;
     }
-    if (previewVideo.srcObject) {
-      previewVideo.srcObject = null;
-    }
-    // close audio context if any recording leftover
-    if (audioContext && audioContext.state !== 'closed') {
-      await audioContext.close().catch(e => console.warn);
-      audioContext = null;
-    }
+    if (previewVideo.srcObject) previewVideo.srcObject = null;
+    if (audioContext && audioContext.state !== 'closed') await audioContext.close().catch(e => console.warn);
+    audioContext = null;
     workletNode = null;
     mediaSourceNode = null;
     isRecordingActive = false;
     if (durationInterval) clearInterval(durationInterval);
     liveBadge.style.display = 'none';
-    setStatus("🛑 Screen sharing stopped. You can start a new capture.");
+    setStatus("🛑 Screen sharing stopped.");
     btnStartRecord.disabled = true;
     btnStopRecord.disabled = true;
     btnStopShare.disabled = true;
@@ -315,444 +432,435 @@
     durationSpan.innerText = '0.0';
     perChannelChunks = [];
     activeChannelCount = 0;
+
+    // hide waveform editor if open
+    waveformEditor.style.display = 'none';
   }
 
-  // ---------- build lossless WAV from accumulated Float32 buffers (per channel) ----------
-  function buildWavBlob(channelChunksArrays, sampleRate, totalSamplesPerChannel) {
-    // channelChunksArrays: array where each element is an array of Float32Array chunks (concatenated)
-    // totalSamplesPerChannel: number of samples per channel (all channels have equal length)
-    const numChannels = channelChunksArrays.length;
-    if (numChannels === 0 || totalSamplesPerChannel === 0) throw new Error('No audio data');
-    
-    // interleaved 16-bit PCM buffer
+  // build WAV from trimmed float arrays (per channel)
+  function buildWavFromFloatArrays(channelFloatArrays, sampleRate, totalSamplesPerChannel) {
+    const numChannels = channelFloatArrays.length;
     const pcmDataLength = totalSamplesPerChannel * numChannels;
     const pcmBuffer = new Int16Array(pcmDataLength);
-    
-    // flatten per-channel data into a single Float32Array per channel (merge chunks)
-    const channelFloatMerged = [];
-    for (let ch = 0; ch < numChannels; ch++) {
-      const chunks = channelChunksArrays[ch];
-      let totalLen = 0;
-      for (let i = 0; i < chunks.length; i++) totalLen += chunks[i].length;
-      const merged = new Float32Array(totalLen);
-      let offset = 0;
-      for (let i = 0; i < chunks.length; i++) {
-        merged.set(chunks[i], offset);
-        offset += chunks[i].length;
-      }
-      channelFloatMerged.push(merged);
-    }
-    
-    // interleave and convert float32 (-1..1) to int16
     let idx = 0;
     for (let samp = 0; samp < totalSamplesPerChannel; samp++) {
       for (let ch = 0; ch < numChannels; ch++) {
-        let floatSample = channelFloatMerged[ch][samp];
-        // clamp to -1 .. 1 range just in case
+        let floatSample = channelFloatArrays[ch][samp];
         floatSample = Math.max(-1.0, Math.min(1.0, floatSample));
         const intSample = floatSample < 0 ? floatSample * 0x8000 : floatSample * 0x7FFF;
         pcmBuffer[idx++] = intSample;
       }
     }
-    
-    // Build WAV header (44 bytes for PCM)
-    const byteRate = sampleRate * numChannels * 2; // 2 bytes per sample (16-bit)
+    const byteRate = sampleRate * numChannels * 2;
     const blockAlign = numChannels * 2;
     const dataSize = pcmBuffer.length * 2;
     const buffer = new ArrayBuffer(44 + dataSize);
     const view = new DataView(buffer);
-    
-    // RIFF chunk
-    writeString(view, 0, 'RIFF');
+    const writeString = (offset, str) => {
+      for (let i = 0; i < str.length; i++) view.setUint8(offset + i, str.charCodeAt(i));
+    };
+    writeString(0, 'RIFF');
     view.setUint32(4, 36 + dataSize, true);
-    writeString(view, 8, 'WAVE');
-    writeString(view, 12, 'fmt ');
-    view.setUint32(16, 16, true);        // PCM chunk size
-    view.setUint16(20, 1, true);         // PCM format
+    writeString(8, 'WAVE');
+    writeString(12, 'fmt ');
+    view.setUint32(16, 16, true);
+    view.setUint16(20, 1, true);
     view.setUint16(22, numChannels, true);
     view.setUint32(24, sampleRate, true);
     view.setUint32(28, byteRate, true);
     view.setUint16(32, blockAlign, true);
-    view.setUint16(34, 16, true);        // bits per sample
-    writeString(view, 36, 'data');
+    view.setUint16(34, 16, true);
+    writeString(36, 'data');
     view.setUint32(40, dataSize, true);
-    
-    // write PCM samples
     const int16Offset = 44;
-    for (let i = 0; i < pcmBuffer.length; i++) {
-      view.setInt16(int16Offset + i * 2, pcmBuffer[i], true);
-    }
-    
+    for (let i = 0; i < pcmBuffer.length; i++) view.setInt16(int16Offset + i * 2, pcmBuffer[i], true);
     return new Blob([buffer], { type: 'audio/wav' });
   }
-  
-  function writeString(view, offset, str) {
-    for (let i = 0; i < str.length; i++) {
-      view.setUint8(offset + i, str.charCodeAt(i));
-    }
-  }
-  
-  // ---------- AudioWorkletProcessor (inline definition) ----------
-  const workletCode = `
-    class PCMRecorderProcessor extends AudioWorkletProcessor {
-      constructor() {
-        super();
-        this.port.onmessage = (e) => { }; // just to avoid warnings
+
+  // merge chunks into per-channel Float32Array
+  function mergeChunksToFloatArrays(chunksPerChannel, totalSamples) {
+    const numChannels = chunksPerChannel.length;
+    const result = [];
+    for (let ch = 0; ch < numChannels; ch++) {
+      const chunks = chunksPerChannel[ch];
+      if (!chunks) { result.push(new Float32Array(0)); continue; }
+      const merged = new Float32Array(totalSamples);
+      let offset = 0;
+      for (const chunk of chunks) {
+        const toCopy = Math.min(chunk.length, totalSamples - offset);
+        merged.set(chunk.subarray(0, toCopy), offset);
+        offset += toCopy;
+        if (offset >= totalSamples) break;
       }
-  
-      process(inputs, outputs, parameters) {
-        const input = inputs[0];
-        if (!input || input.length === 0) return true;
-        
-        // input: array of channels (Float32Array)
-        const channelCount = input.length;
-        for (let ch = 0; ch < channelCount; ch++) {
-          const channelData = input[ch];
-          if (channelData && channelData.length) {
-            // send copy to main thread as a Float32Array
-            this.port.postMessage({
-              type: 'audioChunk',
-              channelIndex: ch,
-              samples: channelData.slice()  // copy Float32Array
-            });
-          }
-        }
-        return true;
-      }
+      result.push(merged);
     }
-    registerProcessor('pcm-recorder-worklet', PCMRecorderProcessor);
-  `;
-  
-  const workletBlob = new Blob([workletCode], { type: 'application/javascript' });
-  const workletURL = URL.createObjectURL(workletBlob);
-  
-  // ---------- start lossless recording using AudioWorklet (returns true if successfully started) ----------
-  async function startLosslessRecording() {
-    if (!mediaStream) {
-      setStatus("No active screen capture. Please share screen first.", true);
-      return false;
-    }
-    const audioTracks = mediaStream.getAudioTracks();
-    if (audioTracks.length === 0) {
-      setStatus("No audio track in stream. Re-share and enable 'Share Audio'.", true);
-      return false;
-    }
-    if (isRecordingActive) {
-      setStatus("Recording already in progress! Stop first.", true);
-      return false;
-    }
-    
-    // close any prior audio context
-    if (audioContext && audioContext.state !== 'closed') {
-      await audioContext.close().catch(e => console.warn);
-      audioContext = null;
-    }
-    
-    // flush buffer storage
-    perChannelChunks = [];
-    activeChannelCount = 0;
-    
-    try {
-      // create new AudioContext (native sampleRate, best quality)
-      audioContext = new AudioContext({ sampleRate: 48000, latencyHint: 'interactive' });
-      // real sample rate might be limited by device but we use native
-      const actualSampleRate = audioContext.sampleRate;
-      sampleRateValue = actualSampleRate;
-      sampleRateSpan.innerText = actualSampleRate;
-      
-      // create source from mediaStream (audio only)
-      mediaSourceNode = audioContext.createMediaStreamSource(mediaStream);
-      
-      // AudioWorklet registration
-      await audioContext.audioWorklet.addModule(workletURL);
-      workletNode = new AudioWorkletNode(audioContext, 'pcm-recorder-worklet');
-      
-      // set up message handler to collect chunks per channel
-      workletNode.port.onmessage = (event) => {
-        const { type, channelIndex, samples } = event.data;
-        if (type === 'audioChunk' && isRecordingActive) {
-          // ensure perChannelChunks array has enough slots
-          while (perChannelChunks.length <= channelIndex) {
-            perChannelChunks.push([]);
-          }
-          perChannelChunks[channelIndex].push(samples);
-          // track active channel count (max channel index seen)
-          if (channelIndex + 1 > activeChannelCount) activeChannelCount = channelIndex + 1;
-        }
-      };
-      
-      // Connect: source -> worklet (no destination to avoid feedback)
-      mediaSourceNode.connect(workletNode);
-      
-      // resume AudioContext (user gesture on start recording button)
-      await audioContext.resume();
-      
-      // reset accumulation
-      perChannelChunks = [];
-      activeChannelCount = 0;
-      isRecordingActive = true;
-      recordingStartTime = performance.now();
-      
-      // start duration timer
-      if (durationInterval) clearInterval(durationInterval);
-      durationInterval = setInterval(() => {
-        if (isRecordingActive && recordingStartTime) {
-          const elapsed = (performance.now() - recordingStartTime) / 1000;
-          durationSpan.innerText = elapsed.toFixed(1);
-        }
-      }, 100);
-      
-      btnStartRecord.disabled = true;
-      btnStopRecord.disabled = false;
-      btnCapture.disabled = true;   // can't change source while recording
-      btnStopShare.disabled = true;   // disable stop sharing during record to avoid corruption
-      liveBadge.style.display = 'inline-flex';
-      setStatus(`🔴 Recording lossless PCM @ ${actualSampleRate} Hz — capturing audio ...`);
-      return true;
-    } catch (err) {
-      console.error('Worklet recording error:', err);
-      setStatus(`Recording init failed: ${err.message}`, true);
-      if (audioContext) await audioContext.close().catch(()=>{});
-      audioContext = null;
-      isRecordingActive = false;
-      btnStartRecord.disabled = false;
-      btnStopRecord.disabled = true;
-      btnCapture.disabled = false;
-      return false;
-    }
+    return result;
   }
-  
-  // ---------- stop recording, generate WAV and download ----------
-  async function stopRecordingAndDownload() {
+
+  // Draw waveform (first channel) + trim overlays
+  function drawWaveformWithTrim(canvas, channelData, sampleRate, startPercent, endPercent) {
+    if (!channelData || channelData.length === 0) return;
+    const samples = channelData;
+    const totalSamples = samples.length;
+    const width = canvas.width;
+    const height = canvas.height;
+    const ctx = canvas.getContext('2d');
+    ctx.fillStyle = '#0a0f1a';
+    ctx.fillRect(0, 0, width, height);
+    
+    const sliceSize = Math.max(1, Math.floor(totalSamples / width));
+    const peaks = new Array(width);
+    for (let i = 0; i < width; i++) {
+      let max = 0;
+      const startIdx = i * sliceSize;
+      const endIdx = Math.min(startIdx + sliceSize, totalSamples);
+      for (let s = startIdx; s < endIdx; s++) {
+        const val = Math.abs(samples[s]);
+        if (val > max) max = val;
+      }
+      peaks[i] = Math.min(1.0, max);
+    }
+    
+    ctx.beginPath();
+    ctx.strokeStyle = '#5d9eff';
+    ctx.lineWidth = 2;
+    const midY = height / 2;
+    for (let x = 0; x < width; x++) {
+      const amp = peaks[x] * (height * 0.45);
+      const y1 = midY - amp;
+      const y2 = midY + amp;
+      ctx.beginPath();
+      ctx.moveTo(x, y1);
+      ctx.lineTo(x, y2);
+      ctx.stroke();
+    }
+    
+    // draw trim overlays
+    const startX = startPercent * width;
+    const endX = endPercent * width;
+    ctx.fillStyle = '#3a86ff30';
+    ctx.fillRect(0, 0, startX, height);
+    ctx.fillRect(endX, 0, width - endX, height);
+    ctx.strokeStyle = '#ffbe3c';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(startX, 0);
+    ctx.lineTo(startX, height);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(endX, 0);
+    ctx.lineTo(endX, height);
+    ctx.stroke();
+  }
+
+  // update waveform and trim ui from current stored data
+  function updateWaveformAndTrim() {
+    if (!capturedChannelData.length || capturedChannelData[0] === undefined) return;
+    const startPercent = parseFloat(trimStartSlider.value);
+    const endPercent = parseFloat(trimEndSlider.value);
+    const startSec = startPercent * originalDuration;
+    const endSec = endPercent * originalDuration;
+    startTrimLabel.innerText = startSec.toFixed(2);
+    endTrimLabel.innerText = endSec.toFixed(2);
+    trimInfoSpan.innerText = `${startSec.toFixed(2)}s - ${endSec.toFixed(2)}s (${(endSec-startSec).toFixed(2)}s)`;
+    drawWaveformWithTrim(waveformCanvas, capturedChannelData[0], capturedSampleRate, startPercent, endPercent);
+  }
+
+  // extract trimmed audio data (per channel Float32Array)
+  function getTrimmedChannelData() {
+    const startPercent = parseFloat(trimStartSlider.value);
+    const endPercent = parseFloat(trimEndSlider.value);
+    const startSample = Math.floor(startPercent * capturedTotalSamples);
+    const endSample = Math.floor(endPercent * capturedTotalSamples);
+    const newLength = Math.max(1, endSample - startSample);
+    const trimmed = [];
+    for (let ch = 0; ch < capturedNumChannels; ch++) {
+      const orig = capturedChannelData[ch];
+      if (!orig) { trimmed.push(new Float32Array(newLength)); continue; }
+      const slice = orig.slice(startSample, endSample);
+      trimmed.push(slice);
+    }
+    return { trimmedChannels: trimmed, newLength, startSample, endSample };
+  }
+
+  // called after recording stops: store merged data, show editor
+  function showWaveformEditorFromRecording() {
+    if (perChannelChunks.length === 0 || capturedTotalSamples === 0) {
+      setStatus("No audio data recorded, cannot edit.", true);
+      return;
+    }
+    // merge chunks -> per-channel float arrays
+    const mergedChannels = mergeChunksToFloatArrays(perChannelChunks, capturedTotalSamples);
+    capturedChannelData = mergedChannels.filter(ch => ch && ch.length > 0);
+    capturedNumChannels = capturedChannelData.length;
+    if (capturedNumChannels === 0) {
+      setStatus("Invalid audio data after merging.", true);
+      return;
+    }
+    originalDuration = capturedTotalSamples / capturedSampleRate;
+    durationSpan.innerText = originalDuration.toFixed(2);
+    // set filename default
+    const timestamp = new Date().toISOString().slice(0,19).replace(/:/g, '-');
+    fileNameInput.value = `screen_audio_trimmed_${timestamp}_${capturedSampleRate}hz.wav`;
+    
+    // setup sliders
+    trimStartSlider.min = 0;
+    trimStartSlider.max = 1;
+    trimStartSlider.value = 0;
+    trimEndSlider.min = 0;
+    trimEndSlider.max = 1;
+    trimEndSlider.value = 1;
+    
+    // resize canvas to match display
+    const container = waveformCanvas.parentElement;
+    const rect = container.getBoundingClientRect();
+    waveformCanvas.width = Math.max(400, rect.width - 20);
+    waveformCanvas.height = 140;
+    
+    updateWaveformAndTrim();
+    waveformEditor.style.display = 'block';
+    
+    // disable main capture/record while editing
+    btnCapture.disabled = true;
+    btnStartRecord.disabled = true;
+    btnStopShare.disabled = true;
+    btnStopRecord.disabled = true;
+  }
+
+  // stop recording logic (no auto download, instead show editor)
+  async function stopRecordingAndShowEditor() {
     if (!isRecordingActive) {
       setStatus("No active recording to stop.", true);
       return;
     }
-    
-    // mark stop early to block incoming messages from further accumulation
     isRecordingActive = false;
     if (durationInterval) clearInterval(durationInterval);
     liveBadge.style.display = 'none';
     
-    // store captured channel chunks before cleanup
-    const capturedChunks = perChannelChunks.slice(); // copy of arrays
-    const capturedChannelCount = activeChannelCount;
-    const capturedSampleRate = sampleRateValue;
-    
-    // compute total samples per channel (minimum length among channels? all should be similar sync)
-    let totalSamples = 0;
-    if (capturedChannelCount > 0 && capturedChunks[0]) {
-      totalSamples = capturedChunks[0].reduce((sum, arr) => sum + arr.length, 0);
+    // capture chunks and metadata
+    const capturedChunksCopy = perChannelChunks.slice();
+    const capturedChanCount = activeChannelCount;
+    const capturedRate = sampleRateValue;
+    // compute total samples per channel
+    let totalSamps = 0;
+    if (capturedChanCount > 0 && capturedChunksCopy[0]) {
+      totalSamps = capturedChunksCopy[0].reduce((sum, arr) => sum + arr.length, 0);
     }
-    // validate consistency: ensure all channels have same total samples (desync improbable)
-    for (let ch = 1; ch < capturedChannelCount; ch++) {
-      if (capturedChunks[ch]) {
-        const chTotal = capturedChunks[ch].reduce((sum, arr) => sum + arr.length, 0);
-        if (chTotal !== totalSamples) {
-          console.warn(`Channel ${ch} length mismatch, truncating to min`);
-          totalSamples = Math.min(totalSamples, chTotal);
-        }
+    for (let ch = 1; ch < capturedChanCount; ch++) {
+      if (capturedChunksCopy[ch]) {
+        const chTotal = capturedChunksCopy[ch].reduce((sum, arr) => sum + arr.length, 0);
+        if (chTotal !== totalSamps) totalSamps = Math.min(totalSamps, chTotal);
       }
     }
+    capturedTotalSamples = totalSamps;
+    capturedSampleRate = capturedRate;
+    perChannelChunks = capturedChunksCopy;  // keep for merging
+    activeChannelCount = capturedChanCount;
     
-    // stop audio context and disconnect
+    // close audio context
     if (audioContext) {
-      try {
-        await audioContext.close();
-      } catch(e) {}
+      try { await audioContext.close(); } catch(e) {}
       audioContext = null;
     }
     workletNode = null;
     mediaSourceNode = null;
     
-    // restore UI buttons
-    btnStartRecord.disabled = (mediaStream === null || !mediaStream?.getAudioTracks().length);
+    // restore UI
     btnStopRecord.disabled = true;
-    btnCapture.disabled = false;
-    if (mediaStream) btnStopShare.disabled = false;
-    else btnStopShare.disabled = true;
-    
-    // if no audio data captured
-    if (capturedChannelCount === 0 || totalSamples === 0) {
-      setStatus("No audio samples recorded. Ensure audio was playing from the selected screen.", true);
-      durationSpan.innerText = '0.0';
+    btnStartRecord.disabled = true;
+    if (capturedTotalSamples === 0 || capturedChanCount === 0) {
+      setStatus("No audio captured (missing audio source).", true);
+      btnCapture.disabled = false;
+      btnStopShare.disabled = (mediaStream !== null);
       return;
     }
     
-    // Trim any extra samples for channels with slight length difference (just in case)
-    const trimmedChannelChunks = [];
-    for (let ch = 0; ch < capturedChannelCount; ch++) {
-      const chunksArray = capturedChunks[ch] || [];
-      let accumLen = 0;
-      const trimmedList = [];
-      let remaining = totalSamples;
-      for (let chunk of chunksArray) {
-        const take = Math.min(chunk.length, remaining);
-        if (take <= 0) break;
-        const trimmed = chunk.subarray(0, take);
-        trimmedList.push(trimmed);
-        remaining -= take;
-        if (remaining === 0) break;
-      }
-      // reconstruct correct total length
-      trimmedChannelChunks.push(trimmedList);
+    // show waveform editor
+    showWaveformEditorFromRecording();
+    setStatus(`✅ Recording stopped. Trim waveform, rename, then download. Duration: ${(capturedTotalSamples/capturedSampleRate).toFixed(2)} sec`);
+  }
+  
+  // download trimmed version using current sliders and filename
+  function downloadTrimmed() {
+    if (!capturedChannelData.length || capturedTotalSamples === 0) {
+      setStatus("No audio data available to download.", true);
+      return;
     }
-    
+    const { trimmedChannels, newLength } = getTrimmedChannelData();
+    if (newLength === 0) {
+      setStatus("Trimmed region empty. Adjust trim points.", true);
+      return;
+    }
     try {
-      const wavBlob = buildWavBlob(trimmedChannelChunks, capturedSampleRate, totalSamples);
+      const wavBlob = buildWavFromFloatArrays(trimmedChannels, capturedSampleRate, newLength);
+      let filename = fileNameInput.value.trim();
+      if (!filename.endsWith('.wav')) filename += '.wav';
       const url = URL.createObjectURL(wavBlob);
       const a = document.createElement('a');
-      const durationSec = (performance.now() - recordingStartTime) / 1000;
-      const timestamp = new Date().toISOString().slice(0,19).replace(/:/g, '-');
-      a.download = `screen_audio_lossless_${timestamp}_${capturedSampleRate}hz.wav`;
       a.href = url;
+      a.download = filename;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
-      setStatus(`✅ Lossless WAV downloaded! ${durationSec.toFixed(1)} seconds, ${capturedChannelCount} channels, ${capturedSampleRate} Hz.`);
-      durationSpan.innerText = durationSec.toFixed(1);
+      setStatus(`✅ Downloaded trimmed WAV: ${filename} (${(newLength/capturedSampleRate).toFixed(2)} sec)`);
     } catch (err) {
-      setStatus(`WAV creation failed: ${err.message}`, true);
-      console.error(err);
-    } finally {
-      // clear persistent chunk references
-      perChannelChunks = [];
-      activeChannelCount = 0;
+      setStatus(`Download error: ${err.message}`, true);
     }
   }
   
-  // ---------- capture screen (video + audio) with getDisplayMedia and AUTO-START recording ----------
+  function closeEditorAndReset() {
+    waveformEditor.style.display = 'none';
+    capturedChannelData = [];
+    capturedTotalSamples = 0;
+    capturedNumChannels = 0;
+    perChannelChunks = [];
+    activeChannelCount = 0;
+    // re-enable UI
+    btnCapture.disabled = false;
+    if (mediaStream && mediaStream.getAudioTracks().length) btnStartRecord.disabled = false;
+    else btnStartRecord.disabled = true;
+    btnStopShare.disabled = (mediaStream === null);
+    btnStopRecord.disabled = true;
+    setStatus("Editor closed. You can start a new capture or resume.");
+  }
+
+  // ---------- capture + auto record (same as before) ----------
   async function captureScreenWithAudio() {
     if (mediaStream) {
-      setStatus("Already sharing a screen. Stop current share first.", true);
+      setStatus("Already sharing.", true);
       return;
     }
-    
     try {
-      // request display media with AUDIO explicitly, highest possible quality
       const stream = await navigator.mediaDevices.getDisplayMedia({
-        video: {
-          cursor: "always",
-          displaySurface: "monitor",
-          frameRate: { ideal: 30 }
-        },
-        audio: {
-          echoCancellation: false,
-          noiseSuppression: false,
-          autoGainControl: false,
-          sampleRate: { ideal: 48000 },
-          channelCount: { ideal: 2 }
-        },
+        video: { cursor: "always", displaySurface: "monitor", frameRate: { ideal: 30 } },
+        audio: { echoCancellation: false, noiseSuppression: false, autoGainControl: false, sampleRate: { ideal: 48000 }, channelCount: { ideal: 2 } },
         preferCurrentTab: false
       });
-      
       const audioTrack = stream.getAudioTracks()[0];
-      if (!audioTrack) {
-        setStatus("WARNING: No audio track selected. You MUST check 'Share Audio' in the browser dialog.", true);
-      } else {
-        setStatus(`Audio track acquired: ${audioTrack.label} · ${audioTrack.getSettings().channelCount ?? '?'} channels`);
-      }
-      
-      // attach video to preview (muted to avoid feedback)
+      if (!audioTrack) setStatus("WARNING: No audio track selected. Check 'Share Audio'.", true);
       previewVideo.srcObject = stream;
       mediaStream = stream;
-      
-      // listen for track ended events (user stops sharing via OS)
       const stopHandler = () => {
-        if (mediaStream === stream) {
-          setStatus("Screen sharing was stopped by system or user.");
-          stopScreenSharing();
-        }
+        if (mediaStream === stream) { setStatus("Screen sharing stopped."); stopScreenSharing(); }
       };
       stream.getVideoTracks().forEach(t => t.onended = stopHandler);
       stream.getAudioTracks().forEach(t => t.onended = stopHandler);
-      
       const hasAudio = stream.getAudioTracks().length > 0;
       updateButtonsAfterCapture(hasAudio);
-      
-      // AUTO-START RECORDING: Immediately begin lossless capture if audio is present
       if (hasAudio) {
         const started = await startLosslessRecording();
-        if (!started) {
-          // auto-start failed: enable share button again so user can retry or manually start
-          btnCapture.disabled = false;
-          setStatus("Auto-start recording failed. You can manually start recording.", true);
-        } else {
-          // Recording started successfully -> btnCapture remains disabled (locked while recording)
-          // No extra action needed: startLosslessRecording already handles UI.
-        }
+        if (!started) { btnCapture.disabled = false; setStatus("Auto-start recording failed.", true); }
       } else {
-        // No audio track: enable capture button again, show warning, but allow manual start if somehow audio appears later?
         btnCapture.disabled = false;
-        setStatus("⚠️ Audio missing! Re-start capture and toggle 'Share audio' checkbox.", true);
+        setStatus("⚠️ Audio missing! Re-share with audio checkbox.", true);
       }
     } catch (err) {
-      console.error("getDisplayMedia error:", err);
-      if (err.name === 'NotAllowedError') {
-        setStatus("Permission denied or share cancelled by user.", true);
-      } else if (err.name === 'NotFoundError') {
-        setStatus("No screen/audio source available.", true);
-      } else {
-        setStatus(`Error: ${err.message}`, true);
-      }
+      setStatus(`Error: ${err.message}`, true);
       btnCapture.disabled = false;
+    }
+  }
+
+  // startLosslessRecording (original logic, but now stop button uses stopRecordingAndShowEditor)
+  async function startLosslessRecording() {
+    if (!mediaStream || mediaStream.getAudioTracks().length === 0) return false;
+    if (audioContext) await audioContext.close().catch(()=>{});
+    perChannelChunks = [];
+    activeChannelCount = 0;
+    try {
+      audioContext = new AudioContext({ sampleRate: 48000, latencyHint: 'interactive' });
+      const actualSampleRate = audioContext.sampleRate;
+      sampleRateValue = actualSampleRate;
+      sampleRateSpan.innerText = actualSampleRate;
+      mediaSourceNode = audioContext.createMediaStreamSource(mediaStream);
+      const workletURL = URL.createObjectURL(new Blob([`
+        class PCMRecorderProcessor extends AudioWorkletProcessor {
+          process(inputs) {
+            const input = inputs[0];
+            if (input) for(let ch=0; ch<input.length; ch++) this.port.postMessage({ type:'audioChunk', channelIndex:ch, samples: input[ch].slice() });
+            return true;
+          }
+        } registerProcessor('pcm-recorder-worklet', PCMRecorderProcessor);
+      `], { type: 'application/javascript' }));
+      await audioContext.audioWorklet.addModule(workletURL);
+      workletNode = new AudioWorkletNode(audioContext, 'pcm-recorder-worklet');
+      workletNode.port.onmessage = (e) => {
+        if (e.data.type === 'audioChunk' && isRecordingActive) {
+          while (perChannelChunks.length <= e.data.channelIndex) perChannelChunks.push([]);
+          perChannelChunks[e.data.channelIndex].push(e.data.samples);
+          if (e.data.channelIndex + 1 > activeChannelCount) activeChannelCount = e.data.channelIndex + 1;
+        }
+      };
+      mediaSourceNode.connect(workletNode);
+      await audioContext.resume();
+      perChannelChunks = [];
+      activeChannelCount = 0;
+      isRecordingActive = true;
+      recordingStartTime = performance.now();
+      if (durationInterval) clearInterval(durationInterval);
+      durationInterval = setInterval(() => {
+        if (isRecordingActive) durationSpan.innerText = ((performance.now() - recordingStartTime)/1000).toFixed(1);
+      }, 100);
+      btnStartRecord.disabled = true;
+      btnStopRecord.disabled = false;
+      btnCapture.disabled = true;
+      btnStopShare.disabled = true;
+      liveBadge.style.display = 'inline-flex';
+      setStatus(`🔴 Recording lossless @ ${actualSampleRate} Hz`);
+      URL.revokeObjectURL(workletURL);
+      return true;
+    } catch (err) {
+      setStatus(`Record init fail: ${err.message}`, true);
+      return false;
     }
   }
   
   // ---------- event binding ----------
   btnCapture.addEventListener('click', async () => {
-    if (mediaStream) {
-      setStatus("Already sharing. Click 'Stop Sharing' first.", true);
-      return;
-    }
+    if (mediaStream) { setStatus("Already sharing.", true); return; }
+    if (waveformEditor.style.display === 'block') closeEditorAndReset();
     btnCapture.disabled = true;
     await captureScreenWithAudio();
-    // btnCapture.disabled will be set correctly inside captureScreenWithAudio or by startLosslessRecording
+    btnCapture.disabled = false;
   });
-  
   btnStartRecord.addEventListener('click', async () => {
-    if (!mediaStream) {
-      setStatus("No active screen capture. Share screen+audio first.", true);
-      return;
-    }
-    if (mediaStream.getAudioTracks().length === 0) {
-      setStatus("Audio missing: please reshare and check 'Share Audio' option.", true);
-      return;
-    }
+    if (!mediaStream || mediaStream.getAudioTracks().length === 0) { setStatus("No audio track", true); return; }
     btnStartRecord.disabled = true;
     await startLosslessRecording();
-    // if start fails, re-enable
     if (!isRecordingActive) btnStartRecord.disabled = false;
   });
-  
   btnStopRecord.addEventListener('click', async () => {
     if (!isRecordingActive) return;
-    await stopRecordingAndDownload();
+    await stopRecordingAndShowEditor();
   });
-  
   btnStopShare.addEventListener('click', async () => {
-    if (isRecordingActive) {
-      setStatus("Please stop recording before ending screen share.", true);
-      return;
-    }
+    if (isRecordingActive) { setStatus("Stop recording first", true); return; }
+    if (waveformEditor.style.display === 'block') closeEditorAndReset();
     await stopScreenSharing();
     btnCapture.disabled = false;
-    btnStartRecord.disabled = true;
-    btnStopRecord.disabled = true;
-    btnStopShare.disabled = true;
-    sampleRateSpan.innerText = '—';
   });
-  
-  // cleanup on page unload (release streams)
+  trimStartSlider.addEventListener('input', () => {
+    let start = parseFloat(trimStartSlider.value);
+    let end = parseFloat(trimEndSlider.value);
+    if (start >= end) trimStartSlider.value = Math.max(0, end - 0.001);
+    updateWaveformAndTrim();
+  });
+  trimEndSlider.addEventListener('input', () => {
+    let start = parseFloat(trimStartSlider.value);
+    let end = parseFloat(trimEndSlider.value);
+    if (end <= start) trimEndSlider.value = Math.min(1, start + 0.001);
+    updateWaveformAndTrim();
+  });
+  downloadTrimmedBtn.addEventListener('click', downloadTrimmed);
+  closeEditorBtn.addEventListener('click', () => {
+    closeEditorAndReset();
+    if (mediaStream && !mediaStream.getAudioTracks().length) btnStartRecord.disabled = true;
+    else if (mediaStream) btnStartRecord.disabled = false;
+  });
   window.addEventListener('beforeunload', () => {
-    if (mediaStream) {
-      mediaStream.getTracks().forEach(t => t.stop());
-    }
+    if (mediaStream) mediaStream.getTracks().forEach(t => t.stop());
     if (audioContext) audioContext.close();
   });
-  
-  // initial disable states
   btnStartRecord.disabled = true;
   btnStopRecord.disabled = true;
   btnStopShare.disabled = true;

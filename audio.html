@@ -176,7 +176,6 @@
       margin-top: 24px;
     }
 
-    /* Waveform editor panel */
     .waveform-editor {
       background: #0b111fcc;
       backdrop-filter: blur(8px);
@@ -184,10 +183,8 @@
       padding: 1.2rem;
       margin-top: 1.2rem;
       border: 1px solid #3d5a80;
-      transition: all 0.2s;
     }
 
-    /* White text for editor headings and trim info */
     .waveform-editor span, 
     .waveform-editor .trim-values,
     .waveform-editor [style*="font-weight: 600"] {
@@ -253,6 +250,14 @@
       font-family: monospace;
       color: white !important;
     }
+
+    .auto-trim-btn {
+      background: #2c5a2e;
+      border-color: #5fad5f;
+    }
+    .auto-trim-btn:hover {
+      background: #3e7840;
+    }
   </style>
 </head>
 <body>
@@ -278,7 +283,7 @@
     <button id="btnStopShare" disabled>❌ Stop Sharing</button>
   </div>
 
-  <!-- Waveform editor panel (hidden by default) -->
+  <!-- Waveform editor panel -->
   <div id="waveformEditor" class="waveform-editor" style="display: none;">
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
       <span style="font-weight: 600; color: white;">🎚️ Waveform & Trim (drag handles on wave)</span>
@@ -290,6 +295,7 @@
     <div class="trim-info-bar">
       <input type="text" id="fileNameInput" class="filename-input" placeholder="filename.wav" value="screen_audio_lossless.wav">
       <div class="preview-buttons">
+        <button id="autoTrimBtn" class="auto-trim-btn" style="background:#2c5a2e;">✂️ Auto Trim Silence</button>
         <button id="playTrimBtn" class="primary" style="background:#2c3e66;">▶️ Play</button>
         <button id="stopPlaybackBtn" class="danger" style="background:#4a2a33;">⏹️ Stop</button>
       </div>
@@ -331,6 +337,7 @@
   const trimInfoSpan = document.getElementById('trimInfo');
   const playTrimBtn = document.getElementById('playTrimBtn');
   const stopPlaybackBtn = document.getElementById('stopPlaybackBtn');
+  const autoTrimBtn = document.getElementById('autoTrimBtn');
 
   // State
   let mediaStream = null;
@@ -356,23 +363,20 @@
   // Trim handles (0..1)
   let trimStartPercent = 0;
   let trimEndPercent = 1;
-  let draggingHandle = null; // 'start' or 'end'
+  let draggingHandle = null;
 
-  // Playback state
+  // Playback
   let playbackSource = null;
   let playbackCtx = null;
   let playbackStartTime = 0;
-  let playbackDuration = 0;
   let animationFrameId = null;
   let currentPlayheadPercent = -1;
 
-  // Helper: update status
   function setStatus(text, isError = false) {
     statusDiv.innerHTML = isError ? `⚠️ ${text}` : `✨ ${text}`;
     statusDiv.style.borderLeftColor = isError ? '#ff6b6b' : '#2b7fff';
   }
 
-  // Stop playback and clear animation
   function stopPlayback() {
     if (playbackSource) {
       try { playbackSource.stop(); } catch(e) {}
@@ -387,11 +391,10 @@
       animationFrameId = null;
     }
     currentPlayheadPercent = -1;
-    // Redraw waveform without playhead line
     drawWaveformWithTrim();
   }
 
-  // Draw waveform with blue stroke, trim handles (smaller), and optional playhead line
+  // Draw waveform (blue), trim handles (small), and solid playhead line
   function drawWaveformWithTrim() {
     if (!capturedChannelData.length || !capturedChannelData[0]) return;
     const samples = capturedChannelData[0];
@@ -402,7 +405,6 @@
     ctx.fillStyle = '#0a0f1a';
     ctx.fillRect(0, 0, width, height);
 
-    // Draw waveform in BLUE
     const sliceSize = Math.max(1, Math.floor(totalSamples / width));
     const peaks = new Array(width);
     for (let i = 0; i < width; i++) {
@@ -416,7 +418,7 @@
       peaks[i] = Math.min(1.0, max);
     }
     ctx.beginPath();
-    ctx.strokeStyle = '#3b82f6';   // Blue stroke
+    ctx.strokeStyle = '#3b82f6';
     ctx.lineWidth = 2;
     const midY = height / 2;
     for (let x = 0; x < width; x++) {
@@ -429,16 +431,15 @@
       ctx.stroke();
     }
 
-    // Draw trim overlays (semi-transparent dark)
     const startX = trimStartPercent * width;
     const endX = trimEndPercent * width;
     ctx.fillStyle = '#00000070';
     ctx.fillRect(0, 0, startX, height);
     ctx.fillRect(endX, 0, width - endX, height);
 
-    // Draw draggable handle lines (smaller circles)
-    const handleRadius = 6;    // reduced from 10
-    const innerRadius = 3;     // reduced from 5
+    // Draw smaller draggable handles
+    const handleRadius = 6;
+    const innerRadius = 3;
     ctx.beginPath();
     ctx.strokeStyle = '#ffcc44';
     ctx.lineWidth = 2.5;
@@ -469,27 +470,24 @@
     ctx.arc(endX, height/2, innerRadius, 0, 2*Math.PI);
     ctx.fill();
 
-    // Draw playhead line if playing and within trim range
+    // Solid playhead line (not dotted)
     if (currentPlayheadPercent >= 0) {
       const playheadX = currentPlayheadPercent * width;
       ctx.beginPath();
       ctx.strokeStyle = '#ffffff';
-      ctx.lineWidth = 2;
-      ctx.setLineDash([5, 5]);
+      ctx.lineWidth = 2.5;
       ctx.moveTo(playheadX, 0);
       ctx.lineTo(playheadX, height);
       ctx.stroke();
-      ctx.setLineDash([]); // reset
     }
 
-    // Update info labels
     const startSec = trimStartPercent * originalDuration;
     const endSec = trimEndPercent * originalDuration;
     const durationSec = (endSec - startSec).toFixed(2);
     trimInfoSpan.innerHTML = `${startSec.toFixed(2)}s - ${endSec.toFixed(2)}s (${durationSec}s)`;
   }
 
-  // Animate playhead during playback
+  // Animation: playhead moves correctly from trimStart to trimEnd
   function startPlayheadAnimation() {
     if (animationFrameId) cancelAnimationFrame(animationFrameId);
     const update = () => {
@@ -505,22 +503,59 @@
       const totalTrimDuration = originalDuration * (trimEndPercent - trimStartPercent);
       let progress = totalTrimDuration > 0 ? elapsed / totalTrimDuration : 0;
       if (progress >= 1.0) {
-        // Playback finished
         currentPlayheadPercent = -1;
         drawWaveformWithTrim();
         stopPlayback();
         return;
       }
-      // Map to percent within trimmed region (relative to full waveform)
-      const relativePercent = trimStartPercent + progress * (trimEndPercent - trimStartPercent);
-      currentPlayheadPercent = Math.min(trimEndPercent, Math.max(trimStartPercent, relativePercent));
+      // Map progress to absolute position on full waveform (between trimStart and trimEnd)
+      const absolutePercent = trimStartPercent + progress * (trimEndPercent - trimStartPercent);
+      currentPlayheadPercent = Math.min(trimEndPercent, Math.max(trimStartPercent, absolutePercent));
       drawWaveformWithTrim();
       animationFrameId = requestAnimationFrame(update);
     };
     animationFrameId = requestAnimationFrame(update);
   }
 
-  // Get trimmed audio data (Float32Array per channel)
+  // Auto-trim: remove leading/trailing silence (threshold = 0.01)
+  function autoTrimSilence() {
+    if (!capturedChannelData.length || capturedTotalSamples === 0) {
+      setStatus("No audio data to trim.", true);
+      return;
+    }
+    const samples = capturedChannelData[0]; // use first channel for detection
+    const threshold = 0.008; // sensitivity
+    let firstNonSilence = -1;
+    let lastNonSilence = -1;
+    for (let i = 0; i < samples.length; i++) {
+      if (Math.abs(samples[i]) > threshold) {
+        if (firstNonSilence === -1) firstNonSilence = i;
+        lastNonSilence = i;
+      }
+    }
+    if (firstNonSilence === -1) {
+      setStatus("❌ No sound detected in the entire recording. Cannot auto-trim.", true);
+      return;
+    }
+    // Add small padding (0.05 seconds) to avoid cutting too tight
+    const paddingSamples = Math.floor(0.05 * capturedSampleRate);
+    let startIdx = Math.max(0, firstNonSilence - paddingSamples);
+    let endIdx = Math.min(samples.length - 1, lastNonSilence + paddingSamples);
+    trimStartPercent = startIdx / capturedTotalSamples;
+    trimEndPercent = endIdx / capturedTotalSamples;
+    // Ensure start < end
+    if (trimStartPercent >= trimEndPercent) {
+      trimStartPercent = 0;
+      trimEndPercent = 1;
+      setStatus("Auto-trim resulted in empty region, reset to full.", true);
+    } else {
+      setStatus(`✂️ Auto-trimmed from ${(startIdx/capturedSampleRate).toFixed(2)}s to ${(endIdx/capturedSampleRate).toFixed(2)}s`);
+    }
+    drawWaveformWithTrim();
+    // Stop any playback to reset playhead
+    stopPlayback();
+  }
+
   function getTrimmedChannelData() {
     const startSample = Math.floor(trimStartPercent * capturedTotalSamples);
     const endSample = Math.floor(trimEndPercent * capturedTotalSamples);
@@ -534,7 +569,6 @@
     return { trimmedChannels: trimmed, newLength };
   }
 
-  // Build WAV blob from trimmed channels
   function buildWavFromTrim() {
     const { trimmedChannels, newLength } = getTrimmedChannelData();
     const numChannels = trimmedChannels.length;
@@ -574,7 +608,6 @@
     return new Blob([buffer], { type: 'audio/wav' });
   }
 
-  // Preview trimmed audio with moving playhead
   async function previewTrimmed() {
     stopPlayback();
     try {
@@ -596,8 +629,6 @@
       source.start();
       playbackSource = source;
       playbackStartTime = performance.now() / 1000;
-      const totalTrimDuration = originalDuration * (trimEndPercent - trimStartPercent);
-      playbackDuration = totalTrimDuration;
       source.onended = () => {
         stopPlayback();
         setStatus("Preview finished.");
@@ -609,7 +640,6 @@
     }
   }
 
-  // Merge recorded chunks into per-channel Float32Array
   function mergeChunksToFloatArrays(chunksPerChannel, totalSamples) {
     const numChannels = chunksPerChannel.length;
     const result = [];
@@ -629,7 +659,6 @@
     return result;
   }
 
-  // Show editor after recording stops
   function showWaveformEditor() {
     if (perChannelChunks.length === 0 || capturedTotalSamples === 0) {
       setStatus("No audio data recorded.", true);
@@ -659,7 +688,6 @@
     btnStopRecord.disabled = true;
   }
 
-  // Stop recording and prepare editor
   async function stopRecordingAndShowEditor() {
     if (!isRecordingActive) return;
     isRecordingActive = false;
@@ -700,7 +728,7 @@
       return;
     }
     showWaveformEditor();
-    setStatus(`✅ Recording stopped. Drag the yellow handles on waveform to trim. Preview before download.`);
+    setStatus(`✅ Recording stopped. Drag yellow handles to trim, or use Auto Trim.`);
   }
 
   function downloadTrimmed() {
@@ -743,7 +771,7 @@
     setStatus("Editor closed. You can start a new capture.");
   }
 
-  // Canvas drag handling with smaller hit radius
+  // Canvas drag handling
   function initCanvasDrag() {
     const canvas = waveformCanvas;
     function getCanvasX(e) {
@@ -779,7 +807,6 @@
       const startX = trimStartPercent * rect.width;
       const endX = trimEndPercent * rect.width;
       const mouseX = e.clientX - rect.left;
-      // Smaller hit radius (10px) because handles are smaller
       if (Math.abs(mouseX - startX) < 12) draggingHandle = 'start';
       else if (Math.abs(mouseX - endX) < 12) draggingHandle = 'end';
       else return;
@@ -802,7 +829,7 @@
     });
   }
 
-  // Recording core (AudioWorklet)
+  // AudioWorklet recording
   async function startLosslessRecording() {
     if (!mediaStream || mediaStream.getAudioTracks().length === 0) return false;
     if (audioContext) await audioContext.close().catch(()=>{});
@@ -878,11 +905,9 @@
         btnCapture.disabled = false;
         btnStartRecord.disabled = true;
       } else {
-        if (mediaStream) {
-          btnStartRecord.disabled = false;
-          btnStopShare.disabled = false;
-          setStatus("✅ Screen+Audio ready, auto-recording started.");
-        }
+        btnStartRecord.disabled = false;
+        btnStopShare.disabled = false;
+        setStatus("✅ Screen+Audio ready, auto-recording started.");
         const started = await startLosslessRecording();
         if (!started) btnCapture.disabled = false;
       }
@@ -917,7 +942,7 @@
     waveformEditor.style.display = 'none';
   }
 
-  // Event bindings
+  // Event listeners
   btnCapture.addEventListener('click', captureScreenWithAudio);
   btnStartRecord.addEventListener('click', async () => {
     if (!mediaStream || !mediaStream.getAudioTracks().length) return;
@@ -935,6 +960,7 @@
   closeEditorBtn.addEventListener('click', closeEditorAndReset);
   playTrimBtn.addEventListener('click', previewTrimmed);
   stopPlaybackBtn.addEventListener('click', () => { stopPlayback(); setStatus("Preview stopped."); });
+  autoTrimBtn.addEventListener('click', autoTrimSilence);
   
   window.addEventListener('resize', () => {
     if (waveformEditor.style.display === 'block' && capturedChannelData.length) {

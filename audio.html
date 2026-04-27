@@ -187,6 +187,13 @@
       transition: all 0.2s;
     }
 
+    /* White text for editor headings and trim info */
+    .waveform-editor span, 
+    .waveform-editor .trim-values,
+    .waveform-editor [style*="font-weight: 600"] {
+      color: white !important;
+    }
+
     .waveform-container {
       position: relative;
       margin-bottom: 16px;
@@ -244,6 +251,7 @@
       padding: 4px 10px;
       border-radius: 20px;
       font-family: monospace;
+      color: white !important;
     }
   </style>
 </head>
@@ -273,7 +281,7 @@
   <!-- Waveform editor panel (hidden by default) -->
   <div id="waveformEditor" class="waveform-editor" style="display: none;">
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-      <span style="font-weight: 600;">🎚️ Waveform & Trim (drag handles on wave)</span>
+      <span style="font-weight: 600; color: white;">🎚️ Waveform & Trim (drag handles on wave)</span>
       <span id="trimInfo" class="trim-values">0.00s - 0.00s (0.00s)</span>
     </div>
     <div class="waveform-container">
@@ -350,9 +358,13 @@
   let trimEndPercent = 1;
   let draggingHandle = null; // 'start' or 'end'
 
-  // Playback context & source
+  // Playback state
   let playbackSource = null;
   let playbackCtx = null;
+  let playbackStartTime = 0;
+  let playbackDuration = 0;
+  let animationFrameId = null;
+  let currentPlayheadPercent = -1;
 
   // Helper: update status
   function setStatus(text, isError = false) {
@@ -360,7 +372,7 @@
     statusDiv.style.borderLeftColor = isError ? '#ff6b6b' : '#2b7fff';
   }
 
-  // Stop playback if active
+  // Stop playback and clear animation
   function stopPlayback() {
     if (playbackSource) {
       try { playbackSource.stop(); } catch(e) {}
@@ -370,9 +382,16 @@
       playbackCtx.close().catch(console.warn);
       playbackCtx = null;
     }
+    if (animationFrameId) {
+      cancelAnimationFrame(animationFrameId);
+      animationFrameId = null;
+    }
+    currentPlayheadPercent = -1;
+    // Redraw waveform without playhead line
+    drawWaveformWithTrim();
   }
 
-  // Draw waveform with white stroke and draggable trim handles
+  // Draw waveform with blue stroke, trim handles (smaller), and optional playhead line
   function drawWaveformWithTrim() {
     if (!capturedChannelData.length || !capturedChannelData[0]) return;
     const samples = capturedChannelData[0];
@@ -383,7 +402,7 @@
     ctx.fillStyle = '#0a0f1a';
     ctx.fillRect(0, 0, width, height);
 
-    // Draw waveform in white
+    // Draw waveform in BLUE
     const sliceSize = Math.max(1, Math.floor(totalSamples / width));
     const peaks = new Array(width);
     for (let i = 0; i < width; i++) {
@@ -397,7 +416,7 @@
       peaks[i] = Math.min(1.0, max);
     }
     ctx.beginPath();
-    ctx.strokeStyle = '#ffffff';  // white for dark mode
+    ctx.strokeStyle = '#3b82f6';   // Blue stroke
     ctx.lineWidth = 2;
     const midY = height / 2;
     for (let x = 0; x < width; x++) {
@@ -417,42 +436,88 @@
     ctx.fillRect(0, 0, startX, height);
     ctx.fillRect(endX, 0, width - endX, height);
 
-    // Draw draggable handle lines (with circles)
+    // Draw draggable handle lines (smaller circles)
+    const handleRadius = 6;    // reduced from 10
+    const innerRadius = 3;     // reduced from 5
     ctx.beginPath();
     ctx.strokeStyle = '#ffcc44';
-    ctx.lineWidth = 3;
+    ctx.lineWidth = 2.5;
     ctx.moveTo(startX, 0);
     ctx.lineTo(startX, height);
     ctx.stroke();
     ctx.beginPath();
-    ctx.arc(startX, height/2, 10, 0, 2*Math.PI);
+    ctx.arc(startX, height/2, handleRadius, 0, 2*Math.PI);
     ctx.fillStyle = '#ffcc44';
     ctx.fill();
     ctx.fillStyle = '#0a0f1a';
     ctx.beginPath();
-    ctx.arc(startX, height/2, 5, 0, 2*Math.PI);
+    ctx.arc(startX, height/2, innerRadius, 0, 2*Math.PI);
     ctx.fill();
 
     ctx.beginPath();
     ctx.strokeStyle = '#ffaa33';
-    ctx.lineWidth = 3;
+    ctx.lineWidth = 2.5;
     ctx.moveTo(endX, 0);
     ctx.lineTo(endX, height);
     ctx.stroke();
     ctx.beginPath();
-    ctx.arc(endX, height/2, 10, 0, 2*Math.PI);
+    ctx.arc(endX, height/2, handleRadius, 0, 2*Math.PI);
     ctx.fillStyle = '#ffaa33';
     ctx.fill();
     ctx.fillStyle = '#0a0f1a';
     ctx.beginPath();
-    ctx.arc(endX, height/2, 5, 0, 2*Math.PI);
+    ctx.arc(endX, height/2, innerRadius, 0, 2*Math.PI);
     ctx.fill();
+
+    // Draw playhead line if playing and within trim range
+    if (currentPlayheadPercent >= 0) {
+      const playheadX = currentPlayheadPercent * width;
+      ctx.beginPath();
+      ctx.strokeStyle = '#ffffff';
+      ctx.lineWidth = 2;
+      ctx.setLineDash([5, 5]);
+      ctx.moveTo(playheadX, 0);
+      ctx.lineTo(playheadX, height);
+      ctx.stroke();
+      ctx.setLineDash([]); // reset
+    }
 
     // Update info labels
     const startSec = trimStartPercent * originalDuration;
     const endSec = trimEndPercent * originalDuration;
     const durationSec = (endSec - startSec).toFixed(2);
     trimInfoSpan.innerHTML = `${startSec.toFixed(2)}s - ${endSec.toFixed(2)}s (${durationSec}s)`;
+  }
+
+  // Animate playhead during playback
+  function startPlayheadAnimation() {
+    if (animationFrameId) cancelAnimationFrame(animationFrameId);
+    const update = () => {
+      if (!playbackCtx || !playbackSource || playbackCtx.state !== 'running') {
+        if (animationFrameId) cancelAnimationFrame(animationFrameId);
+        animationFrameId = null;
+        currentPlayheadPercent = -1;
+        drawWaveformWithTrim();
+        return;
+      }
+      const now = performance.now() / 1000;
+      const elapsed = now - playbackStartTime;
+      const totalTrimDuration = originalDuration * (trimEndPercent - trimStartPercent);
+      let progress = totalTrimDuration > 0 ? elapsed / totalTrimDuration : 0;
+      if (progress >= 1.0) {
+        // Playback finished
+        currentPlayheadPercent = -1;
+        drawWaveformWithTrim();
+        stopPlayback();
+        return;
+      }
+      // Map to percent within trimmed region (relative to full waveform)
+      const relativePercent = trimStartPercent + progress * (trimEndPercent - trimStartPercent);
+      currentPlayheadPercent = Math.min(trimEndPercent, Math.max(trimStartPercent, relativePercent));
+      drawWaveformWithTrim();
+      animationFrameId = requestAnimationFrame(update);
+    };
+    animationFrameId = requestAnimationFrame(update);
   }
 
   // Get trimmed audio data (Float32Array per channel)
@@ -509,7 +574,7 @@
     return new Blob([buffer], { type: 'audio/wav' });
   }
 
-  // Preview trimmed audio using Web Audio
+  // Preview trimmed audio with moving playhead
   async function previewTrimmed() {
     stopPlayback();
     try {
@@ -518,22 +583,26 @@
         setStatus("Trimmed segment too short to preview.", true);
         return;
       }
-      // Create offline context to convert to audio buffer
       const numChannels = trimmedChannels.length;
-      const length = newLength;
-      const offlineCtx = new OfflineAudioContext(numChannels, length, capturedSampleRate);
-      const audioBuffer = offlineCtx.createBuffer(numChannels, length, capturedSampleRate);
+      const offlineCtx = new OfflineAudioContext(numChannels, newLength, capturedSampleRate);
+      const audioBuffer = offlineCtx.createBuffer(numChannels, newLength, capturedSampleRate);
       for (let ch = 0; ch < numChannels; ch++) {
         audioBuffer.copyToChannel(trimmedChannels[ch], ch);
       }
-      // Play back using real-time context
       playbackCtx = new AudioContext();
       const source = playbackCtx.createBufferSource();
       source.buffer = audioBuffer;
       source.connect(playbackCtx.destination);
       source.start();
       playbackSource = source;
-      source.onended = () => { playbackSource = null; };
+      playbackStartTime = performance.now() / 1000;
+      const totalTrimDuration = originalDuration * (trimEndPercent - trimStartPercent);
+      playbackDuration = totalTrimDuration;
+      source.onended = () => {
+        stopPlayback();
+        setStatus("Preview finished.");
+      };
+      startPlayheadAnimation();
       setStatus(`🎵 Previewing trimmed audio (${(newLength/capturedSampleRate).toFixed(1)} sec)`);
     } catch (err) {
       setStatus(`Preview error: ${err.message}`, true);
@@ -575,10 +644,8 @@
     const timestamp = new Date().toISOString().slice(0,19).replace(/:/g, '-');
     fileNameInput.value = `screen_audio_trimmed_${timestamp}_${capturedSampleRate}hz.wav`;
     
-    // Reset trim
     trimStartPercent = 0;
     trimEndPercent = 1;
-    // Resize canvas to actual container width
     const container = waveformCanvas.parentElement;
     const rect = container.getBoundingClientRect();
     waveformCanvas.width = Math.max(400, rect.width - 20);
@@ -586,7 +653,6 @@
     drawWaveformWithTrim();
     waveformEditor.style.display = 'block';
     
-    // Disable main controls during editing
     btnCapture.disabled = true;
     btnStartRecord.disabled = true;
     btnStopShare.disabled = true;
@@ -600,7 +666,6 @@
     if (durationInterval) clearInterval(durationInterval);
     liveBadge.style.display = 'none';
     
-    // Capture chunks and metadata
     const chunksCopy = perChannelChunks.slice();
     const chanCount = activeChannelCount;
     const rate = sampleRateValue;
@@ -619,7 +684,6 @@
     perChannelChunks = chunksCopy;
     activeChannelCount = chanCount;
     
-    // Close audio context
     if (audioContext) {
       try { await audioContext.close(); } catch(e) {}
       audioContext = null;
@@ -639,7 +703,6 @@
     setStatus(`✅ Recording stopped. Drag the yellow handles on waveform to trim. Preview before download.`);
   }
 
-  // Download trimmed WAV
   function downloadTrimmed() {
     if (!capturedChannelData.length) {
       setStatus("No audio data.", true);
@@ -680,7 +743,7 @@
     setStatus("Editor closed. You can start a new capture.");
   }
 
-  // Canvas mouse/touch handling for dragging trim handles
+  // Canvas drag handling with smaller hit radius
   function initCanvasDrag() {
     const canvas = waveformCanvas;
     function getCanvasX(e) {
@@ -713,13 +776,12 @@
     }
     canvas.addEventListener('mousedown', (e) => {
       const rect = canvas.getBoundingClientRect();
-      const x = (e.clientX - rect.left) / rect.width;
       const startX = trimStartPercent * rect.width;
       const endX = trimEndPercent * rect.width;
       const mouseX = e.clientX - rect.left;
-      // Check proximity to handles (within 15px)
-      if (Math.abs(mouseX - startX) < 15) draggingHandle = 'start';
-      else if (Math.abs(mouseX - endX) < 15) draggingHandle = 'end';
+      // Smaller hit radius (10px) because handles are smaller
+      if (Math.abs(mouseX - startX) < 12) draggingHandle = 'start';
+      else if (Math.abs(mouseX - endX) < 12) draggingHandle = 'end';
       else return;
       e.preventDefault();
       window.addEventListener('mousemove', onMove);
@@ -728,12 +790,11 @@
     canvas.addEventListener('touchstart', (e) => {
       const rect = canvas.getBoundingClientRect();
       const touch = e.touches[0];
-      const x = (touch.clientX - rect.left) / rect.width;
       const startX = trimStartPercent * rect.width;
       const endX = trimEndPercent * rect.width;
       const touchX = touch.clientX - rect.left;
-      if (Math.abs(touchX - startX) < 15) draggingHandle = 'start';
-      else if (Math.abs(touchX - endX) < 15) draggingHandle = 'end';
+      if (Math.abs(touchX - startX) < 12) draggingHandle = 'start';
+      else if (Math.abs(touchX - endX) < 12) draggingHandle = 'end';
       else return;
       e.preventDefault();
       canvas.addEventListener('touchmove', onMove);
@@ -741,7 +802,7 @@
     });
   }
 
-  // Recording core (same as before, using AudioWorklet)
+  // Recording core (AudioWorklet)
   async function startLosslessRecording() {
     if (!mediaStream || mediaStream.getAudioTracks().length === 0) return false;
     if (audioContext) await audioContext.close().catch(()=>{});
@@ -817,21 +878,17 @@
         btnCapture.disabled = false;
         btnStartRecord.disabled = true;
       } else {
-        updateButtonsAfterCapture(true);
+        if (mediaStream) {
+          btnStartRecord.disabled = false;
+          btnStopShare.disabled = false;
+          setStatus("✅ Screen+Audio ready, auto-recording started.");
+        }
         const started = await startLosslessRecording();
         if (!started) btnCapture.disabled = false;
       }
     } catch (err) {
       setStatus(`Error: ${err.message}`, true);
       btnCapture.disabled = false;
-    }
-  }
-
-  function updateButtonsAfterCapture(hasAudio) {
-    if (mediaStream) {
-      btnStartRecord.disabled = !hasAudio;
-      btnStopShare.disabled = false;
-      setStatus(hasAudio ? "✅ Screen+Audio ready, auto-recording started." : "⚠️ No audio track.", !hasAudio);
     }
   }
 

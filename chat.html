@@ -55,7 +55,7 @@
             gap: 8px;
         }
         .header h2 {
-            font-size: 1.4rem;  /* 🔼 Increased from 1.1rem */
+            font-size: 1.4rem;
             font-weight: 700;
             margin: 0;
             white-space: nowrap;
@@ -70,7 +70,7 @@
             color: var(--success);
         }
         .my-id-row {
-            font-size: 1rem;  /* 🔼 Increased from 0.85rem */
+            font-size: 1rem;
             color: var(--text-secondary);
             word-break: break-all;
             width: 100%;
@@ -78,7 +78,7 @@
         #my-id {
             font-weight: 600;
             color: #fff;
-            font-size: 1.05rem; /* slightly bolder ID */
+            font-size: 1.05rem;
         }
 
         /* ---- Connect Row ---- */
@@ -255,10 +255,10 @@
                 gap: 8px;
             }
             .header h2 {
-                font-size: 1.3rem;  /* 🔼 Increased from 1rem */
+                font-size: 1.3rem;
             }
             .my-id-row {
-                font-size: 0.95rem;  /* 🔼 Increased from 0.75rem */
+                font-size: 0.95rem;
             }
             #my-id {
                 font-size: 1rem;
@@ -294,10 +294,10 @@
 
         @media (max-width: 380px) {
             .header h2 {
-                font-size: 1.2rem;  /* 🔼 Increased from 0.9rem */
+                font-size: 1.2rem;
             }
             .my-id-row {
-                font-size: 0.85rem;  /* 🔼 Increased from 0.75rem (was unchanged) */
+                font-size: 0.85rem;
             }
             #my-id {
                 font-size: 0.95rem;
@@ -325,16 +325,24 @@
 </head>
 <body>
 
-    <div class="header">
-        <h2>Chat: <span id="status" class="error">Offline</span></h2>
-        <button id="mode-switch-btn">Switch to Secure Mode (Long ID)</button>
+    <!-- Top Bar: wrapped for easy hide/show -->
+    <div id="top-bar">
+        <div class="header">
+            <h2>Chat: <span id="status" class="error">Offline</span></h2>
+            <button id="mode-switch-btn">Switch to Secure Mode (Long ID)</button>
+        </div>
+        <div class="my-id-row">Your ID: <strong id="my-id">---</strong></div>
+        <div class="connect-row">
+            <input type="text" id="receiver-id" placeholder="Friend's ID" inputmode="text" autocapitalize="off" autocomplete="off">
+            <button id="connect-btn">Connect</button>
+        </div>
     </div>
-    <div class="my-id-row">Your ID: <strong id="my-id">---</strong></div>
 
-    <div class="connect-row">
-        <input type="text" id="receiver-id" placeholder="Friend's ID" inputmode="text" autocapitalize="off" autocomplete="off">
-        <button id="connect-btn">Connect</button>
-    </div>
+    <!-- Button to reveal top bar when hidden -->
+    <button id="toggle-top-bar"
+            style="display: none; padding: 8px 12px; background: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 0.9rem; align-self: flex-start;">
+        ⬆️ Show Top Bar
+    </button>
 
     <div id="chat"></div>
 
@@ -382,6 +390,24 @@
             const connectBtn = document.getElementById('connect-btn');
             const sendBtn = document.getElementById('send-btn');
             const fileInput = document.getElementById('file-input');
+            const topBar = document.getElementById('top-bar');
+            const toggleTopBarBtn = document.getElementById('toggle-top-bar');
+
+            // Toggle top bar visibility
+            function collapseTopBar() {
+                topBar.style.display = 'none';
+                toggleTopBarBtn.style.display = 'inline-flex';
+            }
+
+            function showTopBar() {
+                topBar.style.display = '';  // fall back to default (block)
+                toggleTopBarBtn.style.display = 'none';
+            }
+
+            // Show/hide button click
+            toggleTopBarBtn.addEventListener('click', () => {
+                showTopBar();
+            });
 
             function initializePeer() {
                 if (peer) {
@@ -389,6 +415,8 @@
                     peer = null;
                 }
                 conn = null;
+                // Ensure top bar is visible when (re)initializing
+                showTopBar();
 
                 if (fastMode) {
                     myPeerId = generateId(5);
@@ -443,6 +471,8 @@
                 conn.on('open', () => {
                     log("🤝 Handshake complete. Chat is live!");
                     appendSystemMsg("🔗 Connected!");
+                    // Collapse top bar when connection is established
+                    collapseTopBar();
                 });
 
                 conn.on('data', (data) => {
@@ -459,6 +489,8 @@
                     log("🔌 Connection closed.");
                     appendSystemMsg("⚡ Peer disconnected.");
                     conn = null;
+                    // Restore top bar when disconnected
+                    showTopBar();
                 });
 
                 conn.on('error', (err) => {
@@ -614,6 +646,7 @@
                 initializePeer();
             });
 
+            // Expose for debugging
             window.chatApp = {
                 get fastMode() { return fastMode; },
                 get peer() { return peer; },

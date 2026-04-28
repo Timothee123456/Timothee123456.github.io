@@ -118,6 +118,7 @@
             display: flex;
             flex-direction: column;
             gap: 6px;
+            position: relative; /* for overlay buttons */
         }
         #chat>div {
             padding: 6px 10px;
@@ -158,6 +159,33 @@
             color: #6db3ff;
             text-decoration: underline;
             word-break: break-all;
+        }
+
+        /* ---- Overlay buttons inside chat ---- */
+        .chat-overlay-btn {
+            position: absolute;
+            top: 8px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.6);
+            color: #fff;
+            border-radius: 20px;
+            padding: 4px 14px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            cursor: pointer;
+            border: none;
+            z-index: 5;
+            white-space: nowrap;
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            transition: opacity 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .chat-overlay-btn:active {
+            background: rgba(0, 0, 0, 0.8);
         }
 
         /* ---- Input Row ---- */
@@ -338,13 +366,12 @@
         </div>
     </div>
 
-    <!-- Button to reveal top bar when hidden -->
-    <button id="toggle-top-bar"
-            style="display: none; padding: 8px 12px; background: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 0.9rem; align-self: flex-start;">
-        ⬆️ Show Top Bar
-    </button>
-
-    <div id="chat"></div>
+    <!-- Chat area with overlay buttons inside -->
+    <div id="chat">
+        <!-- Semi-transparent overlay buttons for show/hide top bar -->
+        <div id="show-top-btn" class="chat-overlay-btn" style="display: none;">Show Top</div>
+        <div id="hide-top-btn" class="chat-overlay-btn" style="display: none;">Hide Top</div>
+    </div>
 
     <div class="input-row">
         <input type="text" id="message-input" placeholder="Type a message..." inputmode="text" autocomplete="off">
@@ -391,22 +418,35 @@
             const sendBtn = document.getElementById('send-btn');
             const fileInput = document.getElementById('file-input');
             const topBar = document.getElementById('top-bar');
-            const toggleTopBarBtn = document.getElementById('toggle-top-bar');
 
-            // Toggle top bar visibility
+            // New overlay buttons
+            const showTopBtn = document.getElementById('show-top-btn');
+            const hideTopBtn = document.getElementById('hide-top-btn');
+
             function collapseTopBar() {
                 topBar.style.display = 'none';
-                toggleTopBarBtn.style.display = 'inline-flex';
+                showTopBtn.style.display = 'flex';
+                hideTopBtn.style.display = 'none';
             }
 
             function showTopBar() {
-                topBar.style.display = '';  // fall back to default (block)
-                toggleTopBarBtn.style.display = 'none';
+                topBar.style.display = '';
+                showTopBtn.style.display = 'none';
+                // Only show hide button if we are connected
+                if (conn && conn.open) {
+                    hideTopBtn.style.display = 'flex';
+                } else {
+                    hideTopBtn.style.display = 'none';
+                }
             }
 
-            // Show/hide button click
-            toggleTopBarBtn.addEventListener('click', () => {
+            // Overlay button click handlers
+            showTopBtn.addEventListener('click', () => {
                 showTopBar();
+            });
+
+            hideTopBtn.addEventListener('click', () => {
+                collapseTopBar();
             });
 
             function initializePeer() {
@@ -415,7 +455,7 @@
                     peer = null;
                 }
                 conn = null;
-                // Ensure top bar is visible when (re)initializing
+                // Ensure top bar is visible and overlay buttons correct
                 showTopBar();
 
                 if (fastMode) {
@@ -471,7 +511,7 @@
                 conn.on('open', () => {
                     log("🤝 Handshake complete. Chat is live!");
                     appendSystemMsg("🔗 Connected!");
-                    // Collapse top bar when connection is established
+                    // Collapse top bar on successful connection
                     collapseTopBar();
                 });
 
@@ -489,7 +529,7 @@
                     log("🔌 Connection closed.");
                     appendSystemMsg("⚡ Peer disconnected.");
                     conn = null;
-                    // Restore top bar when disconnected
+                    // Restore top bar and adjust overlay buttons
                     showTopBar();
                 });
 

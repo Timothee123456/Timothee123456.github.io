@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>P2P Chromebook Chat (Local Version)</title>
+    <script src="https://unpkg.com/peerjs@1.3.1/dist/peerjs.min.js"></script>
+    <style>
+        body { font-family: sans-serif; background: #121212; color: white; padding: 20px; display: flex; flex-direction: column; height: 95vh; }
+        #chat { flex: 1; border: 1px solid #333; background: #000; overflow-y: auto; padding: 10px; margin: 10px 0; border-radius: 8px; }
+        .controls { display: flex; gap: 10px; margin-bottom: 10px; }
+        input { padding: 10px; border-radius: 5px; border: 1px solid #444; background: #222; color: white; flex: 1; }
+        button { padding: 10px; cursor: pointer; background: #007bff; color: white; border: none; border-radius: 5px; font-size: 1em; } /* Added font-size */
+        #debug-log { font-size: 10px; color: #555; height: 50px; overflow: auto; border-top: 1px solid #333; padding-top: 5px; }
+        .error { color: #ff4444; }
+        .success { color: #00ff00; }
+        #file-input { display: none; } /* Hide the default file input */
+        .file-button { padding: 10px; cursor: pointer; background: #28a745; color: white; border: none; border-radius: 5px; font-size: 1em; } /* Added font-size */
+        .file-display { margin-top: 10px; }
+        .file-display img { max-width: 200px; max-height: 200px; }
+    </style>
+</head>
+<body>
+
+    <h2>Chat Status: <span id="status" class="error">Offline</span></h2>
+    <div>Your ID: <strong id="my-id">---</strong></div>
+
+    <div class="controls" style="margin-top:20px;">
+        <input type="text" id="receiver-id" placeholder="Friend's ID">
+        <button id="connect-btn">Connect to Friend</button>
+    </div>
+
+    <button id="mode-switch-btn">Switch to Fast Mode (Less Secure)</button>
+
+    <div id="chat"></div>
+
+    <div class="controls">
+        <input type="text" id="message-input" placeholder="Type here...">
+        <button id="send-btn">Send</button>
+        <label for="file-input" class="file-button">Send File</label>
+        <input type="file" id="file-input">
+    </div>
+
+    <div id="debug-log">Debug info will appear here...</div>
+    <div id="file-display" class="file-display"></div>
+
+    <script>
+        function log(msg, isError = false) {
+            const d = document.getElementById('debug-log');
+            d.innerHTML += `<div class="${isError ? 'error' : ''}">[${new Date().toLocaleTimeString()}] ${msg}</div>`;
+            d.scrollTop = d.scrollHeight;
+        }
+
+        // Function to generate a random alphanumeric ID
+        function generateId(length) {
+            const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+            let result = '';
+            for (let i = 0; i < length; i++) {
+                result += characters.charAt(Math.floor(Math.random() * characters.length));
+            }
+            return result;
+        }
+
+        window.onload = () => {
+            log("Page Loaded. Checking PeerJS...");
+
+            // Check if library loaded
+            if (typeof Peer === 'undefined') {
+                log("CRITICAL ERROR: PeerJS Library was blocked by your school filter!", true);
+                document.getElementById('status').innerText = "LIBRARY BLOCKED";
+                return;
+            }
+
+            log("PeerJS Library found. Initializing...");
+
+            let fastMode = false; // Start in secure mode (long IDs)
+            let myPeerId = null;
+            let peer = null;
+            let conn = null;
+
+            function initializePeer() {
+                if (peer) {
+                    peer.destroy(); // Destroy the old peer object
+                }
+
+                if (fastMode) {
+                    myPeerId = generateId(5); // Use a 5-character ID in fast mode
+                    log("Fast Mode: Generated ID: " + myPeerId);
+                    peer = new Peer(myPeerId);
+                } else {
+                    myPeerId = null; // Let PeerJS generate a secure ID
+                    log("Secure Mode: Using PeerJS generated ID");
+                    peer = new Peer();
+                }
+
+                setupPeerEvents();
+            }
+
+            function setupPeerEvents() {
+                peer.on('open', (id) => {
+                    document.getElementById('my-id').innerText = id;
+                    document.getElementById('status').innerText = "Online & Ready";
+                    document.getElementById('status').className = "success";
+                    log("Connected to PeerServer. ID: " + id);
+                });
+
+                peer.on('error', (err) => {
+                    log("Peer Error: " + err.type, true);
+                    if (err.type === 'peer-unavailable') log("Error: Friend's ID not found.", true);
+                    if (err.type === 'unavailable-id' && fastMode) {
+                        log("ID Collision! Retrying with new ID...", true);
+                        initializePeer(); // Retry with a new ID
+                    }
+                });
+
+                peer.on('connection', (c) => {
+                    conn = c;
+                    log("Incoming connection from: " + conn.peer);
+                    setupChat();
+                });
+            }
+
+            // Initial Peer Initialization
+            initializePeer();
+
+            // Mode Switch Button
+            const modeSwitchBtn = document.getElementById('mode-switch-btn');
+            modeSwitchBtn.onclick = () => {
+                fastMode = !fastMode;
+                if (fastMode) {
+                    modeSwitchBtn.innerText = "Switch to Secure Mode (Long ID)";
+                } else {
+                    modeSwitchBtn.innerText = "Switch to Fast Mode (Less Secure)";
+                }
+                log("Switching Mode. Re-initializing Peer...");
+                initializePeer(); // Re-initialize Peer with the new mode
+            };
+
+            // Handling Outbound Connection
+            document.getElementById('connect-btn').onclick = () => {
+                const rid = document.getElementById('receiver-id').value;
+                log("Attempting to connect to: " + rid);
+                conn = peer.connect(rid);
+                setupChat();
+            };
+
+            // Connect on Enter Key Press in Receiver ID Input
+            document.getElementById('receiver-id').addEventListener('keydown', (event) => {
+                if (event.key === 'Enter') {
+                    event.preventDefault(); // Prevent form submission
+                    const rid = document.getElementById('receiver-id').value;
+                    log("Attempting to connect to: " + rid + " (via Enter key)");
+                    conn = peer.connect(rid);
+                    setupChat();
+                }
+            });
+
+            function setupChat() {
+                conn.on('open', () => {
+                    log("Handshake complete. Connection Open.");
+                    appendMsg("System", "Connected!");
+                });
+                conn.on('data', (data) => {
+                    if (typeof data === 'string') {
+                        // Handle text messages
+                        appendMsg("Friend", data);
+                    } else if (data.fileType === 'image') {
+                        // Handle image files
+                        appendImage("Friend", data.fileData);
+                    } else if (data.fileType === 'document') {
+                        // Handle document files (display filename)
+                        appendDocument("Friend", data.fileName, data.fileData);
+                    }
+                });
+            }
+
+            document.getElementById('send-btn').onclick = () => {
+                sendMessage();
+            };
+
+            document.getElementById('message-input').addEventListener('keydown', (event) => {
+                if (event.key === 'Enter') {
+                    event.preventDefault(); // Prevent the default action (newline)
+                    sendMessage();
+                }
+            });
+
+            function sendMessage() {
+                const val = document.getElementById('message-input').value;
+                if (conn && conn.open) {
+                    conn.send(val);
+                    appendMsg("You", val);
+                    document.getElementById('message-input').value = "";
+                } else {
+                    log("Send failed: No open connection.", true);
+                }
+            }
+
+            function appendMsg(sender, text) {
+                document.getElementById('chat').innerHTML += `<div><strong>${sender}:</strong> ${text}</div>`;
+            }
+
+            function appendImage(sender, imageData) {
+                document.getElementById('chat').innerHTML += `<div><strong>${sender}:</strong><br><img src="${imageData}" alt="Image"></div>`;
+            }
+
+            function appendDocument(sender, fileName, fileData) {
+                // Create a download link for the document
+                const downloadLink = document.createElement('a');
+                downloadLink.href = fileData;
+                downloadLink.download = fileName;
+                downloadLink.textContent = fileName;
+
+                const div = document.createElement('div');
+                div.innerHTML = `<strong>${sender}:</strong><br>`;
+                div.appendChild(downloadLink);
+
+                document.getElementById('chat').appendChild(div);
+            }
+
+            // File Sending Logic
+            document.getElementById('file-input').addEventListener('change', (event) => {
+                const file = event.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+
+                    reader.onload = (e) => {
+                        const fileData = e.target.result;
+                        const fileName = file.name;
+                        const fileType = file.type.startsWith('image') ? 'image' : 'document';
+
+                        if (conn && conn.open) {
+                            conn.send({ fileType: fileType, fileName: fileName, fileData: fileData });
+
+                            if (fileType === 'image') {
+                                appendImage("You", fileData);
+                            } else {
+                                appendDocument("You", fileName, fileData);
+                            }
+
+                            log(`Sending file: ${fileName} (${fileType})`);
+                        } else {
+                            log("File send failed: No open connection.", true);
+                        }
+                    };
+
+                    reader.readAsDataURL(file); // Read as Data URL for both images and documents
+                }
+            });
+        };
+    </script>
+</body>
+</html>

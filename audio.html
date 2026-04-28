@@ -266,7 +266,7 @@
     🎤 Screen Audio Capture
     <span class="recording-badge" id="liveBadge" style="display: none;"><span class="red-dot"></span> RECORDING</span>
   </h1>
-  <div class="sub">Lossless PCM capture · WAV download · trim & preview</div>
+  <div class="sub">Lossless PCM capture · WAV download · click waveform to seek</div>
 
   <div class="preview-area">
     <video id="previewVideo" muted autoplay playsinline></video>
@@ -286,7 +286,7 @@
   <!-- Waveform editor panel -->
   <div id="waveformEditor" class="waveform-editor" style="display: none;">
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-      <span style="font-weight: 600; color: white;">🎚️ Waveform & Trim (drag handles on wave)</span>
+      <span style="font-weight: 600; color: white;">🎚️ Waveform & Trim (drag handles / click to seek)</span>
       <span id="trimInfo" class="trim-values">0.00s - 0.00s (0.00s)</span>
     </div>
     <div class="waveform-container">
@@ -371,6 +371,7 @@
   let playbackStartTime = 0;
   let animationFrameId = null;
   let currentPlayheadPercent = -1;
+  let currentPlaybackBuffer = null; // store the trimmed audio buffer for seeking
 
   function setStatus(text, isError = false) {
     statusDiv.innerHTML = isError ? `⚠️ ${text}` : `✨ ${text}`;
@@ -394,168 +395,73 @@
     drawWaveformWithTrim();
   }
 
-  // Draw waveform (blue), trim handles (small), and solid playhead line
-  function drawWaveformWithTrim() {
-    if (!capturedChannelData.length || !capturedChannelData[0]) return;
-    const samples = capturedChannelData[0];
-    const totalSamples = samples.length;
-    const width = waveformCanvas.width;
-    const height = waveformCanvas.height;
-    const ctx = waveformCanvas.getContext('2d');
-    ctx.fillStyle = '#0a0f1a';
-    ctx.fillRect(0, 0, width, height);
-
-    const sliceSize = Math.max(1, Math.floor(totalSamples / width));
-    const peaks = new Array(width);
-    for (let i = 0; i < width; i++) {
-      let max = 0;
-      const startIdx = i * sliceSize;
-      const endIdx = Math.min(startIdx + sliceSize, totalSamples);
-      for (let s = startIdx; s < endIdx; s++) {
-        const val = Math.abs(samples[s]);
-        if (val > max) max = val;
-      }
-      peaks[i] = Math.min(1.0, max);
+  // Get the trimmed audio buffer (cached for seeking)
+  async function getTrimmedAudioBuffer() {
+    if (!capturedChannelData.length) return null;
+    const { trimmedChannels, newLength } = getTrimmedChannelData();
+    if (newLength < 256) return null;
+    const numChannels = trimmedChannels.length;
+    const offlineCtx = new OfflineAudioContext(numChannels, newLength, capturedSampleRate);
+    const audioBuffer = offlineCtx.createBuffer(numChannels, newLength, capturedSampleRate);
+    for (let ch = 0; ch < numChannels; ch++) {
+      audioBuffer.copyToChannel(trimmedChannels[ch], ch);
     }
-    ctx.beginPath();
-    ctx.strokeStyle = '#3b82f6';
-    ctx.lineWidth = 2;
-    const midY = height / 2;
-    for (let x = 0; x < width; x++) {
-      const amp = peaks[x] * (height * 0.45);
-      const y1 = midY - amp;
-      const y2 = midY + amp;
-      ctx.beginPath();
-      ctx.moveTo(x, y1);
-      ctx.lineTo(x, y2);
-      ctx.stroke();
-    }
-
-    const startX = trimStartPercent * width;
-    const endX = trimEndPercent * width;
-    ctx.fillStyle = '#00000070';
-    ctx.fillRect(0, 0, startX, height);
-    ctx.fillRect(endX, 0, width - endX, height);
-
-    // Draw smaller draggable handles
-    const handleRadius = 6;
-    const innerRadius = 3;
-    ctx.beginPath();
-    ctx.strokeStyle = '#ffcc44';
-    ctx.lineWidth = 2.5;
-    ctx.moveTo(startX, 0);
-    ctx.lineTo(startX, height);
-    ctx.stroke();
-    ctx.beginPath();
-    ctx.arc(startX, height/2, handleRadius, 0, 2*Math.PI);
-    ctx.fillStyle = '#ffcc44';
-    ctx.fill();
-    ctx.fillStyle = '#0a0f1a';
-    ctx.beginPath();
-    ctx.arc(startX, height/2, innerRadius, 0, 2*Math.PI);
-    ctx.fill();
-
-    ctx.beginPath();
-    ctx.strokeStyle = '#ffaa33';
-    ctx.lineWidth = 2.5;
-    ctx.moveTo(endX, 0);
-    ctx.lineTo(endX, height);
-    ctx.stroke();
-    ctx.beginPath();
-    ctx.arc(endX, height/2, handleRadius, 0, 2*Math.PI);
-    ctx.fillStyle = '#ffaa33';
-    ctx.fill();
-    ctx.fillStyle = '#0a0f1a';
-    ctx.beginPath();
-    ctx.arc(endX, height/2, innerRadius, 0, 2*Math.PI);
-    ctx.fill();
-
-    // Solid playhead line (not dotted)
-    if (currentPlayheadPercent >= 0) {
-      const playheadX = currentPlayheadPercent * width;
-      ctx.beginPath();
-      ctx.strokeStyle = '#ffffff';
-      ctx.lineWidth = 2.5;
-      ctx.moveTo(playheadX, 0);
-      ctx.lineTo(playheadX, height);
-      ctx.stroke();
-    }
-
-    const startSec = trimStartPercent * originalDuration;
-    const endSec = trimEndPercent * originalDuration;
-    const durationSec = (endSec - startSec).toFixed(2);
-    trimInfoSpan.innerHTML = `${startSec.toFixed(2)}s - ${endSec.toFixed(2)}s (${durationSec}s)`;
+    return audioBuffer;
   }
 
-  // Animation: playhead moves correctly from trimStart to trimEnd
-  function startPlayheadAnimation() {
-    if (animationFrameId) cancelAnimationFrame(animationFrameId);
-    const update = () => {
-      if (!playbackCtx || !playbackSource || playbackCtx.state !== 'running') {
-        if (animationFrameId) cancelAnimationFrame(animationFrameId);
-        animationFrameId = null;
-        currentPlayheadPercent = -1;
-        drawWaveformWithTrim();
-        return;
-      }
-      const now = performance.now() / 1000;
-      const elapsed = now - playbackStartTime;
-      const totalTrimDuration = originalDuration * (trimEndPercent - trimStartPercent);
-      let progress = totalTrimDuration > 0 ? elapsed / totalTrimDuration : 0;
-      if (progress >= 1.0) {
-        currentPlayheadPercent = -1;
-        drawWaveformWithTrim();
-        stopPlayback();
-        return;
-      }
-      // Map progress to absolute position on full waveform (between trimStart and trimEnd)
-      const absolutePercent = trimStartPercent + progress * (trimEndPercent - trimStartPercent);
-      currentPlayheadPercent = Math.min(trimEndPercent, Math.max(trimStartPercent, absolutePercent));
+  // Seek to absolute percent (0-1 of full waveform) and play from there
+  async function seekToPosition(absolutePercent) {
+    if (!capturedChannelData.length) return;
+    // Clamp to trim range
+    const clamped = Math.min(trimEndPercent, Math.max(trimStartPercent, absolutePercent));
+    if (clamped !== currentPlayheadPercent) {
+      currentPlayheadPercent = clamped;
       drawWaveformWithTrim();
-      animationFrameId = requestAnimationFrame(update);
-    };
-    animationFrameId = requestAnimationFrame(update);
-  }
-
-  // Auto-trim: remove leading/trailing silence (threshold = 0.01)
-  function autoTrimSilence() {
-    if (!capturedChannelData.length || capturedTotalSamples === 0) {
-      setStatus("No audio data to trim.", true);
-      return;
     }
-    const samples = capturedChannelData[0]; // use first channel for detection
-    const threshold = 0.008; // sensitivity
-    let firstNonSilence = -1;
-    let lastNonSilence = -1;
-    for (let i = 0; i < samples.length; i++) {
-      if (Math.abs(samples[i]) > threshold) {
-        if (firstNonSilence === -1) firstNonSilence = i;
-        lastNonSilence = i;
-      }
-    }
-    if (firstNonSilence === -1) {
-      setStatus("❌ No sound detected in the entire recording. Cannot auto-trim.", true);
-      return;
-    }
-    // Add small padding (0.05 seconds) to avoid cutting too tight
-    const paddingSamples = Math.floor(0.05 * capturedSampleRate);
-    let startIdx = Math.max(0, firstNonSilence - paddingSamples);
-    let endIdx = Math.min(samples.length - 1, lastNonSilence + paddingSamples);
-    trimStartPercent = startIdx / capturedTotalSamples;
-    trimEndPercent = endIdx / capturedTotalSamples;
-    // Ensure start < end
-    if (trimStartPercent >= trimEndPercent) {
-      trimStartPercent = 0;
-      trimEndPercent = 1;
-      setStatus("Auto-trim resulted in empty region, reset to full.", true);
-    } else {
-      setStatus(`✂️ Auto-trimmed from ${(startIdx/capturedSampleRate).toFixed(2)}s to ${(endIdx/capturedSampleRate).toFixed(2)}s`);
-    }
-    drawWaveformWithTrim();
-    // Stop any playback to reset playhead
+    // Stop current playback
     stopPlayback();
+    // Create new playback from seek position
+    const audioBuffer = await getTrimmedAudioBuffer();
+    if (!audioBuffer) return;
+    const totalTrimDuration = (trimEndPercent - trimStartPercent) * originalDuration;
+    const seekOffsetSec = (clamped - trimStartPercent) * originalDuration;
+    if (seekOffsetSec >= totalTrimDuration) return;
+    try {
+      playbackCtx = new AudioContext();
+      const source = playbackCtx.createBufferSource();
+      source.buffer = audioBuffer;
+      source.connect(playbackCtx.destination);
+      source.start(0, seekOffsetSec);
+      playbackSource = source;
+      playbackStartTime = performance.now() / 1000 - seekOffsetSec;
+      source.onended = () => {
+        stopPlayback();
+        setStatus("Preview finished.");
+      };
+      startPlayheadAnimation();
+      setStatus(`🎵 Playing from ${(seekOffsetSec).toFixed(2)}s`);
+    } catch (err) {
+      setStatus(`Seek error: ${err.message}`, true);
+    }
   }
 
+  // Start playback from beginning (or resume from current position if stopped)
+  async function previewTrimmed() {
+    if (!capturedChannelData.length) return;
+    // If playback is active, do nothing
+    if (playbackCtx && playbackSource && playbackCtx.state === 'running') return;
+    // If we have a cached position (playhead) and it's within trim range, seek to it
+    if (currentPlayheadPercent >= trimStartPercent && currentPlayheadPercent <= trimEndPercent) {
+      await seekToPosition(currentPlayheadPercent);
+    } else {
+      // start from trim start
+      currentPlayheadPercent = trimStartPercent;
+      drawWaveformWithTrim();
+      await seekToPosition(trimStartPercent);
+    }
+  }
+
+  // Get trimmed channel data as Float32Arrays
   function getTrimmedChannelData() {
     const startSample = Math.floor(trimStartPercent * capturedTotalSamples);
     const endSample = Math.floor(trimEndPercent * capturedTotalSamples);
@@ -608,36 +514,165 @@
     return new Blob([buffer], { type: 'audio/wav' });
   }
 
-  async function previewTrimmed() {
+  // Auto-trim silence
+  function autoTrimSilence() {
+    if (!capturedChannelData.length || capturedTotalSamples === 0) {
+      setStatus("No audio data to trim.", true);
+      return;
+    }
+    const samples = capturedChannelData[0];
+    const threshold = 0.008;
+    let firstNonSilence = -1;
+    let lastNonSilence = -1;
+    for (let i = 0; i < samples.length; i++) {
+      if (Math.abs(samples[i]) > threshold) {
+        if (firstNonSilence === -1) firstNonSilence = i;
+        lastNonSilence = i;
+      }
+    }
+    if (firstNonSilence === -1) {
+      setStatus("❌ No sound detected in the entire recording. Cannot auto-trim.", true);
+      return;
+    }
+    const paddingSamples = Math.floor(0.05 * capturedSampleRate);
+    let startIdx = Math.max(0, firstNonSilence - paddingSamples);
+    let endIdx = Math.min(samples.length - 1, lastNonSilence + paddingSamples);
+    trimStartPercent = startIdx / capturedTotalSamples;
+    trimEndPercent = endIdx / capturedTotalSamples;
+    if (trimStartPercent >= trimEndPercent) {
+      trimStartPercent = 0;
+      trimEndPercent = 1;
+      setStatus("Auto-trim resulted in empty region, reset to full.", true);
+    } else {
+      setStatus(`✂️ Auto-trimmed from ${(startIdx/capturedSampleRate).toFixed(2)}s to ${(endIdx/capturedSampleRate).toFixed(2)}s`);
+    }
     stopPlayback();
-    try {
-      const { trimmedChannels, newLength } = getTrimmedChannelData();
-      if (newLength < 256) {
-        setStatus("Trimmed segment too short to preview.", true);
+    drawWaveformWithTrim();
+    // reset playhead
+    currentPlayheadPercent = trimStartPercent;
+    drawWaveformWithTrim();
+  }
+
+  // Animation loop for playhead
+  function startPlayheadAnimation() {
+    if (animationFrameId) cancelAnimationFrame(animationFrameId);
+    const update = () => {
+      if (!playbackCtx || !playbackSource || playbackCtx.state !== 'running') {
+        if (animationFrameId) cancelAnimationFrame(animationFrameId);
+        animationFrameId = null;
+        currentPlayheadPercent = -1;
+        drawWaveformWithTrim();
         return;
       }
-      const numChannels = trimmedChannels.length;
-      const offlineCtx = new OfflineAudioContext(numChannels, newLength, capturedSampleRate);
-      const audioBuffer = offlineCtx.createBuffer(numChannels, newLength, capturedSampleRate);
-      for (let ch = 0; ch < numChannels; ch++) {
-        audioBuffer.copyToChannel(trimmedChannels[ch], ch);
-      }
-      playbackCtx = new AudioContext();
-      const source = playbackCtx.createBufferSource();
-      source.buffer = audioBuffer;
-      source.connect(playbackCtx.destination);
-      source.start();
-      playbackSource = source;
-      playbackStartTime = performance.now() / 1000;
-      source.onended = () => {
+      const now = performance.now() / 1000;
+      const elapsed = now - playbackStartTime;
+      const totalTrimDuration = originalDuration * (trimEndPercent - trimStartPercent);
+      let progress = totalTrimDuration > 0 ? elapsed / totalTrimDuration : 0;
+      if (progress >= 1.0) {
+        currentPlayheadPercent = -1;
+        drawWaveformWithTrim();
         stopPlayback();
-        setStatus("Preview finished.");
-      };
-      startPlayheadAnimation();
-      setStatus(`🎵 Previewing trimmed audio (${(newLength/capturedSampleRate).toFixed(1)} sec)`);
-    } catch (err) {
-      setStatus(`Preview error: ${err.message}`, true);
+        return;
+      }
+      const absolutePercent = trimStartPercent + progress * (trimEndPercent - trimStartPercent);
+      currentPlayheadPercent = Math.min(trimEndPercent, Math.max(trimStartPercent, absolutePercent));
+      drawWaveformWithTrim();
+      animationFrameId = requestAnimationFrame(update);
+    };
+    animationFrameId = requestAnimationFrame(update);
+  }
+
+  // Draw waveform (blue) with trim handles and solid playhead
+  function drawWaveformWithTrim() {
+    if (!capturedChannelData.length || !capturedChannelData[0]) return;
+    const samples = capturedChannelData[0];
+    const totalSamples = samples.length;
+    const width = waveformCanvas.width;
+    const height = waveformCanvas.height;
+    const ctx = waveformCanvas.getContext('2d');
+    ctx.fillStyle = '#0a0f1a';
+    ctx.fillRect(0, 0, width, height);
+
+    const sliceSize = Math.max(1, Math.floor(totalSamples / width));
+    const peaks = new Array(width);
+    for (let i = 0; i < width; i++) {
+      let max = 0;
+      const startIdx = i * sliceSize;
+      const endIdx = Math.min(startIdx + sliceSize, totalSamples);
+      for (let s = startIdx; s < endIdx; s++) {
+        const val = Math.abs(samples[s]);
+        if (val > max) max = val;
+      }
+      peaks[i] = Math.min(1.0, max);
     }
+    ctx.beginPath();
+    ctx.strokeStyle = '#3b82f6';
+    ctx.lineWidth = 2;
+    const midY = height / 2;
+    for (let x = 0; x < width; x++) {
+      const amp = peaks[x] * (height * 0.45);
+      const y1 = midY - amp;
+      const y2 = midY + amp;
+      ctx.beginPath();
+      ctx.moveTo(x, y1);
+      ctx.lineTo(x, y2);
+      ctx.stroke();
+    }
+
+    const startX = trimStartPercent * width;
+    const endX = trimEndPercent * width;
+    ctx.fillStyle = '#00000070';
+    ctx.fillRect(0, 0, startX, height);
+    ctx.fillRect(endX, 0, width - endX, height);
+
+    // Handles (small circles)
+    const handleRadius = 6;
+    const innerRadius = 3;
+    ctx.beginPath();
+    ctx.strokeStyle = '#ffcc44';
+    ctx.lineWidth = 2.5;
+    ctx.moveTo(startX, 0);
+    ctx.lineTo(startX, height);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.arc(startX, height/2, handleRadius, 0, 2*Math.PI);
+    ctx.fillStyle = '#ffcc44';
+    ctx.fill();
+    ctx.fillStyle = '#0a0f1a';
+    ctx.beginPath();
+    ctx.arc(startX, height/2, innerRadius, 0, 2*Math.PI);
+    ctx.fill();
+
+    ctx.beginPath();
+    ctx.strokeStyle = '#ffaa33';
+    ctx.lineWidth = 2.5;
+    ctx.moveTo(endX, 0);
+    ctx.lineTo(endX, height);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.arc(endX, height/2, handleRadius, 0, 2*Math.PI);
+    ctx.fillStyle = '#ffaa33';
+    ctx.fill();
+    ctx.fillStyle = '#0a0f1a';
+    ctx.beginPath();
+    ctx.arc(endX, height/2, innerRadius, 0, 2*Math.PI);
+    ctx.fill();
+
+    // Solid playhead line
+    if (currentPlayheadPercent >= 0) {
+      const playheadX = currentPlayheadPercent * width;
+      ctx.beginPath();
+      ctx.strokeStyle = '#ffffff';
+      ctx.lineWidth = 2.5;
+      ctx.moveTo(playheadX, 0);
+      ctx.lineTo(playheadX, height);
+      ctx.stroke();
+    }
+
+    const startSec = trimStartPercent * originalDuration;
+    const endSec = trimEndPercent * originalDuration;
+    const durationSec = (endSec - startSec).toFixed(2);
+    trimInfoSpan.innerHTML = `${startSec.toFixed(2)}s - ${endSec.toFixed(2)}s (${durationSec}s)`;
   }
 
   function mergeChunksToFloatArrays(chunksPerChannel, totalSamples) {
@@ -675,6 +710,7 @@
     
     trimStartPercent = 0;
     trimEndPercent = 1;
+    currentPlayheadPercent = -1;
     const container = waveformCanvas.parentElement;
     const rect = container.getBoundingClientRect();
     waveformCanvas.width = Math.max(400, rect.width - 20);
@@ -728,7 +764,7 @@
       return;
     }
     showWaveformEditor();
-    setStatus(`✅ Recording stopped. Drag yellow handles to trim, or use Auto Trim.`);
+    setStatus(`✅ Recording stopped. Drag yellow handles to trim, click waveform to seek.`);
   }
 
   function downloadTrimmed() {
@@ -771,8 +807,8 @@
     setStatus("Editor closed. You can start a new capture.");
   }
 
-  // Canvas drag handling
-  function initCanvasDrag() {
+  // Canvas interaction: drag handles OR click to seek
+  function initCanvasDragAndSeek() {
     const canvas = waveformCanvas;
     function getCanvasX(e) {
       const rect = canvas.getBoundingClientRect();
@@ -794,6 +830,10 @@
         if (newEnd > trimStartPercent) trimEndPercent = newEnd;
       }
       drawWaveformWithTrim();
+      // If playing, restart playback to keep sync (optional, but we stop)
+      if (playbackCtx && playbackCtx.state === 'running') {
+        stopPlayback();
+      }
     }
     function onUp() {
       draggingHandle = null;
@@ -807,12 +847,30 @@
       const startX = trimStartPercent * rect.width;
       const endX = trimEndPercent * rect.width;
       const mouseX = e.clientX - rect.left;
-      if (Math.abs(mouseX - startX) < 12) draggingHandle = 'start';
-      else if (Math.abs(mouseX - endX) < 12) draggingHandle = 'end';
-      else return;
-      e.preventDefault();
-      window.addEventListener('mousemove', onMove);
-      window.addEventListener('mouseup', onUp);
+      // Check for handle drag first
+      if (Math.abs(mouseX - startX) < 12) {
+        draggingHandle = 'start';
+        e.preventDefault();
+        window.addEventListener('mousemove', onMove);
+        window.addEventListener('mouseup', onUp);
+        return;
+      }
+      if (Math.abs(mouseX - endX) < 12) {
+        draggingHandle = 'end';
+        e.preventDefault();
+        window.addEventListener('mousemove', onMove);
+        window.addEventListener('mouseup', onUp);
+        return;
+      }
+      // Otherwise, seek to click position
+      const clickPercent = getCanvasX(e);
+      if (clickPercent >= trimStartPercent && clickPercent <= trimEndPercent) {
+        seekToPosition(clickPercent);
+      } else {
+        // If outside trim range, clamp and seek
+        const clamped = Math.min(trimEndPercent, Math.max(trimStartPercent, clickPercent));
+        seekToPosition(clamped);
+      }
     });
     canvas.addEventListener('touchstart', (e) => {
       const rect = canvas.getBoundingClientRect();
@@ -820,16 +878,27 @@
       const startX = trimStartPercent * rect.width;
       const endX = trimEndPercent * rect.width;
       const touchX = touch.clientX - rect.left;
-      if (Math.abs(touchX - startX) < 12) draggingHandle = 'start';
-      else if (Math.abs(touchX - endX) < 12) draggingHandle = 'end';
-      else return;
-      e.preventDefault();
-      canvas.addEventListener('touchmove', onMove);
-      canvas.addEventListener('touchend', onUp);
+      if (Math.abs(touchX - startX) < 12) {
+        draggingHandle = 'start';
+        e.preventDefault();
+        canvas.addEventListener('touchmove', onMove);
+        canvas.addEventListener('touchend', onUp);
+        return;
+      }
+      if (Math.abs(touchX - endX) < 12) {
+        draggingHandle = 'end';
+        e.preventDefault();
+        canvas.addEventListener('touchmove', onMove);
+        canvas.addEventListener('touchend', onUp);
+        return;
+      }
+      const clickPercent = (touchX) / rect.width;
+      const clamped = Math.min(trimEndPercent, Math.max(trimStartPercent, clickPercent));
+      seekToPosition(clamped);
     });
   }
 
-  // AudioWorklet recording
+  // AudioWorklet recording (same as before)
   async function startLosslessRecording() {
     if (!mediaStream || mediaStream.getAudioTracks().length === 0) return false;
     if (audioContext) await audioContext.close().catch(()=>{});
@@ -942,7 +1011,7 @@
     waveformEditor.style.display = 'none';
   }
 
-  // Event listeners
+  // Event binding
   btnCapture.addEventListener('click', captureScreenWithAudio);
   btnStartRecord.addEventListener('click', async () => {
     if (!mediaStream || !mediaStream.getAudioTracks().length) return;
@@ -972,7 +1041,7 @@
     }
   });
   
-  initCanvasDrag();
+  initCanvasDragAndSeek();
   btnStartRecord.disabled = true;
   btnStopRecord.disabled = true;
   btnStopShare.disabled = true;

@@ -478,23 +478,13 @@
     const downloadBtn = cardDiv.querySelector('[data-download]');
     const closeBtns = cardDiv.querySelectorAll('[data-close], [data-close-alt]');
 
-    // Resize canvas to match container
-    const resizeCanvas = () => {
-      const container = canvas.parentElement;
-      const rect = container.getBoundingClientRect();
-      canvas.width = Math.max(400, rect.width - 20);
-      canvas.height = 160;
-      drawWaveform();
-    };
-    window.addEventListener('resize', () => { if (cardDiv.parentElement) resizeCanvas(); });
-    resizeCanvas();
-
-    // Helper functions for this card
-    let trimStartPercent = 0, trimEndPercent = 1;
+    // Card-specific state (declare BEFORE functions that use them)
+    let trimStartPercent = 0;
+    let trimEndPercent = 1;
     let draggingHandle = null;
     let currentPlayheadPercent = -1;
 
-    // Get trimmed channels based on current trim
+    // Helper functions that need the above variables
     function getTrimmedChannels() {
       const startSample = Math.floor(trimStartPercent * totalSamples);
       const endSample = Math.floor(trimEndPercent * totalSamples);
@@ -508,13 +498,11 @@
       return { trimmedChannels: trimmed, newLength };
     }
 
-    // Build WAV from current trim
     function buildWavFromCurrentTrim() {
       const { trimmedChannels, newLength } = getTrimmedChannels();
       return buildWavFromFloatArrays(trimmedChannels, sampleRate, newLength);
     }
 
-    // Draw waveform (blue) with trim overlays and playhead
     function drawWaveform() {
       if (!channelData[0]) return;
       const samples = channelData[0];
@@ -600,19 +588,18 @@
         ctx.stroke();
       }
 
-      // Update trim info display (optional: we could show in card header)
+      // Update trim info display (add a span if not exists)
+      let trimInfoSpan = cardDiv.querySelector('.trim-values');
+      if (!trimInfoSpan) {
+        trimInfoSpan = document.createElement('span');
+        trimInfoSpan.className = 'trim-values';
+        cardDiv.querySelector('.card-header').appendChild(trimInfoSpan);
+      }
       const startSec = trimStartPercent * durationSec;
       const endSec = trimEndPercent * durationSec;
-      const trimInfoSpan = cardDiv.querySelector('.trim-values') || (() => {
-        let span = document.createElement('span');
-        span.className = 'trim-values';
-        cardDiv.querySelector('.card-header').appendChild(span);
-        return span;
-      })();
       trimInfoSpan.innerHTML = `${startSec.toFixed(2)}s - ${endSec.toFixed(2)}s (${(endSec-startSec).toFixed(2)}s)`;
     }
 
-    // Stop playback for this card
     function stopCardPlayback() {
       if (cardDiv._data.playbackSource) {
         try { cardDiv._data.playbackSource.stop(); } catch(e) {}
@@ -630,7 +617,6 @@
       drawWaveform();
     }
 
-    // Seek to absolute percent (0-1) and play from there
     async function seekAndPlay(absolutePercent) {
       const clamped = Math.min(trimEndPercent, Math.max(trimStartPercent, absolutePercent));
       if (clamped === currentPlayheadPercent && cardDiv._data.playbackCtx && cardDiv._data.playbackCtx.state === 'running') return;
@@ -679,7 +665,6 @@
       animatePlayhead();
     }
 
-    // Auto-trim silence
     function autoTrimSilence() {
       const samples = channelData[0];
       const threshold = 0.008;
@@ -706,7 +691,6 @@
       drawWaveform();
     }
 
-    // Download trimmed WAV
     function downloadTrimmed() {
       try {
         const wavBlob = buildWavFromCurrentTrim();
@@ -724,6 +708,14 @@
       } catch (err) {
         setStatus(`Download error: ${err.message}`, true);
       }
+    }
+
+    function resizeCanvasAndRedraw() {
+      const container = canvas.parentElement;
+      const rect = container.getBoundingClientRect();
+      canvas.width = Math.max(400, rect.width - 20);
+      canvas.height = 160;
+      drawWaveform();
     }
 
     // Canvas mouse/touch for dragging handles and clicking to seek
@@ -821,10 +813,8 @@
     }));
 
     initCardCanvasEvents();
-    drawWaveform();
-
-    // Initial sizing
-    setTimeout(resizeCanvas, 10);
+    window.addEventListener('resize', resizeCanvasAndRedraw);
+    setTimeout(resizeCanvasAndRedraw, 10);
     return cardDiv;
   }
 
@@ -887,13 +877,10 @@
     btnStopRecord.disabled = true;
     btnStartRecord.disabled = true;
     btnCapture.disabled = false;
-    if (mediaStream && mediaStream.getAudioTracks().length) {
-      // we keep the stream? Actually we should stop sharing after recording? Better to leave as is; user can stop sharing manually.
-    }
     durationSpan.innerText = '0.0';
   }
 
-  // ---------- AudioWorklet recording (unchanged) ----------
+  // ---------- AudioWorklet recording ----------
   async function startLosslessRecording() {
     if (!mediaStream || mediaStream.getAudioTracks().length === 0) return false;
     if (audioContext) await audioContext.close().catch(()=>{});
@@ -949,7 +936,7 @@
     }
   }
 
-  // ---------- Screen capture (unchanged) ----------
+  // ---------- Screen capture ----------
   async function captureScreenWithAudio() {
     if (mediaStream) {
       setStatus("Already sharing. Stop sharing first.", true);
@@ -975,8 +962,7 @@
         btnStartRecord.disabled = false;
         btnStopShare.disabled = false;
         setStatus("✅ Screen+Audio ready. Click Start Recording.");
-        btnCapture.disabled = false; // allow capture button? better keep disabled until stopped? but we can enable after stop.
-        // Actually we'll keep it enabled but if they click again it will warn. Fine.
+        btnCapture.disabled = false;
       }
     } catch (err) {
       setStatus(`Error: ${err.message}`, true);

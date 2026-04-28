@@ -40,7 +40,6 @@
             flex-direction: column;
             height: 100vh;
             height: 100dvh;
-            /* dynamic viewport height for mobile */
             gap: 10px;
             -webkit-tap-highlight-color: transparent;
             -webkit-user-select: none;
@@ -56,8 +55,8 @@
             gap: 8px;
         }
         .header h2 {
-            font-size: 1.1rem;
-            font-weight: 600;
+            font-size: 1.4rem;  /* 🔼 Increased from 1.1rem */
+            font-weight: 700;
             margin: 0;
             white-space: nowrap;
         }
@@ -71,7 +70,7 @@
             color: var(--success);
         }
         .my-id-row {
-            font-size: 0.85rem;
+            font-size: 1rem;  /* 🔼 Increased from 0.85rem */
             color: var(--text-secondary);
             word-break: break-all;
             width: 100%;
@@ -79,6 +78,7 @@
         #my-id {
             font-weight: 600;
             color: #fff;
+            font-size: 1.05rem; /* slightly bolder ID */
         }
 
         /* ---- Connect Row ---- */
@@ -115,7 +115,6 @@
             line-height: 1.5;
             word-break: break-word;
             -webkit-overflow-scrolling: touch;
-            /* smooth scroll on iOS */
             display: flex;
             flex-direction: column;
             gap: 6px;
@@ -127,14 +126,8 @@
             animation: fadeIn 0.2s ease;
         }
         @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(6px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
         }
         #chat .msg-you {
             background: #1a3a5c;
@@ -194,7 +187,6 @@
             align-items: center;
             justify-content: center;
             min-height: 44px;
-            /* touch target */
             -webkit-tap-highlight-color: transparent;
         }
         button:active,
@@ -215,7 +207,6 @@
             background: var(--accent-hover);
         }
 
-        /* ---- Inputs ---- */
         input[type="text"] {
             padding: 10px 12px;
             border-radius: var(--radius);
@@ -224,7 +215,6 @@
             color: var(--text);
             font-size: 0.95rem;
             min-height: 44px;
-            /* touch target */
         }
         input[type="text"]:focus {
             outline: none;
@@ -245,7 +235,6 @@
             padding-top: 6px;
             margin-top: 2px;
             display: block;
-            /* shown by default, hidden on mobile via media query */
             line-height: 1.4;
         }
         #debug-log .error {
@@ -255,7 +244,6 @@
             color: var(--success);
         }
 
-        /* ---- File Display (for previews, optional) ---- */
         #file-display {
             display: none;
         }
@@ -267,10 +255,13 @@
                 gap: 8px;
             }
             .header h2 {
-                font-size: 1rem;
+                font-size: 1.3rem;  /* 🔼 Increased from 1rem */
             }
             .my-id-row {
-                font-size: 0.75rem;
+                font-size: 0.95rem;  /* 🔼 Increased from 0.75rem */
+            }
+            #my-id {
+                font-size: 1rem;
             }
             #mode-switch-btn {
                 font-size: 0.75rem;
@@ -296,17 +287,20 @@
                 padding: 10px;
                 min-height: 40px;
             }
-
-            /* 🔴 HIDE DEBUG LOG ON MOBILE */
             #debug-log {
                 display: none !important;
             }
         }
 
-        /* Extra small phones (like iPhone SE) */
         @media (max-width: 380px) {
             .header h2 {
-                font-size: 0.9rem;
+                font-size: 1.2rem;  /* 🔼 Increased from 0.9rem */
+            }
+            .my-id-row {
+                font-size: 0.85rem;  /* 🔼 Increased from 0.75rem (was unchanged) */
+            }
+            #my-id {
+                font-size: 0.95rem;
             }
             #mode-switch-btn {
                 font-size: 0.7rem;
@@ -356,9 +350,6 @@
 
     <script>
         (function() {
-            // ─────────────────────────────────────
-            // Logging helper
-            // ─────────────────────────────────────
             function log(msg, isError = false) {
                 const d = document.getElementById('debug-log');
                 if (!d) return;
@@ -368,9 +359,6 @@
                 d.scrollTop = d.scrollHeight;
             }
 
-            // ─────────────────────────────────────
-            // Random ID generator for fast mode
-            // ─────────────────────────────────────
             function generateId(length) {
                 const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
                 let result = '';
@@ -380,17 +368,11 @@
                 return result;
             }
 
-            // ─────────────────────────────────────
-            // State
-            // ─────────────────────────────────────
-            let fastMode = true; // ✅ DEFAULT: FAST MODE
+            let fastMode = true;
             let myPeerId = null;
             let peer = null;
             let conn = null;
 
-            // ─────────────────────────────────────
-            // DOM elements
-            // ─────────────────────────────────────
             const statusEl = document.getElementById('status');
             const myIdEl = document.getElementById('my-id');
             const chatEl = document.getElementById('chat');
@@ -400,11 +382,7 @@
             const connectBtn = document.getElementById('connect-btn');
             const sendBtn = document.getElementById('send-btn');
             const fileInput = document.getElementById('file-input');
-            const debugLogEl = document.getElementById('debug-log');
 
-            // ─────────────────────────────────────
-            // Initialize Peer
-            // ─────────────────────────────────────
             function initializePeer() {
                 if (peer) {
                     peer.destroy();
@@ -459,9 +437,6 @@
                 });
             }
 
-            // ─────────────────────────────────────
-            // Connection handlers
-            // ─────────────────────────────────────
             function setupConnectionHandlers() {
                 if (!conn) return;
 
@@ -491,9 +466,6 @@
                 });
             }
 
-            // ─────────────────────────────────────
-            // Outbound connection
-            // ─────────────────────────────────────
             function connectToPeer(remoteId) {
                 if (!remoteId || !peer) return;
                 log("📞 Connecting to: " + remoteId);
@@ -503,9 +475,6 @@
                 setupConnectionHandlers();
             }
 
-            // ─────────────────────────────────────
-            // Sending messages
-            // ─────────────────────────────────────
             function sendTextMessage() {
                 const text = msgInput.value.trim();
                 if (!text) return;
@@ -542,9 +511,6 @@
                 reader.readAsDataURL(file);
             }
 
-            // ─────────────────────────────────────
-            // Chat display helpers
-            // ─────────────────────────────────────
             function appendMsg(sender, text) {
                 const div = document.createElement('div');
                 div.className = sender === 'you' ? 'msg-you' : 'msg-friend';
@@ -596,15 +562,8 @@
                 return temp.innerHTML;
             }
 
-            // ─────────────────────────────────────
-            // Mode switch
-            // ─────────────────────────────────────
             function updateModeButton() {
-                if (fastMode) {
-                    modeSwitchBtn.textContent = 'Switch to Secure Mode (Long ID)';
-                } else {
-                    modeSwitchBtn.textContent = 'Switch to Fast Mode (Less Secure)';
-                }
+                modeSwitchBtn.textContent = fastMode ? 'Switch to Secure Mode (Long ID)' : 'Switch to Fast Mode (Less Secure)';
             }
 
             modeSwitchBtn.addEventListener('click', () => {
@@ -614,9 +573,6 @@
                 initializePeer();
             });
 
-            // ─────────────────────────────────────
-            // Event listeners
-            // ─────────────────────────────────────
             connectBtn.addEventListener('click', () => {
                 const rid = receiverInput.value.trim();
                 if (rid) connectToPeer(rid);
@@ -642,13 +598,10 @@
                 const file = e.target.files[0];
                 if (file) {
                     sendFile(file);
-                    fileInput.value = ''; // allow re-uploading same file
+                    fileInput.value = '';
                 }
             });
 
-            // ─────────────────────────────────────
-            // Startup
-            // ─────────────────────────────────────
             window.addEventListener('load', () => {
                 log('🚀 App loaded.');
                 if (typeof Peer === 'undefined') {
@@ -661,7 +614,6 @@
                 initializePeer();
             });
 
-            // Expose for debugging (optional)
             window.chatApp = {
                 get fastMode() { return fastMode; },
                 get peer() { return peer; },

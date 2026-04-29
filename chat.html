@@ -118,7 +118,6 @@
             display: flex;
             flex-direction: column;
             gap: 6px;
-            position: relative; /* for overlay buttons */
         }
         #chat>div {
             padding: 6px 10px;
@@ -161,12 +160,11 @@
             word-break: break-all;
         }
 
-        /* ---- Overlay buttons inside chat ---- */
+        /* ---- Sticky overlay buttons inside chat (stay on top when scrolling) ---- */
         .chat-overlay-btn {
-            position: absolute;
-            top: 8px;
-            left: 50%;
-            transform: translateX(-50%);
+            position: sticky;
+            top: 0;
+            align-self: center;          /* center horizontally in flex column */
             background: rgba(0, 0, 0, 0.6);
             color: #fff;
             border-radius: 20px;
@@ -179,13 +177,8 @@
             white-space: nowrap;
             backdrop-filter: blur(4px);
             -webkit-backdrop-filter: blur(4px);
-            transition: opacity 0.2s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .chat-overlay-btn:active {
-            background: rgba(0, 0, 0, 0.8);
+            margin-bottom: 6px;         /* space between button and next message */
+            display: none;              /* hidden by default */
         }
 
         /* ---- Input Row ---- */
@@ -366,9 +359,8 @@
         </div>
     </div>
 
-    <!-- Chat area with overlay buttons inside -->
+    <!-- Chat area with sticky overlay buttons as first children -->
     <div id="chat">
-        <!-- Semi-transparent overlay buttons for show/hide top bar -->
         <div id="show-top-btn" class="chat-overlay-btn" style="display: none;">Show Top</div>
         <div id="hide-top-btn" class="chat-overlay-btn" style="display: none;">Hide Top</div>
     </div>
@@ -419,7 +411,7 @@
             const fileInput = document.getElementById('file-input');
             const topBar = document.getElementById('top-bar');
 
-            // New overlay buttons
+            // Sticky overlay buttons
             const showTopBtn = document.getElementById('show-top-btn');
             const hideTopBtn = document.getElementById('hide-top-btn');
 
@@ -432,7 +424,7 @@
             function showTopBar() {
                 topBar.style.display = '';
                 showTopBtn.style.display = 'none';
-                // Only show hide button if we are connected
+                // Only show "Hide Top" when connected
                 if (conn && conn.open) {
                     hideTopBtn.style.display = 'flex';
                 } else {
@@ -440,7 +432,7 @@
                 }
             }
 
-            // Overlay button click handlers
+            // Overlay button clicks
             showTopBtn.addEventListener('click', () => {
                 showTopBar();
             });
@@ -455,7 +447,7 @@
                     peer = null;
                 }
                 conn = null;
-                // Ensure top bar is visible and overlay buttons correct
+                // Ensure top bar visible and overlay buttons correct
                 showTopBar();
 
                 if (fastMode) {
@@ -511,7 +503,7 @@
                 conn.on('open', () => {
                     log("🤝 Handshake complete. Chat is live!");
                     appendSystemMsg("🔗 Connected!");
-                    // Collapse top bar on successful connection
+                    // Collapse top bar, show only the sticky "Show Top" button
                     collapseTopBar();
                 });
 
@@ -529,7 +521,7 @@
                     log("🔌 Connection closed.");
                     appendSystemMsg("⚡ Peer disconnected.");
                     conn = null;
-                    // Restore top bar and adjust overlay buttons
+                    // Restore top bar visibility
                     showTopBar();
                 });
 

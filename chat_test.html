@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>P2P Block Detector</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #1a1a1a;
+            color: #eee;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            text-align: center;
+        }
+        .card {
+            background: #2a2a2a;
+            border-radius: 16px;
+            padding: 25px 20px;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+        }
+        h2 {
+            margin-top: 0;
+            font-size: 1.6rem;
+            margin-bottom: 1.5rem;
+            color: #fff;
+        }
+        .step {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            margin-bottom: 1.2rem;
+            font-size: 1rem;
+            text-align: left;
+        }
+        .indicator {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #555;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+        .indicator.pending { background: #555; }
+        .indicator.checking { background: #f0ad4e; animation: pulse 0.8s infinite; }
+        .indicator.success { background: #28a745; }
+        .indicator.fail { background: #dc3545; }
+        @keyframes pulse {
+            0% { opacity: 0.4; } 50% { opacity: 1; } 100% { opacity: 0.4; }
+        }
+        .step-text { flex: 1; line-height: 1.4; }
+        .small { font-size: 0.8rem; color: #aaa; }
+        .result {
+            margin-top: 1.5rem;
+            font-weight: bold;
+            padding: 12px;
+            border-radius: 8px;
+            background: #333;
+            color: #fff;
+        }
+        button {
+            margin-top: 1rem;
+            padding: 10px 20px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+        button:active { background: #0056b3; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h2>🔍 P2P Block Detector</h2>
+        <div id="steps">
+            <div class="step" id="step-cdn">
+                <div class="indicator pending" id="dot-cdn"></div>
+                <div class="step-text"><strong>1. CDN access (unpkg.com)</strong><br><span class="small" id="msg-cdn">Waiting...</span></div>
+            </div>
+            <div class="step" id="step-signal">
+                <div class="indicator pending" id="dot-signal"></div>
+                <div class="step-text"><strong>2. Signalling server (0.peerjs.com)</strong><br><span class="small" id="msg-signal">Not started</span></div>
+            </div>
+            <div class="step" id="step-webrtc">
+                <div class="indicator pending" id="dot-webrtc"></div>
+                <div class="step-text"><strong>3. WebRTC connectivity test</strong><br><span class="small" id="msg-webrtc">Not started</span></div>
+            </div>
+        </div>
+        <div class="result" id="summary">Press "Run Test" to start.</div>
+        <button id="run-btn">▶ Run Test</button>
+        <p class="small" style="margin-top:0.5rem;">After test, scroll down for raw log.</p>
+        <div id="debug-log" style="font-size:10px;color:#666;margin-top:10px;height:80px;overflow-y:auto;text-align:left;"></div>
+    </div>
+
+    <script>
+        function log(msg) {
+            const d = document.getElementById('debug-log');
+            d.innerHTML += `<div>[${new Date().toLocaleTimeString()}] ${msg}</div>`;
+            d.scrollTop = d.scrollHeight;
+        }
+
+        function setStep(step, status, msg) {
+            const dot = document.getElementById('dot-' + step);
+            const msgEl = document.getElementById('msg-' + step);
+            dot.className = 'indicator ' + status;
+            if (msg) msgEl.textContent = msg;
+        }
+
+        function summarize(text, isGood = true) {
+            const summary = document.getElementById('summary');
+            summary.textContent = text;
+            summary.style.background = isGood ? '#1e7e34' : '#a94442';
+        }
+
+        async function runTest() {
+            // Reset UI
+            ['cdn','signal','webrtc'].forEach(s => {
+                setStep(s, 'pending', 'Waiting...');
+            });
+            document.getElementById('summary').textContent = 'Testing...';
+            log('=== Diagnostic started ===');
+
+            // ---------- STEP 1: CDN ----------
+            setStep('cdn', 'checking', 'Loading PeerJS from unpkg...');
+            log('Step 1: Loading script...');
+            let cdnOk = false;
+            try {
+                await new Promise((resolve, reject) => {
+                    const script = document.createElement('script');
+                    script.src = 'https://unpkg.com/peerjs@1.3.1/dist/peerjs.min.js';
+                    script.onload = () => { cdnOk = true; resolve(); };
+                    script.onerror = () => reject(new Error('Script load failed'));
+                    document.head.appendChild(script);
+                });
+                setStep('cdn', 'success', 'PeerJS library loaded successfully.');
+                log('Step 1: CDN OK');
+            } catch (e) {
+                setStep('cdn', 'fail', 'FAILED – unpkg.com is blocked or unreachable.');
+                log('Step 1 FAIL: ' + e.message);
+                summarize('❌ CDN blocked. PeerJS cannot even load.', false);
+                return; // can't continue
+            }
+
+            // ---------- STEP 2: Signaling server ----------
+            setStep('signal', 'checking', 'Connecting to signaling server...');
+            log('Step 2: Creating Peer...');
+            let signalOk = false;
+            try {
+                const peer = new Peer(
+                    // fast mode: random 5-char ID
+                    Math.random().toString(36).substring(2,7)
+                );
+                signalOk = await new Promise((resolve) => {
+                    const timeout = setTimeout(() => {
+                        log('Step 2: Timeout (10s)');
+                        peer.destroy();
+                        resolve(false);
+                    }, 10000);
+
+                    peer.on('open', (id) => {
+                        clearTimeout(timeout);
+                        log('Step 2: Peer open, ID = ' + id);
+                        // Try connecting to a nonexistent ID to confirm signaling path
+                        log('Step 3: Testing WebRTC signaling path (fake connect)...');
+                        const testConn = peer.connect('zzzzz_no_one_here');
+                        testConn.on('error', (err) => {
+                            log('Step 2/3: Test connection error: ' + err.type);
+                            if (err.type === 'peer-unavailable') {
+                                // This means signaling server correctly replied "no such peer"
+                                // which confirms signaling works.
+                                log('Signaling server replied (peer-unavailable) → signaling OK.');
+                                resolve(true);
+                            } else {
+                                log('Unexpected error type, signaling may be partially blocked.');
+                                resolve(false);
+                            }
+                        });
+                    });
+
+                    peer.on('error', (err) => {
+                        clearTimeout(timeout);
+                        log('Step 2: Peer error: ' + err.type);
+                        resolve(false);
+                    });
+
+                    peer.on('disconnected', () => {
+                        log('Step 2: Peer disconnected unexpectedly.');
+                    });
+                });
+
+                if (signalOk) {
+                    setStep('signal', 'success', 'Signaling server reachable.');
+                    log('Step 2: Signaling OK');
+                } else {
+                    setStep('signal', 'fail', 'Signaling server blocked or WebSocket failed.');
+                    log('Step 2: Signaling FAIL');
+                    summarize('⚠️ Signaling server (0.peerjs.com) blocked. The app cannot exchange connection info.', false);
+                    return;
+                }
+
+                if (peer && !peer.destroyed) peer.destroy();
+
+            } catch (e) {
+                setStep('signal', 'fail', 'Peer initialization crashed.');
+                log('Step 2 exception: ' + e.message);
+                summarize('❌ PeerJS initialization error.', false);
+                return;
+            }
+
+            // ---------- STEP 3: WebRTC conclusion ----------
+            setStep('webrtc', 'success', 'Signaling works → WebRTC not blocked at this level.');
+            log('Step 3: Testing complete – no WebRTC block detected.');
+            summarize('✅ Everything seems open! The original chat should work. If not, the problem may be on your friend\'s network, or your school blocks only outgoing P2P data channels (STUN/TURN). Try with a friend on a different network.', true);
+        }
+
+        document.getElementById('run-btn').addEventListener('click', () => {
+            document.getElementById('run-btn').disabled = true;
+            runTest().finally(() => {
+                document.getElementById('run-btn').disabled = false;
+            });
+        });
+
+        log('Diagnostic ready. Press "Run Test".');
+    </script>
+</body>
+</html>

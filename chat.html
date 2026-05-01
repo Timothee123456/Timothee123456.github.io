@@ -126,6 +126,8 @@
             border-radius: 12px;
             max-width: 85%;
             animation: fadeIn 0.2s ease;
+            -webkit-user-select: text;   /* allow text selection in messages */
+            user-select: text;
         }
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(6px); }
@@ -301,7 +303,7 @@
             background: #444;
         }
 
-        /* ---- Debug Log (desktop only) ---- */
+        /* ---- Debug Log (hidden by default, shown only with ?debug=true) ---- */
         #debug-log {
             font-size: 10px;
             color: #555;
@@ -310,7 +312,7 @@
             border-top: 1px solid var(--border);
             padding-top: 6px;
             margin-top: 2px;
-            display: block;
+            display: none;      /* hidden by default */
             line-height: 1.4;
         }
         #debug-log .error {
@@ -363,9 +365,7 @@
                 padding: 10px;
                 min-height: 40px;
             }
-            #debug-log {
-                display: none !important;
-            }
+            /* no longer hide debug log via media query – it's handled by the JS debug flag */
         }
 
         @media (max-width: 380px) {
@@ -443,6 +443,13 @@
 
     <script>
         (function() {
+            // Show debug log only if ?debug=true is in the URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const debugMode = urlParams.get('debug') === 'true';
+            if (debugMode) {
+                document.getElementById('debug-log').style.display = 'block';
+            }
+
             function log(msg, isError = false) {
                 const d = document.getElementById('debug-log');
                 if (!d) return;
@@ -520,16 +527,14 @@
 
             function closeImageModal() {
                 imageModal.classList.remove('visible');
-                // Optionally revoke object URL later if needed; data URLs don't need it
             }
 
             function downloadImage() {
                 const src = modalImage.src;
                 if (!src) return;
-                // Create a temporary anchor to trigger download
                 const a = document.createElement('a');
                 a.href = src;
-                a.download = 'shared_image.png';  // Default name, could be improved
+                a.download = 'shared_image.png';
                 document.body.appendChild(a);
                 a.click();
                 document.body.removeChild(a);

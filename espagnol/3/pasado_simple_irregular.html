@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Réviser les irréguliers - Passé simple espagnol</title>
+    <style>
+        body {
+            min-height: 100vh;
+            background-color: #02fae9;
+            background-image: linear-gradient(to bottom right, #02fae9, yellow);
+            font-family: Arial, sans-serif;
+        }
+
+        h2 {
+            font-size: 38px;
+            color: #333;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .subtitle {
+            font-size: 20px;
+            color: #555;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+            max-width: 65%;
+            margin: 0 auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        table {
+            border-collapse: collapse;
+            margin: 0 auto;
+            background-color: rgba(255, 255, 255, 0.75);
+            border-radius: 16px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+            min-width: 500px;
+        }
+
+        th {
+            background-color: #333;
+            color: white;
+            padding: 16px 12px;
+            font-size: 18px;
+            text-align: center;
+            letter-spacing: 0.5px;
+            white-space: nowrap;
+        }
+
+        th.pron-col {
+            width: 140px;
+            min-width: 120px;
+        }
+        th.verb-col {
+            width: 340px;
+            min-width: 280px;
+        }
+
+        td {
+            padding: 11px 10px;
+            text-align: center;
+            border-bottom: 1px solid #ddd;
+            font-size: 20px;
+            vertical-align: middle;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:nth-child(even) td {
+            background-color: rgba(240, 248, 255, 0.6);
+        }
+        tr:nth-child(odd) td {
+            background-color: rgba(255, 255, 255, 0.4);
+        }
+
+        td.pron-cell {
+            font-weight: bold;
+            font-size: 21px;
+            color: #222;
+            text-align: left;
+            padding-left: 18px;
+            white-space: nowrap;
+        }
+
+        select {
+            font-size: 20px;
+            padding: 6px 10px;
+            border-radius: 6px;
+            border: 2px solid #bbb;
+            background-color: #fffef9;
+            font-weight: bold;
+            cursor: pointer;
+            margin-right: 8px;
+            vertical-align: middle;
+        }
+
+        input {
+            font-size: 20px;
+            padding: 5px 7px;
+            border: 2px solid #bbb;
+            border-radius: 6px;
+            text-align: left;
+            background-color: #fffef9;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            vertical-align: middle;
+            margin: 0 2px;
+        }
+
+        input#infinitivo_input {
+            width: 160px;
+        }
+
+        input[id^="v_"] {
+            width: 140px;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #04AA6D;
+            box-shadow: 0 0 0 3px rgba(4, 170, 109, 0.15);
+        }
+
+        .correction {
+            display: inline-block;
+            min-width: 90px;
+            font-size: 19px;
+            font-weight: bold;
+            vertical-align: middle;
+            margin-left: 5px;
+            white-space: nowrap;
+        }
+
+        .button-row {
+            text-align: center;
+            margin-top: 28px;
+        }
+
+        .myButton {
+            box-shadow: 2px 3px 0px 0px #8a2a21;
+            background: linear-gradient(to bottom, #c62d1f 5%, #f24437 100%);
+            background-color: #c62d1f;
+            border-radius: 42px;
+            display: inline-block;
+            cursor: pointer;
+            color: #ffffff;
+            font-family: Arial;
+            font-size: 22px;
+            padding: 10px 28px;
+            text-decoration: none;
+            text-shadow: 1px -1px 3px #810e05;
+            border: none;
+            margin: 0 12px;
+            transition: all 0.15s ease;
+        }
+        .myButton:hover {
+            background: linear-gradient(to bottom, #f24437 5%, #c62d1f 100%);
+            background-color: #f24437;
+            transform: translateY(-1px);
+            box-shadow: 2px 4px 0px 0px #8a2a21;
+        }
+        .myButton:active {
+            position: relative;
+            top: 2px;
+            box-shadow: 1px 1px 0px 0px #8a2a21;
+        }
+
+        .myButton2 {
+            box-shadow: 0px 1px 0px -3px #f0f7fa;
+            background: linear-gradient(to bottom, #33bdef 5%, #019ad2 100%);
+            background-color: #33bdef;
+            border-radius: 42px;
+            border: 2px solid #057fd0;
+            display: inline-block;
+            cursor: pointer;
+            color: #ffffff;
+            font-family: Arial;
+            font-size: 22px;
+            padding: 10px 28px;
+            text-decoration: none;
+            text-shadow: 3px -2px 4px #5b6178;
+            margin: 0 12px;
+            transition: all 0.15s ease;
+        }
+        .myButton2:hover {
+            background: linear-gradient(to bottom, #019ad2 5%, #33bdef 100%);
+            background-color: #019ad2;
+            transform: translateY(-1px);
+            box-shadow: 0px 2px 0px -2px #f0f7fa;
+        }
+        .myButton2:active {
+            position: relative;
+            top: 2px;
+            box-shadow: 0px 0px 0px -3px #f0f7fa;
+        }
+
+        @media screen and (max-width: 768px) {
+            h2 {
+                font-size: 26px;
+            }
+            .subtitle {
+                font-size: 16px;
+            }
+            .table-wrapper {
+                max-width: 90%;
+            }
+            table {
+                min-width: 400px;
+            }
+            td {
+                font-size: 16px;
+                padding: 8px 5px;
+            }
+            td.pron-cell {
+                font-size: 17px;
+                padding-left: 8px;
+            }
+            select {
+                font-size: 16px;
+                padding: 4px 8px;
+                margin-right: 4px;
+            }
+            input#infinitivo_input {
+                width: 110px;
+                font-size: 16px;
+            }
+            input[id^="v_"] {
+                width: 100px;
+                font-size: 16px;
+            }
+            .correction {
+                font-size: 15px;
+                min-width: 60px;
+            }
+            .myButton,
+            .myButton2 {
+                font-size: 18px;
+                padding: 8px 20px;
+                margin: 5px 6px;
+            }
+        }
+
+        @media screen and (max-width: 480px) {
+            h2 {
+                font-size: 22px;
+            }
+            .subtitle {
+                font-size: 14px;
+            }
+            .table-wrapper {
+                max-width: 98%;
+            }
+            table {
+                min-width: 320px;
+            }
+            td {
+                font-size: 14px;
+                padding: 6px 2px;
+            }
+            td.pron-cell {
+                font-size: 14px;
+                padding-left: 4px;
+            }
+            select {
+                font-size: 14px;
+                padding: 2px 4px;
+                margin-right: 2px;
+            }
+            input#infinitivo_input {
+                width: 80px;
+                font-size: 14px;
+            }
+            input[id^="v_"] {
+                width: 70px;
+                font-size: 14px;
+            }
+            .correction {
+                font-size: 13px;
+                min-width: 40px;
+            }
+            .myButton,
+            .myButton2 {
+                font-size: 16px;
+                padding: 7px 16px;
+                margin: 4px 4px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Réviser les conjugaisons irrégulières du passé simple</h2>
+    <p class="subtitle">Sélectionne un verbe en français, traduis l'infinitif en espagnol, puis conjugue au passé simple</p>
+
+    <div class="table-wrapper">
+        <table>
+            <!-- Première ligne fusionnée (plus d'espace vide à gauche) -->
+            <tr style="background-color: rgba(255,255,240,0.9);">
+                <td colspan="2" style="text-align: left; padding-left: 12px;">
+                    <select id="verbeSelect">
+                        <option value="ser/ir">être / aller</option>
+                        <option value="dar">donner</option>
+                        <option value="ver">voir</option>
+                        <option value="tener">avoir (possession)</option>
+                        <option value="estar">être (état)</option>
+                        <option value="hacer">faire</option>
+                        <option value="querer">vouloir</option>
+                        <option value="venir">venir</option>
+                        <option value="poder">pouvoir</option>
+                        <option value="poner">mettre</option>
+                        <option value="saber">savoir</option>
+                        <option value="decir">dire</option>
+                        <option value="traer">apporter</option>
+                        <option value="conducir">conduire</option>
+                    </select>
+                    <input type="text" id="infinitivo_input" autocomplete="off" placeholder="Infinitif espagnol">
+                    <span class="correction" id="corr_infinitivo"></span>
+                </td>
+            </tr>
+
+            <!-- Lignes des pronoms -->
+            <tr>
+                <td class="pron-cell">Yo</td>
+                <td>
+                    <input type="text" id="v_yo" autocomplete="off" placeholder="">
+                    <span class="correction" id="corr_v_yo"></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="pron-cell">Tú</td>
+                <td>
+                    <input type="text" id="v_tu" autocomplete="off" placeholder="">
+                    <span class="correction" id="corr_v_tu"></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="pron-cell">Él, Ella</td>
+                <td>
+                    <input type="text" id="v_el" autocomplete="off" placeholder="">
+                    <span class="correction" id="corr_v_el"></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="pron-cell">Nosotros/as</td>
+                <td>
+                    <input type="text" id="v_nos" autocomplete="off" placeholder="">
+                    <span class="correction" id="corr_v_nos"></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="pron-cell">Vosotros/as</td>
+                <td>
+                    <input type="text" id="v_vos" autocomplete="off" placeholder="">
+                    <span class="correction" id="corr_v_vos"></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="pron-cell">Ellos/as</td>
+                <td>
+                    <input type="text" id="v_ellos" autocomplete="off" placeholder="">
+                    <span class="correction" id="corr_v_ellos"></span>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="button-row">
+        <a href="#" class="myButton" onclick="corriger()">Terminado</a>
+        <a href="#" class="myButton2" onclick="reinitialiser()">Réinitialiser</a>
+    </div>
+
+    <script>
+        // Conjugaisons irrégulières du passé simple
+        const verbosIrregulares = {
+            "ser/ir": ["fui", "fuiste", "fue", "fuimos", "fuisteis", "fueron"],
+            "dar": ["di", "diste", "dio", "dimos", "disteis", "dieron"],
+            "ver": ["vi", "viste", "vio", "vimos", "visteis", "vieron"],
+            "tener": ["tuve", "tuviste", "tuvo", "tuvimos", "tuvisteis", "tuvieron"],
+            "estar": ["estuve", "estuviste", "estuvo", "estuvimos", "estuvisteis", "estuvieron"],
+            "hacer": ["hice", "hiciste", "hizo", "hicimos", "hicisteis", "hicieron"],
+            "querer": ["quise", "quisiste", "quiso", "quisimos", "quisisteis", "quisieron"],
+            "venir": ["vine", "viniste", "vino", "vinimos", "vinisteis", "vinieron"],
+            "poder": ["pude", "pudiste", "pudo", "pudimos", "pudisteis", "pudieron"],
+            "poner": ["puse", "pusiste", "puso", "pusimos", "pusisteis", "pusieron"],
+            "saber": ["supe", "supiste", "supo", "supimos", "supisteis", "supieron"],
+            "decir": ["dije", "dijiste", "dijo", "dijimos", "dijisteis", "dijeron"],
+            "traer": ["traje", "trajiste", "trajo", "trajimos", "trajisteis", "trajeron"],
+            "conducir": ["conduje", "condujiste", "condujo", "condujimos", "condujisteis", "condujeron"]
+        };
+
+        // Infinitifs espagnols acceptés pour chaque verbe
+        const traductionsInfinitif = {
+            "ser/ir": ["ser", "ir"],
+            "dar": ["dar"],
+            "ver": ["ver"],
+            "tener": ["tener"],
+            "estar": ["estar"],
+            "hacer": ["hacer"],
+            "querer": ["querer"],
+            "venir": ["venir"],
+            "poder": ["poder"],
+            "poner": ["poner"],
+            "saber": ["saber"],
+            "decir": ["decir"],
+            "traer": ["traer"],
+            "conducir": ["conducir"]
+        };
+
+        const pronomsKeys = ["v_yo", "v_tu", "v_el", "v_nos", "v_vos", "v_ellos"];
+        const corrKeys = ["corr_v_yo", "corr_v_tu", "corr_v_el", "corr_v_nos", "corr_v_vos", "corr_v_ellos"];
+
+        function normaliser(texte) {
+            return texte
+                .trim()
+                .toLowerCase()
+                .normalize('NFD')
+                .replace(/[\u0300-\u036f]/g, '');
+        }
+
+        function corriger() {
+            const selectEl = document.getElementById('verbeSelect');
+            const verbeChoisi = selectEl.value;
+            const bonnesReponses = verbosIrregulares[verbeChoisi];
+            if (!bonnesReponses) return;
+
+            // 1. Correction de l'infinitif (traduction)
+            const infinitifInput = document.getElementById('infinitivo_input');
+            const corrInfinitif = document.getElementById('corr_infinitivo');
+            const tradSaisie = infinitifInput.value;
+            const tradNorm = normaliser(tradSaisie);
+            const tradAcceptees = traductionsInfinitif[verbeChoisi];
+            const tradCorrecteNorm = tradAcceptees.map(t => normaliser(t));
+            const tradAffichage = tradAcceptees.join(' / ');
+
+            if (tradSaisie.trim() === '') {
+                infinitifInput.value = tradAcceptees[0];
+                infinitifInput.style.color = 'red';
+                corrInfinitif.innerHTML = '';
+            } else if (tradCorrecteNorm.includes(tradNorm)) {
+                infinitifInput.style.color = 'black';
+                corrInfinitif.innerHTML = '✓';
+                corrInfinitif.style.color = 'green';
+            } else {
+                infinitifInput.style.color = 'black';
+                corrInfinitif.innerHTML = '✕ ' + tradAffichage;
+                corrInfinitif.style.color = 'red';
+            }
+
+            // 2. Correction des formes conjuguées
+            for (let i = 0; i < pronomsKeys.length; i++) {
+                const inputEl = document.getElementById(pronomsKeys[i]);
+                const corrEl = document.getElementById(corrKeys[i]);
+                const saisieBrute = inputEl.value;
+                const saisieNorm = normaliser(saisieBrute);
+                const bonneReponse = bonnesReponses[i];
+                const bonneNorm = normaliser(bonneReponse);
+
+                if (saisieBrute.trim() === '') {
+                    inputEl.value = bonneReponse;
+                    inputEl.style.color = 'red';
+                    corrEl.innerHTML = '';
+                } else if (saisieNorm === bonneNorm) {
+                    inputEl.style.color = 'black';
+                    corrEl.innerHTML = '✓';
+                    corrEl.style.color = 'green';
+                } else {
+                    inputEl.style.color = 'black';
+                    corrEl.innerHTML = '✕ ' + bonneReponse;
+                    corrEl.style.color = 'red';
+                }
+            }
+        }
+
+        function reinitialiser() {
+            // Infinitif
+            const infinitifInput = document.getElementById('infinitivo_input');
+            const corrInfinitif = document.getElementById('corr_infinitivo');
+            infinitifInput.value = '';
+            infinitifInput.style.color = 'black';
+            corrInfinitif.innerHTML = '';
+            corrInfinitif.style.color = '';
+
+            // Conjugaisons
+            for (let i = 0; i < pronomsKeys.length; i++) {
+                const inputEl = document.getElementById(pronomsKeys[i]);
+                const corrEl = document.getElementById(corrKeys[i]);
+                inputEl.value = '';
+                inputEl.style.color = 'black';
+                corrEl.innerHTML = '';
+                corrEl.style.color = '';
+            }
+        }
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                corriger();
+            }
+        });
+
+        document.getElementById('verbeSelect').addEventListener('change', function() {
+            reinitialiser();
+        });
+    </script>
+</body>
+</html>

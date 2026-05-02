@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Réviser les connecteurs pour raconter des histoires en espagnol</title>
+    <style>
+        body {
+            min-height: 100vh;
+            background-color: #02fae9;
+            background-image: linear-gradient(to bottom right, #02fae9, yellow);
+            font-family: Arial, sans-serif;
+            padding: 20px 0;
+        }
+
+        h2 {
+            font-size: 38px;
+            color: #333;
+            margin-bottom: 5px;
+            text-align: center;
+        }
+
+        .subtitle {
+            font-size: 20px;
+            color: #555;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .table-wrapper {
+            max-width: 900px;
+            margin: 0 auto 25px auto;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        table {
+            border-collapse: collapse;
+            margin: 0 auto 20px auto;
+            background-color: rgba(255, 255, 255, 0.85);
+            border-radius: 16px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+            width: 100%;
+            min-width: 500px;
+        }
+
+        tr.category-row th {
+            background-color: #333;
+            color: white;
+            padding: 14px 16px;
+            font-size: 20px;
+            text-align: left;
+            letter-spacing: 0.5px;
+            white-space: nowrap;
+            border-bottom: 2px solid #555;
+        }
+
+        th.col-fr {
+            width: 50%;
+            min-width: 200px;
+            background-color: #444;
+            color: white;
+            padding: 12px 16px;
+            font-size: 18px;
+            text-align: left;
+        }
+
+        th.col-es {
+            width: 50%;
+            min-width: 280px;
+            background-color: #444;
+            color: white;
+            padding: 12px 16px;
+            font-size: 18px;
+            text-align: left;
+        }
+
+        td {
+            padding: 12px 16px;
+            border-bottom: 1px solid #ddd;
+            font-size: 18px;
+            vertical-align: middle;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:nth-child(even) td {
+            background-color: rgba(240, 248, 255, 0.7);
+        }
+        tr:nth-child(odd) td {
+            background-color: rgba(255, 255, 255, 0.5);
+        }
+
+        td.fr-cell {
+            font-weight: 500;
+            color: #111;
+            text-align: left;
+            white-space: normal;
+            word-wrap: break-word;
+        }
+
+        td.es-cell {
+            text-align: left;
+            white-space: nowrap;
+        }
+
+        input {
+            font-size: 18px;
+            width: 260px;
+            padding: 8px 10px;
+            border: 2px solid #bbb;
+            border-radius: 6px;
+            text-align: left;
+            background-color: #fffef9;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            vertical-align: middle;
+            margin-right: 8px;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #04AA6D;
+            box-shadow: 0 0 0 3px rgba(4, 170, 109, 0.15);
+        }
+
+        .correction {
+            display: inline-block;
+            min-width: 70px;
+            font-size: 18px;
+            font-weight: bold;
+            vertical-align: middle;
+            white-space: nowrap;
+        }
+
+        .button-row {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .myButton {
+            box-shadow: 2px 3px 0px 0px #8a2a21;
+            background: linear-gradient(to bottom, #c62d1f 5%, #f24437 100%);
+            background-color: #c62d1f;
+            border-radius: 42px;
+            display: inline-block;
+            cursor: pointer;
+            color: #ffffff;
+            font-family: Arial;
+            font-size: 22px;
+            padding: 10px 28px;
+            text-decoration: none;
+            text-shadow: 1px -1px 3px #810e05;
+            border: none;
+            margin: 0 12px;
+            transition: all 0.15s ease;
+        }
+        .myButton:hover {
+            background: linear-gradient(to bottom, #f24437 5%, #c62d1f 100%);
+            background-color: #f24437;
+            transform: translateY(-1px);
+            box-shadow: 2px 4px 0px 0px #8a2a21;
+        }
+        .myButton:active {
+            position: relative;
+            top: 2px;
+            box-shadow: 1px 1px 0px 0px #8a2a21;
+        }
+
+        .myButton2 {
+            box-shadow: 0px 1px 0px -3px #f0f7fa;
+            background: linear-gradient(to bottom, #33bdef 5%, #019ad2 100%);
+            background-color: #33bdef;
+            border-radius: 42px;
+            border: 2px solid #057fd0;
+            display: inline-block;
+            cursor: pointer;
+            color: #ffffff;
+            font-family: Arial;
+            font-size: 22px;
+            padding: 10px 28px;
+            text-decoration: none;
+            text-shadow: 3px -2px 4px #5b6178;
+            margin: 0 12px;
+            transition: all 0.15s ease;
+        }
+        .myButton2:hover {
+            background: linear-gradient(to bottom, #019ad2 5%, #33bdef 100%);
+            background-color: #019ad2;
+            transform: translateY(-1px);
+            box-shadow: 0px 2px 0px -2px #f0f7fa;
+        }
+        .myButton2:active {
+            position: relative;
+            top: 2px;
+            box-shadow: 0px 0px 0px -3px #f0f7fa;
+        }
+
+        @media screen and (max-width: 768px) {
+            h2 {
+                font-size: 28px;
+            }
+            .subtitle {
+                font-size: 17px;
+            }
+            table {
+                min-width: 450px;
+            }
+            th {
+                font-size: 16px;
+                padding: 10px 8px;
+            }
+            td {
+                font-size: 16px;
+                padding: 8px 8px;
+            }
+            input {
+                font-size: 16px;
+                width: 200px;
+                padding: 6px 8px;
+            }
+            .correction {
+                font-size: 15px;
+                min-width: 50px;
+            }
+            .myButton,
+            .myButton2 {
+                font-size: 18px;
+                padding: 8px 20px;
+                margin: 5px 6px;
+            }
+        }
+
+        @media screen and (max-width: 480px) {
+            h2 {
+                font-size: 23px;
+            }
+            .subtitle {
+                font-size: 15px;
+            }
+            table {
+                min-width: 360px;
+            }
+            th {
+                font-size: 14px;
+                padding: 8px 5px;
+            }
+            td {
+                font-size: 14px;
+                padding: 6px 5px;
+            }
+            input {
+                font-size: 14px;
+                width: 150px;
+                padding: 5px 6px;
+            }
+            .correction {
+                font-size: 13px;
+                min-width: 40px;
+            }
+            .myButton,
+            .myButton2 {
+                font-size: 16px;
+                padding: 7px 16px;
+                margin: 4px 4px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Réviser les connecteurs pour raconter des histoires en espagnol</h2>
+    <p class="subtitle">Écris le connecteur espagnol correspondant à chaque expression française</p>
+
+    <!-- Tableau : Con IMPERFECTO -->
+    <div class="table-wrapper">
+        <table>
+            <tr class="category-row">
+                <th colspan="2">🔹 Con IMPERFECTO (pour commencer)</th>
+            </tr>
+            <tr>
+                <th class="col-fr">Français</th>
+                <th class="col-es">Espagnol</th>
+            </tr>
+            <tr>
+                <td class="fr-cell">Il était une fois...</td>
+                <td class="es-cell">
+                    <input type="text" id="c1" autocomplete="off" placeholder="">
+                    <span class="correction" id="corr_c1"></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="fr-cell">Il y avait une fois...</td>
+                <td class="es-cell">
+                    <input type="text" id="c2" autocomplete="off" placeholder="">
+                    <span class="correction" id="corr_c2"></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="fr-cell">Il y a très, très longtemps...</td>
+                <td class="es-cell">
+                    <input type="text" id="c3" autocomplete="off" placeholder="">
+                    <span class="correction" id="corr_c3"></span>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <!-- Tableau : Con PASADO SIMPLE -->
+    <div class="table-wrapper">
+        <table>
+            <tr class="category-row">
+                <th colspan="2">🔹 Con PASADO SIMPLE</th>
+            </tr>
+            <tr>
+                <th class="col-fr">Français</th>
+                <th class="col-es">Espagnol</th>
+            </tr>
+            <tr>
+                <td class="fr-cell">À ce moment-là...</td>
+                <td class="es-cell">
+                    <input type="text" id="c4" autocomplete="off" placeholder="">
+                    <span class="correction" id="corr_c4"></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="fr-cell">À cet instant précis...</td>
+                <td class="es-cell">
+                    <input type="text" id="c5" autocomplete="off" placeholder="">
+                    <span class="correction" id="corr_c5"></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="fr-cell">Alors...</td>
+                <td class="es-cell">
+                    <input type="text" id="c6" autocomplete="off" placeholder="">
+                    <span class="correction" id="corr_c6"></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="fr-cell">Peu de temps après...</td>
+                <td class="es-cell">
+                    <input type="text" id="c7" autocomplete="off" placeholder="">
+                    <span class="correction" id="corr_c7"></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="fr-cell">Le jour/le mois suivant...</td>
+                <td class="es-cell">
+                    <input type="text" id="c8" autocomplete="off" placeholder="">
+                    <span class="correction" id="corr_c8"></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="fr-cell">Soudain...</td>
+                <td class="es-cell">
+                    <input type="text" id="c9" autocomplete="off" placeholder="">
+                    <span class="correction" id="corr_c9"></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="fr-cell">Tout à coup...</td>
+                <td class="es-cell">
+                    <input type="text" id="c10" autocomplete="off" placeholder="">
+                    <span class="correction" id="corr_c10"></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="fr-cell">Des heures / jours / mois / ans plus tard...</td>
+                <td class="es-cell">
+                    <input type="text" id="c11" autocomplete="off" placeholder="">
+                    <span class="correction" id="corr_c11"></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="fr-cell">Au bout d'un moment...</td>
+                <td class="es-cell">
+                    <input type="text" id="c12" autocomplete="off" placeholder="">
+                    <span class="correction" id="corr_c12"></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="fr-cell">Un jour...</td>
+                <td class="es-cell">
+                    <input type="text" id="c13" autocomplete="off" placeholder="">
+                    <span class="correction" id="corr_c13"></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="fr-cell">Ensuite...</td>
+                <td class="es-cell">
+                    <input type="text" id="c14" autocomplete="off" placeholder="">
+                    <span class="correction" id="corr_c14"></span>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <!-- Tableau : Con IMPERFECTO y PASADO SIMPLE + Para terminar -->
+    <div class="table-wrapper">
+        <table>
+            <tr class="category-row">
+                <th colspan="2">🔹 Con IMPERFECTO y PASADO SIMPLE</th>
+            </tr>
+            <tr>
+                <th class="col-fr">Français</th>
+                <th class="col-es">Espagnol</th>
+            </tr>
+            <tr>
+                <td class="fr-cell">Tandis que [imparfait]..., [passé simple]...</td>
+                <td class="es-cell">
+                    <input type="text" id="c15" autocomplete="off" placeholder="">
+                    <span class="correction" id="corr_c15"></span>
+                </td>
+            </tr>
+            <tr class="category-row">
+                <th colspan="2">🔹 Para terminar</th>
+            </tr>
+            <tr>
+                <td class="fr-cell">Et voilà, l'histoire est finie (formule traditionnelle)</td>
+                <td class="es-cell">
+                    <input type="text" id="c16" autocomplete="off" placeholder="">
+                    <span class="correction" id="corr_c16"></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="fr-cell">Ici se termine l'histoire, les personnages furent heureux et mangèrent des perdrix</td>
+                <td class="es-cell">
+                    <input type="text" id="c17" autocomplete="off" placeholder="">
+                    <span class="correction" id="corr_c17"></span>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="button-row">
+        <a href="#" class="myButton" onclick="corriger()">Terminado</a>
+        <a href="#" class="myButton2" onclick="reinitialiser()">Réinitialiser</a>
+    </div>
+
+    <script>
+        // Liste complète des connecteurs (id input, réponse correcte en espagnol, id correction)
+        const connecteurs = [
+            { inputId: 'c1',  correct: 'Érase una vez...',        corrId: 'corr_c1' },
+            { inputId: 'c2',  correct: 'Había una vez...',        corrId: 'corr_c2' },
+            { inputId: 'c3',  correct: 'Hace mucho, mucho tiempo...', corrId: 'corr_c3' },
+            { inputId: 'c4',  correct: 'En ese momento...',       corrId: 'corr_c4' },
+            { inputId: 'c5',  correct: 'En ese preciso instante...', corrId: 'corr_c5' },
+            { inputId: 'c6',  correct: 'Entonces...',             corrId: 'corr_c6' },
+            { inputId: 'c7',  correct: 'Al poco tiempo...',       corrId: 'corr_c7' },
+            { inputId: 'c8',  correct: 'Al día/mes siguiente...', corrId: 'corr_c8' },
+            { inputId: 'c9',  correct: 'De repente...',           corrId: 'corr_c9' },
+            { inputId: 'c10', correct: 'De pronto...',            corrId: 'corr_c10' },
+            { inputId: 'c11', correct: 'Horas/Días/Meses/Años después...', corrId: 'corr_c11' },
+            { inputId: 'c12', correct: 'Al cabo de un rato...',   corrId: 'corr_c12' },
+            { inputId: 'c13', correct: 'Un día...',               corrId: 'corr_c13' },
+            { inputId: 'c14', correct: 'Después...',              corrId: 'corr_c14' },
+            { inputId: 'c15', correct: 'Mientras que [imperfecto]..., [pasado simple]...', corrId: 'corr_c15' },
+            { inputId: 'c16', correct: 'Y colorín, colorado, esta historia se ha acabado.', corrId: 'corr_c16' },
+            { inputId: 'c17', correct: 'Aquí termina la historia donde los personajes fueron felices y comieron perdices.', corrId: 'corr_c17' }
+        ];
+
+        function normaliser(texte) {
+            return texte
+                .trim()
+                .toLowerCase()
+                .normalize('NFD')
+                .replace(/[\u0300-\u036f]/g, '');
+        }
+
+        function corriger() {
+            connecteurs.forEach(function(item) {
+                const inputEl = document.getElementById(item.inputId);
+                const corrEl = document.getElementById(item.corrId);
+                const saisieBrute = inputEl.value;
+                const saisieNorm = normaliser(saisieBrute);
+                const bonneNorm = normaliser(item.correct);
+
+                if (saisieBrute.trim() === '') {
+                    inputEl.value = item.correct;
+                    inputEl.style.color = 'red';
+                    corrEl.innerHTML = '';
+                } else if (saisieNorm === bonneNorm) {
+                    inputEl.style.color = 'black';
+                    corrEl.innerHTML = '✓';
+                    corrEl.style.color = 'green';
+                } else {
+                    inputEl.style.color = 'black';
+                    corrEl.innerHTML = '✕ ' + item.correct;
+                    corrEl.style.color = 'red';
+                }
+            });
+        }
+
+        function reinitialiser() {
+            connecteurs.forEach(function(item) {
+                const inputEl = document.getElementById(item.inputId);
+                const corrEl = document.getElementById(item.corrId);
+                inputEl.value = '';
+                inputEl.style.color = 'black';
+                corrEl.innerHTML = '';
+                corrEl.style.color = '';
+            });
+        }
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                corriger();
+            }
+        });
+    </script>
+</body>
+</html>

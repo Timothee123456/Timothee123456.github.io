@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Réviser les conjugaisons - Passé simple espagnol</title>
+    <style>
+        body {
+            min-height: 100vh;
+            background-color: #02fae9;
+            background-image: linear-gradient(to bottom right, #02fae9, yellow);
+            font-family: Arial, sans-serif;
+        }
+
+        h2 {
+            font-size: 38px;
+            color: #333;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .subtitle {
+            font-size: 20px;
+            color: #555;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+            max-width: 95%;
+            margin: 0 auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        table {
+            border-collapse: collapse;
+            margin: 0 auto;
+            background-color: rgba(255, 255, 255, 0.75);
+            border-radius: 16px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+            min-width: 700px;
+        }
+
+        th {
+            background-color: #333;
+            color: white;
+            padding: 16px 12px;
+            font-size: 18px;
+            text-align: center;
+            letter-spacing: 0.5px;
+            white-space: nowrap;
+        }
+
+        th.pron-col {
+            width: 130px;
+            min-width: 110px;
+        }
+        th.verb-col {
+            width: 220px;
+            min-width: 190px;
+        }
+
+        td {
+            padding: 11px 10px;
+            text-align: center;
+            border-bottom: 1px solid #ddd;
+            font-size: 20px;
+            vertical-align: middle;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:nth-child(even) td {
+            background-color: rgba(240, 248, 255, 0.6);
+        }
+        tr:nth-child(odd) td {
+            background-color: rgba(255, 255, 255, 0.4);
+        }
+
+        td.pron-cell {
+            font-weight: bold;
+            font-size: 21px;
+            color: #222;
+            text-align: left;
+            padding-left: 18px;
+            white-space: nowrap;
+        }
+
+        .radical {
+            font-size: 20px;
+            font-weight: 500;
+            color: #222;
+            letter-spacing: 0.3px;
+        }
+
+        input {
+            font-size: 20px;
+            width: 65px;
+            padding: 5px 7px;
+            border: 2px solid #bbb;
+            border-radius: 6px;
+            text-align: left;
+            background-color: #fffef9;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            vertical-align: middle;
+            margin: 0 2px;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #04AA6D;
+            box-shadow: 0 0 0 3px rgba(4, 170, 109, 0.15);
+        }
+
+        .correction {
+            display: inline-block;
+            min-width: 70px;
+            font-size: 19px;
+            font-weight: bold;
+            vertical-align: middle;
+            margin-left: 3px;
+            white-space: nowrap;
+        }
+
+        .button-row {
+            text-align: center;
+            margin-top: 28px;
+        }
+
+        .myButton {
+            box-shadow: 2px 3px 0px 0px #8a2a21;
+            background: linear-gradient(to bottom, #c62d1f 5%, #f24437 100%);
+            background-color: #c62d1f;
+            border-radius: 42px;
+            display: inline-block;
+            cursor: pointer;
+            color: #ffffff;
+            font-family: Arial;
+            font-size: 22px;
+            padding: 10px 28px;
+            text-decoration: none;
+            text-shadow: 1px -1px 3px #810e05;
+            border: none;
+            margin: 0 12px;
+            transition: all 0.15s ease;
+        }
+        .myButton:hover {
+            background: linear-gradient(to bottom, #f24437 5%, #c62d1f 100%);
+            background-color: #f24437;
+            transform: translateY(-1px);
+            box-shadow: 2px 4px 0px 0px #8a2a21;
+        }
+        .myButton:active {
+            position: relative;
+            top: 2px;
+            box-shadow: 1px 1px 0px 0px #8a2a21;
+        }
+
+        .myButton2 {
+            box-shadow: 0px 1px 0px -3px #f0f7fa;
+            background: linear-gradient(to bottom, #33bdef 5%, #019ad2 100%);
+            background-color: #33bdef;
+            border-radius: 42px;
+            border: 2px solid #057fd0;
+            display: inline-block;
+            cursor: pointer;
+            color: #ffffff;
+            font-family: Arial;
+            font-size: 22px;
+            padding: 10px 28px;
+            text-decoration: none;
+            text-shadow: 3px -2px 4px #5b6178;
+            margin: 0 12px;
+            transition: all 0.15s ease;
+        }
+        .myButton2:hover {
+            background: linear-gradient(to bottom, #019ad2 5%, #33bdef 100%);
+            background-color: #019ad2;
+            transform: translateY(-1px);
+            box-shadow: 0px 2px 0px -2px #f0f7fa;
+        }
+        .myButton2:active {
+            position: relative;
+            top: 2px;
+            box-shadow: 0px 0px 0px -3px #f0f7fa;
+        }
+
+        @media screen and (max-width: 768px) {
+            h2 {
+                font-size: 26px;
+            }
+            .subtitle {
+                font-size: 16px;
+            }
+            table {
+                min-width: 600px;
+                font-size: 16px;
+            }
+            th {
+                font-size: 15px;
+                padding: 10px 6px;
+            }
+            td {
+                font-size: 16px;
+                padding: 8px 5px;
+            }
+            td.pron-cell {
+                font-size: 17px;
+                padding-left: 8px;
+            }
+            .radical {
+                font-size: 16px;
+            }
+            input {
+                font-size: 16px;
+                width: 50px;
+                padding: 4px 4px;
+            }
+            .correction {
+                font-size: 15px;
+                min-width: 50px;
+            }
+            .myButton,
+            .myButton2 {
+                font-size: 18px;
+                padding: 8px 20px;
+                margin: 5px 6px;
+            }
+        }
+
+        @media screen and (max-width: 480px) {
+            h2 {
+                font-size: 22px;
+            }
+            .subtitle {
+                font-size: 14px;
+            }
+            table {
+                min-width: 520px;
+            }
+            th {
+                font-size: 13px;
+                padding: 8px 3px;
+            }
+            td {
+                font-size: 14px;
+                padding: 6px 2px;
+            }
+            td.pron-cell {
+                font-size: 14px;
+                padding-left: 4px;
+            }
+            .radical {
+                font-size: 14px;
+            }
+            input {
+                font-size: 14px;
+                width: 40px;
+                padding: 3px 2px;
+            }
+            .correction {
+                font-size: 13px;
+                min-width: 40px;
+            }
+            .myButton,
+            .myButton2 {
+                font-size: 16px;
+                padding: 7px 16px;
+                margin: 4px 4px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Réviser les conjugaisons du passé simple en espagnol</h2>
+    <p class="subtitle">Complète les terminaisons pour -AR, -ER et -IR</p>
+
+    <div class="table-wrapper">
+        <table>
+            <thead>
+                <tr>
+                    <th class="pron-col">PRONOMBRES</th>
+                    <th class="verb-col">-AR</th>
+                    <th class="verb-col">-ER</th>
+                    <th class="verb-col">-IR</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Yo -->
+                <tr>
+                    <td class="pron-cell">Yo</td>
+                    <td>
+                        <span class="radical">habl</span><input type="text" id="ar_yo" autocomplete="off" placeholder="">
+                        <span class="correction" id="corr_ar_yo"></span>
+                    </td>
+                    <td>
+                        <span class="radical">aprend</span><input type="text" id="er_yo" autocomplete="off" placeholder="">
+                        <span class="correction" id="corr_er_yo"></span>
+                    </td>
+                    <td>
+                        <span class="radical">escrib</span><input type="text" id="ir_yo" autocomplete="off" placeholder="">
+                        <span class="correction" id="corr_ir_yo"></span>
+                    </td>
+                </tr>
+                <!-- Tú -->
+                <tr>
+                    <td class="pron-cell">Tú</td>
+                    <td>
+                        <span class="radical">habl</span><input type="text" id="ar_tu" autocomplete="off" placeholder="">
+                        <span class="correction" id="corr_ar_tu"></span>
+                    </td>
+                    <td>
+                        <span class="radical">aprend</span><input type="text" id="er_tu" autocomplete="off" placeholder="">
+                        <span class="correction" id="corr_er_tu"></span>
+                    </td>
+                    <td>
+                        <span class="radical">escrib</span><input type="text" id="ir_tu" autocomplete="off" placeholder="">
+                        <span class="correction" id="corr_ir_tu"></span>
+                    </td>
+                </tr>
+                <!-- Él, Ella (Ud retiré) -->
+                <tr>
+                    <td class="pron-cell">Él, Ella</td>
+                    <td>
+                        <span class="radical">habl</span><input type="text" id="ar_el" autocomplete="off" placeholder="">
+                        <span class="correction" id="corr_ar_el"></span>
+                    </td>
+                    <td>
+                        <span class="radical">aprend</span><input type="text" id="er_el" autocomplete="off" placeholder="">
+                        <span class="correction" id="corr_er_el"></span>
+                    </td>
+                    <td>
+                        <span class="radical">escrib</span><input type="text" id="ir_el" autocomplete="off" placeholder="">
+                        <span class="correction" id="corr_ir_el"></span>
+                    </td>
+                </tr>
+                <!-- Nosotros/as -->
+                <tr>
+                    <td class="pron-cell">Nosotros/as</td>
+                    <td>
+                        <span class="radical">habl</span><input type="text" id="ar_nos" autocomplete="off" placeholder="">
+                        <span class="correction" id="corr_ar_nos"></span>
+                    </td>
+                    <td>
+                        <span class="radical">aprend</span><input type="text" id="er_nos" autocomplete="off" placeholder="">
+                        <span class="correction" id="corr_er_nos"></span>
+                    </td>
+                    <td>
+                        <span class="radical">escrib</span><input type="text" id="ir_nos" autocomplete="off" placeholder="">
+                        <span class="correction" id="corr_ir_nos"></span>
+                    </td>
+                </tr>
+                <!-- Vosotros/as -->
+                <tr>
+                    <td class="pron-cell">Vosotros/as</td>
+                    <td>
+                        <span class="radical">habl</span><input type="text" id="ar_vos" autocomplete="off" placeholder="">
+                        <span class="correction" id="corr_ar_vos"></span>
+                    </td>
+                    <td>
+                        <span class="radical">aprend</span><input type="text" id="er_vos" autocomplete="off" placeholder="">
+                        <span class="correction" id="corr_er_vos"></span>
+                    </td>
+                    <td>
+                        <span class="radical">escrib</span><input type="text" id="ir_vos" autocomplete="off" placeholder="">
+                        <span class="correction" id="corr_ir_vos"></span>
+                    </td>
+                </tr>
+                <!-- Ellos/as (Uds retiré) -->
+                <tr>
+                    <td class="pron-cell">Ellos/as</td>
+                    <td>
+                        <span class="radical">habl</span><input type="text" id="ar_ellos" autocomplete="off" placeholder="">
+                        <span class="correction" id="corr_ar_ellos"></span>
+                    </td>
+                    <td>
+                        <span class="radical">aprend</span><input type="text" id="er_ellos" autocomplete="off" placeholder="">
+                        <span class="correction" id="corr_er_ellos"></span>
+                    </td>
+                    <td>
+                        <span class="radical">escrib</span><input type="text" id="ir_ellos" autocomplete="off" placeholder="">
+                        <span class="correction" id="corr_ir_ellos"></span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="button-row">
+        <a href="#" class="myButton" onclick="corriger()">Terminado</a>
+        <a href="#" class="myButton2" onclick="reinitialiser()">Réinitialiser</a>
+    </div>
+
+    <script>
+        // =============================================
+        // Clé des réponses : terminaisons du passé simple
+        // =============================================
+        const reponses = [
+            // -AR : hablar (radical "habl")
+            { inputId: 'ar_yo',    correct: 'é',      corrId: 'corr_ar_yo' },
+            { inputId: 'ar_tu',    correct: 'aste',   corrId: 'corr_ar_tu' },
+            { inputId: 'ar_el',    correct: 'ó',      corrId: 'corr_ar_el' },
+            { inputId: 'ar_nos',   correct: 'amos',   corrId: 'corr_ar_nos' },
+            { inputId: 'ar_vos',   correct: 'asteis', corrId: 'corr_ar_vos' },
+            { inputId: 'ar_ellos', correct: 'aron',   corrId: 'corr_ar_ellos' },
+
+            // -ER : aprender (radical "aprend")
+            { inputId: 'er_yo',    correct: 'í',      corrId: 'corr_er_yo' },
+            { inputId: 'er_tu',    correct: 'iste',   corrId: 'corr_er_tu' },
+            { inputId: 'er_el',    correct: 'ió',     corrId: 'corr_er_el' },
+            { inputId: 'er_nos',   correct: 'imos',   corrId: 'corr_er_nos' },
+            { inputId: 'er_vos',   correct: 'isteis', corrId: 'corr_er_vos' },
+            { inputId: 'er_ellos', correct: 'ieron',  corrId: 'corr_er_ellos' },
+
+            // -IR : escribir (radical "escrib")
+            { inputId: 'ir_yo',    correct: 'í',      corrId: 'corr_ir_yo' },
+            { inputId: 'ir_tu',    correct: 'iste',   corrId: 'corr_ir_tu' },
+            { inputId: 'ir_el',    correct: 'ió',     corrId: 'corr_ir_el' },
+            { inputId: 'ir_nos',   correct: 'imos',   corrId: 'corr_ir_nos' },
+            { inputId: 'ir_vos',   correct: 'isteis', corrId: 'corr_ir_vos' },
+            { inputId: 'ir_ellos', correct: 'ieron',  corrId: 'corr_ir_ellos' },
+        ];
+
+        /**
+         * Normalise une chaîne pour comparaison souple :
+         * - suppression des accents (NFD)
+         * - minuscules
+         * - trim
+         */
+        function normaliser(texte) {
+            return texte
+                .trim()
+                .toLowerCase()
+                .normalize('NFD')
+                .replace(/[\u0300-\u036f]/g, '');
+        }
+
+        /**
+         * Vérifie toutes les réponses et affiche la correction.
+         */
+        function corriger() {
+            reponses.forEach(function(item) {
+                const inputEl = document.getElementById(item.inputId);
+                const corrEl = document.getElementById(item.corrId);
+                const saisieBrute = inputEl.value;
+                const saisieNormalisee = normaliser(saisieBrute);
+                const correctNormalise = normaliser(item.correct);
+
+                // Cas 1 : champ vide
+                if (saisieBrute.trim() === '') {
+                    inputEl.value = item.correct;
+                    inputEl.style.color = 'red';
+                    corrEl.innerHTML = '';
+                }
+                // Cas 2 : réponse correcte (avec ou sans accent)
+                else if (saisieNormalisee === correctNormalise) {
+                    inputEl.style.color = 'black';
+                    corrEl.innerHTML = '✓';
+                    corrEl.style.color = 'green';
+                }
+                // Cas 3 : réponse incorrecte
+                else {
+                    inputEl.style.color = 'black';
+                    corrEl.innerHTML = '✕ ' + item.correct;
+                    corrEl.style.color = 'red';
+                }
+            });
+        }
+
+        /**
+         * Réinitialise tous les champs et corrections.
+         */
+        function reinitialiser() {
+            reponses.forEach(function(item) {
+                const inputEl = document.getElementById(item.inputId);
+                const corrEl = document.getElementById(item.corrId);
+
+                inputEl.value = '';
+                inputEl.style.color = 'black';
+                corrEl.innerHTML = '';
+                corrEl.style.color = '';
+            });
+        }
+
+        // Permet de valider avec la touche "Entrée"
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                corriger();
+            }
+        });
+    </script>
+</body>
+</html>

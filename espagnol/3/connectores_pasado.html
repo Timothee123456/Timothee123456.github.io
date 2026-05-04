@@ -2,95 +2,84 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Réviser les connecteurs pour raconter des histoires en espagnol</title>
     <style>
-        * {
-            box-sizing: border-box;
-        }
-
         body {
             min-height: 100vh;
             background-color: #02fae9;
-            background-image: linear-gradient(to bottom right, #02fae9, #fff59d);
-            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            margin: 0;
-            padding: 20px 16px;
+            background-image: linear-gradient(to bottom right, #02fae9, yellow);
+            font-family: Arial, sans-serif;
+            padding: 20px 0;
         }
 
         h2 {
             font-size: 38px;
-            color: #1e2a3e;
-            margin-bottom: 6px;
+            color: #333;
+            margin-bottom: 5px;
             text-align: center;
-            font-weight: 700;
-            letter-spacing: -0.2px;
         }
 
         .subtitle {
             font-size: 20px;
-            color: #2c3e2f;
+            color: #555;
             text-align: center;
-            margin-bottom: 32px;
-            font-weight: 500;
-            background: rgba(255,255,240,0.6);
-            display: inline-block;
-            width: auto;
-            margin-left: auto;
-            margin-right: auto;
-            padding: 6px 20px;
-            border-radius: 60px;
-            backdrop-filter: blur(2px);
+            margin-bottom: 30px;
         }
 
         .table-wrapper {
-            max-width: 1000px;
-            margin: 0 auto 28px auto;
+            max-width: 900px;
+            margin: 0 auto 25px auto;
             overflow-x: auto;
             -webkit-overflow-scrolling: touch;
-            border-radius: 24px;
-            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.2);
         }
 
         table {
             border-collapse: collapse;
-            background-color: rgba(255, 255, 245, 0.94);
+            margin: 0 auto 20px auto;
+            background-color: rgba(255, 255, 255, 0.85);
+            border-radius: 16px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
             width: 100%;
-            min-width: 520px;
-            backdrop-filter: blur(1px);
+            min-width: 500px;
         }
 
         tr.category-row th {
-            background-color: #1e3c2c;
-            color: #f9f3d9;
-            padding: 14px 18px;
-            font-size: 22px;
-            font-weight: 600;
-            text-align: left;
-            letter-spacing: 0.3px;
-            border-bottom: 3px solid #ffcd7e;
-        }
-
-        th.col-fr, th.col-es {
-            background-color: #2d4a3b;
+            background-color: #333;
             color: white;
-            padding: 12px 16px;
-            font-size: 18px;
-            font-weight: 600;
+            padding: 14px 16px;
+            font-size: 20px;
             text-align: left;
+            letter-spacing: 0.5px;
+            white-space: nowrap;
+            border-bottom: 2px solid #555;
         }
 
         th.col-fr {
-            width: 48%;
+            width: 50%;
+            min-width: 200px;
+            background-color: #444;
+            color: white;
+            padding: 12px 16px;
+            font-size: 18px;
+            text-align: left;
         }
+
         th.col-es {
-            width: 52%;
+            width: 50%;
+            min-width: 280px;
+            background-color: #444;
+            color: white;
+            padding: 12px 16px;
+            font-size: 18px;
+            text-align: left;
         }
 
         td {
-            padding: 14px 16px;
-            border-bottom: 1px solid #ddd8c0;
-            font-size: 17px;
+            padding: 12px 16px;
+            border-bottom: 1px solid #ddd;
+            font-size: 18px;
             vertical-align: middle;
         }
 
@@ -99,307 +88,452 @@
         }
 
         tr:nth-child(even) td {
-            background-color: rgba(245, 250, 220, 0.7);
+            background-color: rgba(240, 248, 255, 0.7);
         }
         tr:nth-child(odd) td {
-            background-color: rgba(255, 255, 245, 0.9);
+            background-color: rgba(255, 255, 255, 0.5);
         }
 
         td.fr-cell {
-            font-weight: 550;
-            color: #1f2a1b;
-            font-size: 17px;
-            line-height: 1.3;
+            font-weight: 500;
+            color: #111;
+            text-align: left;
+            white-space: normal;
+            word-wrap: break-word;
         }
 
         td.es-cell {
-            white-space: normal;
-            display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-            gap: 10px;
+            text-align: left;
+            white-space: nowrap;
         }
 
         input {
-            font-size: 16px;
-            flex: 2;
-            min-width: 200px;
-            padding: 10px 12px;
-            border: 2px solid #bcb88a;
-            border-radius: 40px;
-            background-color: #fffef7;
-            transition: all 0.2s;
-            font-family: 'Segoe UI', monospace;
+            font-size: 18px;
+            width: 260px;
+            padding: 8px 10px;
+            border: 2px solid #bbb;
+            border-radius: 6px;
+            text-align: left;
+            background-color: #fffef9;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            vertical-align: middle;
+            margin-right: 8px;
         }
 
         input:focus {
             outline: none;
-            border-color: #1e6b4c;
-            box-shadow: 0 0 0 3px rgba(30, 107, 76, 0.25);
+            border-color: #04AA6D;
+            box-shadow: 0 0 0 3px rgba(4, 170, 109, 0.15);
         }
 
         .correction {
             display: inline-block;
-            font-size: 16px;
-            font-weight: 600;
-            min-width: 65px;
-            white-space: normal;
-            word-break: break-word;
-            background: #fef5e0;
-            padding: 4px 10px;
-            border-radius: 36px;
-            text-align: center;
+            min-width: 70px;
+            font-size: 18px;
+            font-weight: bold;
+            vertical-align: middle;
+            white-space: nowrap;
         }
 
         .button-row {
             text-align: center;
-            margin: 30px auto 20px;
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-            gap: 18px;
-        }
-
-        .myButton, .myButton2 {
-            font-size: 22px;
-            padding: 10px 32px;
-            border-radius: 56px;
-            border: none;
-            font-weight: bold;
-            cursor: pointer;
-            transition: transform 0.1s, box-shadow 0.1s;
-            text-decoration: none;
-            display: inline-block;
-            text-align: center;
-            box-shadow: 0 5px 0 rgba(0, 0, 0, 0.2);
+            margin-top: 30px;
         }
 
         .myButton {
-            background: linear-gradient(135deg, #d93b21, #b12a12);
-            color: white;
-            text-shadow: 1px 1px 0 #631a0a;
+            box-shadow: 2px 3px 0px 0px #8a2a21;
+            background: linear-gradient(to bottom, #c62d1f 5%, #f24437 100%);
+            background-color: #c62d1f;
+            border-radius: 42px;
+            display: inline-block;
+            cursor: pointer;
+            color: #ffffff;
+            font-family: Arial;
+            font-size: 22px;
+            padding: 10px 28px;
+            text-decoration: none;
+            text-shadow: 1px -1px 3px #810e05;
+            border: none;
+            margin: 0 12px;
+            transition: all 0.15s ease;
         }
         .myButton:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 7px 0 rgba(0, 0, 0, 0.2);
-            background: linear-gradient(135deg, #e6512c, #c43218);
+            background: linear-gradient(to bottom, #f24437 5%, #c62d1f 100%);
+            background-color: #f24437;
+            transform: translateY(-1px);
+            box-shadow: 2px 4px 0px 0px #8a2a21;
         }
         .myButton:active {
-            transform: translateY(3px);
-            box-shadow: 0 2px 0 rgba(0, 0, 0, 0.2);
+            position: relative;
+            top: 2px;
+            box-shadow: 1px 1px 0px 0px #8a2a21;
         }
 
         .myButton2 {
-            background: linear-gradient(135deg, #2f7d8c, #1c5d6b);
-            color: white;
-            text-shadow: 1px 1px 0 #0a3b44;
+            box-shadow: 0px 1px 0px -3px #f0f7fa;
+            background: linear-gradient(to bottom, #33bdef 5%, #019ad2 100%);
+            background-color: #33bdef;
+            border-radius: 42px;
+            border: 2px solid #057fd0;
+            display: inline-block;
+            cursor: pointer;
+            color: #ffffff;
+            font-family: Arial;
+            font-size: 22px;
+            padding: 10px 28px;
+            text-decoration: none;
+            text-shadow: 3px -2px 4px #5b6178;
+            margin: 0 12px;
+            transition: all 0.15s ease;
         }
         .myButton2:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 7px 0 rgba(0, 0, 0, 0.2);
-            background: linear-gradient(135deg, #3f95a8, #236f7e);
+            background: linear-gradient(to bottom, #019ad2 5%, #33bdef 100%);
+            background-color: #019ad2;
+            transform: translateY(-1px);
+            box-shadow: 0px 2px 0px -2px #f0f7fa;
         }
         .myButton2:active {
-            transform: translateY(3px);
-            box-shadow: 0 2px 0 rgba(0, 0, 0, 0.2);
+            position: relative;
+            top: 2px;
+            box-shadow: 0px 0px 0px -3px #f0f7fa;
         }
 
-        @media screen and (max-width: 720px) {
-            h2 { font-size: 28px; }
-            .subtitle { font-size: 16px; padding: 4px 14px; }
-            th, td { padding: 10px 10px; }
-            td.es-cell { flex-direction: column; align-items: stretch; gap: 8px; }
-            input { width: 100%; min-width: auto; }
-            .correction { text-align: center; }
-            .myButton, .myButton2 { font-size: 18px; padding: 8px 24px; }
+        @media screen and (max-width: 768px) {
+            h2 {
+                font-size: 28px;
+            }
+            .subtitle {
+                font-size: 17px;
+            }
+            table {
+                min-width: 450px;
+            }
+            th {
+                font-size: 16px;
+                padding: 10px 8px;
+            }
+            td {
+                font-size: 16px;
+                padding: 8px 8px;
+            }
+            input {
+                font-size: 16px;
+                width: 200px;
+                padding: 6px 8px;
+            }
+            .correction {
+                font-size: 15px;
+                min-width: 50px;
+            }
+            .myButton,
+            .myButton2 {
+                font-size: 18px;
+                padding: 8px 20px;
+                margin: 5px 6px;
+            }
         }
+
         @media screen and (max-width: 480px) {
-            th.col-fr, th.col-es { font-size: 15px; }
-            td.fr-cell { font-size: 15px; }
-            .correction { font-size: 13px; }
-        }
-        footer {
-            text-align: center;
-            font-size: 13px;
-            margin-top: 20px;
-            color: #2d3e2b;
-            opacity: 0.8;
+            h2 {
+                font-size: 23px;
+            }
+            .subtitle {
+                font-size: 15px;
+            }
+            table {
+                min-width: 360px;
+            }
+            th {
+                font-size: 14px;
+                padding: 8px 5px;
+            }
+            td {
+                font-size: 14px;
+                padding: 6px 5px;
+            }
+            input {
+                font-size: 14px;
+                width: 150px;
+                padding: 5px 6px;
+            }
+            .correction {
+                font-size: 13px;
+                min-width: 40px;
+            }
+            .myButton,
+            .myButton2 {
+                font-size: 16px;
+                padding: 7px 16px;
+                margin: 4px 4px;
+            }
         }
     </style>
 </head>
 <body>
 
-<h2>📖 Raconter des histoires en espagnol</h2>
-<p class="subtitle">✍️ Écris le connecteur espagnol (sans te soucier des accents, majuscules ou ponctuation)</p>
+    <h2>Réviser les connecteurs pour raconter des histoires en espagnol</h2>
+    <p class="subtitle">Écris le connecteur espagnol correspondant à chaque expression française</p>
 
-<!-- Tableau 1 : IMPERFECTO (début) -->
-<div class="table-wrapper">
-    <table>
-        <tr class="category-row"><th colspan="2">🔹 Con IMPERFECTO (pour commencer l'histoire)</th></tr>
-        <tr><th class="col-fr">Français</th><th class="col-es">Espagnol</th></tr>
-        <tr><td class="fr-cell">Il était une fois...</td><td class="es-cell"><input type="text" id="c1" autocomplete="off" placeholder="Votre réponse"><span class="correction" id="corr_c1"></span></td></tr>
-        <tr><td class="fr-cell">Il y avait une fois...</td><td class="es-cell"><input type="text" id="c2" autocomplete="off" placeholder="Votre réponse"><span class="correction" id="corr_c2"></span></td></tr>
-        <tr><td class="fr-cell">Il y a très, très longtemps...</td><td class="es-cell"><input type="text" id="c3" autocomplete="off" placeholder="Votre réponse"><span class="correction" id="corr_c3"></span></td></tr>
-    </table>
-</div>
+    <!-- Tableau : Con IMPERFECTO -->
+    <div class="table-wrapper">
+        <table>
+            <tr class="category-row">
+                <th colspan="2">🔹 Con IMPERFECTO (pour commencer)</th>
+            </tr>
+            <tr>
+                <th class="col-fr">Français</th>
+                <th class="col-es">Espagnol</th>
+            </tr>
+            <tr>
+                <td class="fr-cell">Il était une fois...</td>
+                <td class="es-cell">
+                    <input type="text" id="c1" autocomplete="off" placeholder="">
+                    <span class="correction" id="corr_c1"></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="fr-cell">Il y avait une fois...</td>
+                <td class="es-cell">
+                    <input type="text" id="c2" autocomplete="off" placeholder="">
+                    <span class="correction" id="corr_c2"></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="fr-cell">Il y a très, très longtemps...</td>
+                <td class="es-cell">
+                    <input type="text" id="c3" autocomplete="off" placeholder="">
+                    <span class="correction" id="corr_c3"></span>
+                </td>
+            </tr>
+        </table>
+    </div>
 
-<!-- Tableau 2 : PASADO SIMPLE (actions et enchaînements) -->
-<div class="table-wrapper">
-    <table>
-        <tr class="category-row"><th colspan="2">🔹 Con PASADO SIMPLE (déroulement & actions clés)</th></tr>
-        <tr><th class="col-fr">Français</th><th class="col-es">Espagnol</th></tr>
-        <tr><td class="fr-cell">À ce moment-là...</td><td class="es-cell"><input type="text" id="c4" autocomplete="off" placeholder="Votre réponse"><span class="correction" id="corr_c4"></span></td></tr>
-        <tr><td class="fr-cell">À cet instant précis...</td><td class="es-cell"><input type="text" id="c5" autocomplete="off" placeholder="Votre réponse"><span class="correction" id="corr_c5"></span></td></tr>
-        <tr><td class="fr-cell">Alors...</td><td class="es-cell"><input type="text" id="c6" autocomplete="off" placeholder="Votre réponse"><span class="correction" id="corr_c6"></span></td></tr>
-        <tr><td class="fr-cell">Peu de temps après...</td><td class="es-cell"><input type="text" id="c7" autocomplete="off" placeholder="Votre réponse"><span class="correction" id="corr_c7"></span></td></tr>
-        <tr><td class="fr-cell">Le jour/le mois suivant...</td><td class="es-cell"><input type="text" id="c8" autocomplete="off" placeholder="Votre réponse"><span class="correction" id="corr_c8"></span></td></tr>
-        <tr><td class="fr-cell">Soudain...</td><td class="es-cell"><input type="text" id="c9" autocomplete="off" placeholder="Votre réponse"><span class="correction" id="corr_c9"></span></td></tr>
-        <tr><td class="fr-cell">Tout à coup...</td><td class="es-cell"><input type="text" id="c10" autocomplete="off" placeholder="Votre réponse"><span class="correction" id="corr_c10"></span></td></tr>
-        <tr><td class="fr-cell">Des heures / jours / mois / ans plus tard...</td><td class="es-cell"><input type="text" id="c11" autocomplete="off" placeholder="Votre réponse"><span class="correction" id="corr_c11"></span></td></tr>
-        <tr><td class="fr-cell">Au bout d'un moment...</td><td class="es-cell"><input type="text" id="c12" autocomplete="off" placeholder="Votre réponse"><span class="correction" id="corr_c12"></span></td></tr>
-        <tr><td class="fr-cell">Un jour...</td><td class="es-cell"><input type="text" id="c13" autocomplete="off" placeholder="Votre réponse"><span class="correction" id="corr_c13"></span></td></tr>
-        <tr><td class="fr-cell">Ensuite...</td><td class="es-cell"><input type="text" id="c14" autocomplete="off" placeholder="Votre réponse"><span class="correction" id="corr_c14"></span></td></tr>
-    </table>
-</div>
+    <!-- Tableau : Con PASADO SIMPLE -->
+    <div class="table-wrapper">
+        <table>
+            <tr class="category-row">
+                <th colspan="2">🔹 Con PASADO SIMPLE</th>
+            </tr>
+            <tr>
+                <th class="col-fr">Français</th>
+                <th class="col-es">Espagnol</th>
+            </tr>
+            <tr>
+                <td class="fr-cell">À ce moment-là...</td>
+                <td class="es-cell">
+                    <input type="text" id="c4" autocomplete="off" placeholder="">
+                    <span class="correction" id="corr_c4"></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="fr-cell">À cet instant précis...</td>
+                <td class="es-cell">
+                    <input type="text" id="c5" autocomplete="off" placeholder="">
+                    <span class="correction" id="corr_c5"></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="fr-cell">Alors...</td>
+                <td class="es-cell">
+                    <input type="text" id="c6" autocomplete="off" placeholder="">
+                    <span class="correction" id="corr_c6"></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="fr-cell">Peu de temps après...</td>
+                <td class="es-cell">
+                    <input type="text" id="c7" autocomplete="off" placeholder="">
+                    <span class="correction" id="corr_c7"></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="fr-cell">Le jour/le mois suivant...</td>
+                <td class="es-cell">
+                    <input type="text" id="c8" autocomplete="off" placeholder="">
+                    <span class="correction" id="corr_c8"></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="fr-cell">Soudain...</td>
+                <td class="es-cell">
+                    <input type="text" id="c9" autocomplete="off" placeholder="">
+                    <span class="correction" id="corr_c9"></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="fr-cell">Tout à coup...</td>
+                <td class="es-cell">
+                    <input type="text" id="c10" autocomplete="off" placeholder="">
+                    <span class="correction" id="corr_c10"></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="fr-cell">Des heures / jours / mois / ans plus tard...</td>
+                <td class="es-cell">
+                    <input type="text" id="c11" autocomplete="off" placeholder="">
+                    <span class="correction" id="corr_c11"></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="fr-cell">Au bout d'un moment...</td>
+                <td class="es-cell">
+                    <input type="text" id="c12" autocomplete="off" placeholder="">
+                    <span class="correction" id="corr_c12"></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="fr-cell">Un jour...</td>
+                <td class="es-cell">
+                    <input type="text" id="c13" autocomplete="off" placeholder="">
+                    <span class="correction" id="corr_c13"></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="fr-cell">Ensuite...</td>
+                <td class="es-cell">
+                    <input type="text" id="c14" autocomplete="off" placeholder="">
+                    <span class="correction" id="corr_c14"></span>
+                </td>
+            </tr>
+        </table>
+    </div>
 
-<!-- Tableau 3 : IMPERFECTO + PASADO SIMPLE (simultanéité) + formules de fin -->
-<div class="table-wrapper">
-    <table>
-        <tr class="category-row"><th colspan="2">🔹 Con IMPERFECTO y PASADO SIMPLE (simultanéité)</th></tr>
-        <tr><th class="col-fr">Français</th><th class="col-es">Espagnol</th></tr>
-        <tr><td class="fr-cell">Tandis que [imparfait]..., [passé simple]...</td><td class="es-cell"><input type="text" id="c15" autocomplete="off" placeholder="Votre réponse"><span class="correction" id="corr_c15"></span></td></tr>
-        <tr class="category-row"><th colspan="2">🔹 Para terminar (conclusions)</th></tr>
-        <tr><td class="fr-cell">Et voilà, l'histoire est finie (formule traditionnelle)</td><td class="es-cell"><input type="text" id="c16" autocomplete="off" placeholder="Votre réponse"><span class="correction" id="corr_c16"></span></td></tr>
-        <tr><td class="fr-cell">Ici se termine l'histoire, les personnages furent heureux et mangèrent des perdrix</td><td class="es-cell"><input type="text" id="c17" autocomplete="off" placeholder="Votre réponse"><span class="correction" id="corr_c17"></span></td></tr>
-    </table>
-</div>
+    <!-- Tableau : Con IMPERFECTO y PASADO SIMPLE -->
+    <div class="table-wrapper">
+        <table>
+            <tr class="category-row">
+                <th colspan="2">🔹 Con IMPERFECTO y PASADO SIMPLE</th>
+            </tr>
+            <tr>
+                <th class="col-fr">Français</th>
+                <th class="col-es">Espagnol</th>
+            </tr>
+            <tr>
+                <td class="fr-cell">Tandis que [imparfait]..., [passé simple]...</td>
+                <td class="es-cell">
+                    <input type="text" id="c15" autocomplete="off" placeholder="">
+                    <span class="correction" id="corr_c15"></span>
+                </td>
+            </tr>
+            <tr class="category-row">
+                <th colspan="2">🔹 Para terminar</th>
+            </tr>
+            <tr>
+                <td class="fr-cell">Et voilà, l'histoire est finie (formule traditionnelle)</td>
+                <td class="es-cell">
+                    <input type="text" id="c16" autocomplete="off" placeholder="">
+                    <span class="correction" id="corr_c16"></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="fr-cell">Ici se termine l'histoire, les personnages furent heureux et mangèrent des perdrix</td>
+                <td class="es-cell">
+                    <input type="text" id="c17" autocomplete="off" placeholder="">
+                    <span class="correction" id="corr_c17"></span>
+                </td>
+            </tr>
+        </table>
+    </div>
 
-<div class="button-row">
-    <button class="myButton" onclick="corriger()">✔ Terminado</button>
-    <button class="myButton2" onclick="reinitialiser()">⟳ Réinitialiser</button>
-</div>
-<footer>📌 Conseil : accents, ponctuation, majuscules (et même les points de suspension) sont ignorés. Concentre-toi sur les mots.</footer>
+    <div class="button-row">
+        <a href="#" class="myButton" onclick="corriger()">Terminado</a>
+        <a href="#" class="myButton2" onclick="reinitialiser()">Réinitialiser</a>
+    </div>
 
-<script>
-    // ---------- BASE DE DONNÉES DES CONNECTEURS (avec la forme officielle complète) ----------
-    const connecteurs = [
-        { inputId: 'c1',  correct: 'Érase una vez...',        corrId: 'corr_c1' },
-        { inputId: 'c2',  correct: 'Había una vez...',        corrId: 'corr_c2' },
-        { inputId: 'c3',  correct: 'Hace mucho, mucho tiempo...', corrId: 'corr_c3' },
-        { inputId: 'c4',  correct: 'En ese momento...',       corrId: 'corr_c4' },
-        { inputId: 'c5',  correct: 'En ese preciso instante...', corrId: 'corr_c5' },
-        { inputId: 'c6',  correct: 'Entonces...',             corrId: 'corr_c6' },
-        { inputId: 'c7',  correct: 'Al poco tiempo...',       corrId: 'corr_c7' },
-        { inputId: 'c8',  correct: 'Al día siguiente...',     corrId: 'corr_c8' },    // simplification pour "le jour suivant" (le plus courant)
-        { inputId: 'c9',  correct: 'De repente...',           corrId: 'corr_c9' },
-        { inputId: 'c10', correct: 'De pronto...',            corrId: 'corr_c10' },
-        { inputId: 'c11', correct: 'Horas después...',        corrId: 'corr_c11' },    // forme générique mais flexible (on tolère les variantes via normalisation)
-        { inputId: 'c12', correct: 'Al cabo de un rato...',   corrId: 'corr_c12' },
-        { inputId: 'c13', correct: 'Un día...',               corrId: 'corr_c13' },
-        { inputId: 'c14', correct: 'Después...',              corrId: 'corr_c14' },
-        { inputId: 'c15', correct: 'Mientras que [imperfecto]..., [pasado simple]...', corrId: 'corr_c15' },
-        { inputId: 'c16', correct: 'Y colorín, colorado, esta historia se ha acabado.', corrId: 'corr_c16' },
-        { inputId: 'c17', correct: 'Aquí termina la historia donde los personajes fueron felices y comieron perdices.', corrId: 'corr_c17' }
-    ];
+    <script>
+        // ========== DONNÉES DES CONNECTEURS (uniquement modifié pour c15 et gestion des ponctuations) ==========
+        // chaque objet contient l'id de l'input, la réponse correcte affichée (avec ponctuation / forme attendue),
+        // et l'id du span de correction.
+        // Remarque : pour "Mientras que", on accepte uniquement l'expression sans les crochets ni explications.
+        const connecteurs = [
+            { inputId: 'c1',  correct: 'Érase una vez...',        corrId: 'corr_c1' },
+            { inputId: 'c2',  correct: 'Había una vez...',        corrId: 'corr_c2' },
+            { inputId: 'c3',  correct: 'Hace mucho, mucho tiempo...', corrId: 'corr_c3' },
+            { inputId: 'c4',  correct: 'En ese momento...',       corrId: 'corr_c4' },
+            { inputId: 'c5',  correct: 'En ese preciso instante...', corrId: 'corr_c5' },
+            { inputId: 'c6',  correct: 'Entonces...',             corrId: 'corr_c6' },
+            { inputId: 'c7',  correct: 'Al poco tiempo...',       corrId: 'corr_c7' },
+            { inputId: 'c8',  correct: 'Al día/mes siguiente...', corrId: 'corr_c8' },
+            { inputId: 'c9',  correct: 'De repente...',           corrId: 'corr_c9' },
+            { inputId: 'c10', correct: 'De pronto...',            corrId: 'corr_c10' },
+            { inputId: 'c11', correct: 'Horas/Días/Meses/Años después...', corrId: 'corr_c11' },
+            { inputId: 'c12', correct: 'Al cabo de un rato...',   corrId: 'corr_c12' },
+            { inputId: 'c13', correct: 'Un día...',               corrId: 'corr_c13' },
+            { inputId: 'c14', correct: 'Después...',              corrId: 'corr_c14' },
+            // modification demandée : on attend simplement "Mientras que" (sans les crochets ni les commentaires)
+            { inputId: 'c15', correct: 'Mientras que',            corrId: 'corr_c15' },
+            { inputId: 'c16', correct: 'Y colorín, colorado, esta historia se ha acabado.', corrId: 'corr_c16' },
+            { inputId: 'c17', correct: 'Aquí termina la historia donde los personajes fueron felices y comieron perdices.', corrId: 'corr_c17' }
+        ];
 
-    // --------------------------------------------------------------
-    // NORMALISATION : ignore TOTALE ponctuation, accents, majuscules,
-    // espaces multiples, et même les caractères comme [ ] / , . ! ? ; : etc.
-    // Seules les lettres a-z et les espaces comptent.
-    // Cela correspond à la consigne "ignorer la ponctuation dans la correction"
-    // --------------------------------------------------------------
-    function normaliser(texte) {
-        if (!texte) return '';
-        return texte
-            .trim()
-            .toLowerCase()
-            .normalize('NFD')                     // décompose accents (é -> e + ́)
-            .replace(/[\u0300-\u036f]/g, '')     // supprime les diacritiques
-            .replace(/[^a-z\s]/g, '')            // garde seulement lettres + espaces (enlève ponctuation, chiffres, slashs, crochets, points, virgules, etc.)
-            .replace(/\s+/g, ' ')                // unifie espaces multiples
-            .trim();
-    }
-
-    // Fonction de correction (comparaison insensible à la ponctuation)
-    function corriger() {
-        connecteurs.forEach(item => {
-            const inputEl = document.getElementById(item.inputId);
-            const corrSpan = document.getElementById(item.corrId);
-            if (!inputEl || !corrSpan) return;
-
-            const userRaw = inputEl.value;
-            const userNorm = normaliser(userRaw);
-            const correctNorm = normaliser(item.correct);
-
-            // Cas particulier : champ vide => on remplit automatiquement avec la réponse exacte
-            if (userRaw.trim() === '') {
-                inputEl.value = item.correct;
-                inputEl.style.color = '#b13e2d';
-                inputEl.style.fontWeight = '500';
-                corrSpan.innerHTML = '';
-                corrSpan.style.color = '';
-                return;
-            }
-
-            // Comparaison normalisée (ponctuation totalement ignorée)
-            if (userNorm === correctNorm) {
-                // BONNE RÉPONSE
-                inputEl.style.color = '#1f5e3a';
-                inputEl.style.fontWeight = '500';
-                corrSpan.innerHTML = '✓';
-                corrSpan.style.color = '#1f7a4c';
-                corrSpan.style.fontWeight = 'bold';
-                corrSpan.style.background = '#e0ffe6';
-            } else {
-                // RÉPONSE INCORRECTE -> afficher la forme exacte attendue
-                inputEl.style.color = '#2c2c2c';
-                inputEl.style.fontWeight = 'normal';
-                corrSpan.innerHTML = '✕ ' + item.correct;
-                corrSpan.style.color = '#c13b1b';
-                corrSpan.style.fontWeight = '500';
-                corrSpan.style.background = '#ffe5df';
-            }
-        });
-    }
-
-    // Remise à zéro complète
-    function reinitialiser() {
-        connecteurs.forEach(item => {
-            const inputEl = document.getElementById(item.inputId);
-            const corrSpan = document.getElementById(item.corrId);
-            if (inputEl) {
-                inputEl.value = '';
-                inputEl.style.color = '';
-                inputEl.style.fontWeight = '';
-            }
-            if (corrSpan) {
-                corrSpan.innerHTML = '';
-                corrSpan.style.color = '';
-                corrSpan.style.background = '';
-            }
-        });
-    }
-
-    // Raccourci Entrée (depuis n'importe quel champ)
-    document.addEventListener('keydown', function(e) {
-        if (e.key === 'Enter') {
-            e.preventDefault();
-            corriger();
+        /**
+         * Fonction de normalisation :
+         * - Supprime les accents (NFD + regex)
+         * - Passe en minuscules
+         * - Supprime TOUTE ponctuation sauf les lettres, chiffres, espaces et le caractère '/'
+         *   (les points, virgules, points-virgules, deux-points, points d'exclamation/interrogation,
+         *    points de suspension, crochets, parenthèses, etc. sont ignorés)
+         * - Cela permet de ne pas pénaliser l'utilisateur qui oublie les "..." ou les virgules.
+         * - Exemple : "Érase una vez..." -> "erase una vez" (les trois points sont enlevés)
+         * - Exemple : "Al día/mes siguiente..." -> "al dia/mes siguiente" (le slash est conservé)
+         */
+        function normaliser(texte) {
+            if (!texte) return '';
+            return texte
+                .trim()
+                .toLowerCase()
+                .normalize('NFD')                     // décompose les caractères accentués
+                .replace(/[\u0300-\u036f]/g, '')     // supprime les diacritiques
+                .replace(/[^\p{L}\p{N}\s/]/gu, '');   // garde lettres, chiffres, espaces et slash, supprime le reste (ponctuations)
         }
-    });
 
-    // Ajout d'un placeholder dynamique (aide à la compréhension)
-    // Optionnel : amélioration visuelle pour guider
-    window.addEventListener('DOMContentLoaded', () => {
-        // petite astuce: pour les champs 'c8' et 'c11' on peut rappeler la forme flexible 
-        // mais on ne modifie pas la donnée, uniquement affichage doux
-        const c8Hint = document.getElementById('c8');
-        if (c8Hint) c8Hint.placeholder = "ex: Al día siguiente...";
-        const c11Hint = document.getElementById('c11');
-        if (c11Hint) c11Hint.placeholder = "ex: Horas después... / Días después...";
-        const c15Hint = document.getElementById('c15');
-        if (c15Hint) c15Hint.placeholder = "Mientras que... (structure)";
-    });
-</script>
+        function corriger() {
+            connecteurs.forEach(function(item) {
+                const inputEl = document.getElementById(item.inputId);
+                const corrEl = document.getElementById(item.corrId);
+                const saisieBrute = inputEl.value;
+                const saisieNorm = normaliser(saisieBrute);
+                const bonneNorm = normaliser(item.correct);
+
+                // Cas où l'utilisateur n'a rien saisi : on remplit avec la réponse correcte et affiche une correction
+                if (saisieBrute.trim() === '') {
+                    inputEl.value = item.correct;
+                    inputEl.style.color = 'red';
+                    corrEl.innerHTML = '';
+                } 
+                // Comparaison sans tenir compte de la ponctuation (grâce à normaliser)
+                else if (saisieNorm === bonneNorm) {
+                    inputEl.style.color = 'black';
+                    corrEl.innerHTML = '✓';
+                    corrEl.style.color = 'green';
+                } 
+                // Réponse erronée : on montre la forme correcte complète (avec ponctuation d'origine)
+                else {
+                    inputEl.style.color = 'black';
+                    corrEl.innerHTML = '✕ ' + item.correct;
+                    corrEl.style.color = 'red';
+                }
+            });
+        }
+
+        function reinitialiser() {
+            connecteurs.forEach(function(item) {
+                const inputEl = document.getElementById(item.inputId);
+                const corrEl = document.getElementById(item.corrId);
+                inputEl.value = '';
+                inputEl.style.color = 'black';
+                corrEl.innerHTML = '';
+                corrEl.style.color = '';
+            });
+        }
+
+        // Permet d'appuyer sur "Entrée" pour corriger
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                corriger();
+            }
+        });
+    </script>
 </body>
 </html>

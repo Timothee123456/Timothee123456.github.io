@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Réviser l'espagnol – Portail des exercices</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            background-color: #02fae9;
+            background-image: linear-gradient(to bottom right, #02fae9, yellow);
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+        }
+
+        .portal-container {
+            max-width: 900px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(2px);
+            border-radius: 56px;
+            padding: 2rem 1.5rem;
+            box-shadow: 0 20px 35px rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
+
+        h2 {
+            font-size: 42px;
+            color: #1f2a3e;
+            margin-bottom: 12px;
+            letter-spacing: -0.5px;
+            text-shadow: 2px 2px 4px rgba(255,255,200,0.8);
+        }
+
+        .subtitle {
+            font-size: 22px;
+            color: #2c3e2f;
+            background: rgba(255, 250, 210, 0.6);
+            display: inline-block;
+            padding: 8px 24px;
+            border-radius: 60px;
+            margin-bottom: 40px;
+            font-weight: 500;
+            backdrop-filter: blur(4px);
+        }
+
+        .cards-grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 20px;
+        }
+
+        .card {
+            background: rgba(255, 248, 225, 0.85);
+            backdrop-filter: blur(6px);
+            border-radius: 48px;
+            padding: 30px 20px 35px;
+            width: 260px;
+            transition: transform 0.2s ease, box-shadow 0.2s;
+            box-shadow: 0 12px 20px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 20px 30px rgba(0, 0, 0, 0.2);
+            background: rgba(255, 252, 235, 0.95);
+        }
+
+        .card-icon {
+            font-size: 58px;
+            margin-bottom: 20px;
+            background: #ffffffaa;
+            width: 90px;
+            height: 90px;
+            line-height: 90px;
+            border-radius: 50%;
+            margin-left: auto;
+            margin-right: auto;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        .card h3 {
+            font-size: 28px;
+            color: #222;
+            margin-bottom: 12px;
+            font-weight: 700;
+        }
+
+        .card p {
+            font-size: 16px;
+            color: #3a3a3a;
+            margin-bottom: 28px;
+            padding: 0 10px;
+        }
+
+        /* Boutons identiques au style original "myButton" */
+        .btn-portal {
+            box-shadow: 2px 3px 0px 0px #8a2a21;
+            background: linear-gradient(to bottom, #c62d1f 5%, #f24437 100%);
+            background-color: #c62d1f;
+            border-radius: 42px;
+            display: inline-block;
+            cursor: pointer;
+            color: #ffffff;
+            font-family: Arial, sans-serif;
+            font-size: 20px;
+            font-weight: bold;
+            padding: 12px 28px;
+            text-decoration: none;
+            text-shadow: 1px -1px 3px #810e05;
+            border: none;
+            transition: all 0.15s ease;
+            width: 85%;
+            margin-top: 8px;
+        }
+
+        .btn-portal:hover {
+            background: linear-gradient(to bottom, #f24437 5%, #c62d1f 100%);
+            background-color: #f24437;
+            transform: translateY(-2px);
+            box-shadow: 2px 5px 0px 0px #8a2a21;
+        }
+
+        .btn-portal:active {
+            position: relative;
+            top: 2px;
+            box-shadow: 1px 1px 0px 0px #8a2a21;
+        }
+
+        /* Variante optionnelle, mais on garde l'esprit original */
+        .footer-note {
+            margin-top: 48px;
+            font-size: 15px;
+            color: #2c3e2f;
+            background: rgba(255,250,180,0.7);
+            display: inline-block;
+            padding: 6px 20px;
+            border-radius: 50px;
+            backdrop-filter: blur(2px);
+        }
+
+        @media screen and (max-width: 780px) {
+            .portal-container {
+                padding: 1.5rem 1rem;
+            }
+            h2 {
+                font-size: 32px;
+            }
+            .subtitle {
+                font-size: 18px;
+                margin-bottom: 30px;
+            }
+            .card {
+                width: 240px;
+                padding: 20px 15px 25px;
+            }
+            .card h3 {
+                font-size: 24px;
+            }
+            .btn-portal {
+                font-size: 18px;
+                padding: 10px 18px;
+            }
+        }
+
+        @media screen and (max-width: 580px) {
+            .cards-grid {
+                gap: 20px;
+            }
+            .card {
+                width: 85%;
+                max-width: 280px;
+            }
+            h2 {
+                font-size: 28px;
+            }
+            .subtitle {
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="portal-container">
+    <h2>🎓 Maîtrise le passé simple</h2>
+    <div class="subtitle">Choisis ton atelier de révision</div>
+
+    <div class="cards-grid">
+        <!-- Carte 1 : verbes réguliers -->
+        <div class="card">
+            <div class="card-icon">📘</div>
+            <h3>Verbes réguliers</h3>
+            <p>-AR, -ER, -IR : terminaisons du passé simple</p>
+            <a href="/pasado_simple_regular.html" class="btn-portal">Commencer →</a>
+        </div>
+
+        <!-- Carte 2 : verbes irréguliers -->
+        <div class="card">
+            <div class="card-icon">⚡</div>
+            <h3>Verbes irréguliers</h3>
+            <p>Ser, ir, tener, hacer, decir… tous les casse-tête</p>
+            <a href="/pasado_simple_irregular.html" class="btn-portal">Commencer →</a>
+        </div>
+
+        <!-- Carte 3 : connecteurs -->
+        <div class="card">
+            <div class="card-icon">🔗</div>
+            <h3>Connecteurs narratifs</h3>
+            <p>“Érase una vez”, “de repente”, “finalmente”…</p>
+            <a href="/connectores_pasado.html" class="btn-portal">Commencer →</a>
+        </div>
+    </div>
+
+    <div class="footer-note">
+        ✨ Clique sur n'importe quel exercice – bon apprentissage ✨
+    </div>
+</div>
+
+</body>
+</html>

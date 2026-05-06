@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DeepSeek Diagnostics Console</title>
+    <style>
+        body { background: #0d1117; color: #c9d1d9; font-family: 'Courier New', monospace; padding: 20px; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .panel { border: 1px solid #30363d; padding: 15px; border-radius: 6px; background: #161b22; }
+        h3 { color: #58a6ff; margin-top: 0; border-bottom: 1px solid #30363d; padding-bottom: 10px;}
+        #log { font-size: 0.85em; height: 300px; overflow-y: auto; color: #7d8590; }
+        .stat-val { color: #aff5b4; font-weight: bold; }
+        .progress-bar { height: 10px; background: #30363d; border-radius: 5px; margin: 10px 0; overflow: hidden; }
+        #fill { height: 100%; width: 0%; background: #238636; transition: width 0.3s; }
+        input { background: #0d1117; border: 1px solid #30363d; color: white; padding: 10px; width: 70%; }
+        button { background: #238636; color: white; border: none; padding: 10px 20px; cursor: pointer; border-radius: 4px; }
+        button:disabled { opacity: 0.3; }
+        .log-entry { margin-bottom: 4px; border-left: 2px solid #30363d; padding-left: 8px; }
+    </style>
+</head>
+<body>
+
+<div class="grid">
+    <!-- HARDWARE DIAGNOSTICS -->
+    <div class="panel">
+        <h3>System Diagnostics</h3>
+        <div id="hw-info">
+            Detecting hardware...
+        </div>
+    </div>
+
+    <!-- LIVE LOADING LOG -->
+    <div class="panel">
+        <h3>Model Loading Log</h3>
+        <div id="log">Initializing engine...</div>
+        <div class="progress-bar"><div id="fill"></div></div>
+    </div>
+</div>
+
+<div class="panel" style="margin-top: 20px;">
+    <h3>DeepSeek-R1 (In-Browser)</h3>
+    <div id="chat" style="height: 200px; overflow-y: auto; margin-bottom: 10px;"></div>
+    <input type="text" id="userInput" placeholder="Wait for loading to complete..." disabled>
+    <button id="sendBtn" disabled>Compute</button>
+</div>
+
+<script type="module">
+    import * as webllm from "https://esm.run";
+
+    const log = document.getElementById("log");
+    const fill = document.getElementById("fill");
+    const hwInfo = document.getElementById("hw-info");
+
+    // 1. DIAGNOSTICS: Check Hardware
+    async function runDiagnostics() {
+        const ram = navigator.deviceMemory || "Unknown"; // Reports RAM in GB
+        const cpu = navigator.hardwareConcurrency || "Unknown"; // Core count
+        
+        let gpuName = "Not Detected";
+        let webGPU = "Unsupported ❌";
+
+        if (navigator.gpu) {
+            webGPU = "Enabled ✅";
+            const adapter = await navigator.gpu.requestAdapter();
+            if (adapter) {
+                const info = await adapter.requestAdapterInfo(); // Gets GPU Name
+                gpuName = info.description || info.vendor || "Generic WebGPU Device";
+            }
+        }
+
+        hwInfo.innerHTML = `
+            <p>System RAM: <span class="stat-val">${ram}GB</span></p>
+            <p>CPU Cores: <span class="stat-val">${cpu}</span></p>
+            <p>GPU: <span class="stat-val">${gpuName}</span></p>
+            <p>WebGPU: <span class="stat-val">${webGPU}</span></p>
+            <p style="font-size:0.8em; color:#8b949e">Note: 8GB RAM + WebGPU required for stability.</p>
+        `;
+    }
+
+    // 2. LOADING: Show Detailed Progress
+    async function startAI() {
+        await runDiagnostics();
+        
+        const engine = await webllm.CreateMLCEngine("DeepSeek-R1-Distill-Qwen-1.5B-q4f16_1-MLC", {
+            initProgressCallback: (report) => {
+                const entry = document.createElement("div");
+                entry.className = "log-entry";
+                entry.innerText = `[${new Date().toLocaleTimeString()}] ${report.text}`;
+                log.appendChild(entry);
+                log.scrollTop = log.scrollHeight;
+                
+                // Extract percentage from report text
+                const match = report.text.match(/(\d+)%/);
+                if (match) fill.style.width = match[1] + "%";
+                
+                if (report.progress === 1) {
+                    document.getElementById("userInput").disabled = false;
+                    document.getElementById("sendBtn").disabled = false;
+                    document.getElementById("userInput").placeholder = "Type your message...";
+                }
+            }
+        });
+
+        // Chat logic remains same as previous step...
+        window.sendMessage = async () => {
+            const input = document.getElementById("userInput");
+            const userText = input.value;
+            if(!userText) return;
+            
+            const chat = document.getElementById("chat");
+            chat.innerHTML += `<div><b>> USER:</b> ${userText}</div>`;
+            input.value = "";
+            
+            const responseDiv = document.createElement("div");
+            chat.appendChild(responseDiv);
+            
+            const chunks = await engine.chat.completions.create({
+                messages: [{ role: "user", content: userText }],
+                stream: true,
+            });
+
+            let fullText = "";
+            for await (const chunk of chunks) {
+                fullText += chunk.choices[0]?.delta.content || "";
+                responseDiv.innerHTML = `<b>> AI:</b> ${fullText}`;
+                chat.scrollTop = chat.scrollHeight;
+            }
+        };
+        document.getElementById("sendBtn").onclick = window.sendMessage;
+    }
+
+    startAI();
+</script>
+</body>
+</html>

@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz SVT – Diversité et stabilité des individus</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#2B7A4B'  // couleur inspirée biologie
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .question-enter {
+            animation: slideIn 0.3s ease-out;
+        }
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        .correct {
+            background-color: #10b981 !important;
+            border-color: #10b981 !important;
+            color: white !important;
+        }
+        .incorrect {
+            background-color: #ef4444 !important;
+            border-color: #ef4444 !important;
+            color: white !important;
+        }
+        .disabled {
+            pointer-events: none;
+            opacity: 0.6;
+        }
+        kbd {
+            background-color: #e5e7eb;
+            border-radius: 0.25rem;
+            padding: 0.125rem 0.375rem;
+            font-family: monospace;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        .dark kbd {
+            background-color: #374151;
+            color: #f3f4f6;
+        }
+    </style>
+</head>
+<body class="bg-white dark:bg-[#181818] text-gray-900 dark:text-gray-100 min-h-screen transition-colors">
+    <div class="container mx-auto px-4 py-8 max-w-3xl">
+        <!-- Header -->
+        <div class="text-center mb-8">
+            <h1 class="text-3xl md:text-4xl font-bold mb-2 text-primary">🧬 Diversité & stabilité des individus</h1>
+            <p class="text-gray-600 dark:text-gray-400 text-base">Mitose, méiose, brassage génétique – Quiz difficile (30 questions)</p>
+        </div>
+
+        <!-- Start Screen -->
+        <div id="startScreen" class="bg-gray-50 dark:bg-gray-800 rounded-lg shadow-lg p-8 text-center">
+            <div class="mb-6">
+                <svg class="w-20 h-20 mx-auto text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"/>
+                </svg>
+            </div>
+            <h2 class="text-2xl font-bold mb-4">Prêt à tester votre maîtrise ?</h2>
+            <p class="text-gray-600 dark:text-gray-400 mb-6 text-base">30 questions exigeantes sur la mitose, la méiose, le brassage, la conservation du caryotype et la diversité génétique.</p>
+            <button onclick="startQuiz()" class="bg-primary hover:bg-opacity-90 text-white font-semibold py-3 px-8 rounded-lg transition-all transform hover:scale-105 text-base">
+                Commencer le quiz
+            </button>
+            <div class="mt-6 text-sm text-gray-500 dark:text-gray-400">
+                <p class="mb-2">⌨️ Raccourcis clavier :</p>
+                <p><kbd>Entrée</kbd> pour commencer &nbsp;|&nbsp; <kbd>1-4</kbd> ou <kbd>A-D</kbd> pour répondre &nbsp;|&nbsp; <kbd>Entrée</kbd> valider/suivant</p>
+            </div>
+        </div>
+
+        <!-- Quiz Screen -->
+        <div id="quizScreen" class="hidden">
+            <!-- Progress Bar -->
+            <div class="mb-6">
+                <div class="flex justify-between items-center mb-2">
+                    <span class="text-sm text-gray-600 dark:text-gray-400">Question <span id="currentQuestion">1</span> / <span id="totalQuestions">30</span></span>
+                    <span class="text-sm font-semibold text-primary"><span id="score">0</span> points</span>
+                </div>
+                <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2.5">
+                    <div id="progressBar" class="bg-primary h-2.5 rounded-full transition-all duration-300" style="width: 0%"></div>
+                </div>
+            </div>
+
+            <!-- Question Card -->
+            <div class="bg-gray-50 dark:bg-gray-800 rounded-lg shadow-lg p-6 md:p-8 mb-6 question-enter">
+                <h3 id="questionText" class="text-xl md:text-2xl font-bold mb-6 text-gray-900 dark:text-gray-100"></h3>
+                <div id="answersContainer" class="space-y-3"></div>
+            </div>
+
+            <!-- Feedback -->
+            <div id="feedback" class="hidden mb-6 p-4 rounded-lg">
+                <p id="feedbackText" class="font-semibold text-base"></p>
+                <p id="explanationText" class="mt-2 text-sm"></p>
+            </div>
+
+            <!-- Next Button -->
+            <div class="text-center">
+                <button id="nextBtn" onclick="nextQuestion()" class="hidden bg-primary hover:bg-opacity-90 text-white font-semibold py-3 px-8 rounded-lg transition-all text-base">
+                    Question suivante →
+                </button>
+                <div class="mt-4 text-sm text-gray-500 dark:text-gray-400">
+                    <p>⌨️ <kbd>1-4</kbd> ou <kbd>A-D</kbd> pour répondre • <kbd>Entrée</kbd> pour valider / continuer</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Results Screen -->
+        <div id="resultsScreen" class="hidden">
+            <div class="bg-gray-50 dark:bg-gray-800 rounded-lg shadow-lg p-8 text-center">
+                <div class="mb-6">
+                    <svg id="resultIcon" class="w-24 h-24 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                </div>
+                <h2 class="text-3xl font-bold mb-4">Quiz terminé !</h2>
+                <p class="text-xl mb-2">Votre score :</p>
+                <p id="finalScore" class="text-5xl font-bold text-primary mb-6">0/30</p>
+                <p id="resultMessage" class="text-gray-600 dark:text-gray-400 mb-8 text-base"></p>
+
+                <div class="bg-white dark:bg-gray-700 rounded-lg p-6 mb-6">
+                    <h3 class="font-semibold mb-4 text-lg">Détails</h3>
+                    <div class="grid grid-cols-3 gap-4 text-center">
+                        <div>
+                            <p class="text-2xl font-bold text-green-500" id="correctCount">0</p>
+                            <p class="text-sm text-gray-600 dark:text-gray-400">Correctes</p>
+                        </div>
+                        <div>
+                            <p class="text-2xl font-bold text-red-500" id="incorrectCount">0</p>
+                            <p class="text-sm text-gray-600 dark:text-gray-400">Incorrectes</p>
+                        </div>
+                        <div>
+                            <p class="text-2xl font-bold text-primary" id="percentageScore">0%</p>
+                            <p class="text-sm text-gray-600 dark:text-gray-400">Réussite</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="mistakesSection" class="mt-6"></div>
+
+                <button onclick="restartQuiz()" class="bg-primary hover:bg-opacity-90 text-white font-semibold py-3 px-8 rounded-lg transition-all transform hover:scale-105 text-base mt-6">
+                    🔄 Recommencer le quiz
+                </button>
+                <div class="mt-4 text-sm text-gray-500 dark:text-gray-400">
+                    <p><kbd>Entrée</kbd> pour recommencer</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- Dark mode détection ---
+        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            document.documentElement.classList.add('dark');
+        }
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
+            if (event.matches) document.documentElement.classList.add('dark');
+            else document.documentElement.classList.remove('dark');
+        });
+
+        // -------- 30 QUESTIONS DIFFICILES (QCM) sur le chapitre "Diversité et stabilité des individus" --------
+        const quizData = [
+            { question: "Que signifie exactement l'expression « chromosome double » d'après le document ?", answers: ["Chromosome possédant deux centromères", "Chromosome constitué de deux molécules d'ADN identiques", "Chromosome ayant deux allèles différents", "Chromosome provenant d’une duplication anormale"], correct: 1, explanation: "Le document définit clairement : « Chromosome double : chromosome constitué de deux molécules d'ADN identiques »." },
+            { question: "Quel est le rôle fondamental de la mitose (division cellulaire) ?", answers: ["Permettre la diversité génétique", "À partir d'une cellule mère, obtenir deux cellules filles identiques", "Réduire le nombre de chromosomes de moitié", "Former les gamètes"], correct: 1, explanation: "Le texte : « La division cellulaire ou mitose, est le mécanisme qui permet, à partir d'une cellule, d'en obtenir deux identiques »." },
+            { question: "Lors de la mitose, comment le caryotype est‑il conservé ?", answers: ["Les chromosomes doubles se séparent en deux chromosomes simples identiques", "L'ADN se réplique deux fois", "Les chromosomes simples se rassemblent en paires", "Les chromatides s’échangent des fragments"], correct: 0, explanation: "Pendant la mitose, les chromosomes doubles se séparent en deux chromosomes simples identiques : chaque cellule fille reçoit un lot de chromosomes simples identiques à la cellule mère." },
+            { question: "Chez l’être humain, avant la mitose (après réplication), une cellule somatique possède :", answers: ["23 paires de chromosomes doubles", "46 chromosomes simples", "23 chromosomes doubles", "46 paires de chromosomes simples"], correct: 0, explanation: "Le document indique : « La cellule possède alors 23 paires de chromosomes doubles chez l’Homme » avant la division." },
+            { question: "Une cellule de jacinthe avant division contient 8 chromosomes doubles. Combien de chromosomes simples chaque cellule fille possède‑t‑elle après mitose ?", answers: ["4 chromosomes simples", "8 chromosomes simples", "16 chromosomes simples", "8 chromosomes doubles"], correct: 1, explanation: "La mitose sépare chaque chromosome double en deux chromosomes simples; donc une cellule mère avec 8 chromosomes doubles donne 8 chromosomes simples par cellule fille." },
+            { question: "Que signifie « brassage des allèles » défini dans le cours ?", answers: ["La mutation aléatoire de l'ADN", "La formation de nouvelles associations d'allèles des gènes portés par les chromosomes", "La suppression de certains allèles", "La réplication identique de l'ADN"], correct: 1, explanation: "Définition donnée : « Brassage des allèles : formation de nouvelles associations d'allèles des gènes portés par les chromosomes »." },
+            { question: "À quel moment la molécule d'ADN se dédouble‑t‑elle pour former des chromosomes doubles ?", answers: ["Au cours de la séparation des chromosomes", "Après la fécondation", "Avant chaque division cellulaire (mitose ou méiose)", "Seulement dans les gamètes"], correct: 2, explanation: "Le texte précise : « Avant chaque division cellulaire, ou mitose, la molécule d'ADN de chaque chromosome simple se dédouble pour former un chromosome double »." },
+            { question: "Quel phénomène se produit lors de la première division de méiose ?", answers: ["Les chromosomes doubles se séparent en deux cellules identiques", "Les chromosomes de chaque paire se répartissent au hasard", "L'ADN se copie une seconde fois", "Les deux chromatides restent attachées"], correct: 1, explanation: "« Les chromosomes de chaque paire se répartissent au hasard au cours de la 1ère division méiose » ⇒ brassage." },
+            { question: "Quelle est la conséquence directe du brassage des allèles lors de la méiose ?", answers: ["Tous les gamètes sont génétiquement différents", "Les gamètes sont tous strictement identiques", "Le caryotype somatique est modifié", "La cellule devient cancéreuse"], correct: 0, explanation: "Le document affirme : « Ainsi, tous les gamètes sont génétiquement différents : ils ne possèdent pas les mêmes allèles »." },
+            { question: "Combien de chromosomes contient un gamète humain (ovule ou spermatozoïde) après méiose ?", answers: ["46 chromosomes (23 paires)", "23 chromosomes simples", "46 chromosomes doubles", "23 paires de chromosomes doubles"], correct: 1, explanation: "Chaque cellule reproductrice ne possède qu’un seul chromosome de chaque paire → 23 chromosomes simples." },
+            { question: "La fécondation contribue à la diversité génétique car :", answers: ["Elle réplique l'ADN des deux parents", "Chaque cellule‑œuf reçoit une combinaison unique d'allèles (un chromosome de chaque paire venant du père et de la mère)", "Elle supprime les allèles récessifs", "Elle fusionne deux gamètes identiques"], correct: 1, explanation: "« Chaque cellule reproductrice est génétiquement unique, chaque cellule‑œuf possède une combinaison d'allèles unique » = second brassage." },
+            { question: "Les deux niveaux de brassage qui génèrent la diversité génétique chez les individus sont :", answers: ["Mitose et méiose", "Méiose et fécondation", "Réplication et mitose", "Fécondation et développement embryonnaire"], correct: 1, explanation: "Le cours détaille : premier brassage lors de la méiose (répartition aléatoire) et second brassage lors de la fécondation." },
+            { question: "Une cellule humaine après mitose possède un caryotype :", answers: ["2n = 46 chromosomes simples", "n = 23 chromosomes doubles", "46 paires de chromosomes", "23 chromosomes simples"], correct: 0, explanation: "La mitose conserve le caryotype diploïde : 46 chromosomes simples (23 paires). Chaque chromosome simple est issu de la séparation." },
+            { question: "Que deviennent les chromosomes doubles lors de la métaphase/anaphase de la mitose ?", answers: ["Ils se répliquent", "Les deux molécules d'ADN du chromosome double se séparent en deux chromosomes simples identiques", "Ils s'échangent des segments", "Ils restent accolés pour former un tétrade"], correct: 1, explanation: "Lors de la mitose, les chromosomes doubles se séparent en deux chromosomes simples identiques." },
+            { question: "Qu'est-ce qui différencie fondamentalement la mitose de la méiose selon le document ?", answers: ["La mitose conserve le caryotype, la méiose produit des gamètes haploïdes avec brassage", "La mitose produit 4 cellules filles", "La méiose n'implique pas de réplication d'ADN", "La mitose n'existe que chez les plantes"], correct: 0, explanation: "Mitose : conservation du caryotype (cellules identiques). Méiose : réduction du nombre de chromosomes et brassage pour diversité." },
+            { question: "La phrase « Un seul allèle pour chaque gène » dans les gamètes est due au fait que :", answers: ["Les allèles sont toujours récessifs", "Chaque gamète ne possède qu’un seul chromosome de chaque paire", "Les gènes sont éliminés", "Le brassage supprime l’autre allèle"], correct: 1, explanation: "Chaque cellule reproductrice ne possède qu'un seul chromosome de chaque paire, donc un seul allèle par gène." },
+            { question: "Chez la jacinthe, si une cellule contient 8 chromosomes doubles avant division, combien de paires de chromosomes homologues possède-t-elle ?", answers: ["8 paires", "4 paires", "2 paires", "16 paires"], correct: 1, explanation: "8 chromosomes doubles = 4 paires de chromosomes homologues (car chaque paire donne 2 chromosomes doubles après réplication)." },
+            { question: "Le « second brassage » dû à la fécondation résulte de :", answers: ["La ségrégation des chromosomes lors de la méiose I", "La réunion aléatoire d’un spermatozoïde et d’un ovule, chacun génétiquement unique", "La mutation du zygote", "La mitose de l'embryon"], correct: 1, explanation: "Fécondation = union de deux gamètes uniques ⇒ combinaison originale d’allèles." },
+            { question: "Pourquoi toutes les cellules somatiques d’un même individu ont-elles le même caryotype ?", answers: ["Car elles dérivent de mitoses successives à partir de la cellule-œuf", "Car elles subissent toutes la méiose", "Car elles n'ont pas d'ADN", "Car elles ne se divisent jamais"], correct: 0, explanation: "Toutes les cellules issues de divisions mitotiques conservent le caryotype initial de la cellule-œuf." },
+            { question: "Dans le document, l’activité 3 sur la transmission de deux caractères montre que :", answers: ["Les allèles de chaque gène se répartissent au hasard lors de la formation des gamètes", "Les deux caractères sont toujours transmis ensemble", "La mitose génère de la variabilité", "Le caryotype change à chaque génération"], correct: 0, explanation: "L’activité précise que les allèles de chaque gène se répartissent au hasard, produisant différentes combinaisons." },
+            { question: "Un individu possède un génotype unique en raison :", answers: ["Des mutations systématiques", "Du brassage lors de la méiose ET de la fécondation", "De l’environnement uniquement", "De l’absence de mitose"], correct: 1, explanation: "Brassage méiotique (gamètes uniques) + brassage fécondation = combinaison génétique propre à chaque individu." },
+            { question: "Quelle affirmation à propos de la mitose est EXACTE ?", answers: ["Elle produit des cellules génétiquement différentes", "Elle maintient strictement le nombre et la structure des chromosomes", "Elle intervient uniquement dans la formation des gamètes", "Elle réduit le nombre de chromosomes de moitié"], correct: 1, explanation: "La mitose conserve le caryotype, donc le nombre et l’identité des chromosomes." },
+            { question: "Au début de la méiose, une cellule germinale humaine contient 46 chromosomes (23 paires). Après la première division de méiose :", answers: ["Les deux cellules filles sont haploïdes mais chaque chromosome est encore double", "Chaque cellule est diploïde", "Les chromosomes sont simples et identiques", "La cellule possède 46 chromosomes doubles"], correct: 0, explanation: "À l’issue de la première division méiotique, les chromosomes homologues se séparent : chaque cellule reçoit un chromosome double de chaque paire (n chromosomes doubles)." },
+            { question: "La « diversification génétique » produite par la reproduction sexuée dépend :", answers: ["Uniquement du hasard de la fécondation", "Uniquement de l’environnement", "Du brassage interchromosomique lors de la méiose et du brassage dû à la fécondation", "De la mitose seule"], correct: 2, explanation: "Les deux brassages successifs (méiose + fécondation) sont à l’origine de la diversité génétique." },
+            { question: "À propos du chromosome simple: quelle information figure dans le cours ?", answers: ["Chromosome avec deux molécules d'ADN", "Chromosome constitué d’une seule molécule d’ADN", "Chromosome ayant deux centromères", "Chromosome provenant uniquement du père"], correct: 1, explanation: "Définition : « Chromosome simple : chromosome constitué d’une seule molécule d’ADN »." },
+            { question: "Chez l’Homme, une cellule somatique qui vient de subir la mitose contient :", answers: ["23 paires de chromosomes simples", "46 chromosomes doubles", "23 chromosomes simples", "46 paires de chromosomes doubles"], correct: 0, explanation: "Après mitose, chaque cellule fille contient 46 chromosomes simples, organisés en 23 paires (caryotype 2n stable)." },
+            { question: "Quel événement est strictement spécifique de la méiose et absent de la mitose ?", answers: ["La duplication de l’ADN", "La séparation des chromosomes doubles", "L’appariement des chromosomes homologues et la répartition aléatoire des paires", "La formation de deux cellules filles"], correct: 2, explanation: "L’appariement des homologues et leur disjonction indépendante (brassage) sont uniques à la méiose." },
+            { question: "L’expression « stabilité des individus » dans le chapitre fait référence à :", answers: ["L’immortalité des cellules", "La conservation de l’information génétique par mitose (même caryotype) dans les cellules somatiques", "L’absence de mutation", "Le maintien des allèles récessifs"], correct: 1, explanation: "Toutes les cellules d’un organisme possèdent la même information génétique grâce à la mitose, assurant stabilité." },
+            { question: "Après fécondation, la cellule-œuf humaine possède :", answers: ["23 chromosomes simples", "46 chromosomes doubles", "46 chromosomes simples (23 paires)", "23 paires de chromosomes doubles"], correct: 2, explanation: "Fécondation rétablit la diploïdie : 46 chromosomes simples (23 paires)." },
+            { question: "La phrase « Les chromosomes de chaque paire se répartissent au hasard » en méiose signifie :", answers: ["Que les gènes situés sur un même chromosome sont toujours séparés", "Que la distribution des chromosomes maternels et paternels dans les gamètes est aléatoire, augmentant la diversité", "Que le nombre de chromosomes est divisé par deux sans brassage", "Que toutes les combinaisons sont impossibles"], correct: 1, explanation: "C’est le brassage interchromosomique : chaque gamète reçoit un chromosome de chaque paire de façon aléatoire, mélangeant les allèles." }
+        ];
+
+        // Variables globales
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let correctAnswers = 0;
+        let incorrectAnswers = 0;
+        let answered = false;
+        let userAnswers = [];          // stockage pour l'analyse des erreurs
+        let currentShuffledAnswers = [];
+
+        // Utilitaires
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        function startQuiz() {
+            document.getElementById('startScreen').classList.add('hidden');
+            document.getElementById('quizScreen').classList.remove('hidden');
+            currentQuestionIndex = 0;
+            score = 0;
+            correctAnswers = 0;
+            incorrectAnswers = 0;
+            answered = false;
+            userAnswers = [];
+            document.getElementById('score').textContent = '0';
+            displayQuestion();
+        }
+
+        function displayQuestion() {
+            answered = false;
+            const question = quizData[currentQuestionIndex];
+            document.getElementById('currentQuestion').textContent = currentQuestionIndex + 1;
+            document.getElementById('totalQuestions').textContent = quizData.length;
+            document.getElementById('questionText').textContent = question.question;
+            document.getElementById('feedback').classList.add('hidden');
+            document.getElementById('nextBtn').classList.add('hidden');
+
+            const progress = ((currentQuestionIndex) / quizData.length) * 100;
+            document.getElementById('progressBar').style.width = progress + '%';
+
+            const answersContainer = document.getElementById('answersContainer');
+            answersContainer.innerHTML = '';
+
+            // Mélanger les réponses pour plus de difficulté
+            const answersWithIndex = question.answers.map((text, idx) => ({ text, originalIdx: idx }));
+            currentShuffledAnswers = shuffleArray([...answersWithIndex]);
+
+            currentShuffledAnswers.forEach((ans, shuffledIdx) => {
+                const button = document.createElement('button');
+                button.className = 'w-full text-left p-4 rounded-lg border-2 border-gray-300 dark:border-gray-600 hover:border-primary hover:bg-gray-100 dark:hover:bg-gray-700 transition-all text-base bg-white dark:bg-gray-800';
+                button.innerHTML = `<span class="font-semibold">${String.fromCharCode(65 + shuffledIdx)}.</span> ${ans.text}`;
+                button.onclick = () => handleAnswerSubmission(shuffledIdx);
+                answersContainer.appendChild(button);
+            });
+        }
+
+        function handleAnswerSubmission(shuffledIdx) {
+            if (answered) return;
+            answered = true;
+            const question = quizData[currentQuestionIndex];
+            const selectedOriginalIdx = currentShuffledAnswers[shuffledIdx].originalIdx;
+            const isCorrect = (selectedOriginalIdx === question.correct);
+            const correctOriginalAnswer = question.answers[question.correct];
+            const userAnswerText = question.answers[selectedOriginalIdx];
+
+            // Mise à jour du score
+            if (isCorrect) {
+                score++;
+                correctAnswers++;
+            } else {
+                incorrectAnswers++;
+            }
+            document.getElementById('score').textContent = score;
+
+            // Afficher feedback
+            const feedbackDiv = document.getElementById('feedback');
+            const feedbackText = document.getElementById('feedbackText');
+            const explanationText = document.getElementById('explanationText');
+            if (isCorrect) {
+                feedbackText.textContent = '✓ Correct !';
+                feedbackText.className = 'font-semibold text-green-600 dark:text-green-400 text-base';
+                feedbackDiv.className = 'mb-6 p-4 rounded-lg bg-green-50 dark:bg-green-900/30 border-2 border-green-500';
+            } else {
+                feedbackText.textContent = '✗ Incorrect';
+                feedbackText.className = 'font-semibold text-red-600 dark:text-red-400 text-base';
+                feedbackDiv.className = 'mb-6 p-4 rounded-lg bg-red-50 dark:bg-red-900/30 border-2 border-red-500';
+            }
+            explanationText.textContent = question.explanation;
+            explanationText.className = 'mt-2 text-sm text-gray-700 dark:text-gray-300';
+            feedbackDiv.classList.remove('hidden');
+            document.getElementById('nextBtn').classList.remove('hidden');
+
+            // Désactiver tous les boutons de réponse + surligner correct/incorrect
+            const container = document.getElementById('answersContainer');
+            const btns = container.children;
+            for (let i = 0; i < btns.length; i++) {
+                btns[i].classList.add('disabled');
+                const answerOriginalIdx = currentShuffledAnswers[i].originalIdx;
+                if (answerOriginalIdx === question.correct) {
+                    btns[i].classList.add('correct');
+                }
+                if (!isCorrect && answerOriginalIdx === selectedOriginalIdx) {
+                    btns[i].classList.add('incorrect');
+                }
+            }
+
+            // Enregistrement pour détails des erreurs
+            userAnswers.push({
+                questionIndex: currentQuestionIndex,
+                questionText: question.question,
+                userAnswer: userAnswerText,
+                correctAnswer: correctOriginalAnswer,
+                isCorrect: isCorrect,
+                explanation: question.explanation
+            });
+        }
+
+        function nextQuestion() {
+            currentQuestionIndex++;
+            if (currentQuestionIndex < quizData.length) {
+                displayQuestion();
+            } else {
+                showResults();
+            }
+        }
+
+        function showResults() {
+            document.getElementById('quizScreen').classList.add('hidden');
+            document.getElementById('resultsScreen').classList.remove('hidden');
+            const total = quizData.length;
+            const percentage = Math.round((score / total) * 100);
+            document.getElementById('finalScore').textContent = `${score}/${total}`;
+            document.getElementById('correctCount').textContent = correctAnswers;
+            document.getElementById('incorrectCount').textContent = incorrectAnswers;
+            document.getElementById('percentageScore').textContent = percentage + '%';
+
+            const resultIcon = document.getElementById('resultIcon');
+            let message = '';
+            if (percentage >= 85) {
+                message = 'Exceptionnel ! Vous maîtrisez parfaitement la stabilité et la diversité génétique. 🧬🏆';
+                resultIcon.className = 'w-24 h-24 mx-auto text-green-500';
+            } else if (percentage >= 65) {
+                message = 'Très bonne maîtrise ! Affinez quelques détails sur le brassage méiotique. 👍';
+                resultIcon.className = 'w-24 h-24 mx-auto text-blue-500';
+            } else if (percentage >= 45) {
+                message = 'Bon travail, mais revoyez les définitions (chromosome simple/double, méiose). 📚';
+                resultIcon.className = 'w-24 h-24 mx-auto text-yellow-500';
+            } else {
+                message = 'Reprenez le chapitre : mitose, méiose, brassage des allèles et fécondation. 💪🧬';
+                resultIcon.className = 'w-24 h-24 mx-auto text-red-500';
+            }
+            document.getElementById('resultMessage').textContent = message;
+            displayMistakes();
+        }
+
+        function displayMistakes() {
+            const mistakes = userAnswers.filter(a => !a.isCorrect);
+            const mistakesDiv = document.getElementById('mistakesSection');
+            if (mistakes.length === 0) {
+                mistakesDiv.innerHTML = `<div class="bg-green-50 dark:bg-green-900/30 border-2 border-green-500 rounded-lg p-6"><h3 class="text-xl font-bold text-green-600">🎉 Parfait ! Aucune erreur, génétique en maîtrise.</h3></div>`;
+                return;
+            }
+            let html = `<div class="bg-white dark:bg-gray-700 rounded-lg p-6 text-left"><h3 class="text-xl font-bold mb-4 text-red-500">📋 Vos erreurs (${mistakes.length})</h3><div class="space-y-4">`;
+            mistakes.forEach((err, idx) => {
+                html += `
+                    <div class="border-l-4 border-red-500 bg-red-50 dark:bg-red-900/20 p-4 rounded">
+                        <p class="font-semibold">❌ Question ${err.questionIndex+1} : ${err.questionText}</p>
+                        <p class="text-red-600 dark:text-red-400">✗ Votre réponse : ${err.userAnswer}</p>
+                        <p class="text-green-600 dark:text-green-400">✓ Bonne réponse : ${err.correctAnswer}</p>
+                        <p class="text-gray-600 dark:text-gray-300 italic mt-1">💡 ${err.explanation}</p>
+                    </div>
+                `;
+            });
+            html += `</div></div>`;
+            mistakesDiv.innerHTML = html;
+        }
+
+        function restartQuiz() {
+            document.getElementById('resultsScreen').classList.add('hidden');
+            document.getElementById('startScreen').classList.remove('hidden');
+        }
+
+        // Navigation clavier
+        document.addEventListener('keydown', (e) => {
+            const key = e.key.toLowerCase();
+            const quizScreen = document.getElementById('quizScreen');
+            const startScreen = document.getElementById('startScreen');
+            const resultsScreen = document.getElementById('resultsScreen');
+            if (key === 'enter') {
+                if (!startScreen.classList.contains('hidden')) {
+                    startQuiz();
+                    e.preventDefault();
+                } else if (!quizScreen.classList.contains('hidden')) {
+                    if (answered) nextQuestion();
+                    e.preventDefault();
+                } else if (!resultsScreen.classList.contains('hidden')) {
+                    restartQuiz();
+                    e.preventDefault();
+                }
+            }
+            if (!quizScreen.classList.contains('hidden') && !answered) {
+                let idx = -1;
+                if (key >= '1' && key <= '4') idx = parseInt(key) - 1;
+                else if (key === 'a') idx = 0;
+                else if (key === 'b') idx = 1;
+                else if (key === 'c') idx = 2;
+                else if (key === 'd') idx = 3;
+                if (idx >= 0 && idx < document.getElementById('answersContainer').children.length) {
+                    handleAnswerSubmission(idx);
+                    e.preventDefault();
+                }
+            }
+        });
+    </script>
+</body>
+</html>

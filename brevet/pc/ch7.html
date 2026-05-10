@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Révision - Poids, masse et gravitation</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+            background: #f0f7ff;
+            margin: 0;
+            padding: 20px;
+            color: #1a2c3e;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 32px;
+            box-shadow: 0 20px 35px -12px rgba(0,0,0,0.15);
+            padding: 25px 30px 40px;
+            transition: all 0.2s;
+        }
+        h1, h2, h3 {
+            color: #0b3b5f;
+            border-left: 5px solid #2c7da0;
+            padding-left: 15px;
+            margin-top: 1.5em;
+        }
+        h1 {
+            text-align: center;
+            border-left: none;
+            background: #e6f4fa;
+            border-radius: 60px;
+            padding: 12px 20px;
+            margin-top: 0;
+        }
+        .section {
+            background: #ffffff;
+            margin-bottom: 30px;
+            border-radius: 24px;
+            padding: 10px 20px 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            border: 1px solid #dceef5;
+        }
+        .interact-block {
+            background: #f9fdfe;
+            border-left: 4px solid #2c7da0;
+            margin: 15px 0;
+            padding: 12px 18px;
+            border-radius: 16px;
+            transition: 0.1s;
+        }
+        .inline-question {
+            display: inline-flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 8px;
+            margin: 4px 0;
+        }
+        .mcq-group {
+            display: inline-flex;
+            gap: 12px;
+            background: #edf4f8;
+            padding: 6px 14px;
+            border-radius: 40px;
+            margin: 0 4px;
+        }
+        .mcq-group label {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            font-weight: normal;
+            cursor: pointer;
+        }
+        input[type="text"] {
+            border: 2px solid #bdd4e2;
+            border-radius: 40px;
+            padding: 6px 14px;
+            font-size: 0.9rem;
+            width: auto;
+            min-width: 130px;
+            font-family: monospace;
+            background: white;
+            transition: 0.1s;
+        }
+        input[type="text"]:focus {
+            border-color: #2c7da0;
+            outline: none;
+            box-shadow: 0 0 0 2px #a3cee1;
+        }
+        .status-icon {
+            display: inline-block;
+            width: 24px;
+            text-align: center;
+            font-weight: bold;
+            margin-left: 8px;
+        }
+        .correct-mark {
+            color: #15803d;
+        }
+        .wrong-mark {
+            color: #b91c1c;
+        }
+        .feedback {
+            margin-top: 5px;
+            font-size: 0.8rem;
+            color: #5a6874;
+            font-style: italic;
+        }
+        button {
+            background: #2c7da0;
+            border: none;
+            color: white;
+            font-weight: bold;
+            padding: 10px 24px;
+            border-radius: 60px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: 0.2s;
+            margin: 8px 8px 0 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        button:hover {
+            background: #1f5e7a;
+            transform: translateY(-2px);
+        }
+        button.reset-btn {
+            background: #4b5563;
+        }
+        button.reset-btn:hover {
+            background: #374151;
+        }
+        .formula-highlight {
+            background: #eef2ff;
+            padding: 10px 15px;
+            border-radius: 28px;
+            font-family: monospace;
+            font-size: 1.2rem;
+            display: inline-block;
+        }
+        hr {
+            margin: 20px 0;
+            border-color: #cbdde9;
+        }
+        .global-feedback {
+            margin-top: 25px;
+            background: #eef2f5;
+            border-radius: 28px;
+            padding: 10px 20px;
+            text-align: center;
+        }
+        footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 0.75rem;
+            color: #6c879a;
+        }
+        @media (max-width: 650px) {
+            .container { padding: 20px; }
+            .mcq-group { flex-wrap: wrap; gap: 6px; }
+            input[type="text"] { width: 100%; margin-top: 5px; }
+        }
+    </style>
+</head>
+<body>
+<div class="container" id="appRoot">
+    <div id="dynamic-lesson"></div>
+    <div class="global-feedback" id="globalFeedback"></div>
+    <div style="display: flex; gap: 12px; justify-content: center; margin-top: 30px;">
+        <button id="checkBtn">✔️ Terminer & vérifier</button>
+        <button id="resetBtn" class="reset-btn">🔄 Réinitialiser</button>
+    </div>
+    <footer>Cliquez sur "Terminer" pour valider vos réponses. ✅ = juste, ❌ = faux (correction affichée).</footer>
+</div>
+
+<script>
+    // --------------------------------------------------------------
+    // DONNÉES DES QUESTIONS (textbox et QCM)
+    // --------------------------------------------------------------
+    const questionsData = [
+        { id: "q1", type: "text", prompt: "il est attiré à cause de la", correct: "force de gravitation", placeholder: "" },
+        { id: "q2", type: "mcq", prompt: "Plus couramment on dit qu'il tombe sur la Terre à cause de", correct: "son poids", options: ["son poids", "sa masse"] },
+        { id: "q3", type: "mcq", prompt: "_______ est donc une force qui attire les objets massiques vers une planète.", correct: "Le poids", options: ["Le poids", "La masse"] },
+        { id: "q4", type: "mcq", prompt: "Comme toutes les forces, le poids s'exprime en", correct: "newton", options: ["newton", "gramme", "kilogramme"] },
+        { id: "q5", type: "mcq", prompt: "et se mesure avec", correct: "un dynamomètre", options: ["un dynamomètre", "une balance", "une règle"] },
+        { id: "q6", type: "mcq", prompt: "On représente _______ par un segment fléché (vecteur)", correct: "le poids", options: ["le poids", "la masse"] },
+        { id: "q7", type: "text", prompt: "• _______ : centre de gravité.", correct: "Point d'application", placeholder: "" },
+        { id: "q8", type: "text", prompt: "• _______ : vertical.", correct: "Direction", placeholder: "" },
+        { id: "q9", type: "text", prompt: "• _______ : vers le bas.", correct: "Sens", placeholder: "" },
+        { id: "q10", type: "text", prompt: "• _______ (valeur) : longueur proportionnelle.", correct: "Intensité", placeholder: "" },
+        { id: "q11", type: "mcq", prompt: "_______ représente la quantité de matière qui constitue l'objet.", correct: "La masse", options: ["La masse", "le poids"] },
+        { id: "q12", type: "mcq", prompt: "Elle s'exprime en", correct: "kilogramme", options: ["kilogramme", "newton", "gramme"] },
+        { id: "q13", type: "mcq", prompt: "et se mesure à l'aide de", correct: "une balance", options: ["une balance", "un dynamomètre", "une règle"] },
+        { id: "q14", type: "mcq", prompt: "_______ est une grandeur qui ne varie pas avec le lieu.", correct: "La masse", options: ["La masse", "le poids"] },
+        { id: "q15", type: "mcq", prompt: "_______ est une force qui varie avec le lieu (planète).", correct: "Le poids", options: ["Le poids", "la masse"] },
+        { id: "q16", type: "text", prompt: "Le poids et la masse sont", correct: "proportionnels", placeholder: "" },
+        { id: "q17", type: "text", prompt: "Le coefficient de proportionnalité est", correct: "l'intensité de pesanteur", placeholder: "" },
+        // formule : P = m × g
+        { id: "q18_m", type: "text", prompt: "P =", correct: "m", placeholder: "" },
+        { id: "q18_op", type: "mcq", prompt: "", correct: "×", options: ["×", "÷"] },
+        { id: "q18_g", type: "text", prompt: "", correct: "g", placeholder: "" },
+        { id: "q19", type: "mcq", prompt: "c'est pour cela que _______ d'un corps varie d'un endroit à l'autre.", correct: "le poids", options: ["le poids", "la masse"] },
+        { id: "q20", type: "mcq", prompt: "La gravitation est une interaction attractive", correct: "à distance", options: ["à distance", "de contact"] },
+        { id: "q21", type: "mcq", prompt: "Elle s'exerce entre tous les objets du fait de leur", correct: "masse", options: ["masse", "poids"] },
+        // Nouveaux libellés pour q22, q23, q24
+        { id: "q22", type: "mcq", prompt: "Deux forces de", correct: "même direction", options: ["même direction", "direction différente"] },
+        { id: "q23", type: "mcq", prompt: "de", correct: "même valeur", options: ["même valeur", "valeur différente"] },
+        { id: "q24", type: "mcq", prompt: "mais de sens", correct: "opposés", options: ["opposés", "identique"] },
+        { id: "q25", type: "mcq", prompt: "Quand la masse d'un ou des deux objets", correct: "augmente", options: ["augmente", "diminue"] },
+        { id: "q26", type: "mcq", prompt: "Quand la distance séparant les deux objets", correct: "diminue", options: ["diminue", "augmente"] }
+    ];
+
+    function normalize(str) {
+        if (!str) return "";
+        return str.trim().toLowerCase()
+            .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+            .replace(/[‘'’`]/g, "'")
+            .replace(/\s+/g, " ");
+    }
+
+    function isTextCorrect(userVal, correctVal) {
+        if (!userVal) return false;
+        const normUser = normalize(userVal);
+        const normCorrect = normalize(correctVal);
+        if (normCorrect === "l'intensite de pesanteur" || normCorrect === "intensite de pesanteur") {
+            return normUser === "l'intensite de pesanteur" || normUser === "intensite de pesanteur";
+        }
+        return normUser === normCorrect;
+    }
+
+    function shuffleOptions(options, correct) {
+        let copy = [...options];
+        for (let i = copy.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [copy[i], copy[j]] = [copy[j], copy[i]];
+        }
+        return copy;
+    }
+
+    let allQuestionRefs = [];
+    let mcqRandomOptions = new Map();
+
+    function buildLesson() {
+        const container = document.getElementById("dynamic-lesson");
+        container.innerHTML = "";
+        
+        let html = `<h1>📘 Chapitre 7 : Interaction gravitationnelle, poids et masse</h1>
+        <div class="section"><h2>⚖️ I- Le poids d’un objet</h2>
+        <p>Si on lâche un objet, il tombe vers la Terre, il est attiré à cause de la <span class="interact-block" id="q1-container"></span> exercée par la Terre. Plus couramment on dit qu’il tombe sur la Terre à cause de <span id="q2-container"></span>.</p>
+        <p><span id="q3-container"></span> est donc une force. Comme toutes les forces, le poids s’exprime en <span id="q4-container"></span> et se mesure avec <span id="q5-container"></span>.</p>
+        <p>On représente <span id="q6-container"></span> par un vecteur :</p>
+        <ul>
+            <li><span id="q7-container"></span> : centre de gravité.</li>
+            <li><span id="q8-container"></span> : verticale.</li>
+            <li><span id="q9-container"></span> : vers le bas.</li>
+            <li><span id="q10-container"></span> (valeur) : longueur proportionnelle.</li>
+        </ul>
+        </div>`;
+
+        // Section II (sans tableau)
+        html += `<div class="section"><h2>📊 II- Poids et masse</h2>
+        <p>Il ne faut pas confondre masse et poids.</p>
+        <p><span id="q11-container"></span> représente la quantité de matière. Elle s'exprime en <span id="q12-container"></span> et se mesure avec <span id="q13-container"></span>. <span id="q14-container"></span> est une grandeur invariable. <span id="q15-container"></span> est une force qui varie avec le lieu.</p>
+        <p>Le poids et la masse sont <span id="q16-container"></span>.</p>
+        <p>Le coefficient de proportionnalité est <span id="q17-container"></span> (g).</p>
+        <p>Ainsi : <span class="formula-highlight">P = <span id="q18_m-container"></span> <span id="q18_op-container"></span> <span id="q18_g-container"></span></span></p>
+        </div>`;
+
+        html += `<div class="section"><h3>🌍 III- L'intensité de pesanteur g</h3>
+        <p>L’intensité de pesanteur g dépend du lieu : c’est pour cela que <span id="q19-container"></span> d’un corps varie.</p>
+        <p>Valeur moyenne sur Terre : <strong>9,8 N/kg</strong>.</p>
+        </div>`;
+
+        html += `<div class="section"><h3>🪐 IV- Interaction gravitationnelle</h3>
+        <p><strong>a) Gravitation universelle :</strong> La gravitation est une interaction attractive <span id="q20-container"></span>. Elle s’exerce du fait de leur <span id="q21-container"></span>.</p>
+        <p><strong>b) Forces de gravitation :</strong> Deux forces de <span id="q22-container"></span>, de <span id="q23-container"></span>, mais de sens <span id="q24-container"></span>.</p>
+        <p>La valeur des forces augmente :<br>
+        - Quand la masse <span id="q25-container"></span><br>
+        - Quand la distance <span id="q26-container"></span></p>
+        </div>`;
+
+        container.innerHTML = html;
+
+        // Préparer random QCM
+        questionsData.forEach(q => {
+            if (q.type === "mcq") {
+                if (!mcqRandomOptions.has(q.id)) {
+                    const shuffled = shuffleOptions(q.options, q.correct);
+                    mcqRandomOptions.set(q.id, { shuffled, correct: q.correct });
+                }
+            }
+        });
+
+        function createTextBox(q, containerId) {
+            const containerElem = document.getElementById(containerId);
+            if (!containerElem) return;
+            containerElem.classList.add("inline-question");
+            const input = document.createElement("input");
+            input.type = "text";
+            input.placeholder = "";   // aucun placeholder
+            input.setAttribute("data-question-id", q.id);
+            input.setAttribute("data-type", "text");
+            const statusSpan = document.createElement("span");
+            statusSpan.className = "status-icon";
+            const feedbackSpan = document.createElement("div");
+            feedbackSpan.className = "feedback";
+            containerElem.appendChild(input);
+            containerElem.appendChild(statusSpan);
+            containerElem.appendChild(feedbackSpan);
+            allQuestionRefs.push({
+                id: q.id,
+                type: "text",
+                element: input,
+                statusSpan: statusSpan,
+                feedbackSpan: feedbackSpan,
+                correctAnswer: q.correct
+            });
+        }
+
+        function createMCQ(q, containerId) {
+            const containerElem = document.getElementById(containerId);
+            if (!containerElem) return;
+            containerElem.classList.add("inline-question");
+            const randomData = mcqRandomOptions.get(q.id);
+            const options = randomData.shuffled;
+            const correctVal = randomData.correct;
+            const groupName = `mcq_${q.id}`;
+            const wrapper = document.createElement("div");
+            wrapper.className = "mcq-group";
+            const radios = [];
+            options.forEach(opt => {
+                const label = document.createElement("label");
+                const radio = document.createElement("input");
+                radio.type = "radio";
+                radio.name = groupName;
+                radio.value = opt;
+                label.appendChild(radio);
+                label.appendChild(document.createTextNode(opt));
+                wrapper.appendChild(label);
+                radios.push(radio);
+            });
+            const statusSpan = document.createElement("span");
+            statusSpan.className = "status-icon";
+            const feedbackSpan = document.createElement("div");
+            feedbackSpan.className = "feedback";
+            containerElem.appendChild(wrapper);
+            containerElem.appendChild(statusSpan);
+            containerElem.appendChild(feedbackSpan);
+            allQuestionRefs.push({
+                id: q.id,
+                type: "mcq",
+                wrapper: wrapper,
+                radios: radios,
+                statusSpan: statusSpan,
+                feedbackSpan: feedbackSpan,
+                correctAnswer: correctVal,
+                getSelected: () => {
+                    for (let radio of radios) if (radio.checked) return radio.value;
+                    return null;
+                }
+            });
+        }
+
+        questionsData.forEach(q => {
+            if (q.id === "q18_m") createTextBox(q, "q18_m-container");
+            else if (q.id === "q18_op") createMCQ(q, "q18_op-container");
+            else if (q.id === "q18_g") createTextBox(q, "q18_g-container");
+            else if (q.type === "text") createTextBox(q, `${q.id}-container`);
+            else if (q.type === "mcq") createMCQ(q, `${q.id}-container`);
+        });
+    }
+
+    function checkAllAnswers() {
+        let allOk = true;
+        for (let ref of allQuestionRefs) {
+            let isCorrect = false;
+            let correctionMsg = "";
+            if (ref.type === "text") {
+                const userAnswer = ref.element.value.trim();
+                const correct = ref.correctAnswer;
+                isCorrect = isTextCorrect(userAnswer, correct);
+                if (!isCorrect) {
+                    correctionMsg = `(Réponse attendue : "${correct}")`;
+                    allOk = false;
+                }
+                ref.statusSpan.innerHTML = isCorrect ? '✅' : '❌';
+                ref.feedbackSpan.innerHTML = isCorrect ? '' : correctionMsg;
+                if (!isCorrect) {
+                    ref.element.style.borderColor = "#b91c1c";
+                    ref.element.style.backgroundColor = "#fff0f0";
+                } else {
+                    ref.element.style.borderColor = "#15803d";
+                    ref.element.style.backgroundColor = "#f0fff4";
+                }
+            } 
+            else if (ref.type === "mcq") {
+                const selected = ref.getSelected();
+                const correct = ref.correctAnswer;
+                isCorrect = (selected === correct);
+                if (!isCorrect) {
+                    correctionMsg = ` (bonne réponse : "${correct}")`;
+                    allOk = false;
+                }
+                ref.statusSpan.innerHTML = isCorrect ? '✅' : '❌';
+                ref.feedbackSpan.innerHTML = isCorrect ? '' : correctionMsg;
+                if (!isCorrect) {
+                    ref.wrapper.style.backgroundColor = "#ffe0e0";
+                } else {
+                    ref.wrapper.style.backgroundColor = "#e0f5e9";
+                }
+            }
+        }
+        const globalDiv = document.getElementById("globalFeedback");
+        if (allOk) {
+            globalDiv.innerHTML = "<span style='color:#15803d; font-weight:bold;'>🎉 PARFAIT ! Toutes les réponses sont justes. 🎉</span>";
+        } else {
+            globalDiv.innerHTML = "<span style='color:#b91c1c;'>⚠️ Certaines réponses sont incorrectes. Regardez les ❌ et les corrections ci-dessus.</span>";
+        }
+    }
+
+    function resetAll() {
+        for (let ref of allQuestionRefs) {
+            if (ref.type === "text") {
+                ref.element.value = "";
+                ref.element.style.borderColor = "#bdd4e2";
+                ref.element.style.backgroundColor = "white";
+                ref.statusSpan.innerHTML = "";
+                ref.feedbackSpan.innerHTML = "";
+            } 
+            else if (ref.type === "mcq") {
+                for (let radio of ref.radios) {
+                    radio.checked = false;
+                }
+                ref.wrapper.style.backgroundColor = "";
+                ref.statusSpan.innerHTML = "";
+                ref.feedbackSpan.innerHTML = "";
+            }
+        }
+        document.getElementById("globalFeedback").innerHTML = "";
+    }
+
+    function init() {
+        buildLesson();
+        document.getElementById("checkBtn").addEventListener("click", checkAllAnswers);
+        document.getElementById("resetBtn").addEventListener("click", resetAll);
+    }
+
+    init();
+</script>
+</body>
+</html>

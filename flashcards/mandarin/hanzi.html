@@ -11,7 +11,7 @@
     <script src="https://cdn.jsdelivr.net/npm/hanzi-writer@2.2.1/dist/hanzi-writer.min.js">
     </script>
     <style>
-        /* Fade‑in animation for hint messages */
+        /* Fade‑in animation for hints and messages */
         .hint-fade-in {
             animation: fadeIn 0.2s ease-in-out;
         }
@@ -81,7 +81,7 @@
 </head>
 
 <body class="bg-gray-100 dark:bg-gray-900 min-h-screen transition-colors">
-    <!-- Dark mode detection – preserved from original -->
+    <!-- Dark mode detection (preserved from original) -->
     <script>
         if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
             document.documentElement.classList.add('dark');
@@ -264,13 +264,13 @@ class="flex-1 max-w-44 flex items-center justify-center space-x-2 bg-gray-400 ho
              * @param {Array<{chinese: string, pinyin: string, french: string}>} flashcards
              */
             constructor(flashcards) {
-                // Expand multi‑character words into individual characters
-                // so that HanziWriter receives only single characters.
+                // Store the original deck and expand multi‑character words into
+                // individual single‑character entries for HanziWriter.
                 this.originalDeck = Array.isArray(flashcards) ? flashcards : [];
                 this.expandDeck();
 
-                // Phase & index tracking
-                this.currentPhase = 1; // 1 or 2
+                // Phase tracking
+                this.currentPhase = 1;                // 1 or 2
                 this.currentWordIndex = 0;
 
                 // Per‑character attempt counters (filled after expansion)
@@ -282,6 +282,9 @@ class="flex-1 max-w-44 flex items-center justify-center space-x-2 bg-gray-400 ho
                 this.writer = null;
                 this.currentMisses = 0;
                 this.isAnimating = false;
+                // Track the current outline setting so we can recreate the writer
+                // after reset or animation when necessary.
+                this.currentShowOutline = false;
 
                 // Global stats for the results screen
                 this.totalMistakesAllTime = 0;
@@ -389,6 +392,7 @@ class="flex-1 max-w-44 flex items-center justify-center space-x-2 bg-gray-400 ho
                 this.isAnimating = false;
                 this.totalMistakesAllTime = 0;
                 this.totalHintsShown = 0;
+                this.currentShowOutline = false;
 
                 this.destroyWriter();
                 this.gameScreen.classList.remove('hidden');
@@ -414,6 +418,8 @@ class="flex-1 max-w-44 flex items-center justify-center space-x-2 bg-gray-400 ho
 
             /**
              * Creates a HanziWriter for the current single character.
+             * Stores the outline setting in this.currentShowOutline so that
+             * we can safely recreate the writer when needed (e.g., after a reset).
              * @param {boolean} showOutline – whether the outline skeleton is shown
              * @returns {boolean} success
              */
@@ -429,6 +435,7 @@ class="flex-1 max-w-44 flex items-center justify-center space-x-2 bg-gray-400 ho
 
                 const dims = this.getWriterDimensions();
                 this.currentMisses = 0;
+                this.currentShowOutline = showOutline;
                 this.updateMissDisplay();
 
                 const options = {
@@ -463,6 +470,9 @@ class="flex-1 max-w-44 flex items-center justify-center space-x-2 bg-gray-400 ho
                 }
             }
 
+            /**
+             * Destroy the current writer and clean up.
+             */
             destroyWriter() {
                 if (this.writer) {
                     try { this.writer.cleanup(); } catch (e) {}
@@ -472,6 +482,20 @@ class="flex-1 max-w-44 flex items-center justify-center space-x-2 bg-gray-400 ho
                     this.writerTarget.innerHTML = '';
                 }
                 this.currentMisses = 0;
+            }
+
+            /**
+             * Safe way to clear the canvas: destroy and recreate the writer
+             * using the same outline setting. This avoids calling writer.erase()
+             * directly, which may not be available in all HanziWriter builds.
+             */
+            safeClearCanvas() {
+                if (!this.writer) return;
+                // Store the current outline setting
+                const outline = this.currentShowOutline;
+                this.destroyWriter();
+                this.createWriter(outline);
+                this.updateUI();
             }
 
             // ──────────────────────────────────
@@ -595,7 +619,9 @@ class="flex-1 max-w-44 flex items-center justify-center space-x-2 bg-gray-400 ho
                     try {
                         this.writer.animateCharacter({
                             onComplete: () => {
-                                if (this.writer) this.writer.erase();
+                                // Instead of calling writer.erase() (which may not be available),
+                                // we destroy and recreate the writer for a clean canvas.
+                                this.safeClearCanvas();
                                 this.isAnimating = false;
                                 this.animationShown[this.currentWordIndex] = true;
                                 this.setMessage('✏️ Now draw the character 3 times.');
@@ -604,7 +630,7 @@ class="flex-1 max-w-44 flex items-center justify-center space-x-2 bg-gray-400 ho
                         });
                     } catch (err) {
                         console.warn('Animation failed, skipping to writing', err);
-                        if (this.writer) this.writer.erase();
+                        this.safeClearCanvas();
                         this.isAnimating = false;
                         this.animationShown[this.currentWordIndex] = true;
                         this.setMessage('✏️ Draw the character (animation skipped).');
@@ -715,14 +741,14 @@ class="flex-1 max-w-44 flex items-center justify-center space-x-2 bg-gray-400 ho
                 this.setupCurrentWord();
             }
 
+            /**
+             * Reset the canvas: uses safeClearCanvas() which destroys and recreates
+             * the writer, guaranteeing a fresh start without relying on erase().
+             */
             handleResetCanvas() {
                 if (!this.writer || this.isAnimating) return;
-                try {
-                    this.writer.erase();
-                    this.setMessage('🔄 Canvas reset. Keep trying!');
-                } catch (err) {
-                    console.error('Reset error', err);
-                }
+                this.safeClearCanvas();
+                this.setMessage('🔄 Canvas reset. Keep trying!');
             }
 
             // ──────────────────────────────────

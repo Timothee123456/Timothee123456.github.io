@@ -1,0 +1,874 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title id="pageTitle">Chinese Writing Practice</title>
+    <script src="https://cdn.tailwindcss.com">
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/hanzi-writer@2.2.1/dist/hanzi-writer.min.js">
+    </script>
+    <style>
+        /* Fade-in animation for hint display */
+        .hint-fade-in {
+            animation: fadeIn 0.2s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        /* Prevent text selection on tap */
+        .no-select {
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* Writer container – ensures canvas is centered and responsive */
+        #writer-target {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 280px;
+            width: 100%;
+        }
+
+        #writer-target canvas {
+            max-width: 100%;
+            height: auto !important;
+            border-radius: 0.75rem;
+        }
+
+        @media (max-width: 640px) {
+            #writer-target {
+                min-height: 220px;
+            }
+        }
+
+        @media (max-width: 400px) {
+            #writer-target {
+                min-height: 180px;
+            }
+        }
+
+        /* Pulse animation for the phase indicator */
+        .phase-pulse {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%,
+            100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.6;
+            }
+        }
+    </style>
+</head>
+
+<body class="bg-gray-100 dark:bg-gray-900 min-h-screen transition-colors">
+    <!-- Dark mode detection -->
+    <script>
+        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            document.documentElement.classList.add('dark');
+        }
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
+            if (event.matches) {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+        });
+    </script>
+
+    <div class="container mx-auto px-3 py-4 max-w-2xl">
+        <!-- Title -->
+        <h1 id="title" class="text-2xl sm:text-3xl font-bold text-center mb-4 text-gray-800 dark:text-white">
+            Chinese Writing Practice
+        </h1>
+
+        <!-- Game Screen -->
+        <div id="gameScreen" class="space-y-4 sm:space-y-6">
+            <!-- Progress Bar -->
+            <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3 overflow-hidden">
+                <div id="progressBar" class="bg-blue-500 h-3 rounded-full transition-all duration-300"
+                style="width: 0%"></div>
+            </div>
+
+            <!-- Info Row: Phase indicator + Word counter + Attempts + Misses -->
+            <div class="flex flex-wrap justify-between items-center gap-2 text-sm">
+                <div class="flex items-center space-x-2">
+                    <span id="phaseIndicator"
+                    class="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 phase-pulse">
+                    Phase 1
+                </span>
+                <span id="wordCounter" class="text-gray-600 dark:text-gray-400 font-medium">
+                    Word 1 / 20
+                </span>
+            </div>
+            <div class="flex items-center space-x-3">
+                <span id="attemptsRemaining" class="text-gray-600 dark:text-gray-400">
+                    3 attempts remaining
+                </span>
+                <span id="missCounter" class="text-orange-500 dark:text-orange-400 font-medium hidden">
+                    <i class="fa fa-exclamation-triangle"></i> <span id="missCount">0</span> misses
+                </span>
+            </div>
+            <button id="restartSessionBtn"
+            class="bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 px-3 py-2 rounded-lg font-medium transition-colors text-sm"
+            title="Restart Session">
+            <i class="fa fa-refresh"></i> Restart
+        </button>
+    </div>
+
+    <!-- Word Info Card: Definition + Pinyin -->
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 p-4 sm:p-6 text-center">
+        <div id="frenchDefinition"
+        class="text-2xl sm:text-3xl font-bold text-gray-800 dark:text-white mb-2">
+        Loading...
+    </div>
+    <div id="pinyinDisplay"
+    class="text-lg sm:text-xl text-gray-600 dark:text-gray-400">
+    Loading...
+</div>
+</div>
+
+<!-- HanziWriter Canvas Container -->
+<div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 p-2 sm:p-4 flex items-center justify-center">
+    <div id="writer-target"></div>
+</div>
+
+<!-- Message area (shown during animation or after hints) -->
+<div id="messageArea" class="text-center text-sm text-gray-500 dark:text-gray-400 min-h-[24px]">
+</div>
+
+<!-- Action Buttons -->
+<div class="flex justify-center space-x-4 px-2">
+    <button id="checkBtn"
+    class="flex-1 max-w-44 flex items-center justify-center space-x-2 bg-green-500 hover:bg-green-600 active:bg-green-700 text-white px-4 py-4 rounded-lg font-semibold transition-colors min-h-[56px] text-base disabled:opacity-50 disabled:cursor-not-allowed"
+    disabled>
+    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+        d="M5 13l4 4L19 7"></path>
+    </svg>
+    <span>Check</span>
+</button>
+
+<button id="resetCanvasBtn"
+class="flex-1 max-w-44 flex items-center justify-center space-x-2 bg-gray-400 hover:bg-gray-500 active:bg-gray-600 text-white px-4 py-4 rounded-lg font-semibold transition-colors min-h-[56px] text-base">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+    d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+</svg>
+<span>Reset</span>
+</button>
+</div>
+</div>
+
+<!-- Results Screen -->
+<div id="resultsScreen" class="hidden text-center space-y-4 sm:space-y-6 px-2">
+    <h2 class="text-xl sm:text-2xl font-bold text-gray-800 dark:text-white mb-4 sm:mb-6">
+        🎉 Congratulations! 🎉
+    </h2>
+
+    <div class="bg-white dark:bg-gray-800 rounded-xl p-4 sm:p-6 shadow-lg border border-gray-200 dark:border-gray-700">
+        <p class="text-gray-600 dark:text-gray-400 mb-4">
+            You have completed both phases of writing practice!
+        </p>
+        <div class="grid grid-cols-2 gap-4 mb-4 sm:mb-6">
+            <div class="text-center">
+                <div id="resultCharsMastered" class="text-2xl sm:text-3xl font-bold text-green-500">0</div>
+                <div class="text-sm text-gray-600 dark:text-gray-400">Characters Mastered</div>
+            </div>
+            <div class="text-center">
+                <div id="resultTotalMistakes" class="text-2xl sm:text-3xl font-bold text-orange-500">0</div>
+                <div class="text-sm text-gray-600 dark:text-gray-400">Total Mistakes</div>
+            </div>
+        </div>
+        <div class="text-center">
+            <div id="resultHintsShown" class="text-2xl sm:text-3xl font-bold text-blue-500">0</div>
+            <div class="text-sm text-gray-600 dark:text-gray-400">Hints Shown</div>
+        </div>
+    </div>
+
+    <div class="space-y-3">
+        <button id="restartFromResultsBtn"
+        class="w-full bg-blue-500 hover:bg-blue-600 active:bg-blue-700 text-white px-6 py-4 rounded-lg font-semibold transition-colors min-h-[56px] text-base">
+        <i class="fa fa-refresh mr-2"></i> Restart Session
+    </button>
+    <a href="/home"
+    class="block w-full bg-gray-300 dark:bg-gray-700 hover:bg-gray-400 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 px-6 py-4 rounded-lg font-semibold transition-colors min-h-[56px] text-base text-center no-underline">
+    <i class="fa fa-home mr-2"></i> Choose Another Deck
+</a>
+</div>
+</div>
+</div>
+
+<script>
+    // ──────────────────────────────────────
+    // DECK LOADING (preserved from original)
+    // ──────────────────────────────────────
+    const urlParams = new URLSearchParams(window.location.search);
+    const deckName = urlParams.get('deck');
+
+    async function load_flashcards() {
+        if (deckName) {
+            const flashcardsFile = `${deckName}.js`;
+            const jsFileURL = `./decks/${flashcardsFile}`;
+            try {
+                const module = await import(jsFileURL);
+                const flashcards = module.flashcards;
+                if (flashcards === undefined) {
+                    window.location.href = "/home";
+                    return;
+                }
+                let defaultName = 'Chinese Writing Practice';
+                let titleText = (module.title ? module.title + ' - ' : '') + defaultName;
+                if (!module.title) {
+                    titleText = defaultName;
+                }
+                document.getElementById('title').textContent = titleText;
+                document.getElementById('pageTitle').textContent = titleText;
+                initializeApp(flashcards);
+            } catch (err) {
+                console.error('Failed to load deck:', err);
+                window.location.href = "/home";
+            }
+        } else {
+            window.location.href = "/home";
+        }
+    }
+
+    load_flashcards();
+
+    // ──────────────────────────────────────
+    // MAIN APP CLASS
+    // ──────────────────────────────────────
+    function initializeApp(flashcards) {
+        class WritingPracticeApp {
+            constructor(flashcards) {
+                /** @type {Array<{chinese: string, pinyin: string, french: string}>} */
+                this.flashcards = Array.isArray(flashcards) ? flashcards : [];
+                this.totalWords = this.flashcards.length;
+
+                // Phase tracking
+                // Phase 1: guided with outline + animation, 3 attempts per word
+                // Phase 2: mixed outline (true, false, false), 3 attempts per word
+                this.currentPhase = 1; // 1 or 2
+                this.currentWordIndex = 0;
+
+                // Per-word progress: how many successful attempts completed
+                this.phase1AttemptsDone = new Array(this.totalWords).fill(0);
+                this.phase2AttemptsDone = new Array(this.totalWords).fill(0);
+
+                // Track whether animation has been shown for each word in Phase 1
+                this.animationShown = new Array(this.totalWords).fill(false);
+
+                // Current HanziWriter instance
+                this.writer = null;
+
+                // Current miss counter for the active attempt (resets per attempt)
+                this.currentMisses = 0;
+
+                // Is the Phase 1 animation currently playing?
+                this.isAnimating = false;
+
+                // Global stats for results screen
+                this.totalMistakesAllTime = 0;
+                this.totalHintsShown = 0;
+
+                // Cache DOM references
+                this.cacheDom();
+
+                // Bind event listeners
+                this.bindEvents();
+
+                // Start the session
+                this.startSession();
+            }
+
+            // ──────────────────────────────────
+            // DOM CACHING
+            // ──────────────────────────────────
+            cacheDom() {
+                this.gameScreen = document.getElementById('gameScreen');
+                this.resultsScreen = document.getElementById('resultsScreen');
+                this.progressBar = document.getElementById('progressBar');
+                this.phaseIndicator = document.getElementById('phaseIndicator');
+                this.wordCounter = document.getElementById('wordCounter');
+                this.attemptsRemaining = document.getElementById('attemptsRemaining');
+                this.missCounter = document.getElementById('missCounter');
+                this.missCountSpan = document.getElementById('missCount');
+                this.frenchDefinition = document.getElementById('frenchDefinition');
+                this.pinyinDisplay = document.getElementById('pinyinDisplay');
+                this.writerTarget = document.getElementById('writer-target');
+                this.messageArea = document.getElementById('messageArea');
+                this.checkBtn = document.getElementById('checkBtn');
+                this.resetCanvasBtn = document.getElementById('resetCanvasBtn');
+                this.restartSessionBtn = document.getElementById('restartSessionBtn');
+                this.restartFromResultsBtn = document.getElementById('restartFromResultsBtn');
+                this.resultCharsMastered = document.getElementById('resultCharsMastered');
+                this.resultTotalMistakes = document.getElementById('resultTotalMistakes');
+                this.resultHintsShown = document.getElementById('resultHintsShown');
+            }
+
+            // ──────────────────────────────────
+            // EVENT BINDING
+            // ──────────────────────────────────
+            bindEvents() {
+                this.checkBtn.addEventListener('click', () => this.handleCheck());
+                this.resetCanvasBtn.addEventListener('click', () => this.handleResetCanvas());
+                this.restartSessionBtn.addEventListener('click', () => this.restartSession());
+                this.restartFromResultsBtn.addEventListener('click', () => this.restartSession());
+
+                // Keyboard shortcuts
+                document.addEventListener('keydown', (event) => {
+                    // Only process if game screen is visible
+                    if (this.resultsScreen.classList.contains('hidden') === false) {
+                        if (event.key === 'Enter') {
+                            this.restartSession();
+                        }
+                        return;
+                    }
+                    if (event.key === 'Enter') {
+                        event.preventDefault();
+                        this.handleCheck();
+                    } else if (event.key === 'Backspace') {
+                        event.preventDefault();
+                        this.handleResetCanvas();
+                    }
+                });
+            }
+
+            // ──────────────────────────────────
+            // SESSION MANAGEMENT
+            // ──────────────────────────────────
+            shuffleArray(array) {
+                const shuffled = [...array];
+                for (let i = shuffled.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+                }
+                return shuffled;
+            }
+
+            startSession() {
+                // Shuffle the deck
+                this.flashcards = this.shuffleArray(this.flashcards);
+                this.totalWords = this.flashcards.length;
+
+                // Reset all progress
+                this.currentPhase = 1;
+                this.currentWordIndex = 0;
+                this.phase1AttemptsDone = new Array(this.totalWords).fill(0);
+                this.phase2AttemptsDone = new Array(this.totalWords).fill(0);
+                this.animationShown = new Array(this.totalWords).fill(false);
+                this.currentMisses = 0;
+                this.isAnimating = false;
+                this.totalMistakesAllTime = 0;
+                this.totalHintsShown = 0;
+
+                // Clean up any existing writer
+                this.destroyWriter();
+
+                // Show game screen
+                this.gameScreen.classList.remove('hidden');
+                this.resultsScreen.classList.add('hidden');
+
+                // Set up the first word
+                this.setupCurrentWord();
+            }
+
+            restartSession() {
+                this.destroyWriter();
+                this.startSession();
+            }
+
+            // ──────────────────────────────────
+            // WRITER MANAGEMENT
+            // ──────────────────────────────────
+            /**
+             * Determine appropriate canvas size based on viewport width.
+             * @returns {{width: number, height: number}}
+             */
+            getWriterDimensions() {
+                const vw = window.innerWidth;
+                if (vw < 400) return { width: 180, height: 180 };
+                if (vw < 640) return { width: 230, height: 230 };
+                return { width: 280, height: 280 };
+            }
+
+            /**
+             * Create a new HanziWriter instance for the current character.
+             * @param {boolean} showOutline - Whether to show the character outline/skeleton.
+             */
+            createWriter(showOutline) {
+                // Destroy previous writer if it exists
+                this.destroyWriter();
+
+                // Clear the target container
+                this.writerTarget.innerHTML = '';
+
+                const char = this.getCurrentCharacter();
+                const dims = this.getWriterDimensions();
+
+                // Reset miss counter for the new attempt
+                this.currentMisses = 0;
+                this.updateMissDisplay();
+
+                const options = {
+                    width: dims.width,
+                    height: dims.height,
+                    padding: 5,
+                    showOutline: showOutline,
+                    strokeColor: '#555',
+                    radicalColor: null,
+                    // After 3 misses on this writer instance, HanziWriter auto-shows a hint
+                    showHintAfterMisses: 3,
+                    onMistake: (strokeData) => {
+                        // Increment local miss counter and update UI
+                        this.currentMisses++;
+                        this.totalMistakesAllTime++;
+                        this.updateMissDisplay();
+                        // Check if a hint is about to be triggered (on the 3rd miss)
+                        if (this.currentMisses === 3) {
+                            this.totalHintsShown++;
+                        }
+                    },
+                    onComplete: () => {
+                        // All expected strokes have been drawn by the user.
+                        // We could auto-enable the Check button here, but we keep it
+                        // always enabled for flexibility (partial drawings can be checked).
+                        this.setMessage('All strokes drawn – click "Check" to evaluate.');
+                    }
+                };
+
+                try {
+                    this.writer = HanziWriter.create(this.writerTarget, char, options);
+                } catch (err) {
+                    console.error('Failed to create HanziWriter for character:', char, err);
+                    this.setMessage('⚠️ Could not load character. Try the next word.');
+                    this.writer = null;
+                }
+            }
+
+            /**
+             * Destroy the current HanziWriter instance and clean up.
+             */
+            destroyWriter() {
+                if (this.writer) {
+                    try {
+                        this.writer.cleanup();
+                    } catch (e) {
+                        // Ignore cleanup errors
+                    }
+                    this.writer = null;
+                }
+                if (this.writerTarget) {
+                    this.writerTarget.innerHTML = '';
+                }
+                this.currentMisses = 0;
+            }
+
+            // ──────────────────────────────────
+            // CHARACTER & WORD HELPERS
+            // ──────────────────────────────────
+            /**
+             * Get the Chinese character(s) for the current word.
+             * For multi-character words, we use the full string; HanziWriter
+             * handles single characters best, but will attempt to render what it can.
+             * @returns {string}
+             */
+            getCurrentCharacter() {
+                if (this.currentWordIndex < this.totalWords && this.flashcards[this.currentWordIndex]) {
+                    return this.flashcards[this.currentWordIndex].chinese || '';
+                }
+                return '';
+            }
+
+            /**
+             * Get the current word data.
+             * @returns {{chinese: string, pinyin: string, french: string}|null}
+             */
+            getCurrentWord() {
+                if (this.currentWordIndex < this.totalWords && this.flashcards[this.currentWordIndex]) {
+                    return this.flashcards[this.currentWordIndex];
+                }
+                return null;
+            }
+
+            // ──────────────────────────────────
+            // UI UPDATE METHODS
+            // ──────────────────────────────────
+            /**
+             * Update the progress bar, word counter, phase indicator,
+             * attempts remaining, and miss counter.
+             */
+            updateUI() {
+                // Calculate overall progress
+                const totalSteps = this.totalWords * 6; // 3 attempts Phase 1 + 3 attempts Phase 2
+                let completedSteps = 0;
+
+                // Phase 1 completed attempts
+                for (let i = 0; i < this.totalWords; i++) {
+                    completedSteps += Math.min(this.phase1AttemptsDone[i], 3);
+                }
+                // Phase 2 completed attempts
+                for (let i = 0; i < this.totalWords; i++) {
+                    completedSteps += Math.min(this.phase2AttemptsDone[i], 3);
+                }
+
+                const progressPercent = totalSteps > 0 ? Math.round((completedSteps / totalSteps) * 100) : 0;
+                this.progressBar.style.width = `${progressPercent}%`;
+
+                // Word counter
+                this.wordCounter.textContent = `Word ${this.currentWordIndex + 1} / ${this.totalWords}`;
+
+                // Phase indicator
+                if (this.currentPhase === 1) {
+                    this.phaseIndicator.textContent = 'Phase 1 – Outline & Animation';
+                    this.phaseIndicator.className =
+                        'inline-block px-3 py-1 rounded-full text-xs font-semibold bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 phase-pulse';
+                } else {
+                    this.phaseIndicator.textContent = 'Phase 2 – Mixed Outline';
+                    this.phaseIndicator.className =
+                        'inline-block px-3 py-1 rounded-full text-xs font-semibold bg-purple-100 dark:bg-purple-900 text-purple-700 dark:text-purple-300 phase-pulse';
+                }
+
+                // Attempts remaining for current word
+                const remaining = this.getRemainingAttempts();
+                this.attemptsRemaining.textContent =
+                    `${remaining} attempt${remaining !== 1 ? 's' : ''} remaining`;
+
+                // Update miss display
+                this.updateMissDisplay();
+
+                // Enable/disable Check button based on animation state
+                this.checkBtn.disabled = this.isAnimating || !this.writer;
+            }
+
+            /**
+             * Get remaining attempts for the current word in the current phase.
+             * @returns {number}
+             */
+            getRemainingAttempts() {
+                if (this.currentPhase === 1) {
+                    return 3 - (this.phase1AttemptsDone[this.currentWordIndex] || 0);
+                } else {
+                    return 3 - (this.phase2AttemptsDone[this.currentWordIndex] || 0);
+                }
+            }
+
+            /**
+             * Update the miss counter display.
+             */
+            updateMissDisplay() {
+                if (this.currentMisses > 0) {
+                    this.missCounter.classList.remove('hidden');
+                    this.missCountSpan.textContent = this.currentMisses;
+                } else {
+                    this.missCounter.classList.add('hidden');
+                    this.missCountSpan.textContent = '0';
+                }
+            }
+
+            /**
+             * Set a message in the message area.
+             * @param {string} msg
+             */
+            setMessage(msg) {
+                if (this.messageArea) {
+                    this.messageArea.textContent = msg;
+                }
+            }
+
+            /**
+             * Update the word info display (definition + pinyin).
+             */
+            updateWordDisplay() {
+                const word = this.getCurrentWord();
+                if (word) {
+                    this.frenchDefinition.textContent = word.french || '';
+                    this.pinyinDisplay.textContent = word.pinyin || '';
+                }
+            }
+
+            // ──────────────────────────────────
+            // PHASE & ATTEMPT LOGIC
+            // ──────────────────────────────────
+            /**
+             * Set up the current word for practice.
+             * Creates the writer with appropriate outline settings and
+             * handles Phase 1 animation if needed.
+             */
+            setupCurrentWord() {
+                if (this.currentWordIndex >= this.totalWords) {
+                    // Should not happen, but handle gracefully
+                    if (this.currentPhase === 1) {
+                        this.advanceToPhase2();
+                    } else {
+                        this.showResults();
+                    }
+                    return;
+                }
+
+                this.updateWordDisplay();
+
+                if (this.currentPhase === 1) {
+                    this.setupPhase1Word();
+                } else {
+                    this.setupPhase2Word();
+                }
+
+                this.updateUI();
+            }
+
+            /**
+             * Set up a word in Phase 1.
+             * If animation hasn't been shown yet, play it first.
+             * All Phase 1 attempts use outline = true.
+             */
+            setupPhase1Word() {
+                const needsAnimation = !this.animationShown[this.currentWordIndex];
+
+                // Phase 1 always uses outline
+                this.createWriter(true);
+
+                if (needsAnimation && this.writer) {
+                    // Play the stroke order animation
+                    this.isAnimating = true;
+                    this.checkBtn.disabled = true;
+                    this.setMessage('🎬 Watching stroke order animation...');
+
+                    this.writer.animateCharacter({
+                        onComplete: () => {
+                            // Animation finished – erase the animated strokes
+                            // but the outline remains (showOutline: true)
+                            if (this.writer) {
+                                this.writer.erase();
+                            }
+                            this.isAnimating = false;
+                            this.animationShown[this.currentWordIndex] = true;
+                            this.setMessage('✏️ Now draw the character 3 times.');
+                            this.updateUI();
+                        }
+                    });
+                } else if (!this.writer) {
+                    // Writer creation failed
+                    this.isAnimating = false;
+                    this.setMessage('⚠️ Could not load character. Click Reset to try, or skip.');
+                    this.updateUI();
+                } else {
+                    // Animation already shown for this word (shouldn't happen on first setup,
+                    // but handles edge cases like restart)
+                    this.isAnimating = false;
+                    this.setMessage('✏️ Draw the character.');
+                    this.updateUI();
+                }
+            }
+
+            /**
+             * Set up a word in Phase 2.
+             * No animation. Outline depends on which attempt we're on:
+             * - 1st attempt (3 remaining): outline = true
+             * - 2nd attempt (2 remaining): outline = false
+             * - 3rd attempt (1 remaining): outline = false
+             */
+            setupPhase2Word() {
+                const remaining = this.getRemainingAttempts();
+                // First attempt in Phase 2 (3 remaining) has outline; others don't
+                const showOutline = (remaining === 3);
+
+                this.isAnimating = false;
+                this.createWriter(showOutline);
+
+                const outlineLabel = showOutline ? 'with outline' : 'without outline';
+                this.setMessage(`✏️ Phase 2 – Draw the character (${outlineLabel}).`);
+                this.updateUI();
+            }
+
+            /**
+             * Handle the Check button click.
+             * Evaluates the user's drawing and determines success/failure.
+             */
+            async handleCheck() {
+                if (!this.writer || this.isAnimating) return;
+                if (this.currentWordIndex >= this.totalWords) return;
+
+                try {
+                    const result = await this.writer.evaluateCharacter();
+                    const score = result.score;
+
+                    if (score >= 0.7) {
+                        // Success!
+                        this.handleSuccessfulAttempt();
+                    } else {
+                        // Score too low – the miss is already tracked by HanziWriter's
+                        // internal counter (via onMistake callback for individual stroke
+                        // mistakes). The user can keep trying on the same canvas.
+                        this.setMessage(
+                            `❌ Score: ${Math.round(score * 100)}%. Keep trying! (Need ≥70%)`
+                            );
+                        // Flash the canvas briefly to indicate failure
+                        this.flashCanvas();
+                    }
+                } catch (err) {
+                    console.error('Error evaluating character:', err);
+                    this.setMessage('⚠️ Evaluation error. Please try again.');
+                }
+            }
+
+            /**
+             * Flash the writer target to give visual feedback.
+             */
+            flashCanvas() {
+                if (this.writerTarget) {
+                    this.writerTarget.style.transition = 'background-color 0.15s';
+                    this.writerTarget.style.backgroundColor = 'rgba(239, 68, 68, 0.15)';
+                    setTimeout(() => {
+                        if (this.writerTarget) {
+                            this.writerTarget.style.backgroundColor = '';
+                        }
+                    }, 200);
+                }
+            }
+
+            /**
+             * Handle a successful attempt (score >= 0.7).
+             * Decrements remaining attempts and advances accordingly.
+             */
+            handleSuccessfulAttempt() {
+                if (this.currentPhase === 1) {
+                    this.phase1AttemptsDone[this.currentWordIndex]++;
+                    this.setMessage(
+                        `✅ Great! ${this.getRemainingAttempts()} attempt(s) left for this word.`
+                        );
+
+                    if (this.phase1AttemptsDone[this.currentWordIndex] >= 3) {
+                        // Word completed in Phase 1
+                        this.advanceWord();
+                    } else {
+                        // More attempts needed – recreate writer (resets miss counter)
+                        this.createWriter(true); // Phase 1 always has outline
+                        this.updateUI();
+                    }
+                } else {
+                    // Phase 2
+                    this.phase2AttemptsDone[this.currentWordIndex]++;
+                    this.setMessage(
+                        `✅ Great! ${this.getRemainingAttempts()} attempt(s) left for this word.`
+                        );
+
+                    if (this.phase2AttemptsDone[this.currentWordIndex] >= 3) {
+                        // Word completed in Phase 2
+                        this.advanceWord();
+                    } else {
+                        // More attempts needed – recreate writer with correct outline
+                        const remaining = this.getRemainingAttempts();
+                        const showOutline = (remaining === 3);
+                        this.createWriter(showOutline);
+                        const outlineLabel = showOutline ? 'with outline' : 'without outline';
+                        this.setMessage(
+                            `✅ Next attempt: ${outlineLabel}. ${remaining} attempt(s) left.`
+                            );
+                        this.updateUI();
+                    }
+                }
+            }
+
+            /**
+             * Advance to the next word (or next phase if all words complete).
+             */
+            advanceWord() {
+                this.currentWordIndex++;
+
+                if (this.currentPhase === 1) {
+                    if (this.currentWordIndex >= this.totalWords) {
+                        // All words completed Phase 1 – advance to Phase 2
+                        this.advanceToPhase2();
+                        return;
+                    }
+                } else {
+                    if (this.currentWordIndex >= this.totalWords) {
+                        // All words completed Phase 2 – show results
+                        this.showResults();
+                        return;
+                    }
+                }
+
+                // Clean up and set up the next word
+                this.destroyWriter();
+                this.currentMisses = 0;
+                this.setupCurrentWord();
+            }
+
+            /**
+             * Advance from Phase 1 to Phase 2.
+             */
+            advanceToPhase2() {
+                this.currentPhase = 2;
+                this.currentWordIndex = 0;
+                this.phase2AttemptsDone = new Array(this.totalWords).fill(0);
+                this.currentMisses = 0;
+                this.isAnimating = false;
+                this.destroyWriter();
+
+                this.setMessage('🎯 Phase 2 begins! Mixed outline practice.');
+                this.setupCurrentWord();
+            }
+
+            /**
+             * Handle the Reset Canvas button.
+             * Clears the drawing without affecting the miss/hint state.
+             */
+            handleResetCanvas() {
+                if (!this.writer || this.isAnimating) return;
+                try {
+                    this.writer.erase();
+                    this.setMessage('🔄 Canvas reset. Keep trying!');
+                } catch (err) {
+                    console.error('Error resetting canvas:', err);
+                }
+            }
+
+            // ──────────────────────────────────
+            // RESULTS SCREEN
+            // ──────────────────────────────────
+            showResults() {
+                this.destroyWriter();
+                this.gameScreen.classList.add('hidden');
+                this.resultsScreen.classList.remove('hidden');
+
+                // Populate results
+                this.resultCharsMastered.textContent = this.totalWords;
+                this.resultTotalMistakes.textContent = this.totalMistakesAllTime;
+                this.resultHintsShown.textContent = this.totalHintsShown;
+
+                // Reset progress bar
+                this.progressBar.style.width = '100%';
+            }
+        }
+
+        // ──────────────────────────────────
+        // INITIALIZE THE APP
+        // ──────────────────────────────────
+        new WritingPracticeApp(flashcards);
+    }
+</script>
+</body>
+
+</html>

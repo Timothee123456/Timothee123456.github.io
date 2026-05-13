@@ -96,7 +96,8 @@
                 <div id="pinyinDisplay" class="text-lg sm:text-xl text-gray-600 dark:text-gray-400">Loading...</div>
             </div>
 
-            <div id="charactersRow" class="flex flex-col items-center gap-2 sm:gap-4"></div>
+            <!-- Character row: vertical on phone, horizontal on desktop -->
+            <div id="charactersRow" class="flex flex-col md:flex-row md:flex-wrap justify-center items-center gap-4"></div>
 
             <div id="messageArea" class="text-center text-sm text-gray-500 dark:text-gray-400 min-h-[24px]"></div>
 
@@ -114,10 +115,8 @@
         </div>
 
         <div id="resultsScreen" class="hidden text-center space-y-4 sm:space-y-6 px-2">
-            <h2 class="text-xl sm:text-2xl font-bold text-gray-800 dark:text-white mb-4 sm:mb-6">🎉 Congratulations! 🎉
-            </h2>
-            <div
-                class="bg-white dark:bg-gray-800 rounded-xl p-4 sm:p-6 shadow-lg border border-gray-200 dark:border-gray-700">
+            <h2 class="text-xl sm:text-2xl font-bold text-gray-800 dark:text-white mb-4 sm:mb-6">🎉 Congratulations! 🎉</h2>
+            <div class="bg-white dark:bg-gray-800 rounded-xl p-4 sm:p-6 shadow-lg border border-gray-200 dark:border-gray-700">
                 <p class="text-gray-600 dark:text-gray-400 mb-4">You have completed both phases of writing practice!</p>
                 <div class="grid grid-cols-2 gap-4 mb-4 sm:mb-6">
                     <div class="text-center">
@@ -146,6 +145,7 @@
             </div>
         </div>
     </div>
+
 
     <script>
         const urlParams = new URLSearchParams(window.location.search);
@@ -180,10 +180,9 @@
                     this.currentWordIndex = 0;
 
                     // Phase attempts constants
-                    this.PHASE1_MAX_ATTEMPTS = 2;   // 1 & 2 both with outline
-                    this.PHASE2_MAX_ATTEMPTS = 2;   // 1 with outline, 2 without outline
+                    this.PHASE1_MAX_ATTEMPTS = 2;
+                    this.PHASE2_MAX_ATTEMPTS = 2;
                     
-                    // Per-character attempt counters
                     this.phase1Progress = [];
                     this.phase2Progress = [];
                     this.animationShown = new Array(this.totalWords).fill(false);
@@ -200,7 +199,7 @@
                     this.bindEvents();
                     this.startSession();
                 }
-
+                
                 cacheDom() {
                     this.gameScreen = document.getElementById('gameScreen');
                     this.resultsScreen = document.getElementById('resultsScreen');

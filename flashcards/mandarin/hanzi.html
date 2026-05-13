@@ -7,24 +7,16 @@
     <title id="pageTitle">Chinese Writing Practice</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <!-- HanziWriter v3.5 – the quiz API replaces evaluateCharacter -->
+    <!-- HanziWriter v3.5 – quiz API replaces evaluateCharacter -->
     <script src="https://cdn.jsdelivr.net/npm/hanzi-writer@3.5/dist/hanzi-writer.min.js"></script>
     <style>
         .hint-fade-in {
             animation: fadeIn 0.2s ease-in-out;
         }
-
         @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: scale(0.95);
-            }
-            to {
-                opacity: 1;
-                transform: scale(1);
-            }
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
         }
-
         .no-select {
             -webkit-user-select: none;
             -moz-user-select: none;
@@ -32,8 +24,6 @@
             user-select: none;
             -webkit-tap-highlight-color: transparent;
         }
-
-        /* Each character canvas gets a fixed‑size container */
         .char-canvas-container {
             display: flex;
             align-items: center;
@@ -42,7 +32,6 @@
             width: 150px;
             margin: 0 0.25rem;
         }
-
         @media (max-width: 640px) {
             .char-canvas-container {
                 width: 120px;
@@ -55,11 +44,9 @@
                 min-height: 100px;
             }
         }
-
         .phase-pulse {
             animation: pulse 2s infinite;
         }
-
         @keyframes pulse {
             0%, 100% { opacity: 1; }
             50% { opacity: 0.6; }
@@ -73,11 +60,8 @@
             document.documentElement.classList.add('dark');
         }
         window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
-            if (event.matches) {
-                document.documentElement.classList.add('dark');
-            } else {
-                document.documentElement.classList.remove('dark');
-            }
+            if (event.matches) document.documentElement.classList.add('dark');
+            else document.documentElement.classList.remove('dark');
         });
     </script>
 
@@ -86,19 +70,14 @@
             Chinese Writing Practice
         </h1>
 
-        <!-- Game Screen -->
         <div id="gameScreen" class="space-y-4 sm:space-y-6">
-            <!-- Progress Bar -->
             <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3 overflow-hidden">
                 <div id="progressBar" class="bg-blue-500 h-3 rounded-full transition-all duration-300" style="width: 0%"></div>
             </div>
 
-            <!-- Info Row -->
             <div class="flex flex-wrap justify-between items-center gap-2 text-sm">
                 <div class="flex items-center space-x-2">
-                    <span id="phaseIndicator" class="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 phase-pulse">
-                        Phase 1
-                    </span>
+                    <span id="phaseIndicator" class="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 phase-pulse">Phase 1</span>
                     <span id="wordCounter" class="text-gray-600 dark:text-gray-400 font-medium">Word 1 / 20</span>
                 </div>
                 <div class="flex items-center space-x-3">
@@ -107,38 +86,30 @@
                         <i class="fa fa-exclamation-triangle"></i> <span id="missCount">0</span> misses
                     </span>
                 </div>
-                <button id="restartSessionBtn" class="bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 px-3 py-2 rounded-lg font-medium transition-colors text-sm"
-                    title="Restart Session">
+                <button id="restartSessionBtn" class="bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 px-3 py-2 rounded-lg font-medium transition-colors text-sm" title="Restart Session">
                     <i class="fa fa-refresh"></i> Restart
                 </button>
             </div>
 
-            <!-- Word Info -->
             <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 p-4 sm:p-6 text-center">
                 <div id="frenchDefinition" class="text-2xl sm:text-3xl font-bold text-gray-800 dark:text-white mb-2">Loading...</div>
                 <div id="pinyinDisplay" class="text-lg sm:text-xl text-gray-600 dark:text-gray-400">Loading...</div>
             </div>
 
-            <!-- Characters Canvas Row (side by side) -->
             <div id="charactersRow" class="flex flex-wrap justify-center gap-2 sm:gap-4"></div>
 
-            <!-- Message area -->
             <div id="messageArea" class="text-center text-sm text-gray-500 dark:text-gray-400 min-h-[24px]"></div>
 
-            <!-- Action Buttons -->
             <div class="flex justify-center space-x-4 px-2">
-                <button id="resetCanvasBtn"
-                    class="flex-1 max-w-44 flex items-center justify-center space-x-2 bg-gray-400 hover:bg-gray-500 active:bg-gray-600 text-white px-4 py-4 rounded-lg font-semibold transition-colors min-h-[56px] text-base">
+                <button id="resetCanvasBtn" class="flex-1 max-w-44 flex items-center justify-center space-x-2 bg-gray-400 hover:bg-gray-500 active:bg-gray-600 text-white px-4 py-4 rounded-lg font-semibold transition-colors min-h-[56px] text-base">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
                     </svg>
                     <span>Reset All</span>
                 </button>
             </div>
         </div>
 
-        <!-- Results Screen -->
         <div id="resultsScreen" class="hidden text-center space-y-4 sm:space-y-6 px-2">
             <h2 class="text-xl sm:text-2xl font-bold text-gray-800 dark:text-white mb-4 sm:mb-6">🎉 Congratulations! 🎉</h2>
             <div class="bg-white dark:bg-gray-800 rounded-xl p-4 sm:p-6 shadow-lg border border-gray-200 dark:border-gray-700">
@@ -159,12 +130,10 @@
                 </div>
             </div>
             <div class="space-y-3">
-                <button id="restartFromResultsBtn"
-                    class="w-full bg-blue-500 hover:bg-blue-600 active:bg-blue-700 text-white px-6 py-4 rounded-lg font-semibold transition-colors min-h-[56px] text-base">
+                <button id="restartFromResultsBtn" class="w-full bg-blue-500 hover:bg-blue-600 active:bg-blue-700 text-white px-6 py-4 rounded-lg font-semibold transition-colors min-h-[56px] text-base">
                     <i class="fa fa-refresh mr-2"></i> Restart Session
                 </button>
-                <a href="/home"
-                    class="block w-full bg-gray-300 dark:bg-gray-700 hover:bg-gray-400 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 px-6 py-4 rounded-lg font-semibold transition-colors min-h-[56px] text-base text-center no-underline">
+                <a href="/home" class="block w-full bg-gray-300 dark:bg-gray-700 hover:bg-gray-400 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 px-6 py-4 rounded-lg font-semibold transition-colors min-h-[56px] text-base text-center no-underline">
                     <i class="fa fa-home mr-2"></i> Choose Another Deck
                 </a>
             </div>
@@ -181,25 +150,16 @@
                 try {
                     const module = await import(jsFileURL);
                     const flashcards = module.flashcards;
-                    if (!flashcards) {
-                        window.location.href = "/home";
-                        return;
-                    }
+                    if (!flashcards) { window.location.href = "/home"; return; }
                     let defaultName = 'Chinese Writing Practice';
                     let titleText = (module.title ? module.title + ' - ' : '') + defaultName;
                     if (!module.title) titleText = defaultName;
                     document.getElementById('title').textContent = titleText;
                     document.getElementById('pageTitle').textContent = titleText;
                     initializeApp(flashcards);
-                } catch (err) {
-                    console.error('Failed to load deck:', err);
-                    window.location.href = "/home";
-                }
-            } else {
-                window.location.href = "/home";
-            }
+                } catch (err) { window.location.href = "/home"; }
+            } else { window.location.href = "/home"; }
         }
-
         load_flashcards();
 
         function initializeApp(loadedFlashcards) {
@@ -207,27 +167,17 @@
                 constructor(flashcards) {
                     this.originalDeck = Array.isArray(flashcards) ? flashcards : [];
                     this.totalWords = this.originalDeck.length;
-                    // For each word we store an array of its characters
                     this.wordCharacters = this.originalDeck.map(card => [...card.chinese]);
-
-                    // Phase & index tracking
-                    this.currentPhase = 1;                // 1 or 2
+                    this.currentPhase = 1;
                     this.currentWordIndex = 0;
-
-                    // Per‑character attempt counters: [wordIndex][charIndex] -> { phase1Done, phase2Done }
                     this.phase1Progress = [];
                     this.phase2Progress = [];
-                    this.animationShown = []; // word-level: true when all chars animated in Phase 1
-
-                    // Multiple writers (one per character of current word)
+                    this.animationShown = new Array(this.totalWords).fill(false);
                     this.writers = [];
-                    this.activeQuizzes = 0;               // number of unfinished quizzes for current word
+                    this.activeQuizzes = 0;
                     this.isAnimating = false;
-
-                    // Global stats
                     this.totalMistakesAllTime = 0;
                     this.totalHintsShown = 0;
-
                     this.cacheDom();
                     this.bindEvents();
                     this.startSession();
@@ -270,32 +220,27 @@
                     });
                 }
 
-                shuffleArray(array) {
-                    const shuffled = [...array];
-                    for (let i = shuffled.length - 1; i > 0; i--) {
+                shuffleArray(arr) {
+                    const a = [...arr];
+                    for (let i = a.length - 1; i > 0; i--) {
                         const j = Math.floor(Math.random() * (i + 1));
-                        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+                        [a[i], a[j]] = [a[j], a[i]];
                     }
-                    return shuffled;
+                    return a;
                 }
 
                 startSession() {
                     this.originalDeck = this.shuffleArray(this.originalDeck);
-                    this.wordCharacters = this.originalDeck.map(card => [...card.chinese]);
+                    this.wordCharacters = this.originalDeck.map(c => [...c.chinese]);
                     this.totalWords = this.originalDeck.length;
-
                     this.currentPhase = 1;
                     this.currentWordIndex = 0;
-
-                    // Initialize per‑character progress arrays
                     this.phase1Progress = this.wordCharacters.map(chars => new Array(chars.length).fill(0));
                     this.phase2Progress = this.wordCharacters.map(chars => new Array(chars.length).fill(0));
                     this.animationShown = new Array(this.totalWords).fill(false);
-
                     this.isAnimating = false;
                     this.totalMistakesAllTime = 0;
                     this.totalHintsShown = 0;
-
                     this.destroyAllWriters();
                     this.gameScreen.classList.remove('hidden');
                     this.resultsScreen.classList.add('hidden');
@@ -303,14 +248,8 @@
                     this.setupCurrentWord();
                 }
 
-                restartSession() {
-                    this.destroyAllWriters();
-                    this.startSession();
-                }
+                restartSession() { this.destroyAllWriters(); this.startSession(); }
 
-                // ──────────────────────────────────
-                // Writer management (multiple per word)
-                // ──────────────────────────────────
                 getWriterDimensions() {
                     const vw = window.innerWidth;
                     if (vw < 400) return { width: 100, height: 100 };
@@ -318,38 +257,66 @@
                     return { width: 150, height: 150 };
                 }
 
-                /**
-                 * Create a writer for a single character inside a given container element.
-                 * @param {HTMLElement} container
-                 * @param {string} char
-                 * @param {boolean} showOutline
-                 * @returns {object|null} the HanziWriter instance
-                 */
                 createWriter(container, char, showOutline) {
                     const dims = this.getWriterDimensions();
                     try {
-                        const writer = HanziWriter.create(container, char, {
+                        return HanziWriter.create(container, char, {
                             width: dims.width,
                             height: dims.height,
                             padding: 5,
-                            showOutline: showOutline,
-                            showCharacter: false,          // hide the character itself, only outline + user strokes
+                            showOutline,
+                            showCharacter: false,
                             strokeColor: '#555',
                             radicalColor: null,
                             drawingColor: '#333',
-                            strokeAnimationSpeed: 3,        // faster animation
-                            delayBetweenStrokes: 200,       // reduce gap between strokes
-                            showHintAfterMisses: 3,         // automatic hint
-                            highlightOnComplete: true,
+                            strokeAnimationSpeed: 1,        // default speed
+                            delayBetweenStrokes: 300,      // 300ms between strokes
+                            showHintAfterMisses: 3,
+                            highlightOnComplete: true
+                        });
+                    } catch (e) {
+                        console.error('Create writer failed for', char, e);
+                        return null;
+                    }
+                }
+
+                destroyAllWriters() {
+                    this.writers.forEach(w => { try { w.cancelQuiz(); w.cleanup(); } catch(e) {} });
+                    this.writers = [];
+                    this.activeQuizzes = 0;
+                    // Clear all character containers
+                    const containers = this.charactersRow.querySelectorAll('.char-canvas-container');
+                    containers.forEach(c => { c.innerHTML = ''; });
+                }
+
+                buildCharacterRow() {
+                    this.charactersRow.innerHTML = '';
+                    const chars = this.wordCharacters[this.currentWordIndex];
+                    chars.forEach((char, idx) => {
+                        const div = document.createElement('div');
+                        div.className = 'char-canvas-container bg-white dark:bg-gray-800 rounded-lg shadow border border-gray-200 dark:border-gray-700';
+                        div.id = `char-${idx}`;
+                        this.charactersRow.appendChild(div);
+                    });
+                }
+
+                startAllQuizzes() {
+                    this.activeQuizzes = this.writers.length;
+                    if (this.activeQuizzes === 0) {
+                        this.handleAllQuizzesCompleted();
+                        return;
+                    }
+                    this.writers.forEach((w, i) => {
+                        if (!w) return;
+                        w.cancelQuiz();
+                        w.quiz({
                             onMistake: (data) => {
                                 this.totalMistakesAllTime++;
-                                // update miss display if any quiz is active (we'll still show total)
                                 this.missCounter.classList.remove('hidden');
                                 this.missCountSpan.textContent = this.totalMistakesAllTime;
                                 if (data.totalMistakes === 3) this.totalHintsShown++;
                             },
-                            onComplete: (data) => {
-                                // A quiz just finished for one character
+                            onComplete: (summary) => {
                                 this.activeQuizzes--;
                                 if (this.activeQuizzes <= 0) {
                                     this.activeQuizzes = 0;
@@ -357,99 +324,101 @@
                                 }
                             }
                         });
-                        return writer;
-                    } catch (err) {
-                        console.error('Failed to create writer for', char, err);
-                        return null;
+                    });
+                }
+
+                resetAllCanvases() {
+                    if (this.writers.length === 0) return;
+                    const chars = this.wordCharacters[this.currentWordIndex];
+                    const containers = chars.map((_, i) => document.getElementById(`char-${i}`));
+                    let showOutline = true;
+                    if (this.currentPhase === 2) {
+                        const remaining = this.getRemainingAttempts();
+                        showOutline = (remaining === 3);
+                    }
+                    this.writers.forEach(w => { try { w.cancelQuiz(); } catch(e) {} });
+                    this.destroyAllWriters();
+                    this.writers = [];
+                    chars.forEach((ch, i) => {
+                        const writer = this.createWriter(containers[i], ch, showOutline);
+                        if (writer) this.writers.push(writer);
+                    });
+                    this.startAllQuizzes();
+                    this.setMessage('🔄 Canvases reset. Keep trying!');
+                    this.updateUI();
+                }
+
+                chainAnimations(index) {
+                    if (index >= this.writers.length || !this.writers[index]) {
+                        this.isAnimating = false;
+                        this.animationShown[this.currentWordIndex] = true;
+                        this.resetAllCanvases();  // clears and starts fresh quizzes
+                        this.setMessage('✏️ Now draw all characters correctly.');
+                        this.updateUI();
+                        return;
+                    }
+                    const writer = this.writers[index];
+                    try {
+                        writer.animateCharacter({
+                            onComplete: () => {
+                                setTimeout(() => this.chainAnimations(index + 1), 100);
+                            }
+                        });
+                    } catch (e) {
+                        setTimeout(() => this.chainAnimations(index + 1), 100);
                     }
                 }
 
-                destroyAllWriters() {
-                    this.writers.forEach(w => { try { w.cancelQuiz(); w.cleanup(); } catch (e) {} });
-                    this.writers = [];
-                    this.activeQuizzes = 0;
+                handleAllQuizzesCompleted() {
+                    const charProgress = this.currentPhase === 1
+                        ? this.phase1Progress[this.currentWordIndex]
+                        : this.phase2Progress[this.currentWordIndex];
+                    for (let i = 0; i < charProgress.length; i++) charProgress[i]++;
+                    const remaining = this.getRemainingAttempts();
+                    if (remaining <= 0) {
+                        this.writers.forEach(w => { try { w.cancelQuiz(); } catch(e) {} });
+                        this.currentWordIndex++;
+                        this.destroyAllWriters();
+                        this.setupCurrentWord();
+                    } else {
+                        this.setupCurrentWordAttempt();
+                    }
                 }
 
-                /**
-                 * Build the character row: one container per character of the current word.
-                 */
-                buildCharacterRow() {
-                    this.charactersRow.innerHTML = '';
-                    const chars = this.wordCharacters[this.currentWordIndex];
-                    chars.forEach((char, idx) => {
-                        const container = document.createElement('div');
-                        container.className = 'char-canvas-container bg-white dark:bg-gray-800 rounded-lg shadow border border-gray-200 dark:border-gray-700';
-                        container.id = `char-${idx}`;
-                        this.charactersRow.appendChild(container);
-                    });
-                }
-
-                /**
-                 * Start quizzes on all current writers.
-                 */
-                startAllQuizzes() {
-                    this.activeQuizzes = this.writers.length;
-                    this.writers.forEach(w => {
-                        if (w) {
-                            w.cancelQuiz(); // reset any previous state
-                            w.quiz();        // start new quiz
-                        }
-                    });
-                }
-
-                /**
-                 * Cancel all quizzes without destroying writers.
-                 */
-                cancelAllQuizzes() {
-                    this.writers.forEach(w => { try { w.cancelQuiz(); } catch (e) {} });
-                    this.activeQuizzes = 0;
-                }
-
-                // ──────────────────────────────────
-                // Word setup & phase logic
-                // ──────────────────────────────────
                 setupCurrentWord() {
                     if (this.currentWordIndex >= this.totalWords) {
                         if (this.currentPhase === 1) this.advanceToPhase2();
                         else this.showResults();
                         return;
                     }
-
                     this.updateWordDisplay();
                     this.buildCharacterRow();
                     this.destroyAllWriters();
                     this.writers = [];
                     this.activeQuizzes = 0;
-
                     const chars = this.wordCharacters[this.currentWordIndex];
                     const containers = chars.map((_, i) => document.getElementById(`char-${i}`));
-
                     if (this.currentPhase === 1) {
-                        // Phase 1: always outline, animation if not yet shown
                         const showOutline = true;
                         chars.forEach((ch, i) => {
                             const writer = this.createWriter(containers[i], ch, showOutline);
-                            this.writers.push(writer);
+                            if (writer) this.writers.push(writer);
                         });
-
                         if (!this.animationShown[this.currentWordIndex]) {
-                            // Chain animations: each writer animates in order
                             this.isAnimating = true;
                             this.setMessage('🎬 Watching stroke order animation...');
                             this.chainAnimations(0);
                         } else {
-                            // Already animated – just start quizzes
-                            this.setMessage('✏️ Draw all characters correctly.');
                             this.startAllQuizzes();
+                            this.setMessage('✏️ Draw all characters correctly.');
                             this.updateUI();
                         }
                     } else {
-                        // Phase 2: check remaining attempts for first character (outline only on first attempt)
                         const remaining = this.getRemainingAttempts();
                         const showOutline = (remaining === 3);
                         chars.forEach((ch, i) => {
                             const writer = this.createWriter(containers[i], ch, showOutline);
-                            this.writers.push(writer);
+                            if (writer) this.writers.push(writer);
                         });
                         const label = showOutline ? 'with outline' : 'without outline';
                         this.setMessage(`✏️ Phase 2 – Draw all characters (${label}).`);
@@ -458,132 +427,29 @@
                     }
                 }
 
-                /**
-                 * Recursively animate characters one after another.
-                 * @param {number} index - current character index to animate
-                 */
-                chainAnimations(index) {
-                    if (index >= this.writers.length || !this.writers[index]) {
-                        // All animations done
-                        this.isAnimating = false;
-                        this.animationShown[this.currentWordIndex] = true;
-                        // Clear canvases (destroy and recreate with outline true) to start fresh for quizzes
-                        this.resetAllCanvases();
-                        this.startAllQuizzes();
-                        this.setMessage('✏️ Now draw all characters correctly.');
-                        this.updateUI();
-                        return;
-                    }
-
-                    const writer = this.writers[index];
-                    try {
-                        writer.animateCharacter({
-                            onComplete: () => {
-                                // Move to next character after a tiny delay
-                                setTimeout(() => this.chainAnimations(index + 1), 100);
-                            }
-                        });
-                    } catch (err) {
-                        console.warn('Animation error for char', index, err);
-                        setTimeout(() => this.chainAnimations(index + 1), 100);
-                    }
-                }
-
-                /**
-                 * Called when all quizzes for the current word have completed.
-                 * Means all characters were drawn correctly in this attempt.
-                 */
-                handleAllQuizzesCompleted() {
-                    // Increment completion count for each character
-                    const charProgress = this.currentPhase === 1
-                        ? this.phase1Progress[this.currentWordIndex]
-                        : this.phase2Progress[this.currentWordIndex];
-
-                    for (let i = 0; i < charProgress.length; i++) {
-                        charProgress[i]++;
-                    }
-
-                    // Check if we need more attempts for this word
-                    const remaining = this.getRemainingAttempts();
-                    if (remaining <= 0) {
-                        // Move to next word
-                        this.cancelAllQuizzes();
-                        this.currentWordIndex++;
-                        this.destroyAllWriters();
-                        this.setupCurrentWord();
-                    } else {
-                        // Re‑create writers for the next attempt (outline may change in Phase 2)
-                        this.setupCurrentWordAttempt();
-                    }
-                }
-
-                /**
-                 * Advance to the next attempt of the same word (after one successful full‑word quiz).
-                 */
                 setupCurrentWordAttempt() {
                     const chars = this.wordCharacters[this.currentWordIndex];
                     const containers = chars.map((_, i) => document.getElementById(`char-${i}`));
-
                     this.destroyAllWriters();
                     this.writers = [];
                     this.activeQuizzes = 0;
-
-                    if (this.currentPhase === 1) {
-                        // Always outline
-                        chars.forEach((ch, i) => {
-                            const writer = this.createWriter(containers[i], ch, true);
-                            this.writers.push(writer);
-                        });
-                    } else {
-                        const remaining = this.getRemainingAttempts();
-                        const showOutline = (remaining === 3);
-                        chars.forEach((ch, i) => {
-                            const writer = this.createWriter(containers[i], ch, showOutline);
-                            this.writers.push(writer);
-                        });
-                    }
-                    this.startAllQuizzes();
-                    this.updateUI();
-                }
-
-                /**
-                 * Reset all canvases: cancel quizzes, destroy and recreate writers with same outline.
-                 */
-                resetAllCanvases() {
-                    if (this.writers.length === 0) return;
-                    const chars = this.wordCharacters[this.currentWordIndex];
-                    const containers = chars.map((_, i) => document.getElementById(`char-${i}`));
-                    // determine current outline based on phase/attempt
                     let showOutline = true;
                     if (this.currentPhase === 2) {
                         const remaining = this.getRemainingAttempts();
                         showOutline = (remaining === 3);
                     }
-
-                    this.cancelAllQuizzes();
-                    this.destroyAllWriters();
-                    this.writers = [];
-
                     chars.forEach((ch, i) => {
                         const writer = this.createWriter(containers[i], ch, showOutline);
-                        this.writers.push(writer);
+                        if (writer) this.writers.push(writer);
                     });
                     this.startAllQuizzes();
-                    this.setMessage('🔄 Canvases reset. Keep trying!');
                     this.updateUI();
                 }
 
-                // ──────────────────────────────────
-                // UI helpers
-                // ──────────────────────────────────
                 getRemainingAttempts() {
                     const chars = this.wordCharacters[this.currentWordIndex];
-                    if (this.currentPhase === 1) {
-                        // all chars have same count, use first
-                        return 3 - (this.phase1Progress[this.currentWordIndex][0] || 0);
-                    } else {
-                        return 3 - (this.phase2Progress[this.currentWordIndex][0] || 0);
-                    }
+                    if (this.currentPhase === 1) return 3 - (this.phase1Progress[this.currentWordIndex][0] || 0);
+                    else return 3 - (this.phase2Progress[this.currentWordIndex][0] || 0);
                 }
 
                 updateWordDisplay() {
@@ -595,33 +461,24 @@
                 }
 
                 updateUI() {
-                    // Calculate overall progress
-                    const totalSteps = this.totalWords * 6; // 3 attempts for Phase 1 + 3 for Phase 2
-                    let completed = 0;
+                    let totalSteps = 0, completed = 0;
                     for (let w = 0; w < this.totalWords; w++) {
                         const chars = this.wordCharacters[w];
+                        totalSteps += chars.length * 6; // 3 Phase1 + 3 Phase2 per char
                         for (let c = 0; c < chars.length; c++) {
                             completed += Math.min(this.phase1Progress[w][c], 3);
                             completed += Math.min(this.phase2Progress[w][c], 3);
                         }
                     }
-                    const pct = totalSteps > 0 ? Math.round((completed / totalSteps) * 100) : 0;
+                    const pct = totalSteps ? Math.round((completed / totalSteps) * 100) : 0;
                     this.progressBar.style.width = `${pct}%`;
-
                     this.wordCounter.textContent = `Word ${this.currentWordIndex + 1} / ${this.totalWords}`;
-
-                    if (this.currentPhase === 1) {
-                        this.phaseIndicator.textContent = 'Phase 1 – Outline & Animation';
-                        this.phaseIndicator.className = 'inline-block px-3 py-1 rounded-full text-xs font-semibold bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 phase-pulse';
-                    } else {
-                        this.phaseIndicator.textContent = 'Phase 2 – Mixed Outline';
-                        this.phaseIndicator.className = 'inline-block px-3 py-1 rounded-full text-xs font-semibold bg-purple-100 dark:bg-purple-900 text-purple-700 dark:text-purple-300 phase-pulse';
-                    }
-
+                    this.phaseIndicator.textContent = this.currentPhase === 1 ? 'Phase 1 – Outline & Animation' : 'Phase 2 – Mixed Outline';
+                    this.phaseIndicator.className = `inline-block px-3 py-1 rounded-full text-xs font-semibold ${
+                        this.currentPhase === 1 ? 'bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300' : 'bg-purple-100 dark:bg-purple-900 text-purple-700 dark:text-purple-300'
+                    } phase-pulse`;
                     const remaining = this.getRemainingAttempts();
                     this.attemptsRemaining.textContent = `${remaining} attempt${remaining !== 1 ? 's' : ''} remaining`;
-
-                    // Miss counter (global)
                     if (this.totalMistakesAllTime > 0) {
                         this.missCounter.classList.remove('hidden');
                         this.missCountSpan.textContent = this.totalMistakesAllTime;
@@ -630,9 +487,7 @@
                     }
                 }
 
-                setMessage(msg) {
-                    if (this.messageArea) this.messageArea.textContent = msg;
-                }
+                setMessage(msg) { if (this.messageArea) this.messageArea.textContent = msg; }
 
                 advanceToPhase2() {
                     this.currentPhase = 2;
@@ -648,7 +503,6 @@
                     this.destroyAllWriters();
                     this.gameScreen.classList.add('hidden');
                     this.resultsScreen.classList.remove('hidden');
-
                     const totalChars = this.wordCharacters.reduce((sum, chars) => sum + chars.length, 0);
                     this.resultCharsMastered.textContent = totalChars;
                     this.resultTotalMistakes.textContent = this.totalMistakesAllTime;

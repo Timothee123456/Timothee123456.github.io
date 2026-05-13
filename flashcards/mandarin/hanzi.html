@@ -24,25 +24,18 @@
             user-select: none;
             -webkit-tap-highlight-color: transparent;
         }
+        /* Character canvas containers – stacked vertically, full width on mobile */
         .char-canvas-container {
             display: flex;
             align-items: center;
             justify-content: center;
-            min-height: 150px;
-            width: 150px;
-            margin: 0 0.25rem;
+            width: 100%;
+            max-width: 500px;
+            margin: 0.5rem auto;
         }
-        @media (max-width: 640px) {
-            .char-canvas-container {
-                width: 120px;
-                min-height: 120px;
-            }
-        }
-        @media (max-width: 400px) {
-            .char-canvas-container {
-                width: 100px;
-                min-height: 100px;
-            }
+        .char-canvas-container svg {
+            width: 100% !important;
+            height: auto !important;
         }
         .phase-pulse {
             animation: pulse 2s infinite;
@@ -84,7 +77,7 @@
                     <span id="wordCounter" class="text-gray-600 dark:text-gray-400 font-medium">Word 1 / 20</span>
                 </div>
                 <div class="flex items-center space-x-3">
-                    <span id="attemptsDisplay" class="text-gray-600 dark:text-gray-400 font-medium">Attempt 1/3</span>
+                    <span id="attemptsDisplay" class="text-gray-600 dark:text-gray-400 font-medium">Attempt 1/2</span>
                     <span id="missCounter" class="text-orange-500 dark:text-orange-400 font-medium hidden">
                         <i class="fa fa-exclamation-triangle"></i> <span id="missCount">0</span> misses
                     </span>
@@ -103,7 +96,7 @@
                 <div id="pinyinDisplay" class="text-lg sm:text-xl text-gray-600 dark:text-gray-400">Loading...</div>
             </div>
 
-            <div id="charactersRow" class="flex flex-wrap justify-center gap-2 sm:gap-4"></div>
+            <div id="charactersRow" class="flex flex-col items-center gap-2 sm:gap-4"></div>
 
             <div id="messageArea" class="text-center text-sm text-gray-500 dark:text-gray-400 min-h-[24px]"></div>
 
@@ -181,25 +174,24 @@
                 constructor(flashcards) {
                     this.originalDeck = Array.isArray(flashcards) ? flashcards : [];
                     this.totalWords = this.originalDeck.length;
-                    // split each word into individual characters
                     this.wordCharacters = this.originalDeck.map(card => [...card.chinese]);
 
                     this.currentPhase = 1;
                     this.currentWordIndex = 0;
 
-                    // per‑character attempt counts: [wordIndex][charIndex]
+                    // Phase attempts constants
+                    this.PHASE1_MAX_ATTEMPTS = 2;   // 1 & 2 both with outline
+                    this.PHASE2_MAX_ATTEMPTS = 2;   // 1 with outline, 2 without outline
+                    
+                    // Per-character attempt counters
                     this.phase1Progress = [];
                     this.phase2Progress = [];
-                    // Phase 2 only needs 2 attempts per word – we'll treat it as per character
-                    this.PHASE2_MAX_ATTEMPTS = 2;
-                    this.PHASE1_MAX_ATTEMPTS = 3;
-
                     this.animationShown = new Array(this.totalWords).fill(false);
 
                     this.writers = [];
                     this.activeQuizzes = 0;
                     this.isAnimating = false;
-                    this.isTransitioning = false;   // blocks interactions during the highlight delay
+                    this.isTransitioning = false;
 
                     this.totalMistakesAllTime = 0;
                     this.totalHintsShown = 0;
@@ -283,15 +275,19 @@
                     this.startSession();
                 }
 
+                // Dynamic writer dimensions – larger on mobile (80-90% of container width)
                 getWriterDimensions() {
-                    const vw = window.innerWidth;
-                    if (vw < 400) return { width: 100, height: 100 };
-                    if (vw < 640) return { width: 120, height: 120 };
-                    return { width: 150, height: 150 };
+                    const containerWidth = this.charactersRow.clientWidth;
+                    // On very small screens, use 90% of container width; otherwise cap at 500px
+                    const w = Math.min(containerWidth * 0.9, 500);
+                    // Keep square aspect ratio
+                    return { width: w, height: w };
                 }
 
                 createWriter(container, char, showOutline) {
                     const dims = this.getWriterDimensions();
+                    // When outline is hidden, show hint after first miss; otherwise after 3
+                    const hintThreshold = showOutline ? 3 : 1;
                     try {
                         return HanziWriter.create(container, char, {
                             width: dims.width,
@@ -304,7 +300,7 @@
                             drawingColor: '#333',
                             strokeAnimationSpeed: 1,
                             delayBetweenStrokes: 300,
-                            showHintAfterMisses: 3,
+                            showHintAfterMisses: hintThreshold,
                             highlightOnComplete: true   // show correct‑stroke highlight
                         });
                     } catch (e) {
@@ -343,11 +339,11 @@
                         w.cancelQuiz();
                         w.quiz({
                             onMistake: (data) => {
-                                if (this.isTransitioning) return; // ignore mistakes after completion
+                                if (this.isTransitioning) return;
                                 this.totalMistakesAllTime++;
                                 this.missCounter.classList.remove('hidden');
                                 this.missCountSpan.textContent = this.totalMistakesAllTime;
-                                if (data.totalMistakes === 3) this.totalHintsShown++;
+                                // Hint counter is incremented by HanziWriter internally
                             },
                             onComplete: (summary) => {
                                 if (this.isTransitioning) return;
@@ -361,18 +357,17 @@
                     });
                 }
 
-                // Determine which outline to use for the next attempt
+                // Outline logic according to new rules
                 getOutlineForAttempt(attemptNumber) {
                     if (this.currentPhase === 1) {
-                        // Phase 1: attempts 1 & 2 -> outline, attempt 3 -> no outline
-                        return (attemptNumber <= 2);
+                        // Phase 1: both attempts have outline
+                        return true;
                     } else {
-                        // Phase 2: attempt 1 -> outline, attempt 2 -> no outline (only 2 attempts)
+                        // Phase 2: attempt 1 → outline, attempt 2 → no outline
                         return (attemptNumber === 1);
                     }
                 }
 
-                // Number of remaining attempts for the current word (phase‑dependent)
                 getRemainingAttempts() {
                     const chars = this.wordCharacters[this.currentWordIndex];
                     const completed = this.currentPhase === 1
@@ -384,13 +379,11 @@
                     return maxAttempts - completed;
                 }
 
-                // Current attempt number (1‑based)
                 getCurrentAttemptNumber() {
-                    const chars = this.wordCharacters[this.currentWordIndex];
                     const completed = this.currentPhase === 1
                         ? (this.phase1Progress[this.currentWordIndex][0] || 0)
                         : (this.phase2Progress[this.currentWordIndex][0] || 0);
-                    return completed + 1; // next attempt if still active
+                    return completed + 1;
                 }
 
                 updateAttemptDisplay() {
@@ -430,7 +423,7 @@
                     if (index >= this.writers.length || !this.writers[index]) {
                         this.isAnimating = false;
                         this.animationShown[this.currentWordIndex] = true;
-                        // after animation, start fresh quizzes (outline according to attempt 1)
+                        // After animation, start quizzes with correct outline for the first attempt
                         this.resetAllCanvases();
                         this.setMessage('✏️ Now draw all characters correctly.');
                         this.updateUI();
@@ -449,7 +442,6 @@
                 }
 
                 handleAllQuizzesCompleted() {
-                    // All characters of the current word finished successfully – increment attempts
                     const wordIdx = this.currentWordIndex;
                     const charProgress = this.currentPhase === 1
                         ? this.phase1Progress[wordIdx]
@@ -457,25 +449,21 @@
                     for (let i = 0; i < charProgress.length; i++) charProgress[i]++;
 
                     const remaining = this.getRemainingAttempts();
-                    // Prevent further actions while highlight is shown
                     this.isTransitioning = true;
                     this.resetCanvasBtn.disabled = true;
 
-                    // Let the user see the blue highlight for 1.5s before moving on
                     setTimeout(() => {
                         this.isTransitioning = false;
                         this.resetCanvasBtn.disabled = false;
                         if (remaining <= 0) {
-                            // word fully done → next word or phase
                             this.writers.forEach(w => { try { w.cancelQuiz(); } catch (e) {} });
                             this.currentWordIndex++;
                             this.destroyAllWriters();
                             this.setupCurrentWord();
                         } else {
-                            // more attempts needed → recreate writers for the next attempt
                             this.setupCurrentWordAttempt();
                         }
-                    }, 1500);
+                    }, 1500);   // show the blue highlight for 1.5s
                 }
 
                 setupCurrentWord() {
@@ -525,8 +513,8 @@
                         if (writer) this.writers.push(writer);
                     });
                     this.startAllQuizzes();
-                    const label = showOutline ? 'with outline' : 'without outline';
-                    this.setMessage(`✏️ Attempt ${attemptNumber}/${this.currentPhase === 1 ? 3 : 2} – ${label}.`);
+                    const outlineLabel = showOutline ? 'with outline' : 'without outline';
+                    this.setMessage(`✏️ Attempt ${attemptNumber}/${this.currentPhase === 1 ? 2 : 2} – ${outlineLabel}.`);
                     this.updateUI();
                 }
 
@@ -539,11 +527,9 @@
                 }
 
                 updateUI() {
-                    // calculate overall progress (total attempts per character: Phase1=3, Phase2=2)
                     let totalSteps = 0, completedSteps = 0;
                     for (let w = 0; w < this.totalWords; w++) {
                         const chars = this.wordCharacters[w];
-                        // each character has 3 Phase1 + 2 Phase2 attempts = 5 total
                         totalSteps += chars.length * (this.PHASE1_MAX_ATTEMPTS + this.PHASE2_MAX_ATTEMPTS);
                         for (let c = 0; c < chars.length; c++) {
                             completedSteps += Math.min(this.phase1Progress[w][c], this.PHASE1_MAX_ATTEMPTS);
@@ -554,9 +540,8 @@
                     this.progressBar.style.width = `${pct}%`;
 
                     this.wordCounter.textContent = `Word ${this.currentWordIndex + 1} / ${this.totalWords}`;
-
                     this.phaseIndicator.textContent = this.currentPhase === 1
-                        ? 'Phase 1 – Outline & Animation'
+                        ? 'Phase 1 – Outline'
                         : 'Phase 2 – Mixed Outline';
                     this.phaseIndicator.className = `inline-block px-3 py-1 rounded-full text-xs font-semibold ${
                         this.currentPhase === 1
@@ -602,5 +587,4 @@
         }
     </script>
 </body>
-
 </html>

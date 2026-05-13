@@ -77,22 +77,29 @@
 
             <div class="flex flex-wrap justify-between items-center gap-2 text-sm">
                 <div class="flex items-center space-x-2">
-                    <span id="phaseIndicator" class="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 phase-pulse">Phase 1</span>
+                    <span id="phaseIndicator"
+                        class="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 phase-pulse">
+                        Phase 1
+                    </span>
                     <span id="wordCounter" class="text-gray-600 dark:text-gray-400 font-medium">Word 1 / 20</span>
                 </div>
                 <div class="flex items-center space-x-3">
-                    <span id="attemptsRemaining" class="text-gray-600 dark:text-gray-400">3 attempts remaining</span>
+                    <span id="attemptsDisplay" class="text-gray-600 dark:text-gray-400 font-medium">Attempt 1/3</span>
                     <span id="missCounter" class="text-orange-500 dark:text-orange-400 font-medium hidden">
                         <i class="fa fa-exclamation-triangle"></i> <span id="missCount">0</span> misses
                     </span>
                 </div>
-                <button id="restartSessionBtn" class="bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 px-3 py-2 rounded-lg font-medium transition-colors text-sm" title="Restart Session">
+                <button id="restartSessionBtn"
+                    class="bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 px-3 py-2 rounded-lg font-medium transition-colors text-sm"
+                    title="Restart Session">
                     <i class="fa fa-refresh"></i> Restart
                 </button>
             </div>
 
-            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 p-4 sm:p-6 text-center">
-                <div id="frenchDefinition" class="text-2xl sm:text-3xl font-bold text-gray-800 dark:text-white mb-2">Loading...</div>
+            <div
+                class="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 p-4 sm:p-6 text-center">
+                <div id="frenchDefinition"
+                    class="text-2xl sm:text-3xl font-bold text-gray-800 dark:text-white mb-2">Loading...</div>
                 <div id="pinyinDisplay" class="text-lg sm:text-xl text-gray-600 dark:text-gray-400">Loading...</div>
             </div>
 
@@ -101,9 +108,12 @@
             <div id="messageArea" class="text-center text-sm text-gray-500 dark:text-gray-400 min-h-[24px]"></div>
 
             <div class="flex justify-center space-x-4 px-2">
-                <button id="resetCanvasBtn" class="flex-1 max-w-44 flex items-center justify-center space-x-2 bg-gray-400 hover:bg-gray-500 active:bg-gray-600 text-white px-4 py-4 rounded-lg font-semibold transition-colors min-h-[56px] text-base">
+                <button id="resetCanvasBtn"
+                    class="flex-1 max-w-44 flex items-center justify-center space-x-2 bg-gray-400 hover:bg-gray-500 active:bg-gray-600 text-white px-4 py-4 rounded-lg font-semibold transition-colors min-h-[56px] text-base disabled:opacity-50 disabled:cursor-not-allowed">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15">
+                        </path>
                     </svg>
                     <span>Reset All</span>
                 </button>
@@ -111,8 +121,10 @@
         </div>
 
         <div id="resultsScreen" class="hidden text-center space-y-4 sm:space-y-6 px-2">
-            <h2 class="text-xl sm:text-2xl font-bold text-gray-800 dark:text-white mb-4 sm:mb-6">🎉 Congratulations! 🎉</h2>
-            <div class="bg-white dark:bg-gray-800 rounded-xl p-4 sm:p-6 shadow-lg border border-gray-200 dark:border-gray-700">
+            <h2 class="text-xl sm:text-2xl font-bold text-gray-800 dark:text-white mb-4 sm:mb-6">🎉 Congratulations! 🎉
+            </h2>
+            <div
+                class="bg-white dark:bg-gray-800 rounded-xl p-4 sm:p-6 shadow-lg border border-gray-200 dark:border-gray-700">
                 <p class="text-gray-600 dark:text-gray-400 mb-4">You have completed both phases of writing practice!</p>
                 <div class="grid grid-cols-2 gap-4 mb-4 sm:mb-6">
                     <div class="text-center">
@@ -130,10 +142,12 @@
                 </div>
             </div>
             <div class="space-y-3">
-                <button id="restartFromResultsBtn" class="w-full bg-blue-500 hover:bg-blue-600 active:bg-blue-700 text-white px-6 py-4 rounded-lg font-semibold transition-colors min-h-[56px] text-base">
+                <button id="restartFromResultsBtn"
+                    class="w-full bg-blue-500 hover:bg-blue-600 active:bg-blue-700 text-white px-6 py-4 rounded-lg font-semibold transition-colors min-h-[56px] text-base">
                     <i class="fa fa-refresh mr-2"></i> Restart Session
                 </button>
-                <a href="/home" class="block w-full bg-gray-300 dark:bg-gray-700 hover:bg-gray-400 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 px-6 py-4 rounded-lg font-semibold transition-colors min-h-[56px] text-base text-center no-underline">
+                <a href="/home"
+                    class="block w-full bg-gray-300 dark:bg-gray-700 hover:bg-gray-400 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 px-6 py-4 rounded-lg font-semibold transition-colors min-h-[56px] text-base text-center no-underline">
                     <i class="fa fa-home mr-2"></i> Choose Another Deck
                 </a>
             </div>
@@ -167,17 +181,29 @@
                 constructor(flashcards) {
                     this.originalDeck = Array.isArray(flashcards) ? flashcards : [];
                     this.totalWords = this.originalDeck.length;
+                    // split each word into individual characters
                     this.wordCharacters = this.originalDeck.map(card => [...card.chinese]);
+
                     this.currentPhase = 1;
                     this.currentWordIndex = 0;
+
+                    // per‑character attempt counts: [wordIndex][charIndex]
                     this.phase1Progress = [];
                     this.phase2Progress = [];
+                    // Phase 2 only needs 2 attempts per word – we'll treat it as per character
+                    this.PHASE2_MAX_ATTEMPTS = 2;
+                    this.PHASE1_MAX_ATTEMPTS = 3;
+
                     this.animationShown = new Array(this.totalWords).fill(false);
+
                     this.writers = [];
                     this.activeQuizzes = 0;
                     this.isAnimating = false;
+                    this.isTransitioning = false;   // blocks interactions during the highlight delay
+
                     this.totalMistakesAllTime = 0;
                     this.totalHintsShown = 0;
+
                     this.cacheDom();
                     this.bindEvents();
                     this.startSession();
@@ -189,7 +215,7 @@
                     this.progressBar = document.getElementById('progressBar');
                     this.phaseIndicator = document.getElementById('phaseIndicator');
                     this.wordCounter = document.getElementById('wordCounter');
-                    this.attemptsRemaining = document.getElementById('attemptsRemaining');
+                    this.attemptsDisplay = document.getElementById('attemptsDisplay');
                     this.missCounter = document.getElementById('missCounter');
                     this.missCountSpan = document.getElementById('missCount');
                     this.frenchDefinition = document.getElementById('frenchDefinition');
@@ -215,7 +241,7 @@
                         }
                         if (event.key === 'Backspace') {
                             event.preventDefault();
-                            this.resetAllCanvases();
+                            if (!this.isTransitioning) this.resetAllCanvases();
                         }
                     });
                 }
@@ -233,14 +259,18 @@
                     this.originalDeck = this.shuffleArray(this.originalDeck);
                     this.wordCharacters = this.originalDeck.map(c => [...c.chinese]);
                     this.totalWords = this.originalDeck.length;
+
                     this.currentPhase = 1;
                     this.currentWordIndex = 0;
                     this.phase1Progress = this.wordCharacters.map(chars => new Array(chars.length).fill(0));
                     this.phase2Progress = this.wordCharacters.map(chars => new Array(chars.length).fill(0));
                     this.animationShown = new Array(this.totalWords).fill(false);
+
                     this.isAnimating = false;
+                    this.isTransitioning = false;
                     this.totalMistakesAllTime = 0;
                     this.totalHintsShown = 0;
+
                     this.destroyAllWriters();
                     this.gameScreen.classList.remove('hidden');
                     this.resultsScreen.classList.add('hidden');
@@ -248,7 +278,10 @@
                     this.setupCurrentWord();
                 }
 
-                restartSession() { this.destroyAllWriters(); this.startSession(); }
+                restartSession() {
+                    this.destroyAllWriters();
+                    this.startSession();
+                }
 
                 getWriterDimensions() {
                     const vw = window.innerWidth;
@@ -269,10 +302,10 @@
                             strokeColor: '#555',
                             radicalColor: null,
                             drawingColor: '#333',
-                            strokeAnimationSpeed: 1,        // default speed
-                            delayBetweenStrokes: 300,      // 300ms between strokes
+                            strokeAnimationSpeed: 1,
+                            delayBetweenStrokes: 300,
                             showHintAfterMisses: 3,
-                            highlightOnComplete: true
+                            highlightOnComplete: true   // show correct‑stroke highlight
                         });
                     } catch (e) {
                         console.error('Create writer failed for', char, e);
@@ -281,10 +314,9 @@
                 }
 
                 destroyAllWriters() {
-                    this.writers.forEach(w => { try { w.cancelQuiz(); w.cleanup(); } catch(e) {} });
+                    this.writers.forEach(w => { try { w.cancelQuiz(); w.cleanup(); } catch (e) {} });
                     this.writers = [];
                     this.activeQuizzes = 0;
-                    // Clear all character containers
                     const containers = this.charactersRow.querySelectorAll('.char-canvas-container');
                     containers.forEach(c => { c.innerHTML = ''; });
                 }
@@ -306,17 +338,19 @@
                         this.handleAllQuizzesCompleted();
                         return;
                     }
-                    this.writers.forEach((w, i) => {
+                    this.writers.forEach(w => {
                         if (!w) return;
                         w.cancelQuiz();
                         w.quiz({
                             onMistake: (data) => {
+                                if (this.isTransitioning) return; // ignore mistakes after completion
                                 this.totalMistakesAllTime++;
                                 this.missCounter.classList.remove('hidden');
                                 this.missCountSpan.textContent = this.totalMistakesAllTime;
                                 if (data.totalMistakes === 3) this.totalHintsShown++;
                             },
                             onComplete: (summary) => {
+                                if (this.isTransitioning) return;
                                 this.activeQuizzes--;
                                 if (this.activeQuizzes <= 0) {
                                     this.activeQuizzes = 0;
@@ -327,18 +361,62 @@
                     });
                 }
 
+                // Determine which outline to use for the next attempt
+                getOutlineForAttempt(attemptNumber) {
+                    if (this.currentPhase === 1) {
+                        // Phase 1: attempts 1 & 2 -> outline, attempt 3 -> no outline
+                        return (attemptNumber <= 2);
+                    } else {
+                        // Phase 2: attempt 1 -> outline, attempt 2 -> no outline (only 2 attempts)
+                        return (attemptNumber === 1);
+                    }
+                }
+
+                // Number of remaining attempts for the current word (phase‑dependent)
+                getRemainingAttempts() {
+                    const chars = this.wordCharacters[this.currentWordIndex];
+                    const completed = this.currentPhase === 1
+                        ? (this.phase1Progress[this.currentWordIndex][0] || 0)
+                        : (this.phase2Progress[this.currentWordIndex][0] || 0);
+                    const maxAttempts = this.currentPhase === 1
+                        ? this.PHASE1_MAX_ATTEMPTS
+                        : this.PHASE2_MAX_ATTEMPTS;
+                    return maxAttempts - completed;
+                }
+
+                // Current attempt number (1‑based)
+                getCurrentAttemptNumber() {
+                    const chars = this.wordCharacters[this.currentWordIndex];
+                    const completed = this.currentPhase === 1
+                        ? (this.phase1Progress[this.currentWordIndex][0] || 0)
+                        : (this.phase2Progress[this.currentWordIndex][0] || 0);
+                    return completed + 1; // next attempt if still active
+                }
+
+                updateAttemptDisplay() {
+                    const remaining = this.getRemainingAttempts();
+                    const maxAttempts = this.currentPhase === 1
+                        ? this.PHASE1_MAX_ATTEMPTS
+                        : this.PHASE2_MAX_ATTEMPTS;
+                    const currentAttempt = this.getCurrentAttemptNumber();
+                    if (remaining <= 0) {
+                        this.attemptsDisplay.textContent = 'Completed';
+                    } else {
+                        this.attemptsDisplay.textContent = `Attempt ${currentAttempt}/${maxAttempts}`;
+                    }
+                }
+
                 resetAllCanvases() {
-                    if (this.writers.length === 0) return;
+                    if (this.writers.length === 0 || this.isTransitioning) return;
                     const chars = this.wordCharacters[this.currentWordIndex];
                     const containers = chars.map((_, i) => document.getElementById(`char-${i}`));
-                    let showOutline = true;
-                    if (this.currentPhase === 2) {
-                        const remaining = this.getRemainingAttempts();
-                        showOutline = (remaining === 3);
-                    }
-                    this.writers.forEach(w => { try { w.cancelQuiz(); } catch(e) {} });
+                    const attemptNumber = this.getCurrentAttemptNumber();
+                    const showOutline = this.getOutlineForAttempt(attemptNumber);
+
+                    this.writers.forEach(w => { try { w.cancelQuiz(); } catch (e) {} });
                     this.destroyAllWriters();
                     this.writers = [];
+
                     chars.forEach((ch, i) => {
                         const writer = this.createWriter(containers[i], ch, showOutline);
                         if (writer) this.writers.push(writer);
@@ -352,7 +430,8 @@
                     if (index >= this.writers.length || !this.writers[index]) {
                         this.isAnimating = false;
                         this.animationShown[this.currentWordIndex] = true;
-                        this.resetAllCanvases();  // clears and starts fresh quizzes
+                        // after animation, start fresh quizzes (outline according to attempt 1)
+                        this.resetAllCanvases();
                         this.setMessage('✏️ Now draw all characters correctly.');
                         this.updateUI();
                         return;
@@ -370,19 +449,33 @@
                 }
 
                 handleAllQuizzesCompleted() {
+                    // All characters of the current word finished successfully – increment attempts
+                    const wordIdx = this.currentWordIndex;
                     const charProgress = this.currentPhase === 1
-                        ? this.phase1Progress[this.currentWordIndex]
-                        : this.phase2Progress[this.currentWordIndex];
+                        ? this.phase1Progress[wordIdx]
+                        : this.phase2Progress[wordIdx];
                     for (let i = 0; i < charProgress.length; i++) charProgress[i]++;
+
                     const remaining = this.getRemainingAttempts();
-                    if (remaining <= 0) {
-                        this.writers.forEach(w => { try { w.cancelQuiz(); } catch(e) {} });
-                        this.currentWordIndex++;
-                        this.destroyAllWriters();
-                        this.setupCurrentWord();
-                    } else {
-                        this.setupCurrentWordAttempt();
-                    }
+                    // Prevent further actions while highlight is shown
+                    this.isTransitioning = true;
+                    this.resetCanvasBtn.disabled = true;
+
+                    // Let the user see the blue highlight for 1.5s before moving on
+                    setTimeout(() => {
+                        this.isTransitioning = false;
+                        this.resetCanvasBtn.disabled = false;
+                        if (remaining <= 0) {
+                            // word fully done → next word or phase
+                            this.writers.forEach(w => { try { w.cancelQuiz(); } catch (e) {} });
+                            this.currentWordIndex++;
+                            this.destroyAllWriters();
+                            this.setupCurrentWord();
+                        } else {
+                            // more attempts needed → recreate writers for the next attempt
+                            this.setupCurrentWordAttempt();
+                        }
+                    }, 1500);
                 }
 
                 setupCurrentWord() {
@@ -398,31 +491,21 @@
                     this.activeQuizzes = 0;
                     const chars = this.wordCharacters[this.currentWordIndex];
                     const containers = chars.map((_, i) => document.getElementById(`char-${i}`));
-                    if (this.currentPhase === 1) {
-                        const showOutline = true;
-                        chars.forEach((ch, i) => {
-                            const writer = this.createWriter(containers[i], ch, showOutline);
-                            if (writer) this.writers.push(writer);
-                        });
-                        if (!this.animationShown[this.currentWordIndex]) {
-                            this.isAnimating = true;
-                            this.setMessage('🎬 Watching stroke order animation...');
-                            this.chainAnimations(0);
-                        } else {
-                            this.startAllQuizzes();
-                            this.setMessage('✏️ Draw all characters correctly.');
-                            this.updateUI();
-                        }
+                    const attemptNumber = this.getCurrentAttemptNumber();
+                    const showOutline = this.getOutlineForAttempt(attemptNumber);
+
+                    chars.forEach((ch, i) => {
+                        const writer = this.createWriter(containers[i], ch, showOutline);
+                        if (writer) this.writers.push(writer);
+                    });
+
+                    if (this.currentPhase === 1 && !this.animationShown[this.currentWordIndex]) {
+                        this.isAnimating = true;
+                        this.setMessage('🎬 Watching stroke order animation...');
+                        this.chainAnimations(0);
                     } else {
-                        const remaining = this.getRemainingAttempts();
-                        const showOutline = (remaining === 3);
-                        chars.forEach((ch, i) => {
-                            const writer = this.createWriter(containers[i], ch, showOutline);
-                            if (writer) this.writers.push(writer);
-                        });
-                        const label = showOutline ? 'with outline' : 'without outline';
-                        this.setMessage(`✏️ Phase 2 – Draw all characters (${label}).`);
                         this.startAllQuizzes();
+                        this.setMessage('✏️ Draw all characters correctly.');
                         this.updateUI();
                     }
                 }
@@ -433,23 +516,18 @@
                     this.destroyAllWriters();
                     this.writers = [];
                     this.activeQuizzes = 0;
-                    let showOutline = true;
-                    if (this.currentPhase === 2) {
-                        const remaining = this.getRemainingAttempts();
-                        showOutline = (remaining === 3);
-                    }
+
+                    const attemptNumber = this.getCurrentAttemptNumber();
+                    const showOutline = this.getOutlineForAttempt(attemptNumber);
+
                     chars.forEach((ch, i) => {
                         const writer = this.createWriter(containers[i], ch, showOutline);
                         if (writer) this.writers.push(writer);
                     });
                     this.startAllQuizzes();
+                    const label = showOutline ? 'with outline' : 'without outline';
+                    this.setMessage(`✏️ Attempt ${attemptNumber}/${this.currentPhase === 1 ? 3 : 2} – ${label}.`);
                     this.updateUI();
-                }
-
-                getRemainingAttempts() {
-                    const chars = this.wordCharacters[this.currentWordIndex];
-                    if (this.currentPhase === 1) return 3 - (this.phase1Progress[this.currentWordIndex][0] || 0);
-                    else return 3 - (this.phase2Progress[this.currentWordIndex][0] || 0);
                 }
 
                 updateWordDisplay() {
@@ -461,24 +539,33 @@
                 }
 
                 updateUI() {
-                    let totalSteps = 0, completed = 0;
+                    // calculate overall progress (total attempts per character: Phase1=3, Phase2=2)
+                    let totalSteps = 0, completedSteps = 0;
                     for (let w = 0; w < this.totalWords; w++) {
                         const chars = this.wordCharacters[w];
-                        totalSteps += chars.length * 6; // 3 Phase1 + 3 Phase2 per char
+                        // each character has 3 Phase1 + 2 Phase2 attempts = 5 total
+                        totalSteps += chars.length * (this.PHASE1_MAX_ATTEMPTS + this.PHASE2_MAX_ATTEMPTS);
                         for (let c = 0; c < chars.length; c++) {
-                            completed += Math.min(this.phase1Progress[w][c], 3);
-                            completed += Math.min(this.phase2Progress[w][c], 3);
+                            completedSteps += Math.min(this.phase1Progress[w][c], this.PHASE1_MAX_ATTEMPTS);
+                            completedSteps += Math.min(this.phase2Progress[w][c], this.PHASE2_MAX_ATTEMPTS);
                         }
                     }
-                    const pct = totalSteps ? Math.round((completed / totalSteps) * 100) : 0;
+                    const pct = totalSteps ? Math.round((completedSteps / totalSteps) * 100) : 0;
                     this.progressBar.style.width = `${pct}%`;
+
                     this.wordCounter.textContent = `Word ${this.currentWordIndex + 1} / ${this.totalWords}`;
-                    this.phaseIndicator.textContent = this.currentPhase === 1 ? 'Phase 1 – Outline & Animation' : 'Phase 2 – Mixed Outline';
+
+                    this.phaseIndicator.textContent = this.currentPhase === 1
+                        ? 'Phase 1 – Outline & Animation'
+                        : 'Phase 2 – Mixed Outline';
                     this.phaseIndicator.className = `inline-block px-3 py-1 rounded-full text-xs font-semibold ${
-                        this.currentPhase === 1 ? 'bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300' : 'bg-purple-100 dark:bg-purple-900 text-purple-700 dark:text-purple-300'
+                        this.currentPhase === 1
+                            ? 'bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300'
+                            : 'bg-purple-100 dark:bg-purple-900 text-purple-700 dark:text-purple-300'
                     } phase-pulse`;
-                    const remaining = this.getRemainingAttempts();
-                    this.attemptsRemaining.textContent = `${remaining} attempt${remaining !== 1 ? 's' : ''} remaining`;
+
+                    this.updateAttemptDisplay();
+
                     if (this.totalMistakesAllTime > 0) {
                         this.missCounter.classList.remove('hidden');
                         this.missCountSpan.textContent = this.totalMistakesAllTime;

@@ -32,7 +32,7 @@
             gap: 0.5rem;
             padding: 0.5rem 0;
             -webkit-overflow-scrolling: touch;
-            scroll-snap-type: x mandatory;       /* smooth snap to characters */
+            scroll-snap-type: x mandatory;
         }
         /* Individual character containers */
         .char-canvas-container {
@@ -43,7 +43,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            touch-action: pan-y !important;      /* allow vertical scroll even on canvas */
+            touch-action: pan-y !important; /* allow vertical scroll even on canvas */
             transition: opacity 0.2s;
         }
         .char-canvas-container svg {
@@ -58,7 +58,7 @@
                 max-width: 380px;
             }
         }
-        /* When a word’s quizzes are complete, disable pointer events to allow page scroll */
+        /* Disable canvas interaction after a word’s quizzes are complete */
         .quiz-completed .char-canvas-container {
             pointer-events: none;
         }
@@ -205,8 +205,8 @@
                     this.currentWordIndex = 0;
 
                     // Phase attempts constants
-                    this.PHASE1_MAX_ATTEMPTS = 2;   // 1 & 2 both with outline
-                    this.PHASE2_MAX_ATTEMPTS = 2;   // 1 with outline, 2 without outline
+                    this.PHASE1_MAX_ATTEMPTS = 2;   // both with outline
+                    this.PHASE2_MAX_ATTEMPTS = 2;   // first with outline, second without
                     
                     // Per-character attempt counters
                     this.phase1Progress = [];
@@ -304,14 +304,12 @@
                 // Dynamic writer dimensions – responsive
                 getWriterDimensions() {
                     const containerWidth = this.charactersRow.clientWidth;
-                    // Use 80% of container width (or max 400px)
                     const w = Math.min(containerWidth * 0.8, 400);
                     return { width: w, height: w };
                 }
 
                 createWriter(container, char, showOutline) {
                     const dims = this.getWriterDimensions();
-                    // When outline is hidden, show hint after first miss; otherwise after 3
                     const hintThreshold = showOutline ? 3 : 1;
                     try {
                         return HanziWriter.create(container, char, {
@@ -381,12 +379,10 @@
                     });
                 }
 
-                // Outline logic according to new rules
                 getOutlineForAttempt(attemptNumber) {
                     if (this.currentPhase === 1) {
-                        return true;   // Phase 1: both attempts have outline
+                        return true;
                     } else {
-                        // Phase 2: attempt 1 → outline, attempt 2 → no outline
                         return (attemptNumber === 1);
                     }
                 }
@@ -468,13 +464,12 @@
                     const remaining = this.getRemainingAttempts();
                     this.isTransitioning = true;
                     this.resetCanvasBtn.disabled = true;
-                    // Disable pointer events on the character row to allow page scrolling
+                    // Disable pointer events on canvases to allow scrolling
                     this.charactersRow.classList.add('quiz-completed');
 
                     setTimeout(() => {
                         this.isTransitioning = false;
                         this.resetCanvasBtn.disabled = false;
-                        // Re-enable pointer events for the next word/attempt
                         this.charactersRow.classList.remove('quiz-completed');
                         if (remaining <= 0) {
                             this.writers.forEach(w => { try { w.cancelQuiz(); } catch (e) {} });

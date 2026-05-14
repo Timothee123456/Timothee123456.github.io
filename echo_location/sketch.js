@@ -431,7 +431,7 @@ function drawMenu() {
 
 // -------------------- p5.js SETUP --------------------
 function setup() {
-  createCanvas(700, 700);
+  createCanvas(windowHeight, windowHeight);
   cellW = width / 25;
   cellH = height / 25;
   gameState = "MENU";

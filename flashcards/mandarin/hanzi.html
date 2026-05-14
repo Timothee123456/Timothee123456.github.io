@@ -346,13 +346,11 @@
                     this.startSession();
                 }
 
+                // FIXED: increased scaling from 0.8 to 0.95 for better single-character size
                 getWriterDimensions() {
                     const containerWidth = this.charactersRow.clientWidth;
-                    const w = Math.min(containerWidth * 0.8, 400);
-                    return {
-                        width: w,
-                        height: w
-                    };
+                    const w = Math.min(containerWidth * 0.95, 400);
+                    return { width: w, height: w };
                 }
 
                 createWriter(container, char, showOutline) {

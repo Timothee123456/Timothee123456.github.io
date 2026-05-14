@@ -21,9 +21,9 @@ let playerX, playerY;
 // Level settings
 let currentLevel = null;  // 'easy', 'normal', 'hard'
 let levelParams = {
-  easy:   { cols: 15, rows: 15, basePings: 25, pingsPerGem: 4, gemCount: 6, lives: 3 },
+  easy:   { cols: 15, rows: 15, basePings: 30, pingsPerGem: 4, gemCount: 6, lives: 3 },
   normal: { cols: 25, rows: 25, basePings: 30, pingsPerGem: 5, gemCount: 8, lives: 3 },
-  hard:   { cols: 31, rows: 31, basePings: 40, pingsPerGem: 6, gemCount: 11, lives: 3 }
+  hard:   { cols: 31, rows: 31, basePings: 30, pingsPerGem: 6, gemCount: 11, lives: 3 }
 };
 
 // Game state (reset on level start)
@@ -137,9 +137,13 @@ function startLevel(level) {
   gameState = "PLAYING";
 }
 
-// -------------------- RESET SAME LEVEL --------------------
+// -------------------- RESET SAME LEVEL (with sound) --------------------
 function resetSameLevel() {
   if (currentLevel) {
+    // Play restart sound before resetting
+    if (restartSound && !restartSound.isPlaying()) {
+      restartSound.play();
+    }
     startLevel(currentLevel);
   } else {
     gameState = "MENU";

@@ -24,7 +24,7 @@
             user-select: none;
             -webkit-tap-highlight-color: transparent;
         }
-        /* Horizontal scroll container */
+        /* Horizontal scroll container – full viewport width */
         #charactersRow {
             display: flex;
             flex-wrap: nowrap;
@@ -33,6 +33,10 @@
             padding: 0.5rem 0;
             -webkit-overflow-scrolling: touch;
             scroll-snap-type: x mandatory;
+            width: 100vw;                   /* full viewport width */
+            margin-left: calc(-50vw + 50%); /* center it within the parent container */
+            position: relative;
+            left: 0;
         }
         /* Individual character containers */
         .char-canvas-container {
@@ -43,7 +47,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            touch-action: pan-y !important; /* allow vertical scroll even on canvas */
+            touch-action: pan-y !important;
             transition: opacity 0.2s;
         }
         .char-canvas-container svg {
@@ -51,11 +55,11 @@
             height: auto !important;
             max-height: 70vh;
         }
-        /* On desktop: show two characters side‑by‑side */
+        /* On desktop: allow two characters to fit side‑by‑side */
         @media (min-width: 768px) {
             .char-canvas-container {
                 width: 45vw;
-                max-width: 380px;
+                max-width: 450px;
             }
         }
         /* Disable canvas interaction after a word’s quizzes are complete */
@@ -83,90 +87,101 @@
         });
     </script>
 
-    <div class="container mx-auto px-3 py-4 max-w-2xl">
-        <h1 id="title" class="text-2xl sm:text-3xl font-bold text-center mb-4 text-gray-800 dark:text-white">
-            Chinese Writing Practice
-        </h1>
-
+    <!-- Main wrapper without max-width -->
+    <div class="min-h-screen">
+        <!-- Centered content for non‑row elements -->
         <div id="gameScreen" class="space-y-4 sm:space-y-6">
-            <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3 overflow-hidden">
-                <div id="progressBar" class="bg-blue-500 h-3 rounded-full transition-all duration-300" style="width: 0%"></div>
-            </div>
+            <div class="container mx-auto px-3 py-4 max-w-2xl space-y-4 sm:space-y-6">
+                <h1 id="title" class="text-2xl sm:text-3xl font-bold text-center text-gray-800 dark:text-white">
+                    Chinese Writing Practice
+                </h1>
 
-            <div class="flex flex-wrap justify-between items-center gap-2 text-sm">
-                <div class="flex items-center space-x-2">
-                    <span id="phaseIndicator"
-                        class="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 phase-pulse">
-                        Phase 1
-                    </span>
-                    <span id="wordCounter" class="text-gray-600 dark:text-gray-400 font-medium">Word 1 / 20</span>
+                <!-- Progress Bar -->
+                <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3 overflow-hidden">
+                    <div id="progressBar" class="bg-blue-500 h-3 rounded-full transition-all duration-300" style="width: 0%"></div>
                 </div>
-                <div class="flex items-center space-x-3">
-                    <span id="attemptsDisplay" class="text-gray-600 dark:text-gray-400 font-medium">Attempt 1/2</span>
-                    <span id="missCounter" class="text-orange-500 dark:text-orange-400 font-medium hidden">
-                        <i class="fa fa-exclamation-triangle"></i> <span id="missCount">0</span> misses
-                    </span>
+
+                <!-- Info Row -->
+                <div class="flex flex-wrap justify-between items-center gap-2 text-sm">
+                    <div class="flex items-center space-x-2">
+                        <span id="phaseIndicator"
+                            class="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 phase-pulse">
+                            Phase 1
+                        </span>
+                        <span id="wordCounter" class="text-gray-600 dark:text-gray-400 font-medium">Word 1 / 20</span>
+                    </div>
+                    <div class="flex items-center space-x-3">
+                        <span id="attemptsDisplay" class="text-gray-600 dark:text-gray-400 font-medium">Attempt 1/2</span>
+                        <span id="missCounter" class="text-orange-500 dark:text-orange-400 font-medium hidden">
+                            <i class="fa fa-exclamation-triangle"></i> <span id="missCount">0</span> misses
+                        </span>
+                    </div>
+                    <button id="restartSessionBtn"
+                        class="bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 px-3 py-2 rounded-lg font-medium transition-colors text-sm"
+                        title="Restart Session">
+                        <i class="fa fa-refresh"></i> Restart
+                    </button>
                 </div>
-                <button id="restartSessionBtn"
-                    class="bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 px-3 py-2 rounded-lg font-medium transition-colors text-sm"
-                    title="Restart Session">
-                    <i class="fa fa-refresh"></i> Restart
-                </button>
+
+                <!-- Word Info -->
+                <div
+                    class="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 p-4 sm:p-6 text-center">
+                    <div id="frenchDefinition"
+                        class="text-2xl sm:text-3xl font-bold text-gray-800 dark:text-white mb-2">Loading...</div>
+                    <div id="pinyinDisplay" class="text-lg sm:text-xl text-gray-600 dark:text-gray-400">Loading...</div>
+                </div>
+
+                <!-- Message area -->
+                <div id="messageArea" class="text-center text-sm text-gray-500 dark:text-gray-400 min-h-[24px]"></div>
+
+                <!-- Action Buttons -->
+                <div class="flex justify-center space-x-4 px-2">
+                    <button id="resetCanvasBtn"
+                        class="flex-1 max-w-44 flex items-center justify-center space-x-2 bg-gray-400 hover:bg-gray-500 active:bg-gray-600 text-white px-4 py-4 rounded-lg font-semibold transition-colors min-h-[56px] text-base disabled:opacity-50 disabled:cursor-not-allowed">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15">
+                            </path>
+                        </svg>
+                        <span>Reset All</span>
+                    </button>
+                </div>
             </div>
 
-            <div
-                class="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 p-4 sm:p-6 text-center">
-                <div id="frenchDefinition"
-                    class="text-2xl sm:text-3xl font-bold text-gray-800 dark:text-white mb-2">Loading...</div>
-                <div id="pinyinDisplay" class="text-lg sm:text-xl text-gray-600 dark:text-gray-400">Loading...</div>
-            </div>
+            <!-- Full‑width horizontal scrolling character row -->
+            <div id="charactersRow" class="bg-gray-50 dark:bg-gray-800/30 p-2"></div>
 
-            <!-- Horizontal scrolling character row -->
-            <div id="charactersRow" class="bg-gray-50 dark:bg-gray-800/30 rounded-xl p-2"></div>
-
-            <div id="messageArea" class="text-center text-sm text-gray-500 dark:text-gray-400 min-h-[24px]"></div>
-
-            <div class="flex justify-center space-x-4 px-2">
-                <button id="resetCanvasBtn"
-                    class="flex-1 max-w-44 flex items-center justify-center space-x-2 bg-gray-400 hover:bg-gray-500 active:bg-gray-600 text-white px-4 py-4 rounded-lg font-semibold transition-colors min-h-[56px] text-base disabled:opacity-50 disabled:cursor-not-allowed">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15">
-                        </path>
-                    </svg>
-                    <span>Reset All</span>
-                </button>
-            </div>
-        </div>
-
-        <div id="resultsScreen" class="hidden text-center space-y-4 sm:space-y-6 px-2">
-            <h2 class="text-xl sm:text-2xl font-bold text-gray-800 dark:text-white mb-4 sm:mb-6">🎉 Congratulations! 🎉</h2>
-            <div class="bg-white dark:bg-gray-800 rounded-xl p-4 sm:p-6 shadow-lg border border-gray-200 dark:border-gray-700">
-                <p class="text-gray-600 dark:text-gray-400 mb-4">You have completed both phases of writing practice!</p>
-                <div class="grid grid-cols-2 gap-4 mb-4 sm:mb-6">
-                    <div class="text-center">
-                        <div id="resultCharsMastered" class="text-2xl sm:text-3xl font-bold text-green-500">0</div>
-                        <div class="text-sm text-gray-600 dark:text-gray-400">Characters Mastered</div>
+            <!-- Results Screen (centered) -->
+            <div id="resultsScreen" class="hidden container mx-auto px-3 py-4 max-w-2xl text-center space-y-4 sm:space-y-6">
+                <h2 class="text-xl sm:text-2xl font-bold text-gray-800 dark:text-white mb-4 sm:mb-6">🎉 Congratulations! 🎉</h2>
+                <div
+                    class="bg-white dark:bg-gray-800 rounded-xl p-4 sm:p-6 shadow-lg border border-gray-200 dark:border-gray-700">
+                    <p class="text-gray-600 dark:text-gray-400 mb-4">You have completed both phases of writing practice!</p>
+                    <div class="grid grid-cols-2 gap-4 mb-4 sm:mb-6">
+                        <div class="text-center">
+                            <div id="resultCharsMastered" class="text-2xl sm:text-3xl font-bold text-green-500">0</div>
+                            <div class="text-sm text-gray-600 dark:text-gray-400">Characters Mastered</div>
+                        </div>
+                        <div class="text-center">
+                            <div id="resultTotalMistakes" class="text-2xl sm:text-3xl font-bold text-orange-500">0</div>
+                            <div class="text-sm text-gray-600 dark:text-gray-400">Total Mistakes</div>
+                        </div>
                     </div>
                     <div class="text-center">
-                        <div id="resultTotalMistakes" class="text-2xl sm:text-3xl font-bold text-orange-500">0</div>
-                        <div class="text-sm text-gray-600 dark:text-gray-400">Total Mistakes</div>
+                        <div id="resultHintsShown" class="text-2xl sm:text-3xl font-bold text-blue-500">0</div>
+                        <div class="text-sm text-gray-600 dark:text-gray-400">Hints Shown</div>
                     </div>
                 </div>
-                <div class="text-center">
-                    <div id="resultHintsShown" class="text-2xl sm:text-3xl font-bold text-blue-500">0</div>
-                    <div class="text-sm text-gray-600 dark:text-gray-400">Hints Shown</div>
+                <div class="space-y-3">
+                    <button id="restartFromResultsBtn"
+                        class="w-full bg-blue-500 hover:bg-blue-600 active:bg-blue-700 text-white px-6 py-4 rounded-lg font-semibold transition-colors min-h-[56px] text-base">
+                        <i class="fa fa-refresh mr-2"></i> Restart Session
+                    </button>
+                    <a href="/home"
+                        class="block w-full bg-gray-300 dark:bg-gray-700 hover:bg-gray-400 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 px-6 py-4 rounded-lg font-semibold transition-colors min-h-[56px] text-base text-center no-underline">
+                        <i class="fa fa-home mr-2"></i> Choose Another Deck
+                    </a>
                 </div>
-            </div>
-            <div class="space-y-3">
-                <button id="restartFromResultsBtn"
-                    class="w-full bg-blue-500 hover:bg-blue-600 active:bg-blue-700 text-white px-6 py-4 rounded-lg font-semibold transition-colors min-h-[56px] text-base">
-                    <i class="fa fa-refresh mr-2"></i> Restart Session
-                </button>
-                <a href="/home"
-                    class="block w-full bg-gray-300 dark:bg-gray-700 hover:bg-gray-400 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 px-6 py-4 rounded-lg font-semibold transition-colors min-h-[56px] text-base text-center no-underline">
-                    <i class="fa fa-home mr-2"></i> Choose Another Deck
-                </a>
             </div>
         </div>
     </div>
@@ -198,17 +213,14 @@
                 constructor(flashcards) {
                     this.originalDeck = Array.isArray(flashcards) ? flashcards : [];
                     this.totalWords = this.originalDeck.length;
-                    // split each word into individual characters
                     this.wordCharacters = this.originalDeck.map(card => [...card.chinese]);
 
                     this.currentPhase = 1;
                     this.currentWordIndex = 0;
 
-                    // Phase attempts constants
-                    this.PHASE1_MAX_ATTEMPTS = 2;   // both with outline
-                    this.PHASE2_MAX_ATTEMPTS = 2;   // first with outline, second without
-                    
-                    // Per-character attempt counters
+                    this.PHASE1_MAX_ATTEMPTS = 2;
+                    this.PHASE2_MAX_ATTEMPTS = 2;
+
                     this.phase1Progress = [];
                     this.phase2Progress = [];
                     this.animationShown = new Array(this.totalWords).fill(false);
@@ -291,7 +303,7 @@
                     this.destroyAllWriters();
                     this.gameScreen.classList.remove('hidden');
                     this.resultsScreen.classList.add('hidden');
-                    this.charactersRow.classList.remove('quiz-completed');   // re-enable pointer events
+                    this.charactersRow.classList.remove('quiz-completed');
                     this.progressBar.style.width = '0%';
                     this.setupCurrentWord();
                 }
@@ -301,7 +313,6 @@
                     this.startSession();
                 }
 
-                // Dynamic writer dimensions – responsive
                 getWriterDimensions() {
                     const containerWidth = this.charactersRow.clientWidth;
                     const w = Math.min(containerWidth * 0.8, 400);
@@ -380,19 +391,16 @@
                 }
 
                 getOutlineForAttempt(attemptNumber) {
-                    if (this.currentPhase === 1) {
-                        return true;
-                    } else {
-                        return (attemptNumber === 1);
-                    }
+                    if (this.currentPhase === 1) return true;
+                    return (attemptNumber === 1);
                 }
 
                 getRemainingAttempts() {
                     const completed = this.currentPhase === 1
                         ? (this.phase1Progress[this.currentWordIndex][0] || 0)
                         : (this.phase2Progress[this.currentWordIndex][0] || 0);
-                    const maxAttempts = this.currentPhase === 1 ? this.PHASE1_MAX_ATTEMPTS : this.PHASE2_MAX_ATTEMPTS;
-                    return maxAttempts - completed;
+                    const max = this.currentPhase === 1 ? this.PHASE1_MAX_ATTEMPTS : this.PHASE2_MAX_ATTEMPTS;
+                    return max - completed;
                 }
 
                 getCurrentAttemptNumber() {
@@ -404,13 +412,10 @@
 
                 updateAttemptDisplay() {
                     const remaining = this.getRemainingAttempts();
-                    const maxAttempts = this.currentPhase === 1 ? this.PHASE1_MAX_ATTEMPTS : this.PHASE2_MAX_ATTEMPTS;
-                    const currentAttempt = this.getCurrentAttemptNumber();
-                    if (remaining <= 0) {
-                        this.attemptsDisplay.textContent = 'Completed';
-                    } else {
-                        this.attemptsDisplay.textContent = `Attempt ${currentAttempt}/${maxAttempts}`;
-                    }
+                    const max = this.currentPhase === 1 ? this.PHASE1_MAX_ATTEMPTS : this.PHASE2_MAX_ATTEMPTS;
+                    const current = this.getCurrentAttemptNumber();
+                    if (remaining <= 0) this.attemptsDisplay.textContent = 'Completed';
+                    else this.attemptsDisplay.textContent = `Attempt ${current}/${max}`;
                 }
 
                 resetAllCanvases() {
@@ -464,7 +469,6 @@
                     const remaining = this.getRemainingAttempts();
                     this.isTransitioning = true;
                     this.resetCanvasBtn.disabled = true;
-                    // Disable pointer events on canvases to allow scrolling
                     this.charactersRow.classList.add('quiz-completed');
 
                     setTimeout(() => {
@@ -554,7 +558,6 @@
                     }
                     const pct = totalSteps ? Math.round((completedSteps / totalSteps) * 100) : 0;
                     this.progressBar.style.width = `${pct}%`;
-
                     this.wordCounter.textContent = `Word ${this.currentWordIndex + 1} / ${this.totalWords}`;
                     this.phaseIndicator.textContent = this.currentPhase === 1
                         ? 'Phase 1 – Outline'
@@ -564,9 +567,7 @@
                             ? 'bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300'
                             : 'bg-purple-100 dark:bg-purple-900 text-purple-700 dark:text-purple-300'
                     } phase-pulse`;
-
                     this.updateAttemptDisplay();
-
                     if (this.totalMistakesAllTime > 0) {
                         this.missCounter.classList.remove('hidden');
                         this.missCountSpan.textContent = this.totalMistakesAllTime;

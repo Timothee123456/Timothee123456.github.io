@@ -7,7 +7,6 @@
     <title id="pageTitle">Chinese Writing Practice</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <!-- HanziWriter v3.5 -->
     <script src="https://cdn.jsdelivr.net/npm/hanzi-writer@3.5/dist/hanzi-writer.min.js"></script>
     <style>
         .hint-fade-in {
@@ -33,8 +32,17 @@
             -webkit-tap-highlight-color: transparent;
         }
 
-        /* Horizontal scroll container - now breakout */
+        /* Container prevents page-level horizontal scroll */
+        .container {
+            overflow-x: hidden;
+        }
+
+        /* Horizontal scroll container - now full viewport width, but independent */
         #charactersRow {
+            position: relative;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100vw;
             display: inline-flex;
             flex-wrap: nowrap;
             overflow-x: auto;
@@ -42,9 +50,6 @@
             padding: 0.5rem 0;
             -webkit-overflow-scrolling: touch;
             scroll-snap-type: x mandatory;
-            width: max-content;
-            max-width: 100%;
-            justify-self: center;
         }
 
         /* Individual character containers */
@@ -66,7 +71,6 @@
             max-height: 70vh;
         }
 
-        /* On desktop: allow side-by-side but still within breakout */
         @media (min-width: 768px) {
             .char-canvas-container {
                 width: 45vw;
@@ -83,29 +87,18 @@
         }
 
         @keyframes pulse {
-            0%,
-            100% {
-                opacity: 1;
-            }
-            50% {
-                opacity: 0.6;
-            }
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
         }
 
-        /* Grid breakout layout */
+        /* Grid breakout layout - but row is now independent */
         .game-grid {
             display: grid;
             grid-template-columns: 1fr min(100%, 672px) 1fr;
         }
 
-        .game-grid>* {
+        .game-grid > * {
             grid-column: 2 / 3;
-        }
-
-        .breakout {
-            grid-column: 1 / -1 !important;
-            justify-self: center;
-            width: auto;
         }
     </style>
 </head>
@@ -123,19 +116,18 @@
 
     <div class="container mx-auto px-3 py-4 max-w-full">
         <div class="game-grid">
-            <h1 id="title" class="text-2xl sm:text-3xl font-bold text-center mb-4 text-gray-800 dark:text-white col-start-2">
+            <h1 id="title" class="text-2xl sm:text-3xl font-bold text-center mb-4 text-gray-800 dark:text-white">
                 Chinese Writing Practice
             </h1>
 
-            <div id="gameScreen" class="space-y-4 sm:space-y-6 col-start-2">
+            <div id="gameScreen" class="space-y-4 sm:space-y-6">
                 <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3 overflow-hidden">
                     <div id="progressBar" class="bg-blue-500 h-3 rounded-full transition-all duration-300" style="width: 0%"></div>
                 </div>
 
                 <div class="flex flex-wrap justify-between items-center gap-2 text-sm">
                     <div class="flex items-center space-x-2">
-                        <span id="phaseIndicator"
-                            class="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 phase-pulse">
+                        <span id="phaseIndicator" class="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 phase-pulse">
                             Phase 1
                         </span>
                         <span id="wordCounter" class="text-gray-600 dark:text-gray-400 font-medium">Word 1 / 20</span>
@@ -146,33 +138,27 @@
                             <i class="fa fa-exclamation-triangle"></i> <span id="missCount">0</span> misses
                         </span>
                     </div>
-                    <button id="restartSessionBtn"
-                        class="bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 px-3 py-2 rounded-lg font-medium transition-colors text-sm"
-                        title="Restart Session">
+                    <button id="restartSessionBtn" class="bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 px-3 py-2 rounded-lg font-medium transition-colors text-sm">
                         <i class="fa fa-refresh"></i> Restart
                     </button>
                 </div>
 
-                <div
-                    class="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 p-4 sm:p-6 text-center">
+                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 p-4 sm:p-6 text-center">
                     <div id="frenchDefinition" class="text-2xl sm:text-3xl font-bold text-gray-800 dark:text-white mb-2">Loading...</div>
                     <div id="pinyinDisplay" class="text-lg sm:text-xl text-gray-600 dark:text-gray-400">Loading...</div>
                 </div>
             </div>
 
-            <!-- Breakout row: will span full grid width, centered and content-sized -->
-            <div id="charactersRow" class="bg-gray-50 dark:bg-gray-800/30 rounded-xl p-2 breakout"></div>
+            <!-- Hanzi row - now independent, full viewport width, scrollable -->
+            <div id="charactersRow" class="bg-gray-50 dark:bg-gray-800/30 rounded-xl p-2"></div>
 
-            <div class="col-start-2 space-y-4">
+            <div class="space-y-4">
                 <div id="messageArea" class="text-center text-sm text-gray-500 dark:text-gray-400 min-h-[24px]"></div>
 
                 <div class="flex justify-center space-x-4 px-2">
-                    <button id="resetCanvasBtn"
-                        class="flex-1 max-w-44 flex items-center justify-center space-x-2 bg-gray-400 hover:bg-gray-500 active:bg-gray-600 text-white px-4 py-4 rounded-lg font-semibold transition-colors min-h-[56px] text-base disabled:opacity-50 disabled:cursor-not-allowed">
+                    <button id="resetCanvasBtn" class="flex-1 max-w-44 flex items-center justify-center space-x-2 bg-gray-400 hover:bg-gray-500 active:bg-gray-600 text-white px-4 py-4 rounded-lg font-semibold transition-colors min-h-[56px] text-base disabled:opacity-50 disabled:cursor-not-allowed">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15">
-                            </path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
                         </svg>
                         <span>Reset All</span>
                     </button>
@@ -200,12 +186,10 @@
                 </div>
             </div>
             <div class="space-y-3">
-                <button id="restartFromResultsBtn"
-                    class="w-full bg-blue-500 hover:bg-blue-600 active:bg-blue-700 text-white px-6 py-4 rounded-lg font-semibold transition-colors min-h-[56px] text-base">
+                <button id="restartFromResultsBtn" class="w-full bg-blue-500 hover:bg-blue-600 active:bg-blue-700 text-white px-6 py-4 rounded-lg font-semibold transition-colors min-h-[56px] text-base">
                     <i class="fa fa-refresh mr-2"></i> Restart Session
                 </button>
-                <a href="/home"
-                    class="block w-full bg-gray-300 dark:bg-gray-700 hover:bg-gray-400 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 px-6 py-4 rounded-lg font-semibold transition-colors min-h-[56px] text-base text-center no-underline">
+                <a href="/home" class="block w-full bg-gray-300 dark:bg-gray-700 hover:bg-gray-400 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 px-6 py-4 rounded-lg font-semibold transition-colors min-h-[56px] text-base text-center no-underline">
                     <i class="fa fa-home mr-2"></i> Choose Another Deck
                 </a>
             </div>
@@ -346,7 +330,6 @@
                     this.startSession();
                 }
 
-                // FIXED: increased scaling from 0.8 to 0.95 for better single-character size
                 getWriterDimensions() {
                     const containerWidth = this.charactersRow.clientWidth;
                     const w = Math.min(containerWidth * 0.95, 400);

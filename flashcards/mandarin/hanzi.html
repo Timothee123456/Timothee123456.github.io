@@ -37,29 +37,26 @@
             overflow-x: hidden;
         }
 
-        /* Horizontal scroll row - content width, centered, scrolls if needed */
+        /* Wrapper only for centering - no background */
+        .row-wrapper {
+            text-align: center;
+            margin: 1rem 0;
+        }
+
+        /* Horizontal scroll row - content width, centered, scrolls if needed, background on itself */
         #charactersRow {
             display: inline-flex;
             flex-wrap: nowrap;
             overflow-x: auto;
             gap: 0.5rem;
-            padding: 0.5rem 0;
+            padding: 0.5rem;
             -webkit-overflow-scrolling: touch;
             scroll-snap-type: x mandatory;
             max-width: 100%;
-            background: transparent;
-        }
-
-        /* Wrapper to center the inline-flex row and provide background */
-        .row-wrapper {
-            text-align: center;
             background-color: rgb(249 250 251 / 0.3);
             border-radius: 0.75rem;
-            margin: 1rem 0;
-            overflow-x: auto;
-            scrollbar-width: thin;
         }
-        .dark .row-wrapper {
+        .dark #charactersRow {
             background-color: rgb(31 41 55 / 0.3);
         }
 
@@ -162,7 +159,7 @@
             </div>
         </div>
 
-        <!-- Hanzi row: independent, content-width, centered, scrollable -->
+        <!-- Hanzi row: independent, content-width, centered, scrollable, background on row itself -->
         <div class="row-wrapper">
             <div id="charactersRow"></div>
         </div>

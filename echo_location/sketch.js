@@ -284,7 +284,7 @@ function drawMaze() {
         switch(type) {
           case 1: fill(85); rect(x, y, cellW, cellH); break;
           case 2: fill(0, 255, 0); rect(x, y, cellW, cellH); break;
-          case 3: fill(255, 255, 0); ellipse(x + cellW/2, y + cellH/2, cellW * 0.6); break;
+          case 3: fill(30); rect(x, y, cellW, cellH); fill(255, 255, 0); ellipse(x + cellW/2, y + cellH/2, cellW * 0.6); break;
           default: fill(30); rect(x, y, cellW, cellH);
         }
       }

@@ -7,7 +7,6 @@
     <title id="pageTitle">Chinese Writing Practice</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <!-- HanziWriter v3.5 – quiz API replaces evaluateCharacter -->
     <script src="https://cdn.jsdelivr.net/npm/hanzi-writer@3.5/dist/hanzi-writer.min.js"></script>
     <style>
         .hint-fade-in {
@@ -24,7 +23,7 @@
             user-select: none;
             -webkit-tap-highlight-color: transparent;
         }
-        /* Horizontal scroll container – full viewport width */
+        /* Horizontal scroll container – centered, not full viewport */
         #charactersRow {
             display: flex;
             flex-wrap: nowrap;
@@ -33,10 +32,10 @@
             padding: 0.5rem 0;
             -webkit-overflow-scrolling: touch;
             scroll-snap-type: x mandatory;
-            width: 100vw;                   /* full viewport width */
-            margin-left: calc(-50vw + 50%); /* center it within the parent container */
-            position: relative;
-            left: 0;
+            /* Centered, width limited to available space */
+            width: 100%;
+            max-width: 100%;
+            margin: 0 auto;
         }
         /* Individual character containers */
         .char-canvas-container {
@@ -87,101 +86,98 @@
         });
     </script>
 
-    <!-- Main wrapper without max-width -->
     <div class="min-h-screen">
-        <!-- Centered content for non‑row elements -->
-        <div id="gameScreen" class="space-y-4 sm:space-y-6">
-            <div class="container mx-auto px-3 py-4 max-w-2xl space-y-4 sm:space-y-6">
-                <h1 id="title" class="text-2xl sm:text-3xl font-bold text-center text-gray-800 dark:text-white">
-                    Chinese Writing Practice
-                </h1>
+        <!-- Game Screen – all content inside a centered container -->
+        <div id="gameScreen" class="container mx-auto px-3 py-4 max-w-2xl space-y-4 sm:space-y-6">
+            <h1 id="title" class="text-2xl sm:text-3xl font-bold text-center text-gray-800 dark:text-white">
+                Chinese Writing Practice
+            </h1>
 
-                <!-- Progress Bar -->
-                <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3 overflow-hidden">
-                    <div id="progressBar" class="bg-blue-500 h-3 rounded-full transition-all duration-300" style="width: 0%"></div>
-                </div>
-
-                <!-- Info Row -->
-                <div class="flex flex-wrap justify-between items-center gap-2 text-sm">
-                    <div class="flex items-center space-x-2">
-                        <span id="phaseIndicator"
-                            class="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 phase-pulse">
-                            Phase 1
-                        </span>
-                        <span id="wordCounter" class="text-gray-600 dark:text-gray-400 font-medium">Word 1 / 20</span>
-                    </div>
-                    <div class="flex items-center space-x-3">
-                        <span id="attemptsDisplay" class="text-gray-600 dark:text-gray-400 font-medium">Attempt 1/2</span>
-                        <span id="missCounter" class="text-orange-500 dark:text-orange-400 font-medium hidden">
-                            <i class="fa fa-exclamation-triangle"></i> <span id="missCount">0</span> misses
-                        </span>
-                    </div>
-                    <button id="restartSessionBtn"
-                        class="bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 px-3 py-2 rounded-lg font-medium transition-colors text-sm"
-                        title="Restart Session">
-                        <i class="fa fa-refresh"></i> Restart
-                    </button>
-                </div>
-
-                <!-- Word Info -->
-                <div
-                    class="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 p-4 sm:p-6 text-center">
-                    <div id="frenchDefinition"
-                        class="text-2xl sm:text-3xl font-bold text-gray-800 dark:text-white mb-2">Loading...</div>
-                    <div id="pinyinDisplay" class="text-lg sm:text-xl text-gray-600 dark:text-gray-400">Loading...</div>
-                </div>
-
-                <!-- Message area -->
-                <div id="messageArea" class="text-center text-sm text-gray-500 dark:text-gray-400 min-h-[24px]"></div>
-
-                <!-- Action Buttons -->
-                <div class="flex justify-center space-x-4 px-2">
-                    <button id="resetCanvasBtn"
-                        class="flex-1 max-w-44 flex items-center justify-center space-x-2 bg-gray-400 hover:bg-gray-500 active:bg-gray-600 text-white px-4 py-4 rounded-lg font-semibold transition-colors min-h-[56px] text-base disabled:opacity-50 disabled:cursor-not-allowed">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15">
-                            </path>
-                        </svg>
-                        <span>Reset All</span>
-                    </button>
-                </div>
+            <!-- Progress Bar -->
+            <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3 overflow-hidden">
+                <div id="progressBar" class="bg-blue-500 h-3 rounded-full transition-all duration-300" style="width: 0%"></div>
             </div>
 
-            <!-- Full‑width horizontal scrolling character row -->
-            <div id="charactersRow" class="bg-gray-50 dark:bg-gray-800/30 p-2"></div>
+            <!-- Info Row -->
+            <div class="flex flex-wrap justify-between items-center gap-2 text-sm">
+                <div class="flex items-center space-x-2">
+                    <span id="phaseIndicator"
+                        class="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 phase-pulse">
+                        Phase 1
+                    </span>
+                    <span id="wordCounter" class="text-gray-600 dark:text-gray-400 font-medium">Word 1 / 20</span>
+                </div>
+                <div class="flex items-center space-x-3">
+                    <span id="attemptsDisplay" class="text-gray-600 dark:text-gray-400 font-medium">Attempt 1/2</span>
+                    <span id="missCounter" class="text-orange-500 dark:text-orange-400 font-medium hidden">
+                        <i class="fa fa-exclamation-triangle"></i> <span id="missCount">0</span> misses
+                    </span>
+                </div>
+                <button id="restartSessionBtn"
+                    class="bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 px-3 py-2 rounded-lg font-medium transition-colors text-sm"
+                    title="Restart Session">
+                    <i class="fa fa-refresh"></i> Restart
+                </button>
+            </div>
 
-            <!-- Results Screen (centered) -->
-            <div id="resultsScreen" class="hidden container mx-auto px-3 py-4 max-w-2xl text-center space-y-4 sm:space-y-6">
-                <h2 class="text-xl sm:text-2xl font-bold text-gray-800 dark:text-white mb-4 sm:mb-6">🎉 Congratulations! 🎉</h2>
-                <div
-                    class="bg-white dark:bg-gray-800 rounded-xl p-4 sm:p-6 shadow-lg border border-gray-200 dark:border-gray-700">
-                    <p class="text-gray-600 dark:text-gray-400 mb-4">You have completed both phases of writing practice!</p>
-                    <div class="grid grid-cols-2 gap-4 mb-4 sm:mb-6">
-                        <div class="text-center">
-                            <div id="resultCharsMastered" class="text-2xl sm:text-3xl font-bold text-green-500">0</div>
-                            <div class="text-sm text-gray-600 dark:text-gray-400">Characters Mastered</div>
-                        </div>
-                        <div class="text-center">
-                            <div id="resultTotalMistakes" class="text-2xl sm:text-3xl font-bold text-orange-500">0</div>
-                            <div class="text-sm text-gray-600 dark:text-gray-400">Total Mistakes</div>
-                        </div>
+            <!-- Word Info -->
+            <div
+                class="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 p-4 sm:p-6 text-center">
+                <div id="frenchDefinition"
+                    class="text-2xl sm:text-3xl font-bold text-gray-800 dark:text-white mb-2">Loading...</div>
+                <div id="pinyinDisplay" class="text-lg sm:text-xl text-gray-600 dark:text-gray-400">Loading...</div>
+            </div>
+
+            <!-- Horizontal scrolling character row (centered, limited width) -->
+            <div id="charactersRow" class="bg-gray-50 dark:bg-gray-800/30 p-2 rounded-xl"></div>
+
+            <!-- Message area -->
+            <div id="messageArea" class="text-center text-sm text-gray-500 dark:text-gray-400 min-h-[24px]"></div>
+
+            <!-- Action Buttons -->
+            <div class="flex justify-center space-x-4 px-2">
+                <button id="resetCanvasBtn"
+                    class="flex-1 max-w-44 flex items-center justify-center space-x-2 bg-gray-400 hover:bg-gray-500 active:bg-gray-600 text-white px-4 py-4 rounded-lg font-semibold transition-colors min-h-[56px] text-base disabled:opacity-50 disabled:cursor-not-allowed">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15">
+                        </path>
+                    </svg>
+                    <span>Reset All</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Results Screen (centered) -->
+        <div id="resultsScreen" class="hidden container mx-auto px-3 py-4 max-w-2xl text-center space-y-4 sm:space-y-6">
+            <h2 class="text-xl sm:text-2xl font-bold text-gray-800 dark:text-white mb-4 sm:mb-6">🎉 Congratulations! 🎉</h2>
+            <div
+                class="bg-white dark:bg-gray-800 rounded-xl p-4 sm:p-6 shadow-lg border border-gray-200 dark:border-gray-700">
+                <p class="text-gray-600 dark:text-gray-400 mb-4">You have completed both phases of writing practice!</p>
+                <div class="grid grid-cols-2 gap-4 mb-4 sm:mb-6">
+                    <div class="text-center">
+                        <div id="resultCharsMastered" class="text-2xl sm:text-3xl font-bold text-green-500">0</div>
+                        <div class="text-sm text-gray-600 dark:text-gray-400">Characters Mastered</div>
                     </div>
                     <div class="text-center">
-                        <div id="resultHintsShown" class="text-2xl sm:text-3xl font-bold text-blue-500">0</div>
-                        <div class="text-sm text-gray-600 dark:text-gray-400">Hints Shown</div>
+                        <div id="resultTotalMistakes" class="text-2xl sm:text-3xl font-bold text-orange-500">0</div>
+                        <div class="text-sm text-gray-600 dark:text-gray-400">Total Mistakes</div>
                     </div>
                 </div>
-                <div class="space-y-3">
-                    <button id="restartFromResultsBtn"
-                        class="w-full bg-blue-500 hover:bg-blue-600 active:bg-blue-700 text-white px-6 py-4 rounded-lg font-semibold transition-colors min-h-[56px] text-base">
-                        <i class="fa fa-refresh mr-2"></i> Restart Session
-                    </button>
-                    <a href="/home"
-                        class="block w-full bg-gray-300 dark:bg-gray-700 hover:bg-gray-400 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 px-6 py-4 rounded-lg font-semibold transition-colors min-h-[56px] text-base text-center no-underline">
-                        <i class="fa fa-home mr-2"></i> Choose Another Deck
-                    </a>
+                <div class="text-center">
+                    <div id="resultHintsShown" class="text-2xl sm:text-3xl font-bold text-blue-500">0</div>
+                    <div class="text-sm text-gray-600 dark:text-gray-400">Hints Shown</div>
                 </div>
+            </div>
+            <div class="space-y-3">
+                <button id="restartFromResultsBtn"
+                    class="w-full bg-blue-500 hover:bg-blue-600 active:bg-blue-700 text-white px-6 py-4 rounded-lg font-semibold transition-colors min-h-[56px] text-base">
+                    <i class="fa fa-refresh mr-2"></i> Restart Session
+                </button>
+                <a href="/home"
+                    class="block w-full bg-gray-300 dark:bg-gray-700 hover:bg-gray-400 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 px-6 py-4 rounded-lg font-semibold transition-colors min-h-[56px] text-base text-center no-underline">
+                    <i class="fa fa-home mr-2"></i> Choose Another Deck
+                </a>
             </div>
         </div>
     </div>

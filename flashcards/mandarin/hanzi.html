@@ -47,7 +47,8 @@
         #charactersRow {
             display: inline-flex;
             flex-wrap: nowrap;
-            overflow-x: auto;
+            overflow-x: auto;           /* show scrollbar only when content overflows */
+            overflow-y: hidden;
             gap: 0.5rem;
             padding: 0.5rem;
             -webkit-overflow-scrolling: touch;
@@ -55,9 +56,36 @@
             max-width: 100%;
             background-color: rgb(249 250 251 / 0.3);
             border-radius: 0.75rem;
+            scrollbar-width: thin;      /* Firefox – thinner scrollbar */
         }
-        .dark #charactersRow {
-            background-color: rgb(31 41 55 / 0.3);
+
+        /* Custom scrollbar for WebKit browsers (Chrome, Edge, Safari, Android) */
+        #charactersRow::-webkit-scrollbar {
+            height: 8px;
+            background-color: #e2e8f0;
+            border-radius: 4px;
+        }
+
+        #charactersRow::-webkit-scrollbar-thumb {
+            background-color: #94a3b8;
+            border-radius: 4px;
+        }
+
+        #charactersRow::-webkit-scrollbar-thumb:hover {
+            background-color: #64748b;
+        }
+
+        /* Dark mode support for custom scrollbar */
+        .dark #charactersRow::-webkit-scrollbar {
+            background-color: #334155;
+        }
+
+        .dark #charactersRow::-webkit-scrollbar-thumb {
+            background-color: #64748b;
+        }
+
+        .dark #charactersRow::-webkit-scrollbar-thumb:hover {
+            background-color: #475569;
         }
 
         /* Individual character containers */
@@ -108,7 +136,7 @@
         .game-grid > * {
             grid-column: 2 / 3;
         }
-    </style>
+</style>
 </head>
 
 <body class="bg-gray-100 dark:bg-gray-900 min-h-screen transition-colors" style="touch-action: pan-y;">

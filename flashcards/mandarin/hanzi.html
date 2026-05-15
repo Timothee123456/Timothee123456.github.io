@@ -48,13 +48,13 @@
             overflow-x: auto;
             gap: 0.5rem;
             padding: 0.5rem;
-            padding-bottom: 12px;  /* extra space for scrollbar */
+            padding-bottom: 16px;  /* extra space for taller scrollbar */
             -webkit-overflow-scrolling: touch;
             scroll-snap-type: x mandatory;
             max-width: 100%;
             background-color: rgb(249 250 251 / 0.3);
             border-radius: 0.75rem;
-            /* native scrollbar styling */
+            /* native scrollbar styling - always visible when overflow */
             scrollbar-width: thin;
             scrollbar-color: #3b82f6 #e2e8f0;
         }
@@ -63,24 +63,31 @@
             scrollbar-color: #3b82f6 #334155;
         }
 
-        /* WebKit custom scrollbar (Chrome, Safari, Edge) */
+        /* WebKit custom scrollbar (Chrome, Safari, Edge) - thicker and always visible */
         #charactersRow::-webkit-scrollbar {
-            height: 10px;
+            height: 14px;  /* ~3x taller than before for better visibility */
         }
         #charactersRow::-webkit-scrollbar-track {
             background: #e2e8f0;
-            border-radius: 12px;
+            border-radius: 20px;
+            margin: 0 4px;
         }
         .dark #charactersRow::-webkit-scrollbar-track {
             background: #334155;
         }
         #charactersRow::-webkit-scrollbar-thumb {
             background: #3b82f6;
-            border-radius: 12px;
+            border-radius: 20px;
             transition: background 0.2s;
+            border: 2px solid transparent;
+            background-clip: padding-box;
         }
         #charactersRow::-webkit-scrollbar-thumb:hover {
             background: #2563eb;
+            border-color: transparent;
+        }
+        #charactersRow::-webkit-scrollbar-corner {
+            background: transparent;
         }
 
         .char-canvas-container {
@@ -179,7 +186,7 @@
             </div>
         </div>
 
-        <!-- Hanzi row (scrollable) - now the scrollbar is native inside this container -->
+        <!-- Hanzi row (scrollable) - native scrollbar inside -->
         <div class="row-wrapper">
             <div id="charactersRow"></div>
         </div>

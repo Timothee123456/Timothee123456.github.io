@@ -12,87 +12,75 @@
         .hint-fade-in {
             animation: fadeIn 0.2s ease-in-out;
         }
+
         @keyframes fadeIn {
-            from { opacity: 0; transform: scale(0.95); }
-            to { opacity: 1; transform: scale(1); }
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
         }
+
         .no-select {
             -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
             user-select: none;
             -webkit-tap-highlight-color: transparent;
         }
+
         .container {
             overflow-x: hidden;
         }
+
         .row-wrapper {
             text-align: center;
             margin: 1rem 0;
         }
 
-        /* Main container: flex column, holds scrollable content + custom scrollbar */
+        /* Horizontal scroll row - content width, centered, scrolls if needed */
         #charactersRow {
-            display: flex;
-            flex-direction: column;
-            background-color: rgb(249 250 251 / 0.3);
-            border-radius: 0.75rem;
-            padding: 0.5rem;
-            gap: 0.5rem;
-            max-width: 100%;
-            margin: 0 auto; /* center the block */
-        }
-        .dark #charactersRow {
-            background-color: rgb(31 41 55 / 0.3);
-        }
-
-        /* Scrollable content area (horizontal scroll, no native scrollbar visible) */
-        .scroll-content {
             display: inline-flex;
             flex-wrap: nowrap;
             overflow-x: auto;
             gap: 0.5rem;
+            padding: 0.5rem;
+            padding-bottom: 12px;  /* extra space for scrollbar */
             -webkit-overflow-scrolling: touch;
             scroll-snap-type: x mandatory;
-            scrollbar-width: none; /* Firefox */
+            max-width: 100%;
+            background-color: rgb(249 250 251 / 0.3);
+            border-radius: 0.75rem;
+            /* native scrollbar styling */
+            scrollbar-width: thin;
+            scrollbar-color: #3b82f6 #e2e8f0;
         }
-        .scroll-content::-webkit-scrollbar {
-            display: none; /* Chrome/Safari */
+        .dark #charactersRow {
+            background-color: rgb(31 41 55 / 0.3);
+            scrollbar-color: #3b82f6 #334155;
         }
 
-        /* Custom scrollbar container (inside #charactersRow) */
-        .custom-scrollbar {
-            display: none;
-            width: 100%;
-            padding: 4px 0;
-            box-sizing: border-box;
+        /* WebKit custom scrollbar (Chrome, Safari, Edge) */
+        #charactersRow::-webkit-scrollbar {
+            height: 10px;
         }
-        .custom-scrollbar-track {
-            background-color: #e2e8f0;
+        #charactersRow::-webkit-scrollbar-track {
+            background: #e2e8f0;
             border-radius: 12px;
-            height: 6px;
-            width: 100%;
-            position: relative;
-            cursor: pointer;
         }
-        .dark .custom-scrollbar-track {
-            background-color: #334155;
+        .dark #charactersRow::-webkit-scrollbar-track {
+            background: #334155;
         }
-        .custom-scrollbar-thumb {
-            position: absolute;
-            left: 0;
-            top: 0;
-            height: 100%;
-            width: 20%;
-            background-color: #3b82f6;
+        #charactersRow::-webkit-scrollbar-thumb {
+            background: #3b82f6;
             border-radius: 12px;
-            cursor: grab;
-            transition: background-color 0.1s;
+            transition: background 0.2s;
         }
-        .custom-scrollbar-thumb:active {
-            cursor: grabbing;
-            background-color: #2563eb;
-        }
-        .custom-scrollbar-thumb:hover {
-            background-color: #2563eb;
+        #charactersRow::-webkit-scrollbar-thumb:hover {
+            background: #2563eb;
         }
 
         .char-canvas-container {
@@ -106,31 +94,38 @@
             touch-action: pan-y !important;
             transition: opacity 0.2s;
         }
+
         .char-canvas-container svg {
             width: 100% !important;
             height: auto !important;
             max-height: 70vh;
         }
+
         @media (min-width: 768px) {
             .char-canvas-container {
                 width: 45vw;
                 max-width: 380px;
             }
         }
+
         .quiz-completed .char-canvas-container {
             pointer-events: none;
         }
+
         .phase-pulse {
             animation: pulse 2s infinite;
         }
+
         @keyframes pulse {
             0%, 100% { opacity: 1; }
             50% { opacity: 0.6; }
         }
+
         .game-grid {
             display: grid;
             grid-template-columns: 1fr min(100%, 672px) 1fr;
         }
+
         .game-grid > * {
             grid-column: 2 / 3;
         }
@@ -153,13 +148,17 @@
             <h1 id="title" class="text-2xl sm:text-3xl font-bold text-center mb-4 text-gray-800 dark:text-white">
                 Chinese Writing Practice
             </h1>
+
             <div id="gameScreen" class="space-y-4 sm:space-y-6">
                 <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3 overflow-hidden">
                     <div id="progressBar" class="bg-blue-500 h-3 rounded-full transition-all duration-300" style="width: 0%"></div>
                 </div>
+
                 <div class="flex flex-wrap justify-between items-center gap-2 text-sm">
                     <div class="flex items-center space-x-2">
-                        <span id="phaseIndicator" class="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 phase-pulse">Phase 1</span>
+                        <span id="phaseIndicator" class="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 phase-pulse">
+                            Phase 1
+                        </span>
                         <span id="wordCounter" class="text-gray-600 dark:text-gray-400 font-medium">Word 1 / 20</span>
                     </div>
                     <div class="flex items-center space-x-3">
@@ -172,6 +171,7 @@
                         <i class="fa fa-refresh"></i> Restart
                     </button>
                 </div>
+
                 <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 p-4 sm:p-6 text-center">
                     <div id="frenchDefinition" class="text-2xl sm:text-3xl font-bold text-gray-800 dark:text-white mb-2">Loading...</div>
                     <div id="pinyinDisplay" class="text-lg sm:text-xl text-gray-600 dark:text-gray-400">Loading...</div>
@@ -179,16 +179,9 @@
             </div>
         </div>
 
-        <!-- Hanzi row: now contains scrollable content + custom scrollbar inside it -->
+        <!-- Hanzi row (scrollable) - now the scrollbar is native inside this container -->
         <div class="row-wrapper">
-            <div id="charactersRow">
-                <div class="scroll-content" id="scrollContent"></div>
-                <div class="custom-scrollbar" id="customScrollbar">
-                    <div class="custom-scrollbar-track" id="scrollbarTrack">
-                        <div class="custom-scrollbar-thumb" id="scrollbarThumb"></div>
-                    </div>
-                </div>
-            </div>
+            <div id="charactersRow"></div>
         </div>
 
         <div class="game-grid">
@@ -289,17 +282,8 @@
                     this.totalMistakesAllTime = 0;
                     this.totalHintsShown = 0;
 
-                    // References for scrollable content and custom scrollbar
-                    this.scrollContent = null;
-                    this.customScrollbar = null;
-                    this.scrollbarTrack = null;
-                    this.scrollbarThumb = null;
-                    this.resizeObserver = null;
-                    this.isDraggingThumb = false;
-
                     this.cacheDom();
                     this.bindEvents();
-                    this.initCustomScrollbar();
                     this.startSession();
                 }
 
@@ -315,10 +299,6 @@
                     this.frenchDefinition = document.getElementById('frenchDefinition');
                     this.pinyinDisplay = document.getElementById('pinyinDisplay');
                     this.charactersRow = document.getElementById('charactersRow');
-                    this.scrollContent = document.getElementById('scrollContent');
-                    this.customScrollbar = document.getElementById('customScrollbar');
-                    this.scrollbarTrack = document.getElementById('scrollbarTrack');
-                    this.scrollbarThumb = document.getElementById('scrollbarThumb');
                     this.messageArea = document.getElementById('messageArea');
                     this.resetCanvasBtn = document.getElementById('resetCanvasBtn');
                     this.restartSessionBtn = document.getElementById('restartSessionBtn');
@@ -344,105 +324,6 @@
                     });
                 }
 
-                // ----- Custom Scrollbar Logic (now inside #charactersRow) -----
-                initCustomScrollbar() {
-                    if (!this.scrollContent) return;
-                    // Listen to scroll events on .scroll-content
-                    this.scrollContent.addEventListener('scroll', () => this.updateThumbPosition());
-                    window.addEventListener('resize', () => this.checkOverflowAndUpdate());
-                    
-                    // Dragging logic on custom thumb
-                    this.scrollbarThumb.addEventListener('mousedown', this.startDrag.bind(this));
-                    document.addEventListener('mousemove', this.drag.bind(this));
-                    document.addEventListener('mouseup', this.stopDrag.bind(this));
-                    
-                    // Click on track
-                    this.scrollbarTrack.addEventListener('click', (e) => {
-                        if (e.target === this.scrollbarThumb) return;
-                        const rect = this.scrollbarTrack.getBoundingClientRect();
-                        const clickX = e.clientX - rect.left;
-                        const trackWidth = rect.width;
-                        const scrollRatio = clickX / trackWidth;
-                        const maxScroll = this.scrollContent.scrollWidth - this.scrollContent.clientWidth;
-                        this.scrollContent.scrollLeft = scrollRatio * maxScroll;
-                    });
-                    
-                    this.resizeObserver = new ResizeObserver(() => this.checkOverflowAndUpdate());
-                    this.resizeObserver.observe(this.scrollContent);
-                }
-
-                checkOverflowAndUpdate() {
-                    if (!this.scrollContent) return;
-                    const hasOverflow = this.scrollContent.scrollWidth > this.scrollContent.clientWidth;
-                    if (hasOverflow) {
-                        this.customScrollbar.style.display = 'block';
-                        this.updateThumbWidthAndPosition();
-                    } else {
-                        this.customScrollbar.style.display = 'none';
-                    }
-                }
-
-                updateThumbWidthAndPosition() {
-                    if (!this.scrollContent.clientWidth) return;
-                    const scrollWidth = this.scrollContent.scrollWidth;
-                    const clientWidth = this.scrollContent.clientWidth;
-                    const trackWidth = this.scrollbarTrack.clientWidth;
-                    const thumbWidth = Math.max(20, (clientWidth / scrollWidth) * trackWidth);
-                    this.scrollbarThumb.style.width = `${thumbWidth}px`;
-                    this.updateThumbPosition();
-                }
-
-                updateThumbPosition() {
-                    const scrollWidth = this.scrollContent.scrollWidth;
-                    const clientWidth = this.scrollContent.clientWidth;
-                    const maxScrollLeft = scrollWidth - clientWidth;
-                    const currentScrollLeft = this.scrollContent.scrollLeft;
-                    const trackWidth = this.scrollbarTrack.clientWidth;
-                    const thumbWidth = this.scrollbarThumb.clientWidth;
-                    const maxThumbLeft = trackWidth - thumbWidth;
-                    let thumbLeft = (currentScrollLeft / maxScrollLeft) * maxThumbLeft;
-                    if (isNaN(thumbLeft)) thumbLeft = 0;
-                    this.scrollbarThumb.style.left = `${thumbLeft}px`;
-                }
-
-                startDrag(e) {
-                    e.preventDefault();
-                    this.isDraggingThumb = true;
-                    this.startDragX = e.clientX;
-                    this.startThumbLeft = parseFloat(this.scrollbarThumb.style.left) || 0;
-                }
-
-                drag(e) {
-                    if (!this.isDraggingThumb) return;
-                    e.preventDefault();
-                    const deltaX = e.clientX - this.startDragX;
-                    const trackWidth = this.scrollbarTrack.clientWidth;
-                    const thumbWidth = this.scrollbarThumb.clientWidth;
-                    const maxLeft = trackWidth - thumbWidth;
-                    let newLeft = this.startThumbLeft + deltaX;
-                    newLeft = Math.min(Math.max(0, newLeft), maxLeft);
-                    this.scrollbarThumb.style.left = `${newLeft}px`;
-                    
-                    const scrollWidth = this.scrollContent.scrollWidth;
-                    const clientWidth = this.scrollContent.clientWidth;
-                    const maxScrollLeft = scrollWidth - clientWidth;
-                    const scrollRatio = newLeft / maxLeft;
-                    this.scrollContent.scrollLeft = scrollRatio * maxScrollLeft;
-                }
-
-                stopDrag() {
-                    this.isDraggingThumb = false;
-                }
-
-                cleanupCustomScrollbar() {
-                    if (this.resizeObserver) {
-                        this.resizeObserver.disconnect();
-                        this.resizeObserver = null;
-                    }
-                    window.removeEventListener('resize', this.checkOverflowAndUpdate);
-                }
-
-                // ----- Core app methods (minimal changes to target .scrollContent) -----
                 shuffleArray(arr) {
                     const a = [...arr];
                     for (let i = a.length - 1; i > 0; i--) {
@@ -471,21 +352,18 @@
                     this.destroyAllWriters();
                     this.gameScreen.classList.remove('hidden');
                     this.resultsScreen.classList.add('hidden');
-                    this.scrollContent.classList.remove('quiz-completed');
+                    this.charactersRow.classList.remove('quiz-completed');
                     this.progressBar.style.width = '0%';
                     this.setupCurrentWord();
                 }
 
                 restartSession() {
                     this.destroyAllWriters();
-                    this.cleanupCustomScrollbar();
-                    this.initCustomScrollbar();
                     this.startSession();
                 }
 
                 getWriterDimensions() {
-                    // Use the scrollContent width for better scaling
-                    const containerWidth = this.scrollContent.clientWidth;
+                    const containerWidth = this.charactersRow.clientWidth;
                     const w = Math.min(containerWidth * 0.95, 400);
                     return { width: w, height: w };
                 }
@@ -523,20 +401,20 @@
                     });
                     this.writers = [];
                     this.activeQuizzes = 0;
-                    const containers = this.scrollContent.querySelectorAll('.char-canvas-container');
+                    const containers = this.charactersRow.querySelectorAll('.char-canvas-container');
                     containers.forEach(c => {
                         c.innerHTML = '';
                     });
                 }
 
                 buildCharacterRow() {
-                    this.scrollContent.innerHTML = '';
+                    this.charactersRow.innerHTML = '';
                     const chars = this.wordCharacters[this.currentWordIndex];
                     chars.forEach((char, idx) => {
                         const div = document.createElement('div');
                         div.className = 'char-canvas-container bg-white dark:bg-gray-800 rounded-lg shadow border border-gray-200 dark:border-gray-700';
                         div.id = `char-${idx}`;
-                        this.scrollContent.appendChild(div);
+                        this.charactersRow.appendChild(div);
                     });
                 }
 
@@ -606,7 +484,9 @@
                     const attemptNumber = this.getCurrentAttemptNumber();
                     const showOutline = this.getOutlineForAttempt(attemptNumber);
 
-                    this.writers.forEach(w => { try { w.cancelQuiz(); } catch(e) {} });
+                    this.writers.forEach(w => {
+                        try { w.cancelQuiz(); } catch(e) {}
+                    });
                     this.destroyAllWriters();
                     this.writers = [];
 
@@ -650,12 +530,12 @@
                     const remaining = this.getRemainingAttempts();
                     this.isTransitioning = true;
                     this.resetCanvasBtn.disabled = true;
-                    this.scrollContent.classList.add('quiz-completed');
+                    this.charactersRow.classList.add('quiz-completed');
 
                     setTimeout(() => {
                         this.isTransitioning = false;
                         this.resetCanvasBtn.disabled = false;
-                        this.scrollContent.classList.remove('quiz-completed');
+                        this.charactersRow.classList.remove('quiz-completed');
                         if (remaining <= 0) {
                             this.writers.forEach(w => { try { w.cancelQuiz(); } catch(e) {} });
                             this.currentWordIndex++;
@@ -688,8 +568,6 @@
                         if (writer) this.writers.push(writer);
                     });
 
-                    setTimeout(() => this.checkOverflowAndUpdate(), 50);
-
                     if (this.currentPhase === 1 && !this.animationShown[this.currentWordIndex]) {
                         this.isAnimating = true;
                         this.setMessage('🎬 Watching stroke order animation...');
@@ -716,7 +594,6 @@
                         if (writer) this.writers.push(writer);
                     });
                     this.startAllQuizzes();
-                    setTimeout(() => this.checkOverflowAndUpdate(), 50);
                     const outlineLabel = showOutline ? 'with outline' : 'without outline';
                     this.setMessage(`✏️ Attempt ${attemptNumber}/${this.currentPhase === 1 ? 2 : 2} – ${outlineLabel}.`);
                     this.updateUI();
@@ -772,7 +649,7 @@
                     this.phase2Progress = this.wordCharacters.map(chars => new Array(chars.length).fill(0));
                     this.isAnimating = false;
                     this.destroyAllWriters();
-                    this.scrollContent.classList.remove('quiz-completed');
+                    this.charactersRow.classList.remove('quiz-completed');
                     this.setMessage('🎯 Phase 2 begins! Mixed outline practice.');
                     this.setupCurrentWord();
                 }
@@ -781,13 +658,12 @@
                     this.destroyAllWriters();
                     this.gameScreen.classList.add('hidden');
                     this.resultsScreen.classList.remove('hidden');
-                    this.scrollContent.classList.remove('quiz-completed');
+                    this.charactersRow.classList.remove('quiz-completed');
                     const totalChars = this.wordCharacters.reduce((sum, chars) => sum + chars.length, 0);
                     this.resultCharsMastered.textContent = totalChars;
                     this.resultTotalMistakes.textContent = this.totalMistakesAllTime;
                     this.resultHintsShown.textContent = this.totalHintsShown;
                     this.progressBar.style.width = '100%';
-                    this.customScrollbar.style.display = 'none';
                 }
             }
 

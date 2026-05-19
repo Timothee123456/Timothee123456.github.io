@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lag-Free Infinite Stream (Max 1,000)</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            background-color: #000;
+            color: #0f0;
+            font-family: monospace;
+            font-size: 18px;
+            line-height: 1.4;
+            /* Disable all browser scrolling completely */
+            overflow: hidden; 
+            user-select: none;
+        }
+        #text-container {
+            width: 100vw;
+            height: 100vh;
+            padding: 20px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end; /* Keeps newest text at the bottom */
+        }
+        .text-line {
+            display: block;
+            white-space: nowrap;
+        }
+
+        /* Speed Control UI overlay */
+        #ui-panel {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: rgba(15, 15, 15, 0.9);
+            border: 2px solid #0f0;
+            padding: 15px;
+            border-radius: 5px;
+            z-index: 9999;
+            font-family: monospace;
+            color: #0f0;
+            box-shadow: 0 0 15px rgba(0, 255, 0, 0.4);
+        }
+        .slider-row {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-top: 5px;
+        }
+        input[type="range"] {
+            accent-color: #0f0;
+            cursor: pointer;
+            width: 250px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Control Interface -->
+    <div id="ui-panel">
+        <div>STREAM VELOCITY ENGINE</div>
+        <div class="slider-row">
+            <span>0</span>
+            <input type="range" id="speed-slider" min="0" max="1000" step="1" value="20">
+            <span>1,000</span>
+        </div>
+        <div style="margin-top: 8px; font-size: 13px;">
+            Lines Per Frame: <span id="lines-display">20</span>
+        </div>
+    </div>
+
+    <div id="text-container"></div>
+
+    <script>
+        const container = document.getElementById('text-container');
+        const slider = document.getElementById('speed-slider');
+        const linesDisplay = document.getElementById('lines-display');
+        
+        // Configuration
+        const maxLinesVisible = 40; // Max lines kept in memory before deleting old ones.
+        let linesPerFrame = parseInt(slider.value); // Sync initial speed with slider starting value
+
+        // Direct slider tracking up to 1,000
+        slider.addEventListener('input', (e) => {
+            linesPerFrame = parseInt(e.target.value);
+            
+            if (linesPerFrame === 0) {
+                linesDisplay.textContent = "0 (PAUSED)";
+            } else if (linesPerFrame === 1000) {
+                linesDisplay.textContent = "1,000 (MAX)";
+            } else {
+                linesDisplay.textContent = linesPerFrame.toLocaleString();
+            }
+        });
+
+        const phrases = [
+            "DATA STREAM OVERFLOW.", "SYSTEM RUNNING AT MAXIMUM CAPACITY.", 
+            "INFINITE LOOP DETECTED.", "PROCESSING SUBROUTINES.", 
+            "COMPILING TEMPORAL FRAGMENTS.", "BYPASSING SECURITY PROTOCOLS.", 
+            "DOWNLOADING RECURSIVE ARCHIVE.", "NETWORK LATENCY MINIMAL.", 
+            "INITIALIZING MATRIX DISTORTION.", "GRID ALIGNMENT OPTIMIZED.", 
+        ];
+
+        function updateStream() {
+            if (linesPerFrame > 0) {
+                
+                // Add the exact number of lines requested by the slider
+                for (let i = 0; i < linesPerFrame; i++) {
+                    const randomPhrase = phrases[Math.floor(Math.random() * phrases.length)];
+                    const randomHex = Math.random().toString(36).substring(2, 15).toUpperCase();
+                    
+                    const lineDiv = document.createElement('div');
+                    lineDiv.className = 'text-line';
+                    lineDiv.textContent = `[${randomHex}] ${randomPhrase}`;
+                    
+                    container.appendChild(lineDiv);
+                }
+
+                // Immediately drop the older lines to match your lag-free layout
+                while (container.children.length > maxLinesVisible) {
+                    container.removeChild(container.firstChild);
+                }
+            }
+            
+            requestAnimationFrame(updateStream);
+        }
+
+        // Start loop
+        updateStream();
+    </script>
+</body>
+</html>

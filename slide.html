@@ -1,0 +1,30 @@
+<!DOCTYPE html> <html> <head> <title>Redirection</title> <script> var countdown = 3; var redirectTimer;
+function startRedirect() {
+  redirectTimer = setInterval(function() {
+    countdown--;
+    document.getElementById("countdown").textContent = countdown;
+    if (countdown === 0) {
+      clearInterval(redirectTimer);
+      window.location.href = "https://docs.google.com/presentation/d/1flRoDlBsnUPl0Fc_xIKMmJCGd5DJTGP7mRlpUqC94ak/edit?slide=id.g3d7e5cff519_0_1162#slide=id.g3d7e5cff519_0_1162";
+    }
+  }, 1000);
+}
+</script> </head>
+<style type="text/css" media="screen">
+  .container {
+    margin: 10px auto;
+    max-width: 600px;
+    text-align: center;
+  }
+  h1 {
+    margin: 30px 0;
+    font-size: 4em;
+    line-height: 1;
+    letter-spacing: -1px;
+  }
+</style>
+
+<div class="container">
+</div>
+<body onload="startRedirect()"> <h2>You will be redirected to another page in <span id="countdown">3</span> seconds...</h2> </body>
+  </html>

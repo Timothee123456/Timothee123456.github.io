@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Flashcard Studio · Créateur de decks JS</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* smooth transitions & card-like rows */
+        .deck-row {
+            transition: all 0.2s ease;
+        }
+        textarea, input {
+            transition: border 0.15s, box-shadow 0.15s;
+        }
+        textarea:focus, input:focus {
+            outline: none;
+            ring: 2px solid #3b82f6;
+            border-color: #3b82f6;
+        }
+        /* custom scroll for rows container */
+        .flashcards-list {
+            max-height: 55vh;
+            overflow-y: auto;
+            padding-right: 0.25rem;
+        }
+        .flashcards-list::-webkit-scrollbar {
+            width: 6px;
+        }
+        .flashcards-list::-webkit-scrollbar-track {
+            background: #e2e8f0;
+            border-radius: 8px;
+        }
+        .flashcards-list::-webkit-scrollbar-thumb {
+            background: #94a3b8;
+            border-radius: 8px;
+        }
+        .dark .flashcards-list::-webkit-scrollbar-track {
+            background: #1e293b;
+        }
+        .dark .flashcards-list::-webkit-scrollbar-thumb {
+            background: #475569;
+        }
+        .btn-icon {
+            transition: all 0.2s;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 dark:bg-gray-900 min-h-screen antialiased">
+
+    <div class="container mx-auto px-3 py-5 max-w-4xl">
+        <!-- header with same vibe as original flashcard app -->
+        <div class="flex flex-wrap items-center justify-between gap-2 mb-5">
+            <h1 class="text-2xl sm:text-3xl font-bold text-gray-800 dark:text-white flex items-center gap-2">
+                📇 Flashcard Studio
+                <span class="text-sm bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 px-2 py-0.5 rounded-full text-xs font-mono">deck builder</span>
+            </h1>
+            <div class="text-xs text-gray-500 dark:text-gray-400 bg-white/50 dark:bg-gray-800/50 px-3 py-1 rounded-full">
+                ✨ export .js → decks/
+            </div>
+        </div>
+
+        <!-- main card panel (similar style) -->
+        <div class="bg-white dark:bg-gray-800/90 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
+            <!-- metadata section -->
+            <div class="p-5 border-b border-gray-200 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-900/30">
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">📌 Titre du deck</label>
+                        <input type="text" id="deckTitle" class="w-full px-4 py-2 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 transition" placeholder="ex: Géographie - Aires urbaines" value="Chapitre : Métropoles françaises">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">📅 Date (YYYY-MM-DD)</label>
+                        <input type="date" id="deckDate" class="w-full px-4 py-2 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">💾 Nom du fichier (sans .js)</label>
+                        <input type="text" id="deckFilename" class="w-full px-4 py-2 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 font-mono text-sm" placeholder="ex: chapitre1_metropoles" value="metropoles_france">
+                        <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">sera sauvegardé sous <span class="font-mono bg-gray-200 dark:bg-gray-700 px-1 rounded">[nom].js</span></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- flashcards dynamic section (same card style) -->
+            <div class="p-5">
+                <div class="flex justify-between items-center flex-wrap gap-3 mb-4">
+                    <h2 class="text-lg font-bold text-gray-800 dark:text-white flex items-center gap-2">
+                        <svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path></svg>
+                        Cartes question ↔ réponse
+                    </h2>
+                    <button id="addFlashcardBtn" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-xl text-sm font-medium flex items-center gap-1 shadow-sm transition">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                        Ajouter une carte
+                    </button>
+                </div>
+
+                <!-- container for dynamic flashcard rows -->
+                <div id="flashcardsContainer" class="flashcards-list space-y-3">
+                    <!-- rows injected dynamically -->
+                </div>
+
+                <!-- hint text -->
+                <div class="mt-3 text-xs text-center text-gray-500 dark:text-gray-400 flex items-center justify-center gap-2">
+                    <span class="inline-block w-2 h-2 rounded-full bg-green-400"></span>
+                    <span>Les champs vides seront ignorés à l’export</span>
+                </div>
+            </div>
+
+            <!-- action bar (convert & utils) -->
+            <div class="px-5 pb-5 pt-2 flex flex-wrap gap-3 justify-between items-center border-t border-gray-200 dark:border-gray-700 bg-gray-50/40 dark:bg-gray-800/30">
+                <div class="flex gap-2">
+                    <button id="resetAllBtn" class="px-4 py-2 rounded-xl border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 transition text-sm font-medium flex items-center gap-1">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                        Tout remettre à zéro
+                    </button>
+                </div>
+                <div class="flex gap-3">
+                    <button id="copyCodeBtn" class="px-5 py-2 rounded-xl bg-gray-700 hover:bg-gray-800 text-white transition text-sm font-medium flex items-center gap-2 shadow">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>
+                        Copier le code JS
+                    </button>
+                    <button id="convertDownloadBtn" class="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-xl text-sm font-bold flex items-center gap-2 shadow-md transition">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                        Convertir & télécharger .js
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- preview panel (optional but elegant) -->
+        <div class="mt-6 bg-white dark:bg-gray-800/70 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-4">
+            <div class="flex items-center gap-2 text-gray-700 dark:text-gray-300 font-medium text-sm mb-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                Aperçu du code généré (premières cartes)
+            </div>
+            <pre id="codePreview" class="bg-gray-900 text-gray-100 p-3 rounded-lg text-xs font-mono overflow-x-auto max-h-32">export var title = "..."</pre>
+        </div>
+    </div>
+
+    <script>
+        // ---------- DATA MODEL ----------
+        let flashcardsData = [
+            { question: "Quel est la proportion de français qui sont urbains ?", answer: "4 sur 5 sont urbains" },
+            { question: "Qu'est-ce qu'une aire urbaine ?", answer: "Ensemble de communes avec une ville centre et sa couronne périurbaine" }
+        ];  // example starter with 2 cards, user can edit/delete
+        
+        // DOM elements
+        const container = document.getElementById('flashcardsContainer');
+        const deckTitleInput = document.getElementById('deckTitle');
+        const deckDateInput = document.getElementById('deckDate');
+        const deckFilenameInput = document.getElementById('deckFilename');
+        const addBtn = document.getElementById('addFlashcardBtn');
+        const resetAllBtn = document.getElementById('resetAllBtn');
+        const convertDownloadBtn = document.getElementById('convertDownloadBtn');
+        const copyCodeBtn = document.getElementById('copyCodeBtn');
+        const codePreview = document.getElementById('codePreview');
+
+        // set today's date as default for date picker
+        function setDefaultDate() {
+            if (!deckDateInput.value) {
+                const today = new Date();
+                const yyyy = today.getFullYear();
+                const mm = String(today.getMonth() + 1).padStart(2, '0');
+                const dd = String(today.getDate()).padStart(2, '0');
+                deckDateInput.value = `${yyyy}-${mm}-${dd}`;
+            }
+        }
+        
+        // render all rows based on flashcardsData
+        function renderFlashcards() {
+            if (!container) return;
+            container.innerHTML = '';
+            if (flashcardsData.length === 0) {
+                // empty state
+                const emptyDiv = document.createElement('div');
+                emptyDiv.className = 'text-center py-8 text-gray-400 dark:text-gray-500 bg-gray-50 dark:bg-gray-800/40 rounded-xl border border-dashed';
+                emptyDiv.innerHTML = `<svg class="w-8 h-8 mx-auto mb-2 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 13h6m-3-3v6m-9 5h18a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                                    <span class="text-sm">Aucune carte. Cliquez sur "Ajouter une carte"</span>`;
+                container.appendChild(emptyDiv);
+                updatePreviewAndCode();
+                return;
+            }
+            
+            flashcardsData.forEach((card, idx) => {
+                const row = document.createElement('div');
+                row.className = 'deck-row bg-gray-50 dark:bg-gray-900/40 rounded-xl border border-gray-200 dark:border-gray-700 p-3 transition-all hover:shadow-sm';
+                row.setAttribute('data-index', idx);
+                
+                // grid layout: question + answer + delete button
+                row.innerHTML = `
+                    <div class="flex flex-col sm:flex-row gap-3 items-start">
+                        <div class="flex-1 w-full">
+                            <label class="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">📖 QUESTION</label>
+                            <textarea rows="2" class="question-input w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-800 dark:text-white resize-y text-sm focus:ring-2 focus:ring-blue-500" placeholder="Ex: Quelle est la définition de l'aire urbaine ?">${escapeHtml(card.question)}</textarea>
+                        </div>
+                        <div class="flex-1 w-full">
+                            <label class="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">✨ RÉPONSE</label>
+                            <textarea rows="2" class="answer-input w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-800 dark:text-white resize-y text-sm focus:ring-2 focus:ring-blue-500" placeholder="Contenu de la réponse...">${escapeHtml(card.answer)}</textarea>
+                        </div>
+                        <div class="flex-shrink-0 pt-6 sm:pt-5">
+                            <button class="delete-card-btn bg-red-100 dark:bg-red-900/30 hover:bg-red-200 dark:hover:bg-red-800/50 text-red-600 dark:text-red-400 p-2 rounded-xl transition" data-idx="${idx}" title="Supprimer cette carte">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                            </button>
+                        </div>
+                    </div>
+                `;
+                
+                // attach event listeners to textareas to update flashcardsData in real time
+                const questionTextarea = row.querySelector('.question-input');
+                const answerTextarea = row.querySelector('.answer-input');
+                const deleteBtn = row.querySelector('.delete-card-btn');
+                
+                questionTextarea.addEventListener('input', (e) => {
+                    flashcardsData[idx].question = e.target.value;
+                    updatePreviewAndCode();
+                });
+                answerTextarea.addEventListener('input', (e) => {
+                    flashcardsData[idx].answer = e.target.value;
+                    updatePreviewAndCode();
+                });
+                deleteBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    flashcardsData.splice(idx, 1);
+                    renderFlashcards();   // re-render after deletion
+                    updatePreviewAndCode();
+                });
+                
+                container.appendChild(row);
+            });
+            updatePreviewAndCode();
+        }
+        
+        // simple escape for HTML to avoid injection but innerText works but we render via innerHTML
+        function escapeHtml(str) {
+            if (!str) return '';
+            return str.replace(/[&<>]/g, function(m) {
+                if (m === '&') return '&amp;';
+                if (m === '<') return '&lt;';
+                if (m === '>') return '&gt;';
+                return m;
+            }).replace(/[\uD800-\uDBFF][\uDC00-\uDFFF]/g, function(c) {
+                return c;
+            });
+        }
+        
+        // generate the .js file content from current data
+        function generateJSFileContent() {
+            let title = deckTitleInput.value.trim();
+            if (title === "") title = "Flashcards générées";
+            let dateVal = deckDateInput.value.trim();
+            if (dateVal === "") {
+                const today = new Date();
+                const yyyy = today.getFullYear();
+                const mm = String(today.getMonth() + 1).padStart(2, '0');
+                const dd = String(today.getDate()).padStart(2, '0');
+                dateVal = `${yyyy}-${mm}-${dd}`;
+            }
+            
+            // filter out cards where both question AND answer are empty (or whitespace only)
+            const validCards = flashcardsData.filter(card => {
+                const q = (card.question || "").trim();
+                const a = (card.answer || "").trim();
+                return q !== "" || a !== "";   // keep card if at least question OR answer has content
+            });
+            
+            // map to final flashcards array with safe JSON strings
+            const flashcardsArrayStr = validCards.map(card => {
+                const safeQuestion = JSON.stringify(card.question.trim() !== "" ? card.question.trim() : "(sans question)");
+                const safeAnswer = JSON.stringify(card.answer.trim() !== "" ? card.answer.trim() : "(sans réponse)");
+                return `    { question: ${safeQuestion}, answer: ${safeAnswer} }`;
+            }).join(",\n");
+            
+            const finalContent = `export var title = ${JSON.stringify(title)};
+export var date = ${JSON.stringify(dateVal)};
+
+export var flashcards = [
+${flashcardsArrayStr}
+];`;
+            return finalContent;
+        }
+        
+        // update preview panel
+        function updatePreviewAndCode() {
+            const code = generateJSFileContent();
+            // show only first ~500 chars as preview
+            let preview = code;
+            if (preview.length > 550) {
+                preview = preview.slice(0, 500) + "\n... (tronqué)";
+            }
+            codePreview.textContent = preview;
+        }
+        
+        // download .js file
+        function downloadJSFile() {
+            let filename = deckFilenameInput.value.trim();
+            if (filename === "") {
+                // fallback: slugify title
+                let titleSlug = deckTitleInput.value.trim().toLowerCase().replace(/[^a-z0-9]/g, '_');
+                if (titleSlug === "") titleSlug = "flashcards_deck";
+                filename = titleSlug;
+            }
+            // clean extension: remove .js if user added it
+            filename = filename.replace(/\.js$/i, '');
+            const fullFilename = `${filename}.js`;
+            const fileContent = generateJSFileContent();
+            
+            // validation : at least one valid card?
+            const validCards = flashcardsData.filter(c => (c.question || "").trim() !== "" || (c.answer || "").trim() !== "");
+            if (validCards.length === 0) {
+                alert("❌ Impossible d'exporter : ajoutez au moins une carte avec une question ou une réponse.");
+                return;
+            }
+            
+            const blob = new Blob([fileContent], { type: 'application/javascript' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            link.href = url;
+            link.download = fullFilename;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+            
+            // success feedback
+            const toastMsg = document.createElement('div');
+            toastMsg.innerText = `✅ ${fullFilename} téléchargé !`;
+            toastMsg.className = "fixed bottom-5 left-1/2 transform -translate-x-1/2 bg-green-600 text-white px-5 py-2 rounded-full shadow-lg text-sm font-semibold z-50 animate-pulse";
+            document.body.appendChild(toastMsg);
+            setTimeout(() => toastMsg.remove(), 2500);
+        }
+        
+        // copy raw code to clipboard
+        async function copyCodeToClipboard() {
+            const code = generateJSFileContent();
+            try {
+                await navigator.clipboard.writeText(code);
+                const copyMsg = document.createElement('div');
+                copyMsg.innerText = "📋 Code JS copié !";
+                copyMsg.className = "fixed bottom-5 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white px-4 py-2 rounded-full text-sm shadow-lg z-50";
+                document.body.appendChild(copyMsg);
+                setTimeout(() => copyMsg.remove(), 1800);
+            } catch(err) {
+                alert("Impossible de copier: " + err);
+            }
+        }
+        
+        // add new empty card
+        function addEmptyFlashcard() {
+            flashcardsData.push({ question: "", answer: "" });
+            renderFlashcards();
+            // scroll to newly added card
+            setTimeout(() => {
+                if (container.lastChild) {
+                    container.lastChild.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                }
+            }, 50);
+        }
+        
+        // reset everything: clear title, reset filename, set default date, clear cards but add two example placeholders?
+        function fullReset() {
+            flashcardsData = [
+                { question: "Exemple : Quelle est la capitale de la France ?", answer: "Paris" },
+                { question: "À quoi sert une métropole ?", answer: "Pôle économique, culturel et de services majeur" }
+            ];
+            deckTitleInput.value = "Nouveau deck personnalisé";
+            deckFilenameInput.value = "mon_deck_perso";
+            setDefaultDate(); 
+            renderFlashcards();
+            updatePreviewAndCode();
+        }
+        
+        // --- load initial demo with meaningful data & adjust date ---
+        function init() {
+            setDefaultDate();
+            // if user wants starter deck we keep given example but maybe customize
+            if (flashcardsData.length === 0) {
+                flashcardsData = [
+                    { question: "Quel est la proportion de français qui sont urbains ?", answer: "4 sur 5 sont urbains" },
+                    { question: "Quels sont les trois pôles d'une aire urbaine ?", answer: "ville centre, banlieue, couronne périurbaine" }
+                ];
+            }
+            renderFlashcards();
+            // event listeners
+            addBtn.addEventListener('click', addEmptyFlashcard);
+            resetAllBtn.addEventListener('click', fullReset);
+            convertDownloadBtn.addEventListener('click', downloadJSFile);
+            copyCodeBtn.addEventListener('click', copyCodeToClipboard);
+            // when metadata fields change, refresh preview
+            deckTitleInput.addEventListener('input', () => updatePreviewAndCode());
+            deckDateInput.addEventListener('change', () => updatePreviewAndCode());
+            deckFilenameInput.addEventListener('input', () => {});
+            // small style sync
+        }
+        
+        // if the container already has dynamic add, call init
+        init();
+        
+        // support for dark mode auto detection (from original style)
+        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            document.documentElement.classList.add('dark');
+        }
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
+            if (event.matches) document.documentElement.classList.add('dark');
+            else document.documentElement.classList.remove('dark');
+        });
+    </script>
+</body>
+</html>

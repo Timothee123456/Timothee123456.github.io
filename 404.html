@@ -1,34 +1,224 @@
-<!DOCTYPE html> <html> <head> <title>Redirection</title> <script> var countdown = 3; var redirectTimer;
-function startRedirect() {
-  redirectTimer = setInterval(function() {
-    countdown--;
-    document.getElementById("countdown").textContent = countdown;
-    if (countdown === 0) {
-      clearInterval(redirectTimer);
-      window.location.href = "https://timothee123456.github.io/main";
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Redirection · Page not found</title>
+  <style type="text/css" media="screen">
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
     }
-  }, 1000);
-}
-</script> </head>
-<style type="text/css" media="screen">
-  .container {
-    margin: 10px auto;
-    max-width: 600px;
-    text-align: center;
-  }
-  h1 {
-    margin: 30px 0;
-    font-size: 4em;
-    line-height: 1;
-    letter-spacing: -1px;
-  }
-</style>
+    body {
+      font-family: system-ui, 'Segoe UI', 'Helvetica Neue', sans-serif;
+      background: #f9fafb;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      margin: 0;
+      padding: 20px;
+    }
+    .container {
+      background: white;
+      border-radius: 2rem;
+      box-shadow: 0 20px 35px -12px rgba(0, 0, 0, 0.1);
+      padding: 2rem 2rem 2.5rem;
+      max-width: 640px;
+      width: 100%;
+      text-align: center;
+      transition: all 0.2s ease;
+    }
+    h1 {
+      font-size: 7rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #1e293b, #3b82f6);
+      background-clip: text;
+      -webkit-background-clip: text;
+      color: transparent;
+      letter-spacing: -2px;
+      margin: 0.25rem 0 0.5rem;
+      line-height: 1;
+    }
+    .subhead {
+      font-size: 1.6rem;
+      font-weight: 500;
+      color: #0f172a;
+      margin-top: 0.5rem;
+      margin-bottom: 1rem;
+    }
+    .message {
+      font-size: 1.1rem;
+      color: #334155;
+      border-top: 1px solid #e2e8f0;
+      padding-top: 1.5rem;
+      margin-top: 0.5rem;
+    }
+    .redirect-card {
+      background: #f1f5f9;
+      border-radius: 1.5rem;
+      padding: 1rem 1.5rem;
+      margin: 1.8rem 0 0.5rem;
+      font-size: 1rem;
+      color: #0f172a;
+      font-weight: 500;
+    }
+    .redirect-card span {
+      font-weight: 700;
+      font-size: 1.3rem;
+      background: #0f172a;
+      color: white;
+      display: inline-block;
+      min-width: 2rem;
+      padding: 0.2rem 0.5rem;
+      border-radius: 999px;
+      margin: 0 0.2rem;
+    }
+    .countdown-highlight {
+      font-family: monospace;
+      font-size: 1.6rem;
+      font-weight: 800;
+      background: #1e293b;
+      color: white;
+      padding: 0.1rem 0.8rem;
+      border-radius: 40px;
+      display: inline-block;
+      margin: 0 0.2rem;
+    }
+    .redirect-note {
+      font-size: 0.85rem;
+      color: #475569;
+      margin-top: 1rem;
+    }
+    footer {
+      margin-top: 2rem;
+      font-size: 0.75rem;
+      color: #94a3b8;
+    }
+    a {
+      color: #3b82f6;
+      text-decoration: none;
+    }
+    hr {
+      margin: 1rem 0;
+      border: none;
+      height: 1px;
+      background: #e2e8f0;
+    }
+    @media (max-width: 480px) {
+      .container { padding: 1.5rem; }
+      h1 { font-size: 5rem; }
+      .subhead { font-size: 1.2rem; }
+    }
+  </style>
+  <!-- core redirection logic (countdown & base redirect) -->
+  <script>
+    // timer variables for standard 404 countdown
+    var countdown = 3;
+    var redirectTimer = null;
+
+    // standard redirect to main page after countdown
+    function startRedirect() {
+      // ensure we don't start multiple timers
+      if (redirectTimer) clearInterval(redirectTimer);
+      // reset countdown to 3 (safety)
+      countdown = 3;
+      var countdownSpan = document.getElementById("countdown");
+      if (countdownSpan) {
+        countdownSpan.textContent = countdown;
+      }
+      redirectTimer = setInterval(function() {
+        countdown--;
+        var spanElem = document.getElementById("countdown");
+        if (spanElem) spanElem.textContent = countdown;
+        if (countdown <= 0) {
+          clearInterval(redirectTimer);
+          redirectTimer = null;
+          window.location.href = "https://timothee123456.github.io/main";
+        }
+      }, 1000);
+    }
+  </script>
+</head>
+<body>
 
 <div class="container">
   <h1>404</h1>
-
-  <p><strong>Page not found :(</strong></p>
-  <p>The requested page could not be found.</p>
+  <div class="subhead">✨ page not found</div>
+  <div class="message">
+    The requested resource could not be located on this server.
+  </div>
+  <hr />
+  <!-- dynamic section: visible for normal 404, but for immediate redirect it will vanish quickly -->
+  <div id="redirectStatusBlock">
+    <div class="redirect-card">
+      ⏳ You will be redirected to the <strong>main page</strong> in 
+      <span id="countdown" class="countdown-highlight">3</span> seconds...
+    </div>
+    <div class="redirect-note">
+      🧭 if you expected a different destination, check the address.
+    </div>
+  </div>
+  <footer>
+    ⚡ automatic forwarding · <a href="https://timothee123456.github.io/main">go now</a>
+  </footer>
 </div>
-<body onload="startRedirect()"> <h2>You will be redirected to another page in <span id="countdown">3</span> seconds...</h2> </body>
-  </html>
+
+<!--
+  ################################################################
+  CONDITIONAL REDIRECTION ENGINE
+  - if URL matches /p/anything  OR /presentation/anything 
+    → IMMEDIATE redirect (no countdown) to pythonanywhere
+  - else → normal 404 countdown to timothee123456.github.io/main
+  ################################################################
+-->
+<script>
+  (function() {
+    // get full current URL info
+    var currentPath = window.location.pathname;
+    var currentSearch = window.location.search || "";
+    var currentHash = window.location.hash || "";
+
+    // regex: exactly matches /p/anything OR /presentation/anything
+    // captures the "anything" part after the slash (including subpaths, slashes, etc.)
+    var match = currentPath.match(/^\/(p|presentation)\/(.*)$/);
+    
+    if (match) {
+      // --- SPECIAL CASE: /p/... or /presentation/... -> immediate redirect (no countdown)
+      var anything = match[2];   // everything after the first slash following /p/ or /presentation/
+      // Build target url: preserve the full "anything" subpath
+      var targetBase = "https://timothee1234567.pythonanywhere.com/";
+      // avoid double slash if anything is empty, but keep clean
+      var newUrl = targetBase + anything;
+      // append original query parameters and hash fragment to preserve full context
+      if (currentSearch) newUrl += currentSearch;
+      if (currentHash) newUrl += currentHash;
+      
+      // perform immediate redirect (no delay, no countdown UI)
+      // use window.location.replace for cleaner history (optional but feels right)
+      // but standard href works as immediate navigation.
+      window.location.href = newUrl;
+      // Important: stop further execution, no countdown start.
+      return;
+    }
+    
+    // --- NORMAL 404 BEHAVIOR ---
+    // Any other URL (including root with unknown path, /foo, /unknown, etc.)
+    // Keep original countdown + redirect to https://timothee123456.github.io/main
+    // the startRedirect() function is defined in head and manages the 3-second timer.
+    // ensure the countdown element exists and start the classic redirect flow.
+    if (typeof startRedirect === "function") {
+      // tiny safety: reset displayed countdown if needed (already 3 in DOM)
+      var countSpan = document.getElementById("countdown");
+      if (countSpan) countSpan.textContent = "3";
+      startRedirect();
+    } else {
+      // fallback (should never happen): redirect after 3 seconds directly
+      setTimeout(function() {
+        window.location.href = "https://timothee123456.github.io/main";
+      }, 3000);
+    }
+  })();
+</script>
+</body>
+</html>

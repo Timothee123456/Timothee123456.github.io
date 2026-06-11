@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Dictée vocale - Contrôles complets + révélation finale</title>
+    <style>
+        * {
+            user-select: none; /* évite la sélection accidentelle, mais la zone texte final pourra être sélectionnée */
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(145deg, #1a2a3a 0%, #0f1a24 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Segoe UI', 'Roboto', 'Noto Sans', system-ui, -apple-system, sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .card {
+            background: rgba(255,255,240,0.08);
+            backdrop-filter: blur(2px);
+            border-radius: 2.5rem;
+            padding: 2rem 1.8rem;
+            box-shadow: 0 25px 45px rgba(0,0,0,0.4), inset 0 1px 1px rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,215,150,0.3);
+            max-width: 750px;
+            width: 100%;
+            transition: all 0.2s;
+        }
+
+        h1 {
+            text-align: center;
+            font-weight: 500;
+            font-size: 1.8rem;
+            letter-spacing: -0.3px;
+            color: #FFE5B4;
+            text-shadow: 0 2px 5px #00000030;
+            margin-top: 0;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        h1::before {
+            content: "🎙️";
+            font-size: 1.8rem;
+            filter: drop-shadow(0 2px 2px rgba(0,0,0,0.3));
+        }
+
+        h1::after {
+            content: "📖";
+            font-size: 1.8rem;
+            filter: drop-shadow(0 2px 2px rgba(0,0,0,0.3));
+        }
+
+        .main-btn {
+            background: #ffb347;
+            background: linear-gradient(135deg, #ff9f2e, #ffb347);
+            border: none;
+            width: 100%;
+            padding: 1.2rem 1rem;
+            font-size: 1.7rem;
+            font-weight: bold;
+            color: #2d2b1f;
+            border-radius: 70px;
+            cursor: pointer;
+            box-shadow: 0 10px 0 #8b5a2b;
+            transition: 0.07s linear;
+            margin-bottom: 2rem;
+            font-family: inherit;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .main-btn:active {
+            transform: translateY(4px);
+            box-shadow: 0 6px 0 #8b5a2b;
+        }
+
+        .controls {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+            gap: 16px;
+            margin: 2rem 0 1.5rem;
+        }
+
+        .ctrl-btn {
+            background: #2c3e2f;
+            border: none;
+            padding: 12px 8px;
+            border-radius: 60px;
+            font-size: 1rem;
+            font-weight: 600;
+            color: #f7f3e0;
+            cursor: pointer;
+            transition: 0.1s;
+            font-family: monospace;
+            letter-spacing: 0.5px;
+            backdrop-filter: blur(4px);
+            background: #2c3e2fdd;
+            border-bottom: 3px solid #7c9a6e;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .ctrl-btn:active {
+            transform: scale(0.96);
+            border-bottom-width: 1px;
+        }
+
+        .ctrl-btn.terminer {
+            background: #5e3a2e;
+            border-bottom-color: #c97e5a;
+        }
+
+        .status {
+            background: #00000055;
+            border-radius: 60px;
+            padding: 8px 18px;
+            text-align: center;
+            font-size: 0.9rem;
+            color: #ddd9ce;
+            font-weight: 500;
+            margin-top: 1rem;
+            backdrop-filter: blur(4px);
+            border: 1px solid #ffdd8844;
+        }
+
+        .reveal-area {
+            margin-top: 1.8rem;
+            border-radius: 1.5rem;
+            background: #0f1a1fe6;
+            backdrop-filter: blur(8px);
+            padding: 0;
+            overflow: hidden;
+            transition: all 0.25s ease;
+            border: 1px solid #ffd96666;
+        }
+
+        .reveal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #3a2c1faa;
+            padding: 8px 18px;
+            font-size: 0.85rem;
+            color: #ffecb3;
+            font-weight: bold;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid #ffdd8844;
+        }
+
+        .reveal-text {
+            max-height: 0;
+            overflow-y: auto;
+            transition: max-height 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+            background: #fef7e0;
+            color: #1e2a1c;
+            font-family: 'Courier New', 'Segoe UI', monospace;
+            font-size: 1rem;
+            line-height: 1.5;
+            white-space: pre-wrap;
+            word-break: break-word;
+            padding: 0 18px;
+            margin: 0;
+            user-select: text;     /* On peut copier le texte final */
+        }
+
+        .reveal-text.show {
+            max-height: 350px;
+            padding: 16px 18px;
+            margin: 0;
+        }
+
+        .footer-note {
+            font-size: 0.7rem;
+            text-align: center;
+            margin-top: 1.5rem;
+            color: #bba97c;
+            border-top: 1px dashed #bba97c55;
+            padding-top: 1rem;
+        }
+
+        button {
+            font-weight: bold;
+        }
+
+        @media (max-width: 520px) {
+            .card {
+                padding: 1.5rem;
+            }
+            .ctrl-btn {
+                font-size: 0.85rem;
+                padding: 10px 5px;
+            }
+            .main-btn {
+                font-size: 1.3rem;
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h1>Dictée vocale · ponctuation lue</h1>
+    <button id="startBtn" class="main-btn">📋 Démarrer la dictée</button>
+
+    <div class="controls">
+        <button id="pauseResumeBtn" class="ctrl-btn pause">⏸️ Pause</button>
+        <button id="back5Btn" class="ctrl-btn">⏪ 5 sec</button>
+        <button id="back10Btn" class="ctrl-btn">⏪⏪ 10 sec</button>
+        <button id="sentenceStartBtn" class="ctrl-btn">🔁 Début phrase</button>
+        <button id="prevPunctBtn" class="ctrl-btn">⏮️ Ponct. précédente</button>
+        <button id="revealFinalBtn" class="ctrl-btn terminer">✅ Terminé / Voir le texte</button>
+    </div>
+
+    <div id="statusArea" class="status">
+        ⚡ Prêt · Appuyez sur "Démarrer la dictée" pour charger votre presse-papiers
+    </div>
+
+    <!-- Zone de révélation du texte original (cachée par défaut) -->
+    <div id="revealArea" class="reveal-area">
+        <div class="reveal-header">
+            📄 Texte original de la dictée (apparu après clic sur "Terminé")
+        </div>
+        <div id="revealTextBlock" class="reveal-text">
+            <!-- Le texte original apparaîtra ici uniquement sur demande -->
+        </div>
+    </div>
+
+    <div class="footer-note">
+        🔇 Le texte n'est jamais affiché avant le clic sur "Terminé" · Lecture lente avec ponctuation lue.<br>
+        ⏯️ Contrôles : pause, retour 5s/10s, début de phrase, ponctuation précédente.
+    </div>
+</div>
+
+<script>
+    // ---------- CONFIGURATION ----------
+    const CHAR_DURATION_MS = 95;       // ms par caractère (lecture lente)
+    const PUNCT_DURATION_MS = 520;     // durée estimée pour énoncer un signe de ponctuation
+    const SPEECH_RATE = 0.7;           // vitesse lente (0.7)
+    const SPEECH_PITCH = 1.0;
+    const FRENCH_VOICE_LANG = "fr-FR";
+
+    // Mapping ponctuation -> version parlée (énoncée)
+    const PUNCT_MAP = new Map([
+        ['.', ' point'],
+        [',', ' virgule'],
+        [';', ' point-virgule'],
+        [':', ' deux points'],
+        ['?', ' point d\'interrogation'],
+        ['!', ' point d\'exclamation'],
+        ['…', ' points de suspension']
+    ]);
+    const PUNCTUATION_CHARS = new Set(['.', ',', ';', ':', '?', '!', '…']);
+
+    // ---------- GLOBALES ----------
+    let utterances = [];           // { text, duration, isPunct }
+    let sentenceStartIndices = [];
+    let cumulativeDurations = [];
+    let totalDuration = 0;
+
+    // État de lecture
+    let isPlaying = false;
+    let isPaused = false;
+    let currentUtteranceIdx = 0;
+    let utteranceStartRealTime = 0;
+    let pausedAtUtteranceIdx = 0;
+    let pausedAtElapsedInside = 0;
+
+    let currentSpeechUtterance = null;
+    let activeTimeoutIds = [];
+
+    // Texte original (jamais affiché tant que l'utilisateur n'appuie pas sur "Terminé")
+    let originalClipboardText = "";
+
+    // Éléments DOM
+    const startBtn = document.getElementById('startBtn');
+    const pauseResumeBtn = document.getElementById('pauseResumeBtn');
+    const back5Btn = document.getElementById('back5Btn');
+    const back10Btn = document.getElementById('back10Btn');
+    const sentenceStartBtn = document.getElementById('sentenceStartBtn');
+    const prevPunctBtn = document.getElementById('prevPunctBtn');
+    const revealFinalBtn = document.getElementById('revealFinalBtn');
+    const statusDiv = document.getElementById('statusArea');
+    const revealTextBlock = document.getElementById('revealTextBlock');
+
+    // helper mise à jour status
+    function setStatus(msg, isError = false) {
+        statusDiv.innerHTML = `🎤 ${msg}`;
+        if (isError) {
+            statusDiv.style.background = "#6d2e2eaa";
+            setTimeout(() => {
+                if (statusDiv.innerHTML.includes(msg)) 
+                    statusDiv.style.background = "#00000055";
+            }, 2500);
+        } else {
+            statusDiv.style.background = "#00000055";
+        }
+    }
+
+    // annuler toute lecture en cours
+    function cancelAllSpeech() {
+        if (window.speechSynthesis) {
+            window.speechSynthesis.cancel();
+        }
+        for (let id of activeTimeoutIds) clearTimeout(id);
+        activeTimeoutIds = [];
+        if (currentSpeechUtterance) {
+            currentSpeechUtterance.onend = null;
+            currentSpeechUtterance.onerror = null;
+            currentSpeechUtterance = null;
+        }
+    }
+
+    // obtenir la position actuelle de lecture en millisecondes
+    function getCurrentTimePosition() {
+        if (!isPlaying && !isPaused) return 0;
+        if (isPaused) {
+            let baseTime = (pausedAtUtteranceIdx > 0 ? cumulativeDurations[pausedAtUtteranceIdx] : 0);
+            return baseTime + pausedAtElapsedInside;
+        } else {
+            let baseBeforeCurrent = (currentUtteranceIdx > 0 ? cumulativeDurations[currentUtteranceIdx] : 0);
+            let elapsedInCurrent = 0;
+            if (utteranceStartRealTime > 0) {
+                elapsedInCurrent = Math.max(0, performance.now() - utteranceStartRealTime);
+                if (elapsedInCurrent > utterances[currentUtteranceIdx]?.duration) {
+                    elapsedInCurrent = utterances[currentUtteranceIdx]?.duration || 0;
+                }
+            }
+            return baseBeforeCurrent + elapsedInCurrent;
+        }
+    }
+
+    // trouver l'index d'utterance pour un temps donné
+    function findUtteranceIndexAtTime(targetMs) {
+        if (targetMs <= 0) return { idx: 0, offsetInside: 0 };
+        if (targetMs >= totalDuration) return { idx: utterances.length - 1, offsetInside: utterances[utterances.length-1]?.duration || 0 };
+        let left = 0, right = utterances.length - 1;
+        let bestIdx = 0;
+        while (left <= right) {
+            let mid = Math.floor((left + right) / 2);
+            if (cumulativeDurations[mid] <= targetMs) {
+                bestIdx = mid;
+                left = mid + 1;
+            } else {
+                right = mid - 1;
+            }
+        }
+        let startOfUtter = cumulativeDurations[bestIdx];
+        let offset = targetMs - startOfUtter;
+        if (offset > utterances[bestIdx].duration) offset = utterances[bestIdx].duration;
+        return { idx: bestIdx, offsetInside: offset };
+    }
+
+    // Lecture séquentielle depuis un index avec offset optionnel
+    function playSequentialFrom(startIdx, offsetInsideFirst = 0) {
+        if (!isPlaying || isPaused) return;
+        if (startIdx >= utterances.length) {
+            isPlaying = false;
+            setStatus("✅ Dictée terminée. Vous pouvez cliquer sur 'Terminé' pour voir le texte.");
+            return;
+        }
+
+        let utteranceData = utterances[startIdx];
+        let textToSpeak = utteranceData.text;
+        let durationFull = utteranceData.duration;
+        
+        if (offsetInsideFirst > 50 && !utteranceData.isPunct && textToSpeak.length > 0) {
+            let charIndex = Math.floor((offsetInsideFirst / durationFull) * textToSpeak.length);
+            charIndex = Math.min(Math.max(0, charIndex), textToSpeak.length - 1);
+            if (charIndex > 0) {
+                textToSpeak = textToSpeak.substring(charIndex);
+                let newDuration = (textToSpeak.length / utteranceData.text.length) * durationFull;
+                durationFull = Math.max(200, newDuration);
+            }
+        }
+
+        const utterance = new SpeechSynthesisUtterance(textToSpeak);
+        utterance.lang = FRENCH_VOICE_LANG;
+        utterance.rate = SPEECH_RATE;
+        utterance.pitch = SPEECH_PITCH;
+        
+        if (window.speechSynthesis) {
+            const voices = window.speechSynthesis.getVoices();
+            const frenchVoice = voices.find(v => v.lang.startsWith('fr'));
+            if (frenchVoice) utterance.voice = frenchVoice;
+        }
+
+        utteranceStartRealTime = performance.now();
+        currentUtteranceIdx = startIdx;
+        currentSpeechUtterance = utterance;
+
+        let finished = false;
+        utterance.onend = () => {
+            if (finished) return;
+            finished = true;
+            if (currentSpeechUtterance === utterance) currentSpeechUtterance = null;
+            if (isPlaying && !isPaused) {
+                const nextIdx = startIdx + 1;
+                if (nextIdx < utterances.length) {
+                    playSequentialFrom(nextIdx, 0);
+                } else {
+                    isPlaying = false;
+                    setStatus("✔️ Dictée terminée. Cliquez sur 'Terminé' pour voir le texte.");
+                }
+            }
+        };
+        utterance.onerror = (err) => {
+            console.warn("Erreur synthèse", err);
+            if (!finished) {
+                finished = true;
+                if (isPlaying && !isPaused) {
+                    const nextIdx = startIdx + 1;
+                    if (nextIdx < utterances.length) playSequentialFrom(nextIdx, 0);
+                    else { isPlaying = false; setStatus("⚠️ Lecture interrompue"); }
+                }
+            }
+        };
+        
+        window.speechSynthesis.cancel();
+        window.speechSynthesis.speak(utterance);
+        setStatus(`Lecture · ${startIdx+1}/${utterances.length}`);
+    }
+
+    function restartPlaybackFromTime(targetTimeMs) {
+        if (!utterances.length) return;
+        if (targetTimeMs < 0) targetTimeMs = 0;
+        if (targetTimeMs >= totalDuration) {
+            setStatus("Fin du texte");
+            return;
+        }
+        cancelAllSpeech();
+        const { idx, offsetInside } = findUtteranceIndexAtTime(targetTimeMs);
+        isPlaying = true;
+        isPaused = false;
+        playSequentialFrom(idx, offsetInside);
+    }
+
+    function togglePause() {
+        if (!utterances.length) {
+            setStatus("Aucun texte chargé. Lancez d'abord la dictée.", true);
+            return;
+        }
+        if (!isPlaying && !isPaused) {
+            setStatus("Aucune lecture active. Lancez depuis le bouton principal.", true);
+            return;
+        }
+        if (isPlaying && !isPaused) {
+            let currentPos = getCurrentTimePosition();
+            cancelAllSpeech();
+            isPlaying = false;
+            isPaused = true;
+            pausedAtUtteranceIdx = currentUtteranceIdx;
+            pausedAtElapsedInside = currentPos - (currentUtteranceIdx > 0 ? cumulativeDurations[currentUtteranceIdx] : 0);
+            setStatus("⏸ En pause. 'Pause' pour reprendre.");
+            pauseResumeBtn.innerHTML = "▶️ Reprendre";
+        } 
+        else if (isPaused) {
+            let resumeTime = (pausedAtUtteranceIdx > 0 ? cumulativeDurations[pausedAtUtteranceIdx] : 0) + pausedAtElapsedInside;
+            isPlaying = true;
+            isPaused = false;
+            cancelAllSpeech();
+            restartPlaybackFromTime(resumeTime);
+            pauseResumeBtn.innerHTML = "⏸️ Pause";
+            setStatus("▶️ Reprise...");
+        }
+    }
+
+    function backSeconds(seconds) {
+        if (!utterances.length) { setStatus("Aucune dictée active.", true); return; }
+        if (!isPlaying && !isPaused) { setStatus("Aucune lecture en cours.", true); return; }
+        let currentTime = getCurrentTimePosition();
+        let newTime = currentTime - (seconds * 1000);
+        if (newTime < 0) newTime = 0;
+        if (isPlaying) cancelAllSpeech();
+        isPlaying = true;
+        isPaused = false;
+        pauseResumeBtn.innerHTML = "⏸️ Pause";
+        restartPlaybackFromTime(newTime);
+        setStatus(`↩️ Retour ${seconds} secondes`);
+    }
+
+    function jumpToSentenceStart() {
+        if (!utterances.length) return;
+        let currentTime = getCurrentTimePosition();
+        let currentIdx = 0;
+        if (isPlaying || isPaused) {
+            const { idx } = findUtteranceIndexAtTime(currentTime);
+            currentIdx = idx;
+        }
+        let targetSentenceIdx = 0;
+        for (let i = 0; i < sentenceStartIndices.length; i++) {
+            if (sentenceStartIndices[i] <= currentIdx) targetSentenceIdx = sentenceStartIndices[i];
+            else break;
+        }
+        let newTime = cumulativeDurations[targetSentenceIdx];
+        if (isPlaying) cancelAllSpeech();
+        isPlaying = true;
+        isPaused = false;
+        pauseResumeBtn.innerHTML = "⏸️ Pause";
+        restartPlaybackFromTime(newTime);
+        setStatus(`🔁 Début de phrase`);
+    }
+
+    function jumpToPrevPunctuation() {
+        if (!utterances.length) return;
+        let currentTime = getCurrentTimePosition();
+        let { idx: currentIdx } = findUtteranceIndexAtTime(currentTime);
+        let prevPunctIdx = -1;
+        for (let i = currentIdx - 1; i >= 0; i--) {
+            if (utterances[i].isPunct) {
+                prevPunctIdx = i;
+                break;
+            }
+        }
+        if (prevPunctIdx === -1) prevPunctIdx = 0;
+        let newTime = cumulativeDurations[prevPunctIdx];
+        if (isPlaying) cancelAllSpeech();
+        isPlaying = true;
+        isPaused = false;
+        pauseResumeBtn.innerHTML = "⏸️ Pause";
+        restartPlaybackFromTime(newTime);
+        setStatus(`⏮️ Ponctuation précédente`);
+    }
+
+    // Révéler le texte original (sur clic "Terminé")
+    function revealOriginalText() {
+        if (originalClipboardText && originalClipboardText.trim() !== "") {
+            // Afficher le texte dans la zone de révélation
+            revealTextBlock.innerText = originalClipboardText;
+            revealTextBlock.classList.add('show');
+            setStatus("📄 Le texte original de la dictée est maintenant visible ci-dessous.");
+        } else {
+            // Si aucun texte n'est chargé, essayer de demander le presse-papiers (mais normalement on stocke)
+            setStatus("Aucun texte de dictée n'a été chargé. Lancez d'abord une dictée.", true);
+        }
+    }
+
+    // Construction des segments + sauvegarde du texte original
+    async function buildUtterancesFromClipboard() {
+        try {
+            const clipboardText = await navigator.clipboard.readText();
+            if (!clipboardText || clipboardText.trim() === "") {
+                throw new Error("Presse-papiers vide ou texte illisible.");
+            }
+            // Sauvegarder le texte original pour révélation ultérieure (MAIS ne JAMAIS l'afficher sans clic)
+            originalClipboardText = clipboardText;
+            // Masquer la zone de révélation avant nouvelle dictée
+            revealTextBlock.classList.remove('show');
+            revealTextBlock.innerText = "";  // efface l'ancien contenu affiché
+            
+            // Traitement de la dictée (utterances) pour la synthèse vocale
+            const raw = clipboardText;
+            let tokens = [];
+            let i = 0;
+            const len = raw.length;
+            while (i < len) {
+                let ch = raw[i];
+                if (PUNCTUATION_CHARS.has(ch)) {
+                    let punctSeq = ch;
+                    if (ch === '.' && i+2 < len && raw[i+1] === '.' && raw[i+2] === '.') {
+                        punctSeq = '…';
+                        i += 3;
+                    } else {
+                        i++;
+                    }
+                    const spoken = PUNCT_MAP.get(punctSeq) || (punctSeq === '…' ? ' points de suspension' : ` ${punctSeq} `);
+                    tokens.push({ text: spoken.trim(), isPunct: true });
+                } 
+                else {
+                    let buffer = "";
+                    while (i < len && !PUNCTUATION_CHARS.has(raw[i])) {
+                        buffer += raw[i];
+                        i++;
+                    }
+                    if (buffer.length > 0) {
+                        tokens.push({ text: buffer, isPunct: false });
+                    }
+                }
+            }
+            
+            let merged = [];
+            for (let t of tokens) {
+                if (t.text.trim() === "" && !t.isPunct) continue;
+                merged.push(t);
+            }
+            
+            utterances = [];
+            let cumulative = 0;
+            cumulativeDurations = [0];
+            for (let idx = 0; idx < merged.length; idx++) {
+                const tok = merged[idx];
+                let duration = 0;
+                if (tok.isPunct) {
+                    duration = PUNCT_DURATION_MS;
+                } else {
+                    let charCount = tok.text.length;
+                    duration = Math.max(280, charCount * CHAR_DURATION_MS);
+                }
+                utterances.push({
+                    text: tok.text,
+                    isPunct: tok.isPunct,
+                    duration: duration
+                });
+                cumulative += duration;
+                cumulativeDurations.push(cumulative);
+            }
+            totalDuration = cumulative;
+            
+            // indices débuts de phrase
+            sentenceStartIndices = [];
+            let isStartOfText = true;
+            for (let idx = 0; idx < utterances.length; idx++) {
+                if (isStartOfText) {
+                    sentenceStartIndices.push(idx);
+                    isStartOfText = false;
+                }
+                if (utterances[idx].isPunct) {
+                    let punctText = utterances[idx].text.toLowerCase();
+                    if (punctText.includes('point') || punctText.includes('interrogation') || punctText.includes('exclamation')) {
+                        if (idx + 1 < utterances.length && !utterances[idx+1].isPunct) {
+                            sentenceStartIndices.push(idx+1);
+                        }
+                    }
+                }
+            }
+            sentenceStartIndices = [...new Set(sentenceStartIndices)].sort((a,b)=>a-b);
+            
+            setStatus(`Texte chargé · ${utterances.length} segments · Prêt pour dictée`);
+            return true;
+        } catch (err) {
+            console.error(err);
+            setStatus(`Erreur accès presse-papiers: ${err.message}. Vérifiez permissions ou utilisez HTTPS.`, true);
+            return false;
+        }
+    }
+
+    async function startDictation() {
+        cancelAllSpeech();
+        isPlaying = false;
+        isPaused = false;
+        currentUtteranceIdx = 0;
+        // on cache la zone de texte révélée lors d'une nouvelle dictée
+        revealTextBlock.classList.remove('show');
+        revealTextBlock.innerText = "";
+        setStatus("📋 Lecture du presse-papiers...");
+        const success = await buildUtterancesFromClipboard();
+        if (!success || utterances.length === 0) {
+            setStatus("Échec: aucun texte valide dans le presse-papiers.", true);
+            return;
+        }
+        isPlaying = true;
+        isPaused = false;
+        pauseResumeBtn.innerHTML = "⏸️ Pause";
+        playSequentialFrom(0, 0);
+        setStatus("🎧 Dictée en cours (lecture lente, ponctuation lue)");
+    }
+
+    // Préchargement voix
+    if (window.speechSynthesis) {
+        window.speechSynthesis.getVoices();
+    }
+
+    // Évènements
+    startBtn.addEventListener('click', startDictation);
+    pauseResumeBtn.addEventListener('click', togglePause);
+    back5Btn.addEventListener('click', () => backSeconds(5));
+    back10Btn.addEventListener('click', () => backSeconds(10));
+    sentenceStartBtn.addEventListener('click', jumpToSentenceStart);
+    prevPunctBtn.addEventListener('click', jumpToPrevPunctuation);
+    revealFinalBtn.addEventListener('click', revealOriginalText);
+    
+    // Gestion fond perte de focus
+    document.addEventListener('visibilitychange', () => {
+        if (!document.hidden && isPlaying && !isPaused && currentSpeechUtterance) {
+            if (window.speechSynthesis && window.speechSynthesis.pending === false && window.speechSynthesis.speaking === false) {
+                let currentPos = getCurrentTimePosition();
+                if (currentPos < totalDuration - 100 && totalDuration > 0) {
+                    restartPlaybackFromTime(currentPos);
+                }
+            }
+        }
+    });
+</script>
+</body>
+</html>

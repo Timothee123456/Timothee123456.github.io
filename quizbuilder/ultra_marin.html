@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Brevet Géo - Territoires Ultra-marins</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f7f6;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+        h2 { color: #333; text-align: center; }
+        .container {
+            display: flex;
+            gap: 50px;
+            margin: 30px 0;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .column {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .item {
+            padding: 12px 20px;
+            background-color: #e3f2fd;
+            border: 2px solid #90caf9;
+            border-radius: 5px;
+            cursor: pointer;
+            text-align: center;
+            font-weight: bold;
+            transition: all 0.2s;
+            user-select: none;
+        }
+        .item:hover { background-color: #bbdefb; }
+        .item.selected {
+            background-color: #2196f3;
+            color: white;
+            border-color: #0b7dda;
+        }
+        .btn-check {
+            padding: 12px 25px;
+            font-size: 16px;
+            background-color: #4caf50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .btn-check:hover { background-color: #45a049; }
+        #result {
+            margin-top: 20px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        .correct { color: #4caf50; }
+        .wrong { color: #f44336; }
+    </style>
+</head>
+<body>
+
+    <h2>Reliez chaque territoire ultra-marin à son océan</h2>
+    <p><i>Cliquez sur un territoire à gauche, puis sur un océan à droite pour les associer.</i></p>
+
+    <div class="container">
+        <!-- Territoires -->
+        <div class="column" id="territories">
+            <div class="item" data-value="Martinique">Martinique</div>
+            <div class="item" data-value="Réunion">Réunion</div>
+            <div class="item" data-value="Guadeloupe">Guadeloupe</div>
+            <div class="item" data-value="Polynésie">Polynésie française</div>
+            <div class="item" data-value="Mayotte">Mayotte</div>
+            <div class="item" data-value="Guyane">Guyane</div>
+        </div>
+
+        <!-- Océans -->
+        <div class="column" id="oceans">
+            <div class="item" data-value="Atlantique">Océan Atlantique</div>
+            <div class="item" data-value="Indien">Océan Indien</div>
+            <div class="item" data-value="Pacifique">Océan Pacifique</div>
+        </div>
+    </div>
+
+    <button class="btn-check" onclick="checkAnswers()">Vérifier mes réponses</button>
+    <div id="result"></div>
+
+    <script>
+        // Réponses correctes attendues
+        const correctAnswers = {
+            "Martinique": "Atlantique",
+            "Guadeloupe": "Atlantique",
+            "Guyane": "Atlantique",
+            "Réunion": "Indien",
+            "Mayotte": "Indien",
+            "Polynésie": "Pacifique"
+        };
+
+        let selectedTerritory = null;
+        let currentAnswers = {};
+
+        // Gestion des clics sur les colonnes
+        document.getElementById('territories').addEventListener('click', (e) => {
+            if (!e.target.classList.contains('item')) return;
+            
+            document.querySelectorAll('#territories .item').forEach(el => el.classList.remove('selected'));
+            e.target.classList.add('selected');
+            selectedTerritory = e.target;
+        });
+
+        document.getElementById('oceans').addEventListener('click', (e) => {
+            if (!e.target.classList.contains('item') || !selectedTerritory) return;
+
+            const territoryVal = selectedTerritory.getAttribute('data-value');
+            const oceanVal = e.target.getAttribute('data-value');
+
+            // Enregistre l'association
+            currentAnswers[territoryVal] = oceanVal;
+
+            // Indication visuelle d'association réussie
+            selectedTerritory.style.backgroundColor = "#c8e6c9";
+            selectedTerritory.style.borderColor = "#81c784";
+            selectedTerritory.classList.remove('selected');
+            selectedTerritory = null;
+        });
+
+        // Validation finale
+        function checkAnswers() {
+            let correctCount = 0;
+            let total = Object.keys(correctAnswers).length;
+
+            for (let terr in correctAnswers) {
+                if (currentAnswers[terr] === correctAnswers[terr]) {
+                    correctCount++;
+                }
+            }
+
+            const resultDiv = document.getElementById('result');
+            if (correctCount === total) {
+                resultDiv.innerHTML = `<span class="correct">Excellent ! ${correctCount}/${total} bonnes réponses. Tu es prêt pour le Brevet !</span>`;
+            } else {
+                resultDiv.innerHTML = `<span class="wrong">Dommage ! Tu as ${correctCount}/${total} bonnes réponses. Essaie encore !</span>`;
+            }
+        }
+    </script>
+</body>
+</html>

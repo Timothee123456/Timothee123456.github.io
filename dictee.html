@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Dictée vocale - Contrôles complets + révélation finale</title>
+    <title>Dictée vocale - Deux modes (normal / lent avec ponctuation)</title>
     <style>
         * {
-            user-select: none; /* évite la sélection accidentelle, mais la zone texte final pourra être sélectionnée */
+            user-select: none; /* évite sélection texte pendant dictée */
             box-sizing: border-box;
         }
 
@@ -73,7 +73,7 @@
             cursor: pointer;
             box-shadow: 0 10px 0 #8b5a2b;
             transition: 0.07s linear;
-            margin-bottom: 2rem;
+            margin-bottom: 1.2rem;
             font-family: inherit;
             letter-spacing: 1px;
             display: flex;
@@ -87,11 +87,42 @@
             box-shadow: 0 6px 0 #8b5a2b;
         }
 
+        .mode-bar {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+        }
+        .mode-switch {
+            background: #1e2a28;
+            border-radius: 60px;
+            display: inline-flex;
+            border: 1px solid #ffdd8844;
+            overflow: hidden;
+            backdrop-filter: blur(4px);
+        }
+        .mode-option {
+            padding: 8px 20px;
+            font-weight: bold;
+            cursor: pointer;
+            background: #2e3e3a;
+            color: #ddccaa;
+            transition: 0.1s;
+            font-size: 0.9rem;
+            letter-spacing: 0.5px;
+        }
+        .mode-option.active {
+            background: #ffb347;
+            color: #2d2b1f;
+            box-shadow: inset 0 0 5px #ffe6b3;
+        }
+        .mode-option:first-child { border-radius: 60px 0 0 60px; }
+        .mode-option:last-child { border-radius: 0 60px 60px 0; }
+
         .controls {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
             gap: 16px;
-            margin: 2rem 0 1.5rem;
+            margin: 1.5rem 0 1.5rem;
         }
 
         .ctrl-btn {
@@ -175,7 +206,7 @@
             word-break: break-word;
             padding: 0 18px;
             margin: 0;
-            user-select: text;     /* On peut copier le texte final */
+            user-select: text;
         }
 
         .reveal-text.show {
@@ -215,8 +246,15 @@
 <body>
 
 <div class="card">
-    <h1>Dictée vocale · ponctuation lue</h1>
+    <h1>Dictée vocale · Deux modes</h1>
     <button id="startBtn" class="main-btn">📋 Démarrer la dictée</button>
+
+    <div class="mode-bar">
+        <div class="mode-switch" id="modeSwitch">
+            <span id="modeNormalOption" class="mode-option active">🗣️ Normal (sans ponctuation)</span>
+            <span id="ModeLentOption" class="mode-option">🐢 Lent + ponctuation</span>
+        </div>
+    </div>
 
     <div class="controls">
         <button id="pauseResumeBtn" class="ctrl-btn pause">⏸️ Pause</button>
@@ -228,34 +266,30 @@
     </div>
 
     <div id="statusArea" class="status">
-        ⚡ Prêt · Appuyez sur "Démarrer la dictée" pour charger votre presse-papiers
+        ⚡ Mode Normal · Prêt · Appuyez sur "Démarrer la dictée"
     </div>
 
-    <!-- Zone de révélation du texte original (cachée par défaut) -->
     <div id="revealArea" class="reveal-area">
         <div class="reveal-header">
-            📄 Texte original de la dictée (apparu après clic sur "Terminé")
+            📄 Texte original de la dictée (apparaît après clic sur "Terminé")
         </div>
-        <div id="revealTextBlock" class="reveal-text">
-            <!-- Le texte original apparaîtra ici uniquement sur demande -->
-        </div>
+        <div id="revealTextBlock" class="reveal-text"></div>
     </div>
 
     <div class="footer-note">
-        🔇 Le texte n'est jamais affiché avant le clic sur "Terminé" · Lecture lente avec ponctuation lue.<br>
-        ⏯️ Contrôles : pause, retour 5s/10s, début de phrase, ponctuation précédente.
+        🔇 Le texte n'est jamais affiché avant "Terminé" · Mode normal : lecture fluide sans ponctuation vocalisée · Mode lent : ponctuation lue et débit ralenti<br>
+        ⏯️ Basculez de mode à tout moment, la lecture reprend à la même progression.
     </div>
 </div>
 
 <script>
     // ---------- CONFIGURATION ----------
-    const CHAR_DURATION_MS = 95;       // ms par caractère (lecture lente)
-    const PUNCT_DURATION_MS = 520;     // durée estimée pour énoncer un signe de ponctuation
-    const SPEECH_RATE = 0.7;           // vitesse lente (0.7)
-    const SPEECH_PITCH = 1.0;
-    const FRENCH_VOICE_LANG = "fr-FR";
-
-    // Mapping ponctuation -> version parlée (énoncée)
+    const CHAR_DURATION_NORMAL = 42;    // ms par caractère (vitesse normale, ~1.0)
+    const CHAR_DURATION_LENT = 95;      // ms par caractère (vitesse lente)
+    const PUNCT_DURATION_LENT = 520;    // ms pour énoncer la ponctuation en mode lent
+    const PUNCT_DURATION_NORMAL = 30;   // silence très court pour ponctuation en mode normal
+    
+    // Mapping ponctuation -> texte parlé (utilisé uniquement en mode lent)
     const PUNCT_MAP = new Map([
         ['.', ' point'],
         [',', ' virgule'],
@@ -266,27 +300,28 @@
         ['…', ' points de suspension']
     ]);
     const PUNCTUATION_CHARS = new Set(['.', ',', ';', ':', '?', '!', '…']);
-
-    // ---------- GLOBALES ----------
-    let utterances = [];           // { text, duration, isPunct }
-    let sentenceStartIndices = [];
+    
+    // ---------- VARIABLES GLOBALES ----------
+    let baseTokens = [];            // liste des tokens bruts { text, isPunct, originalChar }
+    let originalClipboardText = "";
+    let currentMode = "normal";     // "normal" ou "lent"
+    
+    // Données de lecture dépendantes du mode
+    let utterances = [];            // { text, isPunct, duration }
     let cumulativeDurations = [];
     let totalDuration = 0;
-
-    // État de lecture
+    let sentenceStartIndices = [];   // indices dans utterances où commence une phrase
+    
+    // État lecture
     let isPlaying = false;
     let isPaused = false;
     let currentUtteranceIdx = 0;
     let utteranceStartRealTime = 0;
     let pausedAtUtteranceIdx = 0;
     let pausedAtElapsedInside = 0;
-
     let currentSpeechUtterance = null;
-    let activeTimeoutIds = [];
-
-    // Texte original (jamais affiché tant que l'utilisateur n'appuie pas sur "Terminé")
-    let originalClipboardText = "";
-
+    let activeTimeouts = [];
+    
     // Éléments DOM
     const startBtn = document.getElementById('startBtn');
     const pauseResumeBtn = document.getElementById('pauseResumeBtn');
@@ -297,168 +332,280 @@
     const revealFinalBtn = document.getElementById('revealFinalBtn');
     const statusDiv = document.getElementById('statusArea');
     const revealTextBlock = document.getElementById('revealTextBlock');
-
-    // helper mise à jour status
+    const modeNormalOption = document.getElementById('modeNormalOption');
+    const modeLentOption = document.getElementById('ModeLentOption');
+    
+    // helpers
     function setStatus(msg, isError = false) {
         statusDiv.innerHTML = `🎤 ${msg}`;
         if (isError) {
             statusDiv.style.background = "#6d2e2eaa";
             setTimeout(() => {
-                if (statusDiv.innerHTML.includes(msg)) 
-                    statusDiv.style.background = "#00000055";
+                if (statusDiv.innerHTML.includes(msg)) statusDiv.style.background = "#00000055";
             }, 2500);
         } else {
             statusDiv.style.background = "#00000055";
         }
     }
-
-    // annuler toute lecture en cours
+    
     function cancelAllSpeech() {
-        if (window.speechSynthesis) {
-            window.speechSynthesis.cancel();
-        }
-        for (let id of activeTimeoutIds) clearTimeout(id);
-        activeTimeoutIds = [];
+        if (window.speechSynthesis) window.speechSynthesis.cancel();
+        for (let id of activeTimeouts) clearTimeout(id);
+        activeTimeouts = [];
         if (currentSpeechUtterance) {
             currentSpeechUtterance.onend = null;
             currentSpeechUtterance.onerror = null;
             currentSpeechUtterance = null;
         }
     }
-
-    // obtenir la position actuelle de lecture en millisecondes
+    
+    // Reconstruit les tableaux de durées, cumulative et indices de phrase selon le mode actuel
+    function rebuildForCurrentMode() {
+        if (!baseTokens.length) return;
+        
+        utterances = [];
+        let newCumul = [0];
+        let cumul = 0;
+        
+        for (let tok of baseTokens) {
+            let duration = 0;
+            if (tok.isPunct) {
+                duration = (currentMode === "lent") ? PUNCT_DURATION_LENT : PUNCT_DURATION_NORMAL;
+                // texte à prononcer uniquement en mode lent
+                let speakText = "";
+                if (currentMode === "lent") {
+                    let punctChar = tok.text;
+                    speakText = PUNCT_MAP.get(punctChar) || (punctChar === '…' ? ' points de suspension' : ` ${punctChar} `);
+                    speakText = speakText.trim();
+                } else {
+                    speakText = ""; // silence
+                }
+                utterances.push({
+                    text: speakText,
+                    isPunct: true,
+                    duration: duration,
+                    rawPunct: tok.text
+                });
+            } else {
+                // token texte normal
+                let charCount = tok.text.length;
+                duration = (currentMode === "lent") 
+                    ? Math.max(280, charCount * CHAR_DURATION_LENT)
+                    : Math.max(180, charCount * CHAR_DURATION_NORMAL);
+                utterances.push({
+                    text: tok.text,
+                    isPunct: false,
+                    duration: duration
+                });
+            }
+            cumul += duration;
+            newCumul.push(cumul);
+        }
+        cumulativeDurations = newCumul;
+        totalDuration = cumul;
+        
+        // Recalculer les débuts de phrase (basés sur les ponctuations dans les tokens d'origine)
+        sentenceStartIndices = [];
+        let isStart = true;
+        for (let i = 0; i < utterances.length; i++) {
+            if (isStart) {
+                sentenceStartIndices.push(i);
+                isStart = false;
+            }
+            if (baseTokens[i].isPunct) {
+                let rawPunct = baseTokens[i].text;
+                if (rawPunct === '.' || rawPunct === '!' || rawPunct === '?' || rawPunct === '…') {
+                    // fin de phrase, prochain token texte (s'il existe) est début
+                    if (i + 1 < utterances.length && !utterances[i+1].isPunct) {
+                        sentenceStartIndices.push(i+1);
+                    }
+                }
+            }
+        }
+        // supprimer doublons
+        sentenceStartIndices = [...new Set(sentenceStartIndices)].sort((a,b)=>a-b);
+    }
+    
+    // Obtenir la position actuelle en ms
     function getCurrentTimePosition() {
         if (!isPlaying && !isPaused) return 0;
         if (isPaused) {
             let baseTime = (pausedAtUtteranceIdx > 0 ? cumulativeDurations[pausedAtUtteranceIdx] : 0);
             return baseTime + pausedAtElapsedInside;
         } else {
-            let baseBeforeCurrent = (currentUtteranceIdx > 0 ? cumulativeDurations[currentUtteranceIdx] : 0);
-            let elapsedInCurrent = 0;
+            let baseBefore = (currentUtteranceIdx > 0 ? cumulativeDurations[currentUtteranceIdx] : 0);
+            let elapsed = 0;
             if (utteranceStartRealTime > 0) {
-                elapsedInCurrent = Math.max(0, performance.now() - utteranceStartRealTime);
-                if (elapsedInCurrent > utterances[currentUtteranceIdx]?.duration) {
-                    elapsedInCurrent = utterances[currentUtteranceIdx]?.duration || 0;
-                }
+                elapsed = Math.max(0, performance.now() - utteranceStartRealTime);
+                if (elapsed > utterances[currentUtteranceIdx]?.duration) elapsed = utterances[currentUtteranceIdx]?.duration || 0;
             }
-            return baseBeforeCurrent + elapsedInCurrent;
+            return baseBefore + elapsed;
         }
     }
-
-    // trouver l'index d'utterance pour un temps donné
+    
+    // Trouver index utterance à partir d'un temps ms
     function findUtteranceIndexAtTime(targetMs) {
         if (targetMs <= 0) return { idx: 0, offsetInside: 0 };
-        if (targetMs >= totalDuration) return { idx: utterances.length - 1, offsetInside: utterances[utterances.length-1]?.duration || 0 };
-        let left = 0, right = utterances.length - 1;
-        let bestIdx = 0;
+        if (targetMs >= totalDuration) return { idx: utterances.length-1, offsetInside: utterances[utterances.length-1]?.duration || 0 };
+        let left = 0, right = utterances.length-1, best = 0;
         while (left <= right) {
-            let mid = Math.floor((left + right) / 2);
+            let mid = Math.floor((left+right)/2);
             if (cumulativeDurations[mid] <= targetMs) {
-                bestIdx = mid;
-                left = mid + 1;
-            } else {
-                right = mid - 1;
-            }
+                best = mid;
+                left = mid+1;
+            } else right = mid-1;
         }
-        let startOfUtter = cumulativeDurations[bestIdx];
-        let offset = targetMs - startOfUtter;
-        if (offset > utterances[bestIdx].duration) offset = utterances[bestIdx].duration;
-        return { idx: bestIdx, offsetInside: offset };
+        let start = cumulativeDurations[best];
+        let offset = targetMs - start;
+        if (offset > utterances[best].duration) offset = utterances[best].duration;
+        return { idx: best, offsetInside: offset };
     }
-
-    // Lecture séquentielle depuis un index avec offset optionnel
-    function playSequentialFrom(startIdx, offsetInsideFirst = 0) {
+    
+    // Lecture séquentielle (utilise les durées et le mode pour décider de parler ou silence)
+    function playSequentialFrom(startIdx, offsetInside = 0) {
         if (!isPlaying || isPaused) return;
         if (startIdx >= utterances.length) {
             isPlaying = false;
-            setStatus("✅ Dictée terminée. Vous pouvez cliquer sur 'Terminé' pour voir le texte.");
+            setStatus("✅ Dictée terminée. Cliquez sur 'Terminé' pour voir le texte.");
             return;
         }
-
-        let utteranceData = utterances[startIdx];
-        let textToSpeak = utteranceData.text;
-        let durationFull = utteranceData.duration;
         
-        if (offsetInsideFirst > 50 && !utteranceData.isPunct && textToSpeak.length > 0) {
-            let charIndex = Math.floor((offsetInsideFirst / durationFull) * textToSpeak.length);
-            charIndex = Math.min(Math.max(0, charIndex), textToSpeak.length - 1);
+        let item = utterances[startIdx];
+        let effectiveText = item.text;
+        let durationFull = item.duration;
+        
+        // Gérer offset pour les textes (ignorer offset sur ponctuation car trop court)
+        if (offsetInside > 50 && !item.isPunct && effectiveText.length > 0) {
+            let charIndex = Math.floor((offsetInside / durationFull) * effectiveText.length);
+            charIndex = Math.min(Math.max(0, charIndex), effectiveText.length-1);
             if (charIndex > 0) {
-                textToSpeak = textToSpeak.substring(charIndex);
-                let newDuration = (textToSpeak.length / utteranceData.text.length) * durationFull;
-                durationFull = Math.max(200, newDuration);
+                effectiveText = effectiveText.substring(charIndex);
+                let newDuration = (effectiveText.length / item.text.length) * durationFull;
+                durationFull = Math.max(180, newDuration);
             }
         }
-
-        const utterance = new SpeechSynthesisUtterance(textToSpeak);
-        utterance.lang = FRENCH_VOICE_LANG;
-        utterance.rate = SPEECH_RATE;
-        utterance.pitch = SPEECH_PITCH;
         
-        if (window.speechSynthesis) {
-            const voices = window.speechSynthesis.getVoices();
-            const frenchVoice = voices.find(v => v.lang.startsWith('fr'));
-            if (frenchVoice) utterance.voice = frenchVoice;
-        }
-
-        utteranceStartRealTime = performance.now();
         currentUtteranceIdx = startIdx;
-        currentSpeechUtterance = utterance;
-
-        let finished = false;
-        utterance.onend = () => {
-            if (finished) return;
-            finished = true;
-            if (currentSpeechUtterance === utterance) currentSpeechUtterance = null;
-            if (isPlaying && !isPaused) {
-                const nextIdx = startIdx + 1;
-                if (nextIdx < utterances.length) {
-                    playSequentialFrom(nextIdx, 0);
-                } else {
-                    isPlaying = false;
-                    setStatus("✔️ Dictée terminée. Cliquez sur 'Terminé' pour voir le texte.");
-                }
-            }
-        };
-        utterance.onerror = (err) => {
-            console.warn("Erreur synthèse", err);
-            if (!finished) {
-                finished = true;
-                if (isPlaying && !isPaused) {
-                    const nextIdx = startIdx + 1;
-                    if (nextIdx < utterances.length) playSequentialFrom(nextIdx, 0);
-                    else { isPlaying = false; setStatus("⚠️ Lecture interrompue"); }
-                }
-            }
-        };
         
-        window.speechSynthesis.cancel();
-        window.speechSynthesis.speak(utterance);
-        setStatus(`Lecture · ${startIdx+1}/${utterances.length}`);
+        // Gestion de la synthèse ou silence
+        if (item.isPunct && currentMode === "normal") {
+            // mode normal : ne pas parler la ponctuation, juste un timer silencieux
+            utteranceStartRealTime = performance.now();
+            const timeoutId = setTimeout(() => {
+                if (isPlaying && !isPaused && currentUtteranceIdx === startIdx) {
+                    playSequentialFrom(startIdx+1, 0);
+                }
+            }, durationFull);
+            activeTimeouts.push(timeoutId);
+            currentSpeechUtterance = null;
+        } else {
+            // soit texte normal, soit mode lent avec ponctuation -> utiliser SpeechSynthesis
+            if (effectiveText.trim() === "" && item.isPunct) {
+                // Cas particulier: ponctuation en mode normal mais text vide (ne devrait pas arriver)
+                const timeoutId = setTimeout(() => {
+                    if (isPlaying && !isPaused) playSequentialFrom(startIdx+1, 0);
+                }, durationFull);
+                activeTimeouts.push(timeoutId);
+                return;
+            }
+            const utterance = new SpeechSynthesisUtterance(effectiveText);
+            utterance.lang = "fr-FR";
+            utterance.rate = (currentMode === "lent") ? 0.7 : 1.0;
+            utterance.pitch = 1.0;
+            if (window.speechSynthesis) {
+                const voices = window.speechSynthesis.getVoices();
+                const frenchVoice = voices.find(v => v.lang.startsWith('fr'));
+                if (frenchVoice) utterance.voice = frenchVoice;
+            }
+            utteranceStartRealTime = performance.now();
+            currentSpeechUtterance = utterance;
+            let finished = false;
+            utterance.onend = () => {
+                if (finished) return;
+                finished = true;
+                if (currentSpeechUtterance === utterance) currentSpeechUtterance = null;
+                if (isPlaying && !isPaused) {
+                    playSequentialFrom(startIdx+1, 0);
+                }
+            };
+            utterance.onerror = (err) => {
+                console.warn("Erreur synthèse", err);
+                if (!finished) {
+                    finished = true;
+                    if (isPlaying && !isPaused) playSequentialFrom(startIdx+1, 0);
+                }
+            };
+            window.speechSynthesis.cancel();
+            window.speechSynthesis.speak(utterance);
+        }
     }
-
-    function restartPlaybackFromTime(targetTimeMs) {
+    
+    function restartPlaybackFromTime(targetMs) {
         if (!utterances.length) return;
-        if (targetTimeMs < 0) targetTimeMs = 0;
-        if (targetTimeMs >= totalDuration) {
+        if (targetMs < 0) targetMs = 0;
+        if (targetMs >= totalDuration) {
             setStatus("Fin du texte");
             return;
         }
         cancelAllSpeech();
-        const { idx, offsetInside } = findUtteranceIndexAtTime(targetTimeMs);
+        const { idx, offsetInside } = findUtteranceIndexAtTime(targetMs);
         isPlaying = true;
         isPaused = false;
+        pauseResumeBtn.innerHTML = "⏸️ Pause";
         playSequentialFrom(idx, offsetInside);
     }
-
+    
+    // Changer de mode (normal <-> lent) en conservant la progression
+    function switchMode(newMode) {
+        if (newMode === currentMode) return;
+        if (!baseTokens.length) {
+            currentMode = newMode;
+            updateModeUI();
+            setStatus(`Mode ${currentMode === "normal" ? "Normal (sans ponctuation)" : "Lent avec ponctuation"} activé. Lancez une dictée.`);
+            return;
+        }
+        
+        // Sauvegarder la progression actuelle
+        let ratio = 0;
+        if (isPlaying || isPaused) {
+            let currentPos = getCurrentTimePosition();
+            if (totalDuration > 0) ratio = currentPos / totalDuration;
+            cancelAllSpeech();
+        }
+        // Changer de mode
+        currentMode = newMode;
+        updateModeUI();
+        // Reconstruire les données avec le nouveau mode
+        rebuildForCurrentMode();
+        // Reprendre au même ratio
+        let newPosition = ratio * totalDuration;
+        if (isNaN(newPosition)) newPosition = 0;
+        if (isPlaying || isPaused) {
+            // Réactiver la lecture
+            isPlaying = true;
+            isPaused = false;
+            pauseResumeBtn.innerHTML = "⏸️ Pause";
+            restartPlaybackFromTime(newPosition);
+            setStatus(`Mode ${currentMode === "normal" ? "Normal" : "Lent + ponctuation"} · reprise à ${Math.floor(newPosition/1000)}s`);
+        } else {
+            setStatus(`Mode ${currentMode === "normal" ? "Normal (sans ponctuation)" : "Lent avec ponctuation"} activé.`);
+        }
+    }
+    
+    function updateModeUI() {
+        if (currentMode === "normal") {
+            modeNormalOption.classList.add("active");
+            modeLentOption.classList.remove("active");
+        } else {
+            modeNormalOption.classList.remove("active");
+            modeLentOption.classList.add("active");
+        }
+    }
+    
+    // Navigation et contrôles
     function togglePause() {
-        if (!utterances.length) {
-            setStatus("Aucun texte chargé. Lancez d'abord la dictée.", true);
-            return;
-        }
-        if (!isPlaying && !isPaused) {
-            setStatus("Aucune lecture active. Lancez depuis le bouton principal.", true);
-            return;
-        }
+        if (!utterances.length) { setStatus("Aucun texte chargé.", true); return; }
+        if (!isPlaying && !isPaused) { setStatus("Aucune lecture active. Lancez la dictée.", true); return; }
         if (isPlaying && !isPaused) {
             let currentPos = getCurrentTimePosition();
             cancelAllSpeech();
@@ -466,215 +613,146 @@
             isPaused = true;
             pausedAtUtteranceIdx = currentUtteranceIdx;
             pausedAtElapsedInside = currentPos - (currentUtteranceIdx > 0 ? cumulativeDurations[currentUtteranceIdx] : 0);
-            setStatus("⏸ En pause. 'Pause' pour reprendre.");
+            setStatus("⏸ En pause.");
             pauseResumeBtn.innerHTML = "▶️ Reprendre";
-        } 
-        else if (isPaused) {
+        } else if (isPaused) {
             let resumeTime = (pausedAtUtteranceIdx > 0 ? cumulativeDurations[pausedAtUtteranceIdx] : 0) + pausedAtElapsedInside;
             isPlaying = true;
             isPaused = false;
             cancelAllSpeech();
             restartPlaybackFromTime(resumeTime);
             pauseResumeBtn.innerHTML = "⏸️ Pause";
-            setStatus("▶️ Reprise...");
+            setStatus("▶️ Reprise");
         }
     }
-
-    function backSeconds(seconds) {
-        if (!utterances.length) { setStatus("Aucune dictée active.", true); return; }
+    
+    function backSeconds(sec) {
+        if (!utterances.length) return;
         if (!isPlaying && !isPaused) { setStatus("Aucune lecture en cours.", true); return; }
-        let currentTime = getCurrentTimePosition();
-        let newTime = currentTime - (seconds * 1000);
-        if (newTime < 0) newTime = 0;
+        let current = getCurrentTimePosition();
+        let newTime = Math.max(0, current - sec*1000);
         if (isPlaying) cancelAllSpeech();
         isPlaying = true;
         isPaused = false;
         pauseResumeBtn.innerHTML = "⏸️ Pause";
         restartPlaybackFromTime(newTime);
-        setStatus(`↩️ Retour ${seconds} secondes`);
+        setStatus(`↩️ Retour ${sec} secondes`);
     }
-
+    
     function jumpToSentenceStart() {
         if (!utterances.length) return;
         let currentTime = getCurrentTimePosition();
-        let currentIdx = 0;
-        if (isPlaying || isPaused) {
-            const { idx } = findUtteranceIndexAtTime(currentTime);
-            currentIdx = idx;
-        }
-        let targetSentenceIdx = 0;
-        for (let i = 0; i < sentenceStartIndices.length; i++) {
-            if (sentenceStartIndices[i] <= currentIdx) targetSentenceIdx = sentenceStartIndices[i];
+        let { idx: currentIdx } = findUtteranceIndexAtTime(currentTime);
+        let targetIdx = 0;
+        for (let i of sentenceStartIndices) {
+            if (i <= currentIdx) targetIdx = i;
             else break;
         }
-        let newTime = cumulativeDurations[targetSentenceIdx];
+        let newTime = cumulativeDurations[targetIdx];
         if (isPlaying) cancelAllSpeech();
         isPlaying = true;
         isPaused = false;
         pauseResumeBtn.innerHTML = "⏸️ Pause";
         restartPlaybackFromTime(newTime);
-        setStatus(`🔁 Début de phrase`);
+        setStatus("🔁 Début de phrase");
     }
-
+    
     function jumpToPrevPunctuation() {
         if (!utterances.length) return;
         let currentTime = getCurrentTimePosition();
         let { idx: currentIdx } = findUtteranceIndexAtTime(currentTime);
-        let prevPunctIdx = -1;
-        for (let i = currentIdx - 1; i >= 0; i--) {
-            if (utterances[i].isPunct) {
-                prevPunctIdx = i;
+        let prevIdx = -1;
+        for (let i = currentIdx-1; i >= 0; i--) {
+            if (baseTokens[i].isPunct) {
+                prevIdx = i;
                 break;
             }
         }
-        if (prevPunctIdx === -1) prevPunctIdx = 0;
-        let newTime = cumulativeDurations[prevPunctIdx];
+        if (prevIdx === -1) prevIdx = 0;
+        let newTime = cumulativeDurations[prevIdx];
         if (isPlaying) cancelAllSpeech();
         isPlaying = true;
         isPaused = false;
         pauseResumeBtn.innerHTML = "⏸️ Pause";
         restartPlaybackFromTime(newTime);
-        setStatus(`⏮️ Ponctuation précédente`);
+        setStatus("⏮️ Ponctuation précédente");
     }
-
-    // Révéler le texte original (sur clic "Terminé")
-    function revealOriginalText() {
-        if (originalClipboardText && originalClipboardText.trim() !== "") {
-            // Afficher le texte dans la zone de révélation
+    
+    function revealText() {
+        if (originalClipboardText) {
             revealTextBlock.innerText = originalClipboardText;
             revealTextBlock.classList.add('show');
-            setStatus("📄 Le texte original de la dictée est maintenant visible ci-dessous.");
+            setStatus("📄 Texte original affiché ci-dessous.");
         } else {
-            // Si aucun texte n'est chargé, essayer de demander le presse-papiers (mais normalement on stocke)
-            setStatus("Aucun texte de dictée n'a été chargé. Lancez d'abord une dictée.", true);
+            setStatus("Aucune dictée chargée. Lancez une dictée d'abord.", true);
         }
     }
-
-    // Construction des segments + sauvegarde du texte original
-    async function buildUtterancesFromClipboard() {
+    
+    // Construction des tokens initiaux à partir du presse-papiers (indépendant du mode)
+    async function buildBaseTokensFromClipboard() {
         try {
-            const clipboardText = await navigator.clipboard.readText();
-            if (!clipboardText || clipboardText.trim() === "") {
-                throw new Error("Presse-papiers vide ou texte illisible.");
-            }
-            // Sauvegarder le texte original pour révélation ultérieure (MAIS ne JAMAIS l'afficher sans clic)
-            originalClipboardText = clipboardText;
-            // Masquer la zone de révélation avant nouvelle dictée
+            const text = await navigator.clipboard.readText();
+            if (!text || text.trim() === "") throw new Error("Presse-papiers vide");
+            originalClipboardText = text;
             revealTextBlock.classList.remove('show');
-            revealTextBlock.innerText = "";  // efface l'ancien contenu affiché
+            revealTextBlock.innerText = "";
             
-            // Traitement de la dictée (utterances) pour la synthèse vocale
-            const raw = clipboardText;
+            // Tokenisation brute
             let tokens = [];
             let i = 0;
-            const len = raw.length;
+            const len = text.length;
             while (i < len) {
-                let ch = raw[i];
+                let ch = text[i];
                 if (PUNCTUATION_CHARS.has(ch)) {
-                    let punctSeq = ch;
-                    if (ch === '.' && i+2 < len && raw[i+1] === '.' && raw[i+2] === '.') {
-                        punctSeq = '…';
+                    let punct = ch;
+                    if (ch === '.' && i+2 < len && text[i+1] === '.' && text[i+2] === '.') {
+                        punct = '…';
                         i += 3;
-                    } else {
-                        i++;
-                    }
-                    const spoken = PUNCT_MAP.get(punctSeq) || (punctSeq === '…' ? ' points de suspension' : ` ${punctSeq} `);
-                    tokens.push({ text: spoken.trim(), isPunct: true });
-                } 
-                else {
-                    let buffer = "";
-                    while (i < len && !PUNCTUATION_CHARS.has(raw[i])) {
-                        buffer += raw[i];
-                        i++;
-                    }
-                    if (buffer.length > 0) {
-                        tokens.push({ text: buffer, isPunct: false });
-                    }
-                }
-            }
-            
-            let merged = [];
-            for (let t of tokens) {
-                if (t.text.trim() === "" && !t.isPunct) continue;
-                merged.push(t);
-            }
-            
-            utterances = [];
-            let cumulative = 0;
-            cumulativeDurations = [0];
-            for (let idx = 0; idx < merged.length; idx++) {
-                const tok = merged[idx];
-                let duration = 0;
-                if (tok.isPunct) {
-                    duration = PUNCT_DURATION_MS;
+                    } else i++;
+                    tokens.push({ text: punct, isPunct: true });
                 } else {
-                    let charCount = tok.text.length;
-                    duration = Math.max(280, charCount * CHAR_DURATION_MS);
-                }
-                utterances.push({
-                    text: tok.text,
-                    isPunct: tok.isPunct,
-                    duration: duration
-                });
-                cumulative += duration;
-                cumulativeDurations.push(cumulative);
-            }
-            totalDuration = cumulative;
-            
-            // indices débuts de phrase
-            sentenceStartIndices = [];
-            let isStartOfText = true;
-            for (let idx = 0; idx < utterances.length; idx++) {
-                if (isStartOfText) {
-                    sentenceStartIndices.push(idx);
-                    isStartOfText = false;
-                }
-                if (utterances[idx].isPunct) {
-                    let punctText = utterances[idx].text.toLowerCase();
-                    if (punctText.includes('point') || punctText.includes('interrogation') || punctText.includes('exclamation')) {
-                        if (idx + 1 < utterances.length && !utterances[idx+1].isPunct) {
-                            sentenceStartIndices.push(idx+1);
-                        }
+                    let buffer = "";
+                    while (i < len && !PUNCTUATION_CHARS.has(text[i])) {
+                        buffer += text[i];
+                        i++;
                     }
+                    if (buffer.trim().length > 0) tokens.push({ text: buffer, isPunct: false });
+                    else if (buffer.length > 0) tokens.push({ text: buffer, isPunct: false });
                 }
             }
-            sentenceStartIndices = [...new Set(sentenceStartIndices)].sort((a,b)=>a-b);
-            
-            setStatus(`Texte chargé · ${utterances.length} segments · Prêt pour dictée`);
+            // Nettoyer les tokens vides
+            baseTokens = tokens.filter(t => t.text.length > 0);
             return true;
         } catch (err) {
             console.error(err);
-            setStatus(`Erreur accès presse-papiers: ${err.message}. Vérifiez permissions ou utilisez HTTPS.`, true);
+            setStatus(`Erreur presse-papiers: ${err.message}. Vérifiez les permissions.`, true);
             return false;
         }
     }
-
+    
     async function startDictation() {
         cancelAllSpeech();
         isPlaying = false;
         isPaused = false;
-        currentUtteranceIdx = 0;
-        // on cache la zone de texte révélée lors d'une nouvelle dictée
-        revealTextBlock.classList.remove('show');
-        revealTextBlock.innerText = "";
         setStatus("📋 Lecture du presse-papiers...");
-        const success = await buildUtterancesFromClipboard();
-        if (!success || utterances.length === 0) {
-            setStatus("Échec: aucun texte valide dans le presse-papiers.", true);
+        const ok = await buildBaseTokensFromClipboard();
+        if (!ok || baseTokens.length === 0) {
+            setStatus("Impossible de lire le presse-papiers ou texte vide.", true);
+            return;
+        }
+        rebuildForCurrentMode(); // selon mode actuel
+        if (utterances.length === 0) {
+            setStatus("Aucun segment produit.", true);
             return;
         }
         isPlaying = true;
         isPaused = false;
         pauseResumeBtn.innerHTML = "⏸️ Pause";
         playSequentialFrom(0, 0);
-        setStatus("🎧 Dictée en cours (lecture lente, ponctuation lue)");
+        let modeStr = currentMode === "normal" ? "Normal (sans ponctuation)" : "Lent avec ponctuation";
+        setStatus(`🎧 Dictée en cours · Mode ${modeStr}`);
     }
-
-    // Préchargement voix
-    if (window.speechSynthesis) {
-        window.speechSynthesis.getVoices();
-    }
-
+    
     // Évènements
     startBtn.addEventListener('click', startDictation);
     pauseResumeBtn.addEventListener('click', togglePause);
@@ -682,19 +760,23 @@
     back10Btn.addEventListener('click', () => backSeconds(10));
     sentenceStartBtn.addEventListener('click', jumpToSentenceStart);
     prevPunctBtn.addEventListener('click', jumpToPrevPunctuation);
-    revealFinalBtn.addEventListener('click', revealOriginalText);
+    revealFinalBtn.addEventListener('click', revealText);
+    modeNormalOption.addEventListener('click', () => switchMode("normal"));
+    modeLentOption.addEventListener('click', () => switchMode("lent"));
     
-    // Gestion fond perte de focus
+    // Préchargement voix
+    if (window.speechSynthesis) window.speechSynthesis.getVoices();
+    
+    // Gestion perte focus
     document.addEventListener('visibilitychange', () => {
-        if (!document.hidden && isPlaying && !isPaused && currentSpeechUtterance) {
-            if (window.speechSynthesis && window.speechSynthesis.pending === false && window.speechSynthesis.speaking === false) {
-                let currentPos = getCurrentTimePosition();
-                if (currentPos < totalDuration - 100 && totalDuration > 0) {
-                    restartPlaybackFromTime(currentPos);
-                }
-            }
+        if (!document.hidden && isPlaying && !isPaused && !currentSpeechUtterance && utterances.length) {
+            let pos = getCurrentTimePosition();
+            if (pos < totalDuration - 200) restartPlaybackFromTime(pos);
         }
     });
+    
+    // Initialisation statut
+    setStatus("Mode Normal · Prêt · Appuyez sur 'Démarrer la dictée'");
 </script>
 </body>
 </html>

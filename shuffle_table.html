@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google Docs Table Shuffler</title>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #f0f2f5;
+            color: #1a1a1a;
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+        .container {
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+        h1 {
+            color: #1a73e8;
+            margin-top: 0;
+            font-size: 24px;
+        }
+        ol {
+            padding-left: 20px;
+            color: #5f6368;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        .paste-zone {
+            border: 2px dashed #c3c7cb;
+            border-radius: 8px;
+            min-height: 180px;
+            padding: 15px;
+            margin: 20px 0;
+            background: #f8f9fa;
+            overflow-x: auto;
+            transition: border-color 0.2s, background-color 0.2s;
+        }
+        .paste-zone:focus {
+            outline: none;
+            border-color: #1a73e8;
+            background: #ffffff;
+        }
+        /* Placeholder styling for empty contenteditable */
+        .paste-zone:empty::before {
+            content: "Click here and press Ctrl+V (or Cmd+V) to paste your Google Docs table...";
+            color: #80868b;
+            font-style: italic;
+        }
+        .options {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+        .options input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+        }
+        .btn-group {
+            display: flex;
+            gap: 10px;
+        }
+        button {
+            background-color: #1a73e8;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 15px;
+            font-weight: 600;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        button:hover {
+            background-color: #1557b0;
+        }
+        button.secondary {
+            background-color: #f1f3f4;
+            color: #3c4043;
+        }
+        button.secondary:hover {
+            background-color: #e8eaed;
+        }
+        .status {
+            margin-top: 15px;
+            padding: 12px;
+            border-radius: 6px;
+            font-weight: 500;
+            display: none;
+        }
+        .status.success {
+            background-color: #e6f4ea;
+            color: #137333;
+            display: block;
+        }
+        .status.error {
+            background-color: #fce8e6;
+            color: #c5221f;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Google Docs Table Shuffler</h1>
+    <ol>
+        <li>Copy your table directly out of your Google Doc.</li>
+        <li>Paste it into the box below.</li>
+        <li>Click <strong>Shuffle & Copy</strong>. It will automatically re-copy the newly mixed table to your clipboard.</li>
+        <li>Go back to your Google Doc and paste it!</li>
+    </ol>
+
+    <div id="pasteArea" class="paste-zone" contenteditable="true"></div>
+
+    <div class="options">
+        <input type="checkbox" id="preserveHeader" checked>
+        <label for="preserveHeader">Freeze first row (Keep table header at the top)</label>
+    </div>
+
+    <div class="btn-group">
+        <button onclick="shuffleAndCopy()">Shuffle & Copy</button>
+        <button class="secondary" onclick="clearAll()">Clear</button>
+    </div>
+
+    <div id="statusMessage" class="status"></div>
+</div>
+
+<script>
+    function showStatus(text, type) {
+        const msg = document.getElementById('statusMessage');
+        msg.innerText = text;
+        msg.className = `status ${type}`;
+    }
+
+    function clearAll() {
+        document.getElementById('pasteArea').innerHTML = '';
+        document.getElementById('statusMessage').style.display = 'none';
+    }
+
+    async function shuffleAndCopy() {
+        const pasteArea = document.getElementById('pasteArea');
+        const table = pasteArea.querySelector('table');
+
+        if (!table) {
+            showStatus('No table detected! Please paste a valid table inside the box first.', 'error');
+            return;
+        }
+
+        // Look for rows inside tbody if it exists, otherwise pull directly from the table template
+        const tbody = table.querySelector('tbody');
+        const rowsContainer = tbody ? tbody : table;
+        
+        // Isolate only direct row children to avoid altering inner nested tables
+        let rows = Array.from(rowsContainer.children).filter(el => el.tagName === 'TR');
+
+        if (rows.length <= 1) {
+            showStatus('The table doesn\'t have enough rows to shuffle.', 'error');
+            return;
+        }
+
+        const preserveHeader = document.getElementById('preserveHeader').checked;
+        let headerRow = null;
+
+        if (preserveHeader) {
+            headerRow = rows.shift(); // Pull the first row out of the mix
+        }
+
+        // Fisher-Yates Shuffling Algorithm
+        for (let i = rows.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [rows[i], rows[j]] = [rows[j], rows[i]];
+        }
+
+        // Clear container and structure the newly mixed table layout
+        rowsContainer.innerHTML = '';
+        if (headerRow) {
+            rowsContainer.appendChild(headerRow);
+        }
+        rows.forEach(row => rowsContainer.appendChild(row));
+
+        // Package the table back up into both Plain Text and rich HTML formats
+        try {
+            const htmlBlob = new Blob([table.outerHTML], { type: 'text/html' });
+            const textBlob = new Blob([table.innerText || table.textContent], { type: 'text/plain' });
+
+            const clipboardData = [new ClipboardItem({
+                'text/html': htmlBlob,
+                'text/plain': textBlob
+            })];
+
+            await navigator.clipboard.write(clipboardData);
+            showStatus('🎉 Table rows successfully shuffled and copied to your clipboard!', 'success');
+        } catch (err) {
+            console.error(err);
+            showStatus('Could not write directly to clipboard. Try selecting the table in the box manually and copying it.', 'error');
+        }
+    }
+</script>
+
+</body>
+</html>

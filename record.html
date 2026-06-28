@@ -1,0 +1,1045 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>🎙️ Audio Recorder</title>
+    <style>
+        /* ---------- Reset & Base ---------- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: #0b0e14;
+            color: #e8edf5;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .app {
+            max-width: 720px;
+            width: 100%;
+            background: #141a24;
+            border-radius: 32px;
+            padding: 40px 32px 32px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.7);
+            border: 1px solid #2a3342;
+            transition: border-color 0.3s;
+        }
+
+        .app.recording-active {
+            border-color: #ff5e7a;
+            box-shadow: 0 0 40px rgba(255, 94, 122, 0.15);
+        }
+
+        h1 {
+            font-size: 26px;
+            font-weight: 600;
+            letter-spacing: -0.5px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+        }
+        h1 span {
+            background: #2a3342;
+            padding: 2px 12px;
+            border-radius: 100px;
+            font-size: 14px;
+            font-weight: 400;
+            color: #8899bb;
+        }
+
+        .subhead {
+            color: #6a7b9a;
+            font-size: 14px;
+            margin-bottom: 28px;
+            border-left: 3px solid #2a3342;
+            padding-left: 14px;
+        }
+
+        /* ---------- Recorder Controls ---------- */
+        .recorder {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+            flex-wrap: wrap;
+            background: #0f151e;
+            border-radius: 20px;
+            padding: 20px 24px;
+            border: 1px solid #1f2838;
+            margin-bottom: 28px;
+        }
+
+        .record-btn-wrap {
+            position: relative;
+            flex-shrink: 0;
+        }
+
+        .record-btn {
+            width: 72px;
+            height: 72px;
+            border-radius: 50%;
+            border: none;
+            background: #ff5e7a;
+            color: #fff;
+            font-size: 30px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            position: relative;
+            z-index: 2;
+            box-shadow: 0 4px 20px rgba(255, 94, 122, 0.3);
+        }
+        .record-btn:hover {
+            transform: scale(1.04);
+            box-shadow: 0 6px 28px rgba(255, 94, 122, 0.45);
+        }
+        .record-btn:active {
+            transform: scale(0.94);
+        }
+        .record-btn.recording {
+            background: #ff2d55;
+            animation: pulse-ring 1.4s infinite;
+        }
+        .record-btn.recording::after {
+            content: '';
+            position: absolute;
+            inset: -6px;
+            border-radius: 50%;
+            border: 2px solid rgba(255, 45, 85, 0.3);
+            animation: pulse-ring-after 1.4s infinite;
+        }
+        @keyframes pulse-ring {
+            0%,
+            100% {
+                box-shadow: 0 0 0 0 rgba(255, 45, 85, 0.4);
+            }
+            50% {
+                box-shadow: 0 0 0 16px rgba(255, 45, 85, 0);
+            }
+        }
+        @keyframes pulse-ring-after {
+            0%,
+            100% {
+                transform: scale(1);
+                opacity: 0.6;
+            }
+            50% {
+                transform: scale(1.35);
+                opacity: 0;
+            }
+        }
+
+        .record-btn .icon {
+            transition: transform 0.2s;
+        }
+        .record-btn.recording .icon {
+            transform: scale(0.85);
+        }
+
+        .recorder-info {
+            flex: 1;
+            min-width: 140px;
+        }
+        .recorder-status {
+            font-size: 15px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .recorder-status .dot {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #4a5a7a;
+            transition: background 0.3s;
+        }
+        .recorder-status .dot.recording {
+            background: #ff2d55;
+            animation: blink 0.8s infinite;
+        }
+        @keyframes blink {
+            0%,
+            100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.2;
+            }
+        }
+
+        .timer {
+            font-size: 32px;
+            font-weight: 300;
+            letter-spacing: 1px;
+            font-variant-numeric: tabular-nums;
+            color: #bcc9e6;
+            margin-top: 2px;
+        }
+        .timer.recording {
+            color: #ff5e7a;
+        }
+
+        .recorder-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: 12px;
+            border: none;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: #1f2838;
+            color: #bcc9e6;
+        }
+        .btn:hover {
+            background: #2a3342;
+            color: #fff;
+        }
+        .btn:disabled {
+            opacity: 0.35;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+        .btn-primary {
+            background: #4a6cf7;
+            color: #fff;
+        }
+        .btn-primary:hover:not(:disabled) {
+            background: #5f7df8;
+        }
+        .btn-success {
+            background: #2d9f6e;
+            color: #fff;
+        }
+        .btn-success:hover:not(:disabled) {
+            background: #36b87f;
+        }
+        .btn-danger {
+            background: #d43f5a;
+            color: #fff;
+        }
+        .btn-danger:hover:not(:disabled) {
+            background: #e84a67;
+        }
+        .btn-sm {
+            padding: 6px 14px;
+            font-size: 12px;
+            border-radius: 8px;
+        }
+
+        /* ---------- Recordings List ---------- */
+        .recordings-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 24px 0 14px;
+        }
+        .recordings-header h2 {
+            font-size: 17px;
+            font-weight: 500;
+            color: #8899bb;
+        }
+        .recordings-header .count {
+            background: #1f2838;
+            padding: 2px 12px;
+            border-radius: 100px;
+            font-size: 13px;
+            color: #6a7b9a;
+        }
+
+        .recordings-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-height: 340px;
+            overflow-y: auto;
+            padding-right: 4px;
+        }
+        .recordings-list::-webkit-scrollbar {
+            width: 4px;
+        }
+        .recordings-list::-webkit-scrollbar-track {
+            background: #0f151e;
+            border-radius: 4px;
+        }
+        .recordings-list::-webkit-scrollbar-thumb {
+            background: #2a3342;
+            border-radius: 4px;
+        }
+
+        .recording-item {
+            background: #0f151e;
+            border-radius: 14px;
+            padding: 14px 18px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            border: 1px solid #1a2330;
+            transition: border-color 0.2s;
+            flex-wrap: wrap;
+        }
+        .recording-item:hover {
+            border-color: #2a3342;
+        }
+
+        .recording-item .meta {
+            flex: 1;
+            min-width: 120px;
+        }
+        .recording-item .meta .name {
+            font-weight: 500;
+            font-size: 14px;
+            color: #e8edf5;
+        }
+        .recording-item .meta .size {
+            font-size: 12px;
+            color: #6a7b9a;
+            margin-left: 8px;
+        }
+        .recording-item .meta .date {
+            font-size: 12px;
+            color: #4a5a7a;
+            display: block;
+            margin-top: 2px;
+        }
+
+        .recording-item .actions {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .recording-item .play-btn {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            border: none;
+            background: #1f2838;
+            color: #bcc9e6;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+        .recording-item .play-btn:hover {
+            background: #2a3342;
+            color: #fff;
+        }
+        .recording-item .play-btn.playing {
+            background: #4a6cf7;
+            color: #fff;
+        }
+
+        .recording-item .download-btn {
+            padding: 6px 14px;
+            border-radius: 8px;
+            border: none;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: #1f2838;
+            color: #bcc9e6;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .recording-item .download-btn:hover {
+            background: #2a3342;
+            color: #fff;
+        }
+        .recording-item .download-btn.wav {
+            background: #1a2a3a;
+            color: #7aabdd;
+        }
+        .recording-item .download-btn.wav:hover {
+            background: #1f3350;
+            color: #8fc0f0;
+        }
+
+        .recording-item .delete-btn {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            border: none;
+            background: transparent;
+            color: #4a5a7a;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .recording-item .delete-btn:hover {
+            background: #2a1a22;
+            color: #d43f5a;
+        }
+
+        /* ---------- Empty state ---------- */
+        .empty-state {
+            text-align: center;
+            padding: 32px 16px;
+            color: #4a5a7a;
+        }
+        .empty-state .emoji {
+            font-size: 40px;
+            display: block;
+            margin-bottom: 10px;
+        }
+        .empty-state p {
+            font-size: 14px;
+        }
+
+        /* ---------- Toast / notifications ---------- */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: #1f2838;
+            color: #e8edf5;
+            padding: 12px 28px;
+            border-radius: 14px;
+            font-size: 14px;
+            font-weight: 500;
+            border: 1px solid #2a3342;
+            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.6);
+            opacity: 0;
+            transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+            pointer-events: none;
+            z-index: 100;
+        }
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* ---------- Responsive ---------- */
+        @media (max-width: 560px) {
+            .app {
+                padding: 24px 16px 20px;
+            }
+            .recorder {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 16px;
+                padding: 18px 16px;
+            }
+            .record-btn-wrap {
+                align-self: center;
+            }
+            .recorder-info {
+                text-align: center;
+            }
+            .recorder-actions {
+                justify-content: center;
+            }
+            .timer {
+                font-size: 26px;
+            }
+            .recording-item {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 10px;
+            }
+            .recording-item .actions {
+                justify-content: flex-start;
+            }
+            .recordings-header h2 {
+                font-size: 15px;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .recording-item .actions {
+                flex-wrap: wrap;
+            }
+            .btn {
+                font-size: 12px;
+                padding: 8px 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app" id="app">
+        <h1>
+            🎙️ Audio Recorder
+            <span>Web</span>
+        </h1>
+        <div class="subhead">Record from your microphone &amp; save as WAV or WebM</div>
+
+        <!-- Recorder -->
+        <div class="recorder" id="recorderPanel">
+            <div class="record-btn-wrap">
+                <button class="record-btn" id="recordBtn" aria-label="Record">
+                    <span class="icon">🎤</span>
+                </button>
+            </div>
+
+            <div class="recorder-info">
+                <div class="recorder-status">
+                    <span class="dot" id="statusDot"></span>
+                    <span id="statusText">Ready</span>
+                </div>
+                <div class="timer" id="timerDisplay">00:00</div>
+            </div>
+
+            <div class="recorder-actions">
+                <button class="btn btn-danger" id="stopBtn" disabled>⏹ Stop</button>
+            </div>
+        </div>
+
+        <!-- Recordings -->
+        <div class="recordings-header">
+            <h2>📼 Recordings</h2>
+            <span class="count" id="recordingCount">0</span>
+        </div>
+
+        <div class="recordings-list" id="recordingsList">
+            <div class="empty-state">
+                <span class="emoji">🎧</span>
+                <p>No recordings yet. Press the red button to start.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast"></div>
+
+    <script>
+        // ============================================================
+        //  STATE
+        // ============================================================
+        const state = {
+            mediaRecorder: null,
+            audioChunks: [],
+            isRecording: false,
+            startTime: 0,
+            timerInterval: null,
+            recordings: [], // { id, blob, url, name, size, date, duration }
+            nextId: 1,
+        };
+
+        // ============================================================
+        //  DOM REFS
+        // ============================================================
+        const $ = (sel) => document.querySelector(sel);
+        const $$ = (sel) => document.querySelectorAll(sel);
+
+        const app = $('#app');
+        const recordBtn = $('#recordBtn');
+        const stopBtn = $('#stopBtn');
+        const statusDot = $('#statusDot');
+        const statusText = $('#statusText');
+        const timerDisplay = $('#timerDisplay');
+        const recordingsList = $('#recordingsList');
+        const recordingCount = $('#recordingCount');
+        const toast = $('#toast');
+
+        let toastTimeout = null;
+
+        // ============================================================
+        //  TOAST
+        // ============================================================
+        function showToast(msg, duration = 2800) {
+            if (toastTimeout) clearTimeout(toastTimeout);
+            toast.textContent = msg;
+            toast.classList.add('show');
+            toastTimeout = setTimeout(() => {
+                toast.classList.remove('show');
+                toastTimeout = null;
+            }, duration);
+        }
+
+        // ============================================================
+        //  FORMAT HELPERS
+        // ============================================================
+        function formatTime(seconds) {
+            const m = String(Math.floor(seconds / 60)).padStart(2, '0');
+            const s = String(Math.floor(seconds % 60)).padStart(2, '0');
+            return `${m}:${s}`;
+        }
+
+        function formatFileSize(bytes) {
+            if (bytes < 1024) return bytes + ' B';
+            if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+            return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+        }
+
+        function formatDate(ts) {
+            const d = new Date(ts);
+            return d.toLocaleString(undefined, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+        }
+
+        function getFileExtension(mimeType) {
+            if (mimeType.includes('wav')) return 'wav';
+            if (mimeType.includes('webm')) return 'webm';
+            return 'bin';
+        }
+
+        // ============================================================
+        //  WAV ENCODER (from AudioBuffer)
+        // ============================================================
+        function audioBufferToWav(buffer) {
+            const numChannels = buffer.numberOfChannels;
+            const sampleRate = buffer.sampleRate;
+            const length = buffer.length;
+            const samples = new Float32Array(length * numChannels);
+
+            // Interleave channels
+            for (let ch = 0; ch < numChannels; ch++) {
+                const channelData = buffer.getChannelData(ch);
+                for (let i = 0; i < length; i++) {
+                    samples[i * numChannels + ch] = channelData[i];
+                }
+            }
+
+            // Convert Float32 to 16-bit PCM
+            const pcm = new Int16Array(samples.length);
+            for (let i = 0; i < samples.length; i++) {
+                const s = Math.max(-1, Math.min(1, samples[i]));
+                pcm[i] = s < 0 ? s * 0x8000 : s * 0x7FFF;
+            }
+
+            const dataSize = pcm.length * 2;
+            const headerSize = 44;
+            const totalSize = headerSize + dataSize;
+            const view = new DataView(new ArrayBuffer(totalSize));
+
+            // RIFF header
+            writeString(view, 0, 'RIFF');
+            view.setUint32(4, totalSize - 8, true);
+            writeString(view, 8, 'WAVE');
+            writeString(view, 12, 'fmt ');
+            view.setUint32(16, 16, true); // chunk size
+            view.setUint16(20, 1, true); // audio format (PCM)
+            view.setUint16(22, numChannels, true);
+            view.setUint32(24, sampleRate, true);
+            view.setUint32(28, sampleRate * numChannels * 2, true); // byte rate
+            view.setUint16(32, numChannels * 2, true); // block align
+            view.setUint16(34, 16, true); // bits per sample
+            writeString(view, 36, 'data');
+            view.setUint32(40, dataSize, true);
+
+            // PCM data
+            const offset = 44;
+            for (let i = 0; i < pcm.length; i++) {
+                view.setInt16(offset + i * 2, pcm[i], true);
+            }
+
+            return new Blob([view], { type: 'audio/wav' });
+        }
+
+        function writeString(view, offset, str) {
+            for (let i = 0; i < str.length; i++) {
+                view.setUint8(offset + i, str.charCodeAt(i));
+            }
+        }
+
+        // ============================================================
+        //  CONVERT WebM → WAV (via AudioContext)
+        // ============================================================
+        async function convertWebmToWav(webmBlob) {
+            const arrayBuffer = await webmBlob.arrayBuffer();
+            const audioCtx = new(window.AudioContext || window.webkitAudioContext)();
+            const audioBuffer = await audioCtx.decodeAudioData(arrayBuffer);
+            return audioBufferToWav(audioBuffer);
+        }
+
+        // ============================================================
+        //  RECORDING LOGIC
+        // ============================================================
+        async function startRecording() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({
+                    audio: {
+                        echoCancellation: true,
+                        noiseSuppression: true,
+                        autoGainControl: true,
+                    }
+                });
+
+                // Prefer WAV-compatible codec, but fallback to webm
+                let mimeType = 'audio/webm;codecs=opus';
+                if (!MediaRecorder.isTypeSupported(mimeType)) {
+                    mimeType = 'audio/webm';
+                    if (!MediaRecorder.isTypeSupported(mimeType)) {
+                        mimeType = 'audio/ogg;codecs=opus';
+                        if (!MediaRecorder.isTypeSupported(mimeType)) {
+                            mimeType = 'audio/wav';
+                            if (!MediaRecorder.isTypeSupported(mimeType)) {
+                                mimeType = '';
+                            }
+                        }
+                    }
+                }
+
+                const options = mimeType ? { mimeType } : {};
+                const recorder = new MediaRecorder(stream, options);
+                state.mediaRecorder = recorder;
+                state.audioChunks = [];
+
+                recorder.ondataavailable = (e) => {
+                    if (e.data && e.data.size > 0) {
+                        state.audioChunks.push(e.data);
+                    }
+                };
+
+                recorder.onstop = () => {
+                    // Stop all tracks
+                    stream.getTracks().forEach(t => t.stop());
+
+                    const blob = new Blob(state.audioChunks, {
+                        type: recorder.mimeType || 'audio/webm'
+                    });
+                    const duration = (Date.now() - state.startTime) / 1000;
+
+                    // Determine extension
+                    const ext = getFileExtension(blob.type);
+                    const name = `recording_${state.nextId}.${ext}`;
+
+                    const recording = {
+                        id: state.nextId++,
+                        blob: blob,
+                        url: URL.createObjectURL(blob),
+                        name: name,
+                        size: blob.size,
+                        date: Date.now(),
+                        duration: duration,
+                        mimeType: blob.type,
+                    };
+
+                    state.recordings.push(recording);
+                    renderRecordings();
+                    showToast(`✅ Recording saved: ${name} (${formatFileSize(blob.size)})`);
+                    updateCount();
+                };
+
+                recorder.start(100); // collect chunks every 100ms
+                state.isRecording = true;
+                state.startTime = Date.now();
+
+                // UI
+                app.classList.add('recording-active');
+                recordBtn.classList.add('recording');
+                recordBtn.querySelector('.icon').textContent = '⏺';
+                statusDot.className = 'dot recording';
+                statusText.textContent = 'Recording…';
+                timerDisplay.classList.add('recording');
+                stopBtn.disabled = false;
+                recordBtn.disabled = true;
+
+                // Start timer
+                if (state.timerInterval) clearInterval(state.timerInterval);
+                state.timerInterval = setInterval(() => {
+                    const elapsed = (Date.now() - state.startTime) / 1000;
+                    timerDisplay.textContent = formatTime(elapsed);
+                }, 200);
+
+                showToast('🎤 Recording started…', 1500);
+
+            } catch (err) {
+                console.error('Microphone error:', err);
+                let msg = '❌ Could not access microphone.';
+                if (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError') {
+                    msg += ' Please allow microphone access in your browser.';
+                } else if (err.name === 'NotFoundError' || err.name === 'DevicesNotFoundError') {
+                    msg += ' No microphone found.';
+                } else {
+                    msg += ' ' + err.message;
+                }
+                showToast(msg, 4000);
+                resetRecorderUI();
+            }
+        }
+
+        function stopRecording() {
+            if (state.mediaRecorder && state.isRecording) {
+                state.mediaRecorder.stop();
+                state.isRecording = false;
+                if (state.timerInterval) {
+                    clearInterval(state.timerInterval);
+                    state.timerInterval = null;
+                }
+                resetRecorderUI();
+                // The onstop handler will save the recording
+                // but we need to keep the UI clean
+            }
+        }
+
+        function resetRecorderUI() {
+            app.classList.remove('recording-active');
+            recordBtn.classList.remove('recording');
+            recordBtn.querySelector('.icon').textContent = '🎤';
+            statusDot.className = 'dot';
+            statusText.textContent = 'Ready';
+            timerDisplay.classList.remove('recording');
+            timerDisplay.textContent = '00:00';
+            stopBtn.disabled = true;
+            recordBtn.disabled = false;
+            if (state.timerInterval) {
+                clearInterval(state.timerInterval);
+                state.timerInterval = null;
+            }
+        }
+
+        // ============================================================
+        //  RENDER RECORDINGS
+        // ============================================================
+        function renderRecordings() {
+            const list = recordingsList;
+            if (state.recordings.length === 0) {
+                list.innerHTML = `
+                    <div class="empty-state">
+                        <span class="emoji">🎧</span>
+                        <p>No recordings yet. Press the red button to start.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            let html = '';
+            // Show newest first
+            const sorted = [...state.recordings].reverse();
+            for (const rec of sorted) {
+                const durationStr = formatTime(rec.duration);
+                const sizeStr = formatFileSize(rec.size);
+                const dateStr = formatDate(rec.date);
+                const isWav = rec.mimeType && rec.mimeType.includes('wav');
+
+                html += `
+                    <div class="recording-item" data-id="${rec.id}">
+                        <div class="meta">
+                            <span class="name">${rec.name}</span>
+                            <span class="size">${sizeStr}</span>
+                            <span class="date">${durationStr} · ${dateStr}</span>
+                        </div>
+                        <div class="actions">
+                            <button class="play-btn" data-id="${rec.id}" title="Play / Pause">▶</button>
+                            <button class="download-btn wav" data-id="${rec.id}" title="Download as WAV">⬇ WAV</button>
+                            <button class="download-btn" data-id="${rec.id}" title="Download as WebM">⬇ WebM</button>
+                            <button class="delete-btn" data-id="${rec.id}" title="Delete">✕</button>
+                        </div>
+                    </div>
+                `;
+            }
+            list.innerHTML = html;
+
+            // Event listeners for each item
+            list.querySelectorAll('.play-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    togglePlay(Number(btn.dataset.id), btn);
+                });
+            });
+
+            list.querySelectorAll('.download-btn.wav').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    downloadWav(Number(btn.dataset.id));
+                });
+            });
+
+            list.querySelectorAll('.download-btn:not(.wav)').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    downloadWebm(Number(btn.dataset.id));
+                });
+            });
+
+            list.querySelectorAll('.delete-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    deleteRecording(Number(btn.dataset.id));
+                });
+            });
+        }
+
+        function updateCount() {
+            recordingCount.textContent = state.recordings.length;
+        }
+
+        // ============================================================
+        //  PLAYBACK
+        // ============================================================
+        let currentAudio = null;
+        let currentPlayBtn = null;
+
+        function togglePlay(id, btn) {
+            const rec = state.recordings.find(r => r.id === id);
+            if (!rec) return;
+
+            // If same recording and already playing, pause
+            if (currentAudio && currentPlayBtn === btn && !currentAudio.paused) {
+                currentAudio.pause();
+                btn.textContent = '▶';
+                btn.classList.remove('playing');
+                return;
+            }
+
+            // Stop any existing playback
+            if (currentAudio) {
+                currentAudio.pause();
+                currentAudio = null;
+                if (currentPlayBtn) {
+                    currentPlayBtn.textContent = '▶';
+                    currentPlayBtn.classList.remove('playing');
+                }
+            }
+
+            // Play new
+            const audio = new Audio(rec.url);
+            audio.onended = () => {
+                btn.textContent = '▶';
+                btn.classList.remove('playing');
+                currentAudio = null;
+                currentPlayBtn = null;
+            };
+            audio.play();
+            currentAudio = audio;
+            currentPlayBtn = btn;
+            btn.textContent = '⏸';
+            btn.classList.add('playing');
+        }
+
+        // ============================================================
+        //  DOWNLOAD
+        // ============================================================
+        function downloadFile(blob, filename) {
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            setTimeout(() => URL.revokeObjectURL(url), 5000);
+        }
+
+        function downloadWebm(id) {
+            const rec = state.recordings.find(r => r.id === id);
+            if (!rec) return;
+            const ext = getFileExtension(rec.mimeType);
+            const name = rec.name.replace(/\.[^.]+$/, '') + '.' + ext;
+            downloadFile(rec.blob, name);
+            showToast(`⬇ Downloaded ${name}`, 1800);
+        }
+
+        async function downloadWav(id) {
+            const rec = state.recordings.find(r => r.id === id);
+            if (!rec) return;
+
+            // If it's already WAV, just download
+            if (rec.mimeType && rec.mimeType.includes('wav')) {
+                const name = rec.name.replace(/\.[^.]+$/, '') + '.wav';
+                downloadFile(rec.blob, name);
+                showToast(`⬇ Downloaded ${name}`, 1800);
+                return;
+            }
+
+            try {
+                showToast('🔄 Converting to WAV…', 2000);
+                const wavBlob = await convertWebmToWav(rec.blob);
+                const name = rec.name.replace(/\.[^.]+$/, '') + '.wav';
+                downloadFile(wavBlob, name);
+                showToast(`⬇ Downloaded ${name} (WAV)`, 2000);
+            } catch (err) {
+                console.error('WAV conversion failed:', err);
+                showToast('❌ Failed to convert to WAV. The recording may be in an unsupported format.', 4000);
+            }
+        }
+
+        // ============================================================
+        //  DELETE
+        // ============================================================
+        function deleteRecording(id) {
+            const idx = state.recordings.findIndex(r => r.id === id);
+            if (idx === -1) return;
+            const rec = state.recordings[idx];
+            URL.revokeObjectURL(rec.url);
+            state.recordings.splice(idx, 1);
+            renderRecordings();
+            updateCount();
+            showToast('🗑️ Recording deleted', 1500);
+        }
+
+        // ============================================================
+        //  KEYBOARD SHORTCUTS
+        // ============================================================
+        document.addEventListener('keydown', (e) => {
+            // Space: toggle record (if not in input/textarea)
+            if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+            if (e.key === ' ' || e.key === 'Space') {
+                e.preventDefault();
+                if (state.isRecording) {
+                    stopRecording();
+                } else {
+                    startRecording();
+                }
+            }
+            if (e.key === 'Escape' && state.isRecording) {
+                stopRecording();
+            }
+        });
+
+        // ============================================================
+        //  EVENT BINDINGS
+        // ============================================================
+        recordBtn.addEventListener('click', startRecording);
+        stopBtn.addEventListener('click', stopRecording);
+
+        // ============================================================
+        //  INIT
+        // ============================================================
+        updateCount();
+        renderRecordings();
+
+        // Check browser support
+        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+            showToast('❌ Your browser does not support microphone access.', 5000);
+            recordBtn.disabled = true;
+        } else if (!window.MediaRecorder) {
+            showToast('❌ Your browser does not support MediaRecorder.', 5000);
+            recordBtn.disabled = true;
+        } else {
+            // Check if any audio codec is supported
+            const supported = MediaRecorder.isTypeSupported('audio/webm;codecs=opus') ||
+                MediaRecorder.isTypeSupported('audio/webm') ||
+                MediaRecorder.isTypeSupported('audio/ogg;codecs=opus') ||
+                MediaRecorder.isTypeSupported('audio/wav');
+            if (!supported) {
+                showToast('⚠️ No supported audio codec found. Recording may not work.', 4000);
+            }
+        }
+
+        console.log('🎙️ Audio Recorder ready. Press the red button or Space to start.');
+    </script>
+
+</body>
+</html>

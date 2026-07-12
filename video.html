@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-  <title>Persistent Screen Capture · Video + Audio (Crash-proof)</title>
+  <title>Persistent Screen Capture · Auto-Download MP4 (Crash-proof)</title>
   <style>
     * { box-sizing: border-box; user-select: none; }
 
@@ -34,6 +34,466 @@
       font-weight: 600;
       background: linear-gradient(135deg, #E0F2FE, #A5F3FC);
       background-clip: text;
+      -webkit-background-clip: text;
+      color: transparent;
+      margin: 0 0 0.35rem 0;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .sub {
+      color: #8aa3c0;
+      font-size: 0.9rem;
+      border-left: 3px solid #2b7fff;
+      padding-left: 14px;
+      margin-bottom: 1.8rem;
+    }
+
+    .preview-area {
+      background: #00000033;
+      border-radius: 1.5rem;
+      margin: 1.2rem 0 1.4rem;
+      padding: 0.5rem;
+      border: 1px solid #2d3a5e;
+    }
+
+    video {
+      width: 100%;
+      border-radius: 1rem;
+      background: #010101;
+      display: block;
+      aspect-ratio: 16 / 9;
+      object-fit: contain;
+    }
+
+    .status-panel {
+      background: #07111f80;
+      border-radius: 1.2rem;
+      padding: 0.9rem 1.2rem;
+      margin: 1.2rem 0;
+      font-family: monospace;
+      font-size: 0.85rem;
+      color: #b9e2ff;
+      backdrop-filter: blur(4px);
+      border-left: 4px solid #2b7fff;
+    }
+
+    .button-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin: 24px 0 16px;
+    }
+
+    button {
+      background: #142033;
+      border: none;
+      font-weight: 550;
+      font-size: 0.9rem;
+      padding: 0.75rem 1.5rem;
+      border-radius: 3rem;
+      cursor: pointer;
+      transition: 0.2s;
+      color: #eef5ff;
+      border: 1px solid #2c3f5f;
+    }
+
+    button.primary {
+      background: #1e4b8f;
+      border-color: #3f8eff;
+      color: white;
+    }
+
+    button.primary:hover { background: #2d60b0; }
+    button.danger { background: #6b1e2c; border-color: #bf4a5e; }
+    button.danger:hover { background: #912b3d; }
+    button:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    .recording-badge {
+      display: inline-flex;
+      align-items: center;
+      background: #ff3b5c20;
+      padding: 4px 12px;
+      border-radius: 50px;
+      font-size: 0.7rem;
+      font-weight: 500;
+      gap: 6px;
+    }
+
+    .red-dot {
+      width: 10px; height: 10px; background-color: #ff4d6d;
+      border-radius: 50%; animation: pulse 1.4s infinite;
+    }
+
+    @keyframes pulse {
+      0% { opacity: 1; transform: scale(0.9); }
+      100% { opacity: 0.2; transform: scale(1.3); }
+    }
+
+    .editor-panel {
+      background: #0b111fcc;
+      border-radius: 1.5rem;
+      padding: 1.2rem;
+      margin-top: 1.2rem;
+      border: 1px solid #3d5a80;
+    }
+
+    .filename-input {
+      background: #101a2c; border: 1px solid #2e4a77;
+      padding: 8px 14px; border-radius: 40px; color: white;
+      font-family: monospace; font-size: 0.8rem; flex: 2;
+    }
+
+    .warning-badge {
+      background: #ff8c0040; border-left: 3px solid #ffaa33;
+      padding: 6px 12px; border-radius: 20px; font-size: 0.7rem;
+      margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center;
+    }
+
+    .clear-stored {
+      background: #5a3e2c; border-color: #c97e2a; padding: 4px 12px; font-size: 0.7rem;
+    }
+
+    .editor-actions {
+      display: flex; gap: 12px; margin-top: 12px; justify-content: flex-end; align-items: center;
+    }
+
+    hr { border-color: #253758; margin: 16px 0 8px; }
+    .footer-note { font-size: 0.7rem; color: #6c86a3; text-align: center; margin-top: 24px; }
+  </style>
+</head>
+<body>
+<div class="capture-card">
+  <h1>
+    🎥 Auto‑Export Screen Capture
+    <span class="recording-badge" id="liveBadge" style="display: none;"><span class="red-dot"></span> RECORDING</span>
+  </h1>
+  <div class="sub">Records Video + Audio · Instant .mp4 download upon completion</div>
+
+  <div class="preview-area">
+    <video id="previewVideo" muted autoplay playsinline></video>
+  </div>
+
+  <div class="status-panel" id="statusMsg">
+    ⚡ Ready · Click "Share Screen with Audio" to begin
+  </div>
+
+  <div class="button-group">
+    <button id="btnCapture" class="primary">🖥️ Share Screen + Audio</button>
+    <button id="btnStartRecord" disabled>🔴 Start Recording</button>
+    <button id="btnStopRecord" disabled>⏹️ Stop & Save</button>
+    <button id="btnStopShare" disabled>❌ Stop Sharing</button>
+  </div>
+
+  <div id="videoEditor" class="editor-panel" style="display: none;">
+    <div id="restoreWarning" class="warning-badge" style="display: none;">
+      <span>💾 Previous recording restored from storage (survived page reload)</span>
+      <button id="clearStoredBtn" class="clear-stored">🗑️ Clear saved</button>
+    </div>
+    
+    <div style="margin-bottom: 12px; font-weight: 600; color: white;">🎬 Last Recorded Video Preview</div>
+    <video id="playbackVideo" controls playsinline style="max-height: 400px;"></video>
+    
+    <div class="editor-actions">
+      <input type="text" id="fileNameInput" class="filename-input" placeholder="filename" value="screen_capture">
+      <button id="closeEditorBtn" class="danger">🗑️ Discard</button>
+      <button id="downloadBtn" class="primary">⬇️ Re-Download Video</button>
+    </div>
+  </div>
+
+  <hr />
+  <div style="display: flex; justify-content: space-between; font-size: 0.75rem; color: #92adcf;">
+    <span>⏱️ Current Session Duration: <strong id="durationInfo">0.0</strong> sec</span>
+  </div>
+  <div class="footer-note">
+    ✅ Remember to CHECK "Share Audio" in your browser's window selection tool to capture system sounds.<br>
+    💾 Backed by IndexedDB: The browser stores your latest recording locally so it won't get lost on an unexpected refresh.
+  </div>
+</div>
+
+<script>
+  (function() {
+    // ---------- IndexedDB persistence ----------
+    const DB_NAME = "VideoCaptureDB";
+    const STORE_NAME = "recordings";
+    const DB_VERSION = 1;
+
+    function openDB() {
+      return new Promise((resolve, reject) => {
+        const request = indexedDB.open(DB_NAME, DB_VERSION);
+        request.onerror = () => reject(request.error);
+        request.onsuccess = () => resolve(request.result);
+        request.onupgradeneeded = (e) => {
+          const db = e.target.result;
+          if (!db.objectStoreNames.contains(STORE_NAME)) {
+            db.createObjectStore(STORE_NAME, { keyPath: "id" });
+          }
+        };
+      });
+    }
+
+    async function saveRecordingToIndexedDB(blob) {
+      try {
+        const db = await openDB();
+        const tx = db.transaction(STORE_NAME, "readwrite");
+        const store = tx.objectStore(STORE_NAME);
+        await new Promise((resolve, reject) => {
+          const req = store.put({ id: "lastVideo", blob: blob, timestamp: Date.now() });
+          req.onsuccess = resolve;
+          req.onerror = () => reject(req.error);
+        });
+        db.close();
+      } catch (err) { console.warn("Failed to save recording:", err); }
+    }
+
+    async function loadRecordingFromIndexedDB() {
+      try {
+        const db = await openDB();
+        const tx = db.transaction(STORE_NAME, "readonly");
+        const store = tx.objectStore(STORE_NAME);
+        const result = await new Promise((resolve, reject) => {
+          const req = store.get("lastVideo");
+          req.onsuccess = () => resolve(req.result);
+          req.onerror = () => reject(req.error);
+        });
+        db.close();
+        return result ? result.blob : null;
+      } catch (err) { return null; }
+    }
+
+    async function clearStoredRecording() {
+      try {
+        const db = await openDB();
+        const tx = db.transaction(STORE_NAME, "readwrite");
+        const store = tx.objectStore(STORE_NAME);
+        await new Promise((resolve, reject) => {
+          const req = store.delete("lastVideo");
+          req.onsuccess = resolve;
+          req.onerror = () => reject(req.error);
+        });
+        db.close();
+      } catch (err) {}
+    }
+
+    // ---------- DOM elements ----------
+    const previewVideo = document.getElementById('previewVideo');
+    const playbackVideo = document.getElementById('playbackVideo');
+    const btnCapture = document.getElementById('btnCapture');
+    const btnStartRecord = document.getElementById('btnStartRecord');
+    const btnStopRecord = document.getElementById('btnStopRecord');
+    const btnStopShare = document.getElementById('btnStopShare');
+    const statusDiv = document.getElementById('statusMsg');
+    const durationSpan = document.getElementById('durationInfo');
+    const liveBadge = document.getElementById('liveBadge');
+    const videoEditor = document.getElementById('videoEditor');
+    const fileNameInput = document.getElementById('fileNameInput');
+    const closeEditorBtn = document.getElementById('closeEditorBtn');
+    const downloadBtn = document.getElementById('downloadBtn');
+    const restoreWarningDiv = document.getElementById('restoreWarning');
+    const clearStoredBtn = document.getElementById('clearStoredBtn');
+
+    // ---------- State ----------
+    let mediaStream = null;
+    let mediaRecorder = null;
+    let recordedChunks = [];
+    let finalVideoBlob = null;
+    let isRecordingActive = false;
+    let recordingStartTime = 0;
+    let durationInterval = null;
+    let recordedBlobUrl = null;
+
+    function setStatus(text, isError = false) {
+      statusDiv.innerHTML = isError ? `⚠️ ${text}` : `✨ ${text}`;
+      statusDiv.style.borderLeftColor = isError ? '#ff6b6b' : '#2b7fff';
+    }
+
+    async function captureScreenWithAudio() {
+      if (mediaStream) { setStatus("Already sharing.", true); return; }
+      if (videoEditor.style.display === 'block') await clearSavedAndClose();
+      
+      btnCapture.disabled = true;
+      try {
+        mediaStream = await navigator.mediaDevices.getDisplayMedia({ 
+          video: { frameRate: { ideal: 30, max: 60 } }, 
+          audio: { echoCancellation: false, noiseSuppression: false, autoGainControl: false } 
+        });
+        
+        previewVideo.srcObject = mediaStream;
+        mediaStream.getVideoTracks().forEach(t => t.onended = stopScreenSharing);
+        
+        const hasAudio = mediaStream.getAudioTracks().length > 0;
+        if (!hasAudio) {
+          setStatus("⚠️ Screen shared without audio. Recording will be silent.", true);
+        } else {
+          setStatus("✅ Screen+Audio ready.");
+        }
+        
+        btnStartRecord.disabled = false;
+        btnStopShare.disabled = false;
+      } catch (err) {
+        setStatus(`Error: ${err.message}`, true);
+        btnCapture.disabled = false;
+      }
+    }
+
+    function startRecording() {
+      if (!mediaStream) return;
+      
+      recordedChunks = [];
+      const types = [
+        "video/mp4",
+        "video/webm;codecs=vp9,opus",
+        "video/webm;codecs=vp8,opus",
+        "video/webm"
+      ];
+      
+      let mimeType = types.find(t => MediaRecorder.isTypeSupported(t)) || "";
+      
+      try {
+        mediaRecorder = new MediaRecorder(mediaStream, { mimeType });
+      } catch (e) {
+        mediaRecorder = new MediaRecorder(mediaStream);
+      }
+
+      mediaRecorder.ondataavailable = (e) => {
+        if (e.data && e.data.size > 0) recordedChunks.push(e.data);
+      };
+
+      mediaRecorder.onstop = async () => {
+        finalVideoBlob = new Blob(recordedChunks, { type: mediaRecorder.mimeType || 'video/mp4' });
+        await saveRecordingToIndexedDB(finalVideoBlob);
+        showEditor(false);
+
+        // --- FIXED AUTO-DOWNLOAD LOGIC ---
+        const timestamp = new Date().toISOString().slice(0,19).replace(/:/g, '-');
+        const filename = `screen_capture_${timestamp}.mp4`;
+        
+        const url = URL.createObjectURL(finalVideoBlob);
+        const a = document.createElement('a');
+        a.style.display = 'none';
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        
+        a.click();
+        
+        setTimeout(() => {
+          document.body.removeChild(a);
+          URL.revokeObjectURL(url); // Releases the data stream so the browser stops freezing
+          setStatus(`✅ Video captured and auto-downloaded as ${filename}`);
+        }, 250);
+      };
+
+      mediaRecorder.start(1000); 
+      isRecordingActive = true;
+      recordingStartTime = performance.now();
+      
+      if (durationInterval) clearInterval(durationInterval);
+      durationInterval = setInterval(() => {
+        if (isRecordingActive) {
+          durationSpan.innerText = ((performance.now() - recordingStartTime) / 1000).toFixed(1);
+        }
+      }, 100);
+
+      btnStartRecord.disabled = true;
+      btnStopRecord.disabled = false;
+      btnCapture.disabled = true;
+      liveBadge.style.display = 'inline-flex';
+      setStatus(`🔴 Recording Video...`);
+    }
+
+    function stopRecording() {
+      if (!isRecordingActive || !mediaRecorder) return;
+      mediaRecorder.stop();
+      isRecordingActive = false;
+      if (durationInterval) clearInterval(durationInterval);
+      liveBadge.style.display = 'none';
+      btnStopRecord.disabled = true;
+      setStatus("Processing video streams...");
+    }
+
+    function stopScreenSharing() {
+      if (isRecordingActive) stopRecording();
+      if (mediaStream) {
+        mediaStream.getTracks().forEach(t => t.stop());
+        mediaStream = null;
+      }
+      previewVideo.srcObject = null;
+      setStatus("Screen sharing stopped.");
+      btnStartRecord.disabled = true;
+      btnStopRecord.disabled = true;
+      btnStopShare.disabled = true;
+      btnCapture.disabled = false;
+    }
+
+    function showEditor(fromRestore = false) {
+      if (!finalVideoBlob) return;
+      
+      if (recordedBlobUrl) URL.revokeObjectURL(recordedBlobUrl);
+      recordedBlobUrl = URL.createObjectURL(finalVideoBlob);
+      playbackVideo.src = recordedBlobUrl;
+      
+      const timestamp = new Date().toISOString().slice(0,19).replace(/:/g, '-');
+      if (!fromRestore) fileNameInput.value = `video_${timestamp}`;
+      
+      videoEditor.style.display = 'block';
+      restoreWarningDiv.style.display = fromRestore ? 'flex' : 'none';
+    }
+
+    async function restoreRecordingFromStorage() {
+      const blob = await loadRecordingFromIndexedDB();
+      if (blob) {
+        finalVideoBlob = blob;
+        showEditor(true);
+        setStatus(`💾 Restored your previous session from local browser memory.`);
+      }
+    }
+
+    async function clearSavedAndClose() {
+      await clearStoredRecording();
+      finalVideoBlob = null;
+      if (recordedBlobUrl) {
+        URL.revokeObjectURL(recordedBlobUrl);
+        recordedBlobUrl = null;
+      }
+      playbackVideo.src = "";
+      videoEditor.style.display = 'none';
+      setStatus("Stored video cleared.");
+    }
+
+    function manualDownload() {
+      if (!finalVideoBlob || !recordedBlobUrl) return;
+      let baseName = fileNameInput.value.trim() || "screen_capture";
+      const filename = `${baseName}.mp4`;
+      
+      const a = document.createElement('a');
+      a.href = recordedBlobUrl;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    }
+
+    // Event bindings
+    btnCapture.addEventListener('click', captureScreenWithAudio);
+    btnStartRecord.addEventListener('click', startRecording);
+    btnStopRecord.addEventListener('click', stopRecording);
+    btnStopShare.addEventListener('click', stopScreenSharing);
+    downloadBtn.addEventListener('click', manualDownload);
+    closeEditorBtn.addEventListener('click', clearSavedAndClose);
+    clearStoredBtn.addEventListener('click', async () => { 
+      await clearSavedAndClose(); 
+      restoreWarningDiv.style.display = 'none'; 
+    });
+
+    // Auto-restore on page load
+    restoreRecordingFromStorage();
+  })();
+</script>
+</body>
+</html>
       -webkit-background-clip: text;
       color: transparent;
       margin: 0 0 0.35rem 0;

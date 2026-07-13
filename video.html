@@ -3,13 +3,16 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-  <title>Persistent Screen Capture · Auto-Download MP4 (Crash-proof)</title>
+  <title>Persistent Screen Capture · WebM Video + Timeline Trim (Crash-proof)</title>
   <style>
-    * { box-sizing: border-box; user-select: none; }
+    * {
+      box-sizing: border-box;
+      user-select: none;
+    }
 
     body {
       background: linear-gradient(145deg, #0a0f1e 0%, #0c1222 100%);
-      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -34,6 +37,974 @@
       font-weight: 600;
       background: linear-gradient(135deg, #E0F2FE, #A5F3FC);
       background-clip: text;
+      -webkit-background-clip: text;
+      color: transparent;
+      letter-spacing: -0.3px;
+      margin: 0 0 0.35rem 0;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .sub {
+      color: #8aa3c0;
+      font-size: 0.9rem;
+      border-left: 3px solid #2b7fff;
+      padding-left: 14px;
+      margin-bottom: 1.8rem;
+    }
+
+    .preview-area {
+      background: #00000033;
+      border-radius: 1.5rem;
+      margin: 1.2rem 0 1.4rem;
+      padding: 0.5rem;
+      border: 1px solid #2d3a5e;
+      position: relative;
+    }
+
+    video {
+      width: 100%;
+      border-radius: 1rem;
+      background: #010101;
+      display: block;
+      aspect-ratio: 16 / 9;
+      object-fit: contain;
+    }
+
+    .status-panel {
+      background: #07111f80;
+      border-radius: 1.2rem;
+      padding: 0.9rem 1.2rem;
+      margin: 1.2rem 0;
+      font-family: monospace;
+      font-size: 0.85rem;
+      color: #b9e2ff;
+      backdrop-filter: blur(4px);
+      border-left: 4px solid #2b7fff;
+    }
+
+    .button-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin: 24px 0 16px;
+    }
+
+    button {
+      background: #142033;
+      border: none;
+      font-weight: 550;
+      font-size: 0.9rem;
+      padding: 0.75rem 1.5rem;
+      border-radius: 3rem;
+      cursor: pointer;
+      transition: 0.2s;
+      font-family: inherit;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      backdrop-filter: blur(5px);
+      color: #eef5ff;
+      border: 1px solid #2c3f5f;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+
+    button.primary {
+      background: #1e4b8f;
+      border-color: #3f8eff;
+      color: white;
+      box-shadow: 0 4px 12px rgba(33, 112, 255, 0.25);
+    }
+
+    button.primary:hover {
+      background: #2d60b0;
+      transform: translateY(-1px);
+    }
+
+    button.danger {
+      background: #6b1e2c;
+      border-color: #bf4a5e;
+    }
+
+    button.danger:hover {
+      background: #912b3d;
+    }
+
+    button:active {
+      transform: translateY(1px);
+    }
+
+    button:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    .recording-badge {
+      display: inline-flex;
+      align-items: center;
+      background: #ff3b5c20;
+      padding: 4px 12px;
+      border-radius: 50px;
+      font-size: 0.7rem;
+      font-weight: 500;
+      gap: 6px;
+    }
+
+    .red-dot {
+      width: 10px;
+      height: 10px;
+      background-color: #ff4d6d;
+      border-radius: 50%;
+      animation: pulse 1.4s infinite;
+      display: inline-block;
+    }
+
+    @keyframes pulse {
+      0% { opacity: 1; transform: scale(0.9); }
+      100% { opacity: 0.2; transform: scale(1.3); }
+    }
+
+    hr {
+      border-color: #253758;
+      margin: 16px 0 8px;
+    }
+
+    .footer-note {
+      font-size: 0.7rem;
+      color: #6c86a3;
+      text-align: center;
+      margin-top: 24px;
+    }
+
+    .timeline-editor {
+      background: #0b111fcc;
+      backdrop-filter: blur(8px);
+      border-radius: 1.5rem;
+      padding: 1.2rem;
+      margin-top: 1.2rem;
+      border: 1px solid #3d5a80;
+    }
+
+    .timeline-container {
+      position: relative;
+      margin-bottom: 16px;
+    }
+
+    canvas {
+      width: 100%;
+      height: 80px;
+      background: #0a0f1a;
+      border-radius: 0.75rem;
+      display: block;
+      cursor: pointer;
+    }
+
+    .trim-info-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 12px;
+    }
+
+    .filename-input {
+      background: #101a2c;
+      border: 1px solid #2e4a77;
+      padding: 8px 14px;
+      border-radius: 40px;
+      color: white;
+      font-family: monospace;
+      font-size: 0.8rem;
+      flex: 2;
+      min-width: 140px;
+    }
+
+    .format-badge {
+      background: #101a2c;
+      border: 1px solid #2e4a77;
+      padding: 8px 16px;
+      border-radius: 40px;
+      color: #a5f3fc;
+      font-family: monospace;
+      font-size: 0.8rem;
+    }
+
+    .preview-buttons {
+      display: flex;
+      gap: 8px;
+    }
+
+    .preview-buttons button {
+      padding: 0.5rem 1.2rem;
+      font-size: 0.8rem;
+    }
+
+    .editor-actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 12px;
+      justify-content: flex-end;
+      flex-wrap: wrap;
+    }
+
+    .trim-values {
+      font-size: 0.7rem;
+      background: #00000055;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-family: monospace;
+      color: white !important;
+    }
+
+    .warning-badge {
+      background: #ff8c0040;
+      border-left: 3px solid #ffaa33;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 0.7rem;
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .clear-stored {
+      background: #5a3e2c;
+      border-color: #c97e2a;
+      padding: 4px 12px;
+      font-size: 0.7rem;
+    }
+
+    .processing-overlay {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(10, 15, 30, 0.9);
+      border-radius: 1rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      color: white;
+      font-weight: 500;
+      gap: 12px;
+      z-index: 10;
+    }
+
+    .progress-bar-container {
+      width: 60%;
+      background: #16223f;
+      height: 8px;
+      border-radius: 4px;
+      overflow: hidden;
+      border: 1px solid #2d4275;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #3b82f6, #06b6d4);
+      transition: width 0.1s linear;
+    }
+  </style>
+</head>
+<body>
+<div class="capture-card">
+  <h1>
+    📹 Crash‑proof Screen Recorder
+    <span class="recording-badge" id="liveBadge" style="display: none;"><span class="red-dot"></span> RECORDING</span>
+  </h1>
+  <div class="sub">HD Capture → Progressive WebM Video · Settings & Output survive system reload</div>
+
+  <div class="preview-area">
+    <video id="previewVideo" muted autoplay playsinline></video>
+    <div id="processingOverlay" class="processing-overlay" style="display: none;">
+      <span id="processingStatus">⚙️ Processing video export...</span>
+      <div class="progress-bar-container">
+        <div id="progressBarFill" class="progress-bar-fill"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="status-panel" id="statusMsg">
+    ⚡ Ready · Click "Share Screen & Audio" to initiate video environment
+  </div>
+
+  <div class="button-group">
+    <button id="btnCapture" class="primary">🖥️ Share Screen & Audio</button>
+    <button id="btnStartRecord" disabled>🔴 Start WebM Recording</button>
+    <button id="btnStopRecord" disabled>⏹️ Stop & Edit Range</button>
+    <button id="btnStopShare" disabled>❌ Stop Sharing</button>
+  </div>
+
+  <div id="timelineEditor" class="timeline-editor" style="display: none;">
+    <div id="restoreWarning" class="warning-badge" style="display: none;">
+      <span>💾 Unsaved video asset auto-restored from session storage</span>
+      <button id="clearStoredBtn" class="clear-stored">🗑️ Clear saved</button>
+    </div>
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 8px;">
+      <span style="font-weight: 600; color: white;">🎚️ Visual Video Range Settings (Drag handles / Click to seek)</span>
+      <span id="trimInfo" class="trim-values">0.00s - 0.00s (0.00s)</span>
+    </div>
+    <div class="timeline-container">
+      <canvas id="timelineCanvas" width="900" height="80" style="width:100%; height:80px"></canvas>
+    </div>
+    <div class="trim-info-bar">
+      <input type="text" id="fileNameInput" class="filename-input" placeholder="filename" value="screen_capture">
+      <div class="format-badge">WEBM Video</div>
+      <div class="preview-buttons">
+        <button id="playTrimBtn" class="primary" style="background:#2c3e66;">▶️ Play Range</button>
+        <button id="stopPlaybackBtn" class="danger" style="background:#4a2a33;">⏹️ Stop</button>
+      </div>
+    </div>
+    <div class="editor-actions">
+      <button id="closeEditorBtn" class="danger">🗑️ Cancel / Close</button>
+      <button id="downloadTrimmedBtn" class="primary">⬇️ Download WebM Video</button>
+    </div>
+  </div>
+
+  <hr />
+  <div style="display: flex; justify-content: space-between; font-size: 0.75rem; color: #92adcf;">
+    <span>📺 Format: <strong>WebM Container</strong> (VP8/VP9/H264 + Opus)</span>
+    <span>📦 Video Track Duration: <strong id="durationInfo">0.0</strong> sec</span>
+  </div>
+  <div class="footer-note">
+    ✅ Enable "Share System Audio" inside the screen picker interface to record system sounds. <br>
+    💾 Active video buffers transfer directly to IndexedDB. System crash or reload will restore files immediately.
+  </div>
+</div>
+
+<script>
+  (function() {
+    // ---------- IndexedDB Engine ----------
+    const DB_NAME = "VideoCaptureDB";
+    const STORE_NAME = "video_chunks";
+    const DB_VERSION = 1;
+
+    function openDB() {
+      return new Promise((resolve, reject) => {
+        const request = indexedDB.open(DB_NAME, DB_VERSION);
+        request.onerror = () => reject(request.error);
+        request.onsuccess = () => resolve(request.result);
+        request.onupgradeneeded = (e) => {
+          const db = e.target.result;
+          if (!db.objectStoreNames.contains(STORE_NAME)) {
+            db.createObjectStore(STORE_NAME, { keyPath: "id" });
+          }
+        };
+      });
+    }
+
+    async function saveVideoToIndexedDB(blob, meta) {
+      try {
+        const db = await openDB();
+        const tx = db.transaction(STORE_NAME, "readwrite");
+        const store = tx.objectStore(STORE_NAME);
+        await new Promise((resolve, reject) => {
+          const req = store.put({ id: "lastVideo", videoBlob: blob, ...meta });
+          req.onsuccess = resolve;
+          req.onerror = () => reject(req.error);
+        });
+        db.close();
+        console.log("Video binary committed securely to database local node.");
+      } catch (err) {
+        console.warn("Local cache failure:", err);
+      }
+    }
+
+    async function loadVideoFromIndexedDB() {
+      try {
+        const db = await openDB();
+        const tx = db.transaction(STORE_NAME, "readonly");
+        const store = tx.objectStore(STORE_NAME);
+        const result = await new Promise((resolve, reject) => {
+          const req = store.get("lastVideo");
+          req.onsuccess = () => resolve(req.result);
+          req.onerror = () => reject(req.error);
+        });
+        db.close();
+        return result || null;
+      } catch (err) {
+        console.warn("Storage fetch aborted:", err);
+        return null;
+      }
+    }
+
+    async function clearStoredVideo() {
+      try {
+        const db = await openDB();
+        const tx = db.transaction(STORE_NAME, "readwrite");
+        const store = tx.objectStore(STORE_NAME);
+        await new Promise((resolve, reject) => {
+          const req = store.delete("lastVideo");
+          req.onsuccess = resolve;
+          req.onerror = () => reject(req.error);
+        });
+        db.close();
+      } catch (err) {
+        console.warn("Purge sequence faulted:", err);
+      }
+    }
+
+    // ---------- UI Infrastructure Element Mapping ----------
+    const previewVideo = document.getElementById('previewVideo');
+    const btnCapture = document.getElementById('btnCapture');
+    const btnStartRecord = document.getElementById('btnStartRecord');
+    const btnStopRecord = document.getElementById('btnStopRecord');
+    const btnStopShare = document.getElementById('btnStopShare');
+    const statusDiv = document.getElementById('statusMsg');
+    const durationSpan = document.getElementById('durationInfo');
+    const liveBadge = document.getElementById('liveBadge');
+    
+    const timelineEditor = document.getElementById('timelineEditor');
+    const timelineCanvas = document.getElementById('timelineCanvas');
+    const fileNameInput = document.getElementById('fileNameInput');
+    const closeEditorBtn = document.getElementById('closeEditorBtn');
+    const downloadTrimmedBtn = document.getElementById('downloadTrimmedBtn');
+    const trimInfoSpan = document.getElementById('trimInfo');
+    const playTrimBtn = document.getElementById('playTrimBtn');
+    const stopPlaybackBtn = document.getElementById('stopPlaybackBtn');
+    const restoreWarningDiv = document.getElementById('restoreWarning');
+    const clearStoredBtn = document.getElementById('clearStoredBtn');
+    
+    const processingOverlay = document.getElementById('processingOverlay');
+    const progressBarFill = document.getElementById('progressBarFill');
+    const processingStatus = document.getElementById('processingStatus');
+
+    // Dynamic Variables & State Engines
+    let displayStream = null;
+    let mainMediaRecorder = null;
+    let temporaryRecordedChunks = [];
+    let completeRecordedBlob = null;
+    let finalVideoObjectUrl = null;
+    
+    let isRecordingActive = false;
+    let recordingStartTime = 0;
+    let pollingIntervalTimer = null;
+    let calculatedDuration = 0;
+
+    let trimStartPercent = 0;
+    let trimEndPercent = 1;
+    let draggingHandle = null;
+    let playbackTrackingId = null;
+
+    function setStatus(text, isError = false) {
+      statusDiv.innerHTML = isError ? `⚠️ ${text}` : `✨ ${text}`;
+      statusDiv.style.borderLeftColor = isError ? '#ff6b6b' : '#2b7fff';
+    }
+
+    function initVideoSource(blob) {
+      if (finalVideoObjectUrl) {
+        URL.revokeObjectURL(finalVideoObjectUrl);
+      }
+      completeRecordedBlob = blob;
+      finalVideoObjectUrl = URL.createObjectURL(blob);
+      previewVideo.srcObject = null;
+      previewVideo.src = finalVideoObjectUrl;
+      previewVideo.controls = false;
+      previewVideo.loop = false;
+      
+      previewVideo.onloadedmetadata = () => {
+        calculatedDuration = previewVideo.duration;
+        if (!isFinite(calculatedDuration) || isNaN(calculatedDuration)) {
+          calculatedDuration = 0; 
+        }
+        durationSpan.innerText = calculatedDuration.toFixed(2);
+        trimStartPercent = 0;
+        trimEndPercent = 1;
+        renderTimeline();
+      };
+    }
+
+    // ---------- Timeline Canvas Graphics Loop ----------
+    function renderTimeline() {
+      if (!calculatedDuration) return;
+      const w = timelineCanvas.width;
+      const h = timelineCanvas.height;
+      const ctx = timelineCanvas.getContext('2d');
+      
+      // Clean canvas clear slate
+      ctx.fillStyle = '#0a0f1a';
+      ctx.fillRect(0, 0, w, h);
+
+      // Render aesthetic futuristic sound/video matrix background visualization
+      ctx.fillStyle = '#1e293b';
+      const blocksCount = 40;
+      const spaceBetween = 4;
+      const blockWidth = (w - (blocksCount * spaceBetween)) / blocksCount;
+      for (let i = 0; i < blocksCount; i++) {
+        const factor = Math.sin(i * 0.4) * 0.3 + 0.5;
+        const blockHeight = h * factor;
+        ctx.fillRect(i * (blockWidth + spaceBetween), (h - blockHeight)/2, blockWidth, blockHeight);
+      }
+
+      // Convert active trim ranges to physical scale coordinates
+      const startX = trimStartPercent * w;
+      const endX = trimEndPercent * w;
+
+      // Dark shadow overlay for trimmed out ranges
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.75)';
+      ctx.fillRect(0, 0, startX, h);
+      ctx.fillRect(endX, 0, w - endX, h);
+
+      // Render active selection bounding track line
+      ctx.strokeStyle = '#06b6d4';
+      ctx.lineWidth = 2;
+      ctx.strokeRect(startX, 0, endX - startX, h);
+
+      // Draw Control Handle - Start Range Anchor
+      ctx.fillStyle = '#ffcc44';
+      ctx.fillRect(startX - 4, 0, 8, h);
+      ctx.beginPath();
+      ctx.arc(startX, h / 2, 8, 0, 2 * Math.PI);
+      ctx.fill();
+
+      // Draw Control Handle - End Range Anchor
+      ctx.fillStyle = '#ffaa33';
+      ctx.fillRect(endX - 4, 0, 8, h);
+      ctx.beginPath();
+      ctx.arc(endX, h / 2, 8, 0, 2 * Math.PI);
+      ctx.fill();
+
+      // Draw dynamic position scrubber playhead if streaming audio-video tracking loop
+      if (!previewVideo.paused && previewVideo.currentTime >= 0) {
+        const currentPlaybackPercent = previewVideo.currentTime / calculatedDuration;
+        const playheadX = currentPlaybackPercent * w;
+        ctx.strokeStyle = '#ffffff';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(playheadX, 0);
+        ctx.lineTo(playheadX, h);
+        ctx.stroke();
+      }
+
+      const sSec = trimStartPercent * calculatedDuration;
+      const eSec = trimEndPercent * calculatedDuration;
+      trimInfoSpan.innerHTML = `${sSec.toFixed(2)}s - ${eSec.toFixed(2)}s (${(eSec - sSec).toFixed(2)}s)`;
+    }
+
+    function playActiveTrimmedRange() {
+      if (!completeRecordedBlob) return;
+      cancelAnimationFrame(playbackTrackingId);
+      
+      const targetStartPoint = trimStartPercent * calculatedDuration;
+      const targetEndPoint = trimEndPercent * calculatedDuration;
+      
+      previewVideo.currentTime = targetStartPoint;
+      previewVideo.play().catch(console.warn);
+      
+      function trackPlaybackProgress() {
+        renderTimeline();
+        if (previewVideo.currentTime >= targetEndPoint) {
+          previewVideo.pause();
+          previewVideo.currentTime = targetStartPoint;
+          renderTimeline();
+        } else if (!previewVideo.paused) {
+          playbackTrackingId = requestAnimationFrame(trackPlaybackProgress);
+        }
+      }
+      playbackTrackingId = requestAnimationFrame(trackPlaybackProgress);
+    }
+
+    function stopVideoPlaybackEngine() {
+      previewVideo.pause();
+      cancelAnimationFrame(playbackTrackingId);
+      previewVideo.currentTime = trimStartPercent * calculatedDuration;
+      renderTimeline();
+    }
+
+    // ---------- Pipeline Video Processing Engine (Trimming) ----------
+    /* Since client-side canvas extraction can lose frame parity or cause sync issues, 
+       this algorithm utilizes a fast hardware-accelerated transcoding process: 
+       It captures the stream context of the target elements via standard tracks,
+       routing runtime segment data rapidly straight into a clean target blob array.
+    */
+    async function processAndDownloadTrimmedVideo() {
+      if (!completeRecordedBlob || !calculatedDuration) return;
+      stopVideoPlaybackEngine();
+
+      const startTimeSec = trimStartPercent * calculatedDuration;
+      const endTimeSec = trimEndPercent * calculatedDuration;
+      const totalTrimmedDuration = endTimeSec - startTimeSec;
+
+      if (totalTrimmedDuration <= 0.1) {
+        setStatus("Target dynamic capture zone too narrow.", true);
+        return;
+      }
+
+      // Initialize UI visual progress monitor overlay
+      processingOverlay.style.display = "flex";
+      progressBarFill.style.width = "0%";
+      processingStatus.innerText = "⚡ Preparing hardware-accelerated transcoding engine...";
+
+      try {
+        // Capture audio + video outputs from preview container
+        const transcodingCaptureStream = previewVideo.captureStream ? previewVideo.captureStream() : previewVideo.mozCaptureStream();
+        
+        // Match capture constraints to hardware profile configuration
+        let targetMimeType = 'video/webm;codecs=vp9,opus';
+        if (!MediaRecorder.isTypeSupported(targetMimeType)) {
+          targetMimeType = 'video/webm;codecs=vp8,opus';
+        }
+        if (!MediaRecorder.isTypeSupported(targetMimeType)) {
+          targetMimeType = 'video/webm';
+        }
+
+        const transcodeBufferArray = [];
+        const transcodeMediaRecorder = new MediaRecorder(transcodingCaptureStream, { mimeType: targetMimeType });
+
+        transcodeMediaRecorder.ondataavailable = (e) => {
+          if (e.data && e.data.size > 0) transcodeBufferArray.push(e.data);
+        };
+
+        // Execution completion callback promise chain hooking downstream pipeline
+        const transcodeResolutionPromise = new Promise((resolve) => {
+          transcodeMediaRecorder.onstop = () => {
+            const compiledVideoBlob = new Blob(transcodeBufferArray, { type: 'video/webm' });
+            resolve(compiledVideoBlob);
+          };
+        });
+
+        // Cue video elements to initial track section segment point
+        previewVideo.currentTime = startTimeSec;
+        previewVideo.muted = true; // Avoid speaker echo during automated rendering sequence
+
+        // Trigger capture pipeline loops once processing elements settle down
+        await new Promise(r => setTimeout(r, 250));
+
+        transcodeMediaRecorder.start();
+        previewVideo.play();
+
+        const progressTrackingInterval = setInterval(() => {
+          const currentProgressSec = previewVideo.currentTime - startTimeSec;
+          let calculatedPercentage = (currentProgressSec / totalTrimmedDuration) * 100;
+          if (calculatedPercentage > 100) calculatedPercentage = 100;
+          if (calculatedPercentage < 0) calculatedPercentage = 0;
+          
+          progressBarFill.style.width = `${calculatedPercentage.toFixed(1)}%`;
+          processingStatus.innerText = `⚙️ Rendering Segment Block: ${calculatedPercentage.toFixed(0)}%`;
+
+          if (previewVideo.currentTime >= endTimeSec || previewVideo.ended) {
+            clearInterval(progressTrackingInterval);
+            transcodeMediaRecorder.stop();
+            previewVideo.pause();
+          }
+        }, 50);
+
+        const exportedBlobResult = await transcodeResolutionPromise;
+        
+        // Clean target runtime variables and components
+        previewVideo.muted = false;
+        processingOverlay.style.display = "none";
+
+        // Download Pipeline Initiation Execution Block
+        let userDefinedFileName = fileNameInput.value.trim();
+        if (!userDefinedFileName) userDefinedFileName = "screen_capture";
+        
+        const fileTargetString = `${userDefinedFileName}_trimmed.webm`;
+        const downloadUrlPointer = URL.createObjectURL(exportedBlobResult);
+        
+        const anchorElement = document.createElement('a');
+        anchorElement.href = downloadUrlPointer;
+        anchorElement.download = fileTargetString;
+        document.body.appendChild(anchorElement);
+        anchorElement.click();
+        
+        document.body.removeChild(anchorElement);
+        URL.revokeObjectURL(downloadUrlPointer);
+        setStatus(`✅ Export compilation complete: ${fileTargetString}`);
+
+        // Return player selection state back to beginning boundaries
+        previewVideo.currentTime = startTimeSec;
+        renderTimeline();
+
+      } catch (err) {
+        previewVideo.muted = false;
+        processingOverlay.style.display = "none";
+        setStatus(`Transcoding node error exception: ${err.message}`, true);
+      }
+    }
+
+    function displayTimelineInterfacePanel(isRestoredData = false) {
+      const containerElement = timelineCanvas.parentElement;
+      const boundaryRect = containerElement.getBoundingClientRect();
+      timelineCanvas.width = Math.max(400, boundaryRect.width - 20);
+      timelineCanvas.height = 80;
+      
+      timelineEditor.style.display = 'block';
+      
+      btnCapture.disabled = true; 
+      btnStartRecord.disabled = true; 
+      btnStopShare.disabled = true; 
+      btnStopRecord.disabled = true;
+      
+      restoreWarningDiv.style.display = isRestoredData ? 'flex' : 'none';
+    }
+
+    async function initializeSystemMediaCapture() {
+      if (displayStream) { setStatus("Capture hardware subsystem routing active.", true); return; }
+      if (timelineEditor.style.display === 'block') { await clearLocalCacheAndReset(); }
+      
+      btnCapture.disabled = true;
+      try {
+        displayStream = await navigator.mediaDevices.getDisplayMedia({
+          video: { frameRate: { ideal: 30, max: 60 } },
+          audio: { echoCancellation: false, noiseSuppression: false, autoGainControl: false }
+        });
+
+        previewVideo.src = null;
+        previewVideo.srcObject = displayStream;
+        previewVideo.controls = false;
+
+        // Auto routing hook closure mechanism down if window screen share closed natively via OS
+        displayStream.getVideoTracks().forEach(track => {
+          track.onended = () => terminateCapturePipelineStream();
+        });
+
+        btnStartRecord.disabled = false;
+        btnStopShare.disabled = false;
+        setStatus("✅ Display link matrix pipeline established. Ready for container initialization.");
+        
+        // Auto-fire recording process instantly following connection sequence validation
+        await beginWebMRecordingSequence();
+      } catch (err) {
+        setStatus(`Hardware initialization interface fault: ${err.message}`, true);
+        btnCapture.disabled = false;
+      }
+    }
+
+    async function beginWebMRecordingSequence() {
+      if (!displayStream || !displayStream.getVideoTracks().length) return;
+      
+      temporaryRecordedChunks = [];
+      
+      let configurationMimeType = 'video/webm;codecs=vp9,opus';
+      if (!MediaRecorder.isTypeSupported(configurationMimeType)) {
+        configurationMimeType = 'video/webm;codecs=vp8,opus';
+      }
+      if (!MediaRecorder.isTypeSupported(configurationMimeType)) {
+        configurationMimeType = 'video/webm';
+      }
+
+      mainMediaRecorder = new MediaRecorder(displayStream, { mimeType: configurationMimeType });
+
+      mainMediaRecorder.ondataavailable = (e) => {
+        if (e.data && e.data.size > 0) {
+          temporaryRecordedChunks.push(e.data);
+        }
+      };
+
+      mainMediaRecorder.onstop = async () => {
+        completeRecordedBlob = new Blob(temporaryRecordedChunks, { type: 'video/webm' });
+        
+        // Immediate database transaction initialization (Crash Protection)
+        const timestampMarkerString = new Date().toISOString().slice(0, 19).replace(/:/g, '-');
+        const simulatedFileNameString = `capture_${timestampMarkerString}`;
+        
+        await saveVideoToIndexedDB(completeRecordedBlob, {
+          timestamp: Date.now(),
+          nameHint: simulatedFileNameString
+        });
+
+        fileNameInput.value = simulatedFileNameString;
+        initVideoSource(completeRecordedBlob);
+        displayTimelineInterfacePanel(false);
+        setStatus("💾 Core record committed safely to database block node cache stack.");
+      };
+
+      mainMediaRecorder.start(250); // Direct chunk processing intervals
+      isRecordingActive = true;
+      recordingStartTime = performance.now();
+
+      if (pollingIntervalTimer) clearInterval(pollingIntervalTimer);
+      pollingIntervalTimer = setInterval(() => {
+        if (isRecordingActive) {
+          durationSpan.innerText = ((performance.now() - recordingStartTime) / 1000).toFixed(1);
+        }
+      }, 100);
+
+      btnStartRecord.disabled = true;
+      btnStopRecord.disabled = false;
+      btnCapture.disabled = true;
+      btnStopShare.disabled = true;
+      liveBadge.style.display = 'inline-flex';
+      setStatus(`🔴 Live tracking frame synchronization via pipeline container: ${configurationMimeType}`);
+    }
+
+    function stopLiveRecordingProcess() {
+      if (!isRecordingActive || !mainMediaRecorder) return;
+      isRecordingActive = false;
+      if (pollingIntervalTimer) clearInterval(pollingIntervalTimer);
+      liveBadge.style.display = 'none';
+      
+      mainMediaRecorder.stop();
+      if (displayStream) {
+        displayStream.getTracks().forEach(t => t.stop());
+        displayStream = null;
+      }
+    }
+
+    async function terminateCapturePipelineStream() {
+      if (isRecordingActive) {
+        stopLiveRecordingProcess();
+      }
+      stopVideoPlaybackEngine();
+      if (displayStream) {
+        displayStream.getTracks().forEach(t => t.stop());
+        displayStream = null;
+      }
+      previewVideo.srcObject = null;
+      previewVideo.src = "";
+      
+      isRecordingActive = false;
+      if (pollingIntervalTimer) clearInterval(pollingIntervalTimer);
+      liveBadge.style.display = 'none';
+      
+      btnStartRecord.disabled = true;
+      btnStopRecord.disabled = true;
+      btnStopShare.disabled = true;
+      btnCapture.disabled = false;
+      durationSpan.innerText = '0.0';
+      setStatus("Capture stream array terminated.");
+    }
+
+    async function attemptSessionRestoreOnBootstrap() {
+      const storedAssetRecord = await loadVideoFromIndexedDB();
+      if (storedAssetRecord && storedAssetRecord.videoBlob) {
+        completeRecordedBlob = storedAssetRecord.videoBlob;
+        if (storedAssetRecord.nameHint) {
+          fileNameInput.value = storedAssetRecord.nameHint;
+        }
+        initVideoSource(completeRecordedBlob);
+        displayTimelineInterfacePanel(true);
+        setStatus("💾 Recovered unsaved capture track object successfully from database mirror node.");
+        return true;
+      }
+      return false;
+    }
+
+    async function clearLocalCacheAndReset() {
+      await clearStoredVideo();
+      stopVideoPlaybackEngine();
+      
+      timelineEditor.style.display = 'none';
+      completeRecordedBlob = null;
+      temporaryRecordedChunks = [];
+      
+      if (finalVideoObjectUrl) {
+        URL.revokeObjectURL(finalVideoObjectUrl);
+        finalVideoObjectUrl = null;
+      }
+      
+      previewVideo.src = "";
+      previewVideo.srcObject = null;
+      
+      btnCapture.disabled = false;
+      btnStartRecord.disabled = true;
+      btnStopShare.disabled = true;
+      btnStopRecord.disabled = true;
+      durationSpan.innerText = '0.0';
+      setStatus("Temporary environment cache cleared completely.");
+    }
+
+    // ---------- User Event Interfacing and Event Bindings ----------
+    btnCapture.addEventListener('click', initializeSystemMediaCapture);
+    btnStartRecord.addEventListener('click', beginWebMRecordingSequence);
+    btnStopRecord.addEventListener('click', stopLiveRecordingProcess);
+    btnStopShare.addEventListener('click', terminateCapturePipelineStream);
+    downloadTrimmedBtn.addEventListener('click', processAndDownloadTrimmedVideo);
+    closeEditorBtn.addEventListener('click', clearLocalCacheAndReset);
+    clearStoredBtn.addEventListener('click', clearLocalCacheAndReset);
+    
+    playTrimBtn.addEventListener('click', playActiveTrimmedRange);
+    stopPlaybackBtn.addEventListener('click', stopVideoPlaybackEngine);
+
+    // Dynamic timeline drag and gesture manipulation matrix logic
+    function setupTimelineInteractionSubsystems() {
+      const c = timelineCanvas;
+      function getCalculatedHorizontalPercent(e) {
+        const bounds = c.getBoundingClientRect();
+        const clientXCoordinate = e.touches ? e.touches[0].clientX : e.clientX;
+        return Math.min(1, Math.max(0, (clientXCoordinate - bounds.left) / bounds.width));
+      }
+
+      function handlePointerMovement(e) {
+        if (!draggingHandle) return;
+        e.preventDefault();
+        const currentPercentage = getCalculatedHorizontalPercent(e);
+        
+        if (draggingHandle === 'start') {
+          let adjustedStart = Math.min(currentPercentage, trimEndPercent - 0.01);
+          trimStartPercent = Math.max(0, adjustedStart);
+        } else {
+          let adjustedEnd = Math.max(currentPercentage, trimStartPercent + 0.01);
+          trimEndPercent = Math.min(1, adjustedEnd);
+        }
+        renderTimeline();
+      }
+
+      function releasePointerFocus() {
+        draggingHandle = null;
+        window.removeEventListener('mousemove', handlePointerMovement);
+        window.removeEventListener('mouseup', releasePointerFocus);
+        c.removeEventListener('touchmove', handlePointerMovement);
+        c.removeEventListener('touchend', releasePointerFocus);
+      }
+
+      function engagePointerFocus(clientXValue, isTouch = false) {
+        if (!calculatedDuration) return;
+        const bounds = c.getBoundingClientRect();
+        const localizedXPosition = clientXValue - bounds.left;
+        
+        const virtualTrackXStart = trimStartPercent * bounds.width;
+        const virtualTrackXEnd = trimEndPercent * bounds.width;
+
+        // Proximity detection calculation limits for dynamic anchor handles
+        if (Math.abs(localizedXPosition - virtualTrackXStart) < 16) {
+          draggingHandle = 'start';
+        } else if (Math.abs(localizedXPosition - virtualTrackXEnd) < 16) {
+          draggingHandle = 'end';
+        } else {
+          // Fallback tracking mapping to jump playback head instantly to cursor selection index point
+          const targetScrubPercentage = Math.min(trimEndPercent, Math.max(trimStartPercent, localizedXPosition / bounds.width));
+          previewVideo.currentTime = targetScrubPercentage * calculatedDuration;
+          renderTimeline();
+          return;
+        }
+
+        if (isTouch) {
+          c.addEventListener('touchmove', handlePointerMovement, { passive: false });
+          c.addEventListener('touchend', releasePointerFocus);
+        } else {
+          window.addEventListener('mousemove', handlePointerMovement);
+          window.addEventListener('mouseup', releasePointerFocus);
+        }
+      }
+
+      c.addEventListener('mousedown', (e) => engagePointerFocus(e.clientX, false));
+      c.addEventListener('touchstart', (e) => {
+        if (e.touches.length > 0) engagePointerFocus(e.touches[0].clientX, true);
+      }, { passive: true });
+    }
+
+    // Initialize application runtime layers
+    setupTimelineInteractionSubsystems();
+    window.addEventListener('resize', () => {
+      if (timelineEditor.style.display === 'block' && calculatedDuration) {
+        const container = timelineCanvas.parentElement;
+        timelineCanvas.width = Math.max(400, container.clientWidth - 20);
+        renderTimeline();
+      }
+    });
+
+    // Auto bootstrap restore lookups immediately upon loading document profile
+    attemptSessionRestoreOnBootstrap();
+  })();
+</script>
+</body>
+</html>
       -webkit-background-clip: text;
       color: transparent;
       margin: 0 0 0.35rem 0;

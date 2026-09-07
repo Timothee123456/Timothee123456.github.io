@@ -117,18 +117,18 @@
         });
     </script>
 
-    <div class="container mx-auto px-3 py-4 max-w-full">
+    <div class="container mx-auto px-4 py-6 max-w-full">
         <!-- Header -->
         <div class="game-grid">
-            <h1 id="title" class="text-2xl sm:text-3xl font-bold text-center mb-4 text-gray-800 dark:text-white">
+            <h1 id="title" class="text-2xl sm:text-4xl font-bold text-center mb-6 text-gray-800 dark:text-white">
                 Chinese Writing Practice
             </h1>
         </div>
 
-        <!-- 1. WORD SELECTION SCREEN -->
-        <div id="selectionScreen" class="max-w-2xl mx-auto space-y-4">
-            <p class="text-center text-gray-600 dark:text-gray-300 mb-4">Choose a word to study:</p>
-            <div id="wordGrid" class="grid grid-cols-1 sm:grid-cols-2 gap-3"></div>
+        <!-- 1. WORD SELECTION SCREEN (Expanded Size) -->
+        <div id="selectionScreen" class="max-w-5xl mx-auto space-y-6">
+            <p class="text-center text-lg text-gray-600 dark:text-gray-300 font-medium">Choose a word to study:</p>
+            <div id="wordGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5"></div>
         </div>
 
         <!-- 2. PRACTICE SCREEN -->
@@ -220,7 +220,8 @@
 
                     this.writers = [];
                     this.totalMistakes = 0;
-                    this.isAnimating = false;
+                    this.animationTimer = null;
+                    this.animationToken = 0;
 
                     this.cacheDom();
                     this.bindEvents();
@@ -259,13 +260,13 @@
                     this.wordGrid.innerHTML = '';
                     this.deck.forEach((card, idx) => {
                         const btn = document.createElement('button');
-                        btn.className = 'flex items-center justify-between p-4 bg-white dark:bg-gray-800 rounded-xl shadow border border-gray-200 dark:border-gray-700 hover:border-blue-500 dark:hover:border-blue-400 transition-all text-left w-full';
+                        btn.className = 'flex items-center justify-between p-6 bg-white dark:bg-gray-800 rounded-2xl shadow-md border-2 border-gray-200 dark:border-gray-700 hover:border-blue-500 dark:hover:border-blue-400 hover:shadow-lg transition-all text-left w-full cursor-pointer min-h-[100px]';
                         btn.innerHTML = `
-                            <div>
-                                <div class="text-xl font-bold text-gray-800 dark:text-white">${card.chinese}</div>
-                                <div class="text-xs text-gray-500 dark:text-gray-400">${card.pinyin || ''}</div>
+                            <div class="space-y-1">
+                                <div class="text-3xl font-bold text-gray-800 dark:text-white tracking-wide">${card.chinese}</div>
+                                <div class="text-base text-gray-500 dark:text-gray-400 font-medium">${card.pinyin || ''}</div>
                             </div>
-                            <div class="text-sm font-medium text-blue-600 dark:text-blue-400">
+                            <div class="text-base font-semibold text-blue-600 dark:text-blue-400 pl-4 text-right">
                                 ${card.french || ''}
                             </div>
                         `;
@@ -336,7 +337,7 @@
                             const writer = this.createWriter(containers[i], ch, true);
                             if (writer) this.writers.push(writer);
                         });
-                        this.chainAnimations(0);
+                        this.chainAnimations(0, ++this.animationToken);
                     } else {
                         const showOutline = (this.currentMode === 'outline');
                         this.setMessage(showOutline ? '✏️ Practice writing with the outline hint.' : '✍️ Practice writing without the outline.');
@@ -377,9 +378,17 @@
                 }
 
                 destroyAllWriters() {
+                    if (this.animationTimer) {
+                        clearTimeout(this.animationTimer);
+                        this.animationTimer = null;
+                    }
+                    
+                    this.animationToken++;
+
                     this.writers.forEach(w => {
                         try {
                             w.cancelQuiz();
+                            w.pauseAnimation();
                             w.cleanup();
                         } catch (e) {}
                     });
@@ -399,20 +408,29 @@
                     });
                 }
 
-                chainAnimations(index) {
+                chainAnimations(index, currentToken) {
+                    if (currentToken !== this.animationToken) return;
+
                     if (index >= this.writers.length || !this.writers[index]) {
                         this.setMessage('✨ Animation finished. Replay or switch modes above.');
                         return;
                     }
+
                     const writer = this.writers[index];
                     try {
                         writer.animateCharacter({
                             onComplete: () => {
-                                setTimeout(() => this.chainAnimations(index + 1), 200);
+                                if (currentToken !== this.animationToken) return;
+                                this.animationTimer = setTimeout(() => {
+                                    this.chainAnimations(index + 1, currentToken);
+                                }, 200);
                             }
                         });
                     } catch (e) {
-                        setTimeout(() => this.chainAnimations(index + 1), 200);
+                        if (currentToken !== this.animationToken) return;
+                        this.animationTimer = setTimeout(() => {
+                            this.chainAnimations(index + 1, currentToken);
+                        }, 200);
                     }
                 }
 

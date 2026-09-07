@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title id="pageTitle">Chinese Writing Practice</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/hanzi-writer@3.5/dist/hanzi-writer.min.js"></script>
+    <style>
+        .no-select {
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .row-wrapper {
+            text-align: center;
+            margin: 1rem 0;
+        }
+
+        #charactersRow {
+            display: inline-flex;
+            flex-wrap: nowrap;
+            overflow-x: auto;
+            gap: 0.5rem;
+            padding: 0.5rem;
+            padding-bottom: 26px;
+            -webkit-overflow-scrolling: touch;
+            scroll-snap-type: x mandatory;
+            max-width: 100%;
+            background-color: rgb(249 250 251 / 0.3);
+            border-radius: 0.75rem;
+            scrollbar-width: thin;
+            scrollbar-color: #3b82f6 #e2e8f0;
+        }
+
+        .dark #charactersRow {
+            background-color: rgb(31 41 55 / 0.3);
+            scrollbar-color: #3b82f6 #334155;
+        }
+
+        #charactersRow::-webkit-scrollbar {
+            height: 34px;
+        }
+
+        #charactersRow::-webkit-scrollbar-track {
+            background: #e2e8f0;
+            border-radius: 20px;
+            margin: 0 4px;
+        }
+
+        .dark #charactersRow::-webkit-scrollbar-track {
+            background: #334155;
+        }
+
+        #charactersRow::-webkit-scrollbar-thumb {
+            background: #3b82f6;
+            border-radius: 20px;
+            transition: background 0.2s;
+            border: 2px solid transparent;
+            background-clip: padding-box;
+        }
+
+        #charactersRow::-webkit-scrollbar-thumb:hover {
+            background: #2563eb;
+            border-color: transparent;
+        }
+
+        .char-canvas-container {
+            flex-shrink: 0;
+            width: 80vw;
+            max-width: 400px;
+            scroll-snap-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            touch-action: pan-y !important;
+            transition: opacity 0.2s;
+        }
+
+        .char-canvas-container svg {
+            width: 100% !important;
+            height: auto !important;
+            max-height: 70vh;
+        }
+
+        @media (min-width: 768px) {
+            .char-canvas-container {
+                width: 45vw;
+                max-width: 380px;
+            }
+        }
+
+        .game-grid {
+            display: grid;
+            grid-template-columns: 1fr min(100%, 672px) 1fr;
+        }
+
+        .game-grid > * {
+            grid-column: 2 / 3;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-100 dark:bg-gray-900 min-h-screen transition-colors" style="touch-action: pan-y;">
+    <script>
+        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            document.documentElement.classList.add('dark');
+        }
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
+            if (event.matches) document.documentElement.classList.add('dark');
+            else document.documentElement.classList.remove('dark');
+        });
+    </script>
+
+    <div class="container mx-auto px-3 py-4 max-w-full">
+        <!-- Header -->
+        <div class="game-grid">
+            <h1 id="title" class="text-2xl sm:text-3xl font-bold text-center mb-4 text-gray-800 dark:text-white">
+                Chinese Writing Practice
+            </h1>
+        </div>
+
+        <!-- 1. WORD SELECTION SCREEN -->
+        <div id="selectionScreen" class="max-w-2xl mx-auto space-y-4">
+            <p class="text-center text-gray-600 dark:text-gray-300 mb-4">Choose a word to study:</p>
+            <div id="wordGrid" class="grid grid-cols-1 sm:grid-cols-2 gap-3"></div>
+        </div>
+
+        <!-- 2. PRACTICE SCREEN -->
+        <div id="practiceScreen" class="hidden space-y-4">
+            <div class="game-grid">
+                <div class="flex items-center justify-between mb-2">
+                    <button id="backBtn" class="bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-800 dark:text-white px-4 py-2 rounded-lg font-semibold text-sm transition-colors flex items-center gap-2">
+                        <i class="fa fa-arrow-left"></i> Back to Words
+                    </button>
+                    <span id="missCounter" class="text-orange-500 dark:text-orange-400 font-medium hidden">
+                        <i class="fa fa-exclamation-triangle"></i> <span id="missCount">0</span> misses
+                    </span>
+                </div>
+
+                <!-- Word Card Details -->
+                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 p-4 text-center">
+                    <div id="frenchDefinition" class="text-2xl sm:text-3xl font-bold text-gray-800 dark:text-white mb-1">...</div>
+                    <div id="pinyinDisplay" class="text-lg sm:text-xl text-gray-600 dark:text-gray-400">...</div>
+                </div>
+
+                <!-- Mode Selector Buttons -->
+                <div class="grid grid-cols-3 gap-2 mt-4">
+                    <button id="modeStrokeBtn" class="px-2 py-3 rounded-lg font-medium text-xs sm:text-sm border transition-all text-center">
+                        🎬 Stroke Order
+                    </button>
+                    <button id="modeOutlineBtn" class="px-2 py-3 rounded-lg font-medium text-xs sm:text-sm border transition-all text-center">
+                        ✏️ With Outline
+                    </button>
+                    <button id="modeNoOutlineBtn" class="px-2 py-3 rounded-lg font-medium text-xs sm:text-sm border transition-all text-center">
+                        ✍️ No Outline
+                    </button>
+                </div>
+            </div>
+
+            <!-- Canvas Container -->
+            <div class="row-wrapper">
+                <div id="charactersRow"></div>
+            </div>
+
+            <div class="game-grid">
+                <div class="space-y-4">
+                    <div id="messageArea" class="text-center text-sm text-gray-500 dark:text-gray-400 min-h-[24px]"></div>
+                    <div class="flex justify-center space-x-4 px-2">
+                        <button id="resetCanvasBtn" class="flex-1 max-w-44 flex items-center justify-center space-x-2 bg-blue-500 hover:bg-blue-600 active:bg-blue-700 text-white px-4 py-3 rounded-lg font-semibold transition-colors text-base">
+                            <i class="fa fa-refresh"></i>
+                            <span id="resetBtnLabel">Replay / Restart</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const deckName = urlParams.get('deck');
+
+        async function load_flashcards() {
+            if (deckName) {
+                const jsFileURL = `./decks/${deckName}.js`;
+                try {
+                    const module = await import(jsFileURL);
+                    const flashcards = module.flashcards;
+                    if (!flashcards) {
+                        window.location.href = "/home";
+                        return;
+                    }
+                    let defaultName = 'Chinese Writing Practice';
+                    let titleText = (module.title ? module.title + ' - ' : '') + defaultName;
+                    if (!module.title) titleText = defaultName;
+                    document.getElementById('title').textContent = titleText;
+                    document.getElementById('pageTitle').textContent = titleText;
+                    initializeApp(flashcards);
+                } catch (err) {
+                    window.location.href = "/home";
+                }
+            } else {
+                window.location.href = "/home";
+            }
+        }
+        load_flashcards();
+
+        function initializeApp(loadedFlashcards) {
+            class WritingPracticeApp {
+                constructor(flashcards) {
+                    this.deck = Array.isArray(flashcards) ? flashcards : [];
+                    this.selectedWordIndex = null;
+                    this.currentMode = 'stroke'; // 'stroke' | 'outline' | 'no-outline'
+
+                    this.writers = [];
+                    this.totalMistakes = 0;
+                    this.isAnimating = false;
+
+                    this.cacheDom();
+                    this.bindEvents();
+                    this.renderWordGrid();
+                }
+
+                cacheDom() {
+                    this.selectionScreen = document.getElementById('selectionScreen');
+                    this.practiceScreen = document.getElementById('practiceScreen');
+                    this.wordGrid = document.getElementById('wordGrid');
+                    this.backBtn = document.getElementById('backBtn');
+                    this.frenchDefinition = document.getElementById('frenchDefinition');
+                    this.pinyinDisplay = document.getElementById('pinyinDisplay');
+                    this.charactersRow = document.getElementById('charactersRow');
+                    this.messageArea = document.getElementById('messageArea');
+                    this.resetCanvasBtn = document.getElementById('resetCanvasBtn');
+                    this.resetBtnLabel = document.getElementById('resetBtnLabel');
+                    this.missCounter = document.getElementById('missCounter');
+                    this.missCountSpan = document.getElementById('missCount');
+
+                    this.modeStrokeBtn = document.getElementById('modeStrokeBtn');
+                    this.modeOutlineBtn = document.getElementById('modeOutlineBtn');
+                    this.modeNoOutlineBtn = document.getElementById('modeNoOutlineBtn');
+                }
+
+                bindEvents() {
+                    this.backBtn.addEventListener('click', () => this.showSelectionScreen());
+                    this.resetCanvasBtn.addEventListener('click', () => this.startCurrentMode());
+
+                    this.modeStrokeBtn.addEventListener('click', () => this.switchMode('stroke'));
+                    this.modeOutlineBtn.addEventListener('click', () => this.switchMode('outline'));
+                    this.modeNoOutlineBtn.addEventListener('click', () => this.switchMode('no-outline'));
+                }
+
+                renderWordGrid() {
+                    this.wordGrid.innerHTML = '';
+                    this.deck.forEach((card, idx) => {
+                        const btn = document.createElement('button');
+                        btn.className = 'flex items-center justify-between p-4 bg-white dark:bg-gray-800 rounded-xl shadow border border-gray-200 dark:border-gray-700 hover:border-blue-500 dark:hover:border-blue-400 transition-all text-left w-full';
+                        btn.innerHTML = `
+                            <div>
+                                <div class="text-xl font-bold text-gray-800 dark:text-white">${card.chinese}</div>
+                                <div class="text-xs text-gray-500 dark:text-gray-400">${card.pinyin || ''}</div>
+                            </div>
+                            <div class="text-sm font-medium text-blue-600 dark:text-blue-400">
+                                ${card.french || ''}
+                            </div>
+                        `;
+                        btn.addEventListener('click', () => this.selectWord(idx));
+                        this.wordGrid.appendChild(btn);
+                    });
+                }
+
+                showSelectionScreen() {
+                    this.destroyAllWriters();
+                    this.practiceScreen.classList.add('hidden');
+                    this.selectionScreen.classList.remove('hidden');
+                    this.selectedWordIndex = null;
+                }
+
+                selectWord(index) {
+                    this.selectedWordIndex = index;
+                    this.selectionScreen.classList.add('hidden');
+                    this.practiceScreen.classList.remove('hidden');
+
+                    const word = this.deck[index];
+                    this.frenchDefinition.textContent = word.french || '';
+                    this.pinyinDisplay.textContent = word.pinyin || '';
+
+                    this.switchMode('stroke');
+                }
+
+                switchMode(mode) {
+                    this.currentMode = mode;
+                    this.updateModeButtonsUI();
+                    this.startCurrentMode();
+                }
+
+                updateModeButtonsUI() {
+                    const activeClass = 'bg-blue-500 text-white border-blue-500 shadow-sm';
+                    const inactiveClass = 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700';
+
+                    [this.modeStrokeBtn, this.modeOutlineBtn, this.modeNoOutlineBtn].forEach(btn => {
+                        btn.className = `px-2 py-3 rounded-lg font-medium text-xs sm:text-sm border transition-all text-center ${inactiveClass}`;
+                    });
+
+                    if (this.currentMode === 'stroke') {
+                        this.modeStrokeBtn.className = `px-2 py-3 rounded-lg font-medium text-xs sm:text-sm border transition-all text-center ${activeClass}`;
+                        this.resetBtnLabel.textContent = 'Replay Animation';
+                    } else if (this.currentMode === 'outline') {
+                        this.modeOutlineBtn.className = `px-2 py-3 rounded-lg font-medium text-xs sm:text-sm border transition-all text-center ${activeClass}`;
+                        this.resetBtnLabel.textContent = 'Reset Canvas';
+                    } else if (this.currentMode === 'no-outline') {
+                        this.modeNoOutlineBtn.className = `px-2 py-3 rounded-lg font-medium text-xs sm:text-sm border transition-all text-center ${activeClass}`;
+                        this.resetBtnLabel.textContent = 'Reset Canvas';
+                    }
+                }
+
+                startCurrentMode() {
+                    this.destroyAllWriters();
+                    this.buildCharacterRow();
+
+                    const word = this.deck[this.selectedWordIndex];
+                    const chars = [...word.chinese];
+                    const containers = chars.map((_, i) => document.getElementById(`char-${i}`));
+
+                    this.totalMistakes = 0;
+                    this.missCounter.classList.add('hidden');
+
+                    if (this.currentMode === 'stroke') {
+                        this.setMessage('🎬 Watching stroke order animation...');
+                        chars.forEach((ch, i) => {
+                            const writer = this.createWriter(containers[i], ch, true);
+                            if (writer) this.writers.push(writer);
+                        });
+                        this.chainAnimations(0);
+                    } else {
+                        const showOutline = (this.currentMode === 'outline');
+                        this.setMessage(showOutline ? '✏️ Practice writing with the outline hint.' : '✍️ Practice writing without the outline.');
+                        chars.forEach((ch, i) => {
+                            const writer = this.createWriter(containers[i], ch, showOutline);
+                            if (writer) this.writers.push(writer);
+                        });
+                        this.startQuizzes();
+                    }
+                }
+
+                getWriterDimensions() {
+                    const containerWidth = this.charactersRow.clientWidth;
+                    const w = Math.min(containerWidth * 0.95, 400);
+                    return { width: w, height: w };
+                }
+
+                createWriter(container, char, showOutline) {
+                    const dims = this.getWriterDimensions();
+                    try {
+                        return HanziWriter.create(container, char, {
+                            width: dims.width,
+                            height: dims.height,
+                            padding: 5,
+                            showOutline: showOutline,
+                            showCharacter: false,
+                            strokeColor: '#555',
+                            drawingColor: '#333',
+                            strokeAnimationSpeed: 1,
+                            delayBetweenStrokes: 300,
+                            showHintAfterMisses: showOutline ? 3 : 1,
+                            highlightOnComplete: true
+                        });
+                    } catch (e) {
+                        console.error('Writer creation error:', e);
+                        return null;
+                    }
+                }
+
+                destroyAllWriters() {
+                    this.writers.forEach(w => {
+                        try {
+                            w.cancelQuiz();
+                            w.cleanup();
+                        } catch (e) {}
+                    });
+                    this.writers = [];
+                    this.charactersRow.innerHTML = '';
+                }
+
+                buildCharacterRow() {
+                    this.charactersRow.innerHTML = '';
+                    const word = this.deck[this.selectedWordIndex];
+                    const chars = [...word.chinese];
+                    chars.forEach((_, idx) => {
+                        const div = document.createElement('div');
+                        div.className = 'char-canvas-container bg-white dark:bg-gray-800 rounded-lg shadow border border-gray-200 dark:border-gray-700';
+                        div.id = `char-${idx}`;
+                        this.charactersRow.appendChild(div);
+                    });
+                }
+
+                chainAnimations(index) {
+                    if (index >= this.writers.length || !this.writers[index]) {
+                        this.setMessage('✨ Animation finished. Replay or switch modes above.');
+                        return;
+                    }
+                    const writer = this.writers[index];
+                    try {
+                        writer.animateCharacter({
+                            onComplete: () => {
+                                setTimeout(() => this.chainAnimations(index + 1), 200);
+                            }
+                        });
+                    } catch (e) {
+                        setTimeout(() => this.chainAnimations(index + 1), 200);
+                    }
+                }
+
+                startQuizzes() {
+                    let remaining = this.writers.length;
+                    this.writers.forEach(w => {
+                        if (!w) return;
+                        w.quiz({
+                            onMistake: () => {
+                                this.totalMistakes++;
+                                this.missCounter.classList.remove('hidden');
+                                this.missCountSpan.textContent = this.totalMistakes;
+                            },
+                            onComplete: () => {
+                                remaining--;
+                                if (remaining <= 0) {
+                                    this.setMessage('🎉 Excellent! Completed successfully!');
+                                }
+                            }
+                        });
+                    });
+                }
+
+                setMessage(msg) {
+                    if (this.messageArea) this.messageArea.textContent = msg;
+                }
+            }
+
+            new WritingPracticeApp(loadedFlashcards);
+        }
+    </script>
+</body>
+
+</html>

@@ -169,7 +169,7 @@
                     </span>
                     <div class="flex items-center space-x-2">
                         <button id="decHintBtn" class="w-8 h-8 rounded-lg bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-white font-bold hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors flex items-center justify-center">-</button>
-                        <span id="hintThresholdVal" class="font-bold text-gray-800 dark:text-white min-w-[20px] text-center">3</span>
+                        <span id="hintThresholdVal" class="font-bold text-gray-800 dark:text-white min-w-[30px] text-center">3</span>
                         <button id="incHintBtn" class="w-8 h-8 rounded-lg bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-white font-bold hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors flex items-center justify-center">+</button>
                     </div>
                 </div>
@@ -229,7 +229,8 @@
                     this.deck = Array.isArray(flashcards) ? flashcards : [];
                     this.selectedWordIndex = null;
                     this.currentMode = 'stroke'; // 'stroke' | 'outline' | 'no-outline'
-                    this.hintThreshold = 3; // Default strokes/misses before help appears
+                    this.hintThreshold = 3; // 1 to 5, where 6 represents "Max (No Hint)"
+                    this.MAX_THRESHOLD = 6;
 
                     this.writers = [];
                     this.totalMistakes = 0;
@@ -276,16 +277,39 @@
                     this.decHintBtn.addEventListener('click', () => {
                         if (this.hintThreshold > 1) {
                             this.hintThreshold--;
-                            this.hintThresholdVal.textContent = this.hintThreshold;
-                            if (this.currentMode !== 'stroke') this.startCurrentMode();
+                            this.updateHintDisplay();
+                            this.applyHintThresholdLive();
                         }
                     });
 
                     this.incHintBtn.addEventListener('click', () => {
-                        if (this.hintThreshold < 10) {
+                        if (this.hintThreshold < this.MAX_THRESHOLD) {
                             this.hintThreshold++;
-                            this.hintThresholdVal.textContent = this.hintThreshold;
-                            if (this.currentMode !== 'stroke') this.startCurrentMode();
+                            this.updateHintDisplay();
+                            this.applyHintThresholdLive();
+                        }
+                    });
+                }
+
+                updateHintDisplay() {
+                    if (this.hintThreshold >= this.MAX_THRESHOLD) {
+                        this.hintThresholdVal.textContent = 'Max (No Hint)';
+                    } else {
+                        this.hintThresholdVal.textContent = this.hintThreshold;
+                    }
+                }
+
+                applyHintThresholdLive() {
+                    if (this.currentMode === 'stroke') return;
+                    
+                    const actualThreshold = (this.hintThreshold >= this.MAX_THRESHOLD) ? false : this.hintThreshold;
+                    this.writers.forEach(w => {
+                        if (w) {
+                            try {
+                                w.updateQuizOptions({
+                                    showHintAfterMisses: actualThreshold
+                                });
+                            } catch (e) {}
                         }
                     });
                 }
@@ -342,6 +366,8 @@
                         btn.className = `px-2 py-3 rounded-lg font-medium text-xs sm:text-sm border transition-all text-center ${inactiveClass}`;
                     });
 
+                    this.updateHintDisplay();
+
                     if (this.currentMode === 'stroke') {
                         this.modeStrokeBtn.className = `px-2 py-3 rounded-lg font-medium text-xs sm:text-sm border transition-all text-center ${activeClass}`;
                         this.resetBtnLabel.textContent = 'Replay Animation';
@@ -394,6 +420,8 @@
 
                 createWriter(container, char, showOutline) {
                     const dims = this.getWriterDimensions();
+                    const actualThreshold = (this.hintThreshold >= this.MAX_THRESHOLD) ? false : this.hintThreshold;
+
                     try {
                         return HanziWriter.create(container, char, {
                             width: dims.width,
@@ -405,7 +433,7 @@
                             drawingColor: '#333',
                             strokeAnimationSpeed: 1,
                             delayBetweenStrokes: 300,
-                            showHintAfterMisses: this.hintThreshold,
+                            showHintAfterMisses: actualThreshold,
                             highlightOnComplete: true
                         });
                     } catch (e) {

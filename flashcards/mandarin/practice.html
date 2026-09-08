@@ -125,7 +125,7 @@
             </h1>
         </div>
 
-        <!-- 1. WORD SELECTION SCREEN (Expanded Size) -->
+        <!-- 1. WORD SELECTION SCREEN -->
         <div id="selectionScreen" class="max-w-5xl mx-auto space-y-6">
             <p class="text-center text-lg text-gray-600 dark:text-gray-300 font-medium">Choose a word to study:</p>
             <div id="wordGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5"></div>
@@ -160,6 +160,18 @@
                     <button id="modeNoOutlineBtn" class="px-2 py-3 rounded-lg font-medium text-xs sm:text-sm border transition-all text-center">
                         ✍️ No Outline
                     </button>
+                </div>
+
+                <!-- Hint Threshold Control -->
+                <div id="hintControlWrapper" class="flex items-center justify-between bg-white dark:bg-gray-800 p-3 rounded-xl border border-gray-200 dark:border-gray-700 mt-3 text-sm">
+                    <span class="text-gray-700 dark:text-gray-300 font-medium flex items-center gap-1.5">
+                        <i class="fa fa-lightbulb-o text-yellow-500"></i> Misses before hint:
+                    </span>
+                    <div class="flex items-center space-x-2">
+                        <button id="decHintBtn" class="w-8 h-8 rounded-lg bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-white font-bold hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors flex items-center justify-center">-</button>
+                        <span id="hintThresholdVal" class="font-bold text-gray-800 dark:text-white min-w-[20px] text-center">3</span>
+                        <button id="incHintBtn" class="w-8 h-8 rounded-lg bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-white font-bold hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors flex items-center justify-center">+</button>
+                    </div>
                 </div>
             </div>
 
@@ -217,6 +229,7 @@
                     this.deck = Array.isArray(flashcards) ? flashcards : [];
                     this.selectedWordIndex = null;
                     this.currentMode = 'stroke'; // 'stroke' | 'outline' | 'no-outline'
+                    this.hintThreshold = 3; // Default strokes/misses before help appears
 
                     this.writers = [];
                     this.totalMistakes = 0;
@@ -245,6 +258,11 @@
                     this.modeStrokeBtn = document.getElementById('modeStrokeBtn');
                     this.modeOutlineBtn = document.getElementById('modeOutlineBtn');
                     this.modeNoOutlineBtn = document.getElementById('modeNoOutlineBtn');
+
+                    this.hintControlWrapper = document.getElementById('hintControlWrapper');
+                    this.hintThresholdVal = document.getElementById('hintThresholdVal');
+                    this.decHintBtn = document.getElementById('decHintBtn');
+                    this.incHintBtn = document.getElementById('incHintBtn');
                 }
 
                 bindEvents() {
@@ -254,6 +272,22 @@
                     this.modeStrokeBtn.addEventListener('click', () => this.switchMode('stroke'));
                     this.modeOutlineBtn.addEventListener('click', () => this.switchMode('outline'));
                     this.modeNoOutlineBtn.addEventListener('click', () => this.switchMode('no-outline'));
+
+                    this.decHintBtn.addEventListener('click', () => {
+                        if (this.hintThreshold > 1) {
+                            this.hintThreshold--;
+                            this.hintThresholdVal.textContent = this.hintThreshold;
+                            if (this.currentMode !== 'stroke') this.startCurrentMode();
+                        }
+                    });
+
+                    this.incHintBtn.addEventListener('click', () => {
+                        if (this.hintThreshold < 10) {
+                            this.hintThreshold++;
+                            this.hintThresholdVal.textContent = this.hintThreshold;
+                            if (this.currentMode !== 'stroke') this.startCurrentMode();
+                        }
+                    });
                 }
 
                 renderWordGrid() {
@@ -311,12 +345,15 @@
                     if (this.currentMode === 'stroke') {
                         this.modeStrokeBtn.className = `px-2 py-3 rounded-lg font-medium text-xs sm:text-sm border transition-all text-center ${activeClass}`;
                         this.resetBtnLabel.textContent = 'Replay Animation';
+                        this.hintControlWrapper.classList.add('hidden');
                     } else if (this.currentMode === 'outline') {
                         this.modeOutlineBtn.className = `px-2 py-3 rounded-lg font-medium text-xs sm:text-sm border transition-all text-center ${activeClass}`;
                         this.resetBtnLabel.textContent = 'Reset Canvas';
+                        this.hintControlWrapper.classList.remove('hidden');
                     } else if (this.currentMode === 'no-outline') {
                         this.modeNoOutlineBtn.className = `px-2 py-3 rounded-lg font-medium text-xs sm:text-sm border transition-all text-center ${activeClass}`;
                         this.resetBtnLabel.textContent = 'Reset Canvas';
+                        this.hintControlWrapper.classList.remove('hidden');
                     }
                 }
 
@@ -368,7 +405,7 @@
                             drawingColor: '#333',
                             strokeAnimationSpeed: 1,
                             delayBetweenStrokes: 300,
-                            showHintAfterMisses: showOutline ? 3 : 1,
+                            showHintAfterMisses: this.hintThreshold,
                             highlightOnComplete: true
                         });
                     } catch (e) {

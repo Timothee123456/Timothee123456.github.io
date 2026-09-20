@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Léxico "El cliché de la siesta"</title>
+    <style>
+        /* General styling for clean background and centered elements */
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background-color: #ffffff;
+            color: #000000;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            text-align: left;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 42px;
+            font-weight: normal;
+            margin-bottom: 40px;
+            color: #000;
+        }
+
+        /* Input Boxes & Fields */
+        .box-input {
+            border: 2px solid #000;
+            padding: 8px 12px;
+            font-size: 16px;
+            width: 320px;
+            outline: none;
+            background: #fff;
+            box-sizing: border-box;
+            color: #000;
+        }
+
+        /* Section Layouts */
+        .top-section {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 50px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .column {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .section-label {
+            font-size: 18px;
+            margin-bottom: 5px;
+            font-weight: normal;
+        }
+
+        /* Arrow Block styling */
+        .arrow-container {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 160px;
+            height: 50px;
+            margin: 0 10px;
+        }
+
+        .arrow-shape {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #666;
+            background-color: #f9f9f9;
+            clip-path: polygon(0% 20%, 70% 20%, 70% 0%, 100% 50%, 70% 100%, 70% 80%, 0% 80%);
+            font-size: 18px;
+            color: #000000;
+            font-weight: normal;
+            box-sizing: border-box;
+        }
+
+        /* Bottom Sections */
+        .bottom-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .inline-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 18px;
+        }
+
+        /* Select / Options element */
+        select.box-input {
+            width: 120px;
+            cursor: pointer;
+        }
+
+        /* Feedback Indicators */
+        .correction-mark {
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        /* Spacing for inline indicators */
+        .column .correction-mark {
+            margin-left: 8px;
+        }
+
+        .correct {
+            color: #008000 !important;
+        }
+
+        .incorrect {
+            color: #cc0000 !important;
+        }
+
+        /* Button Styles */
+        .myButton {
+            background-color: #4cd964;
+            border-radius: 6px;
+            border: 1px solid #30b046;
+            display: inline-block;
+            cursor: pointer;
+            color: #ffffff;
+            font-family: Arial;
+            font-size: 18px;
+            font-weight: bold;
+            padding: 10px 24px;
+            text-decoration: none;
+            margin: 10px;
+        }
+        .myButton:hover {
+            background-color: #3bbd53;
+        }
+        .myButton:active {
+            position: relative;
+            top: 1px;
+        }
+
+        .myButton2 {
+            background-color: #007aff;
+            border-radius: 6px;
+            border: 1px solid #0051a8;
+            display: inline-block;
+            cursor: pointer;
+            color: #ffffff;
+            font-family: Arial;
+            font-size: 18px;
+            font-weight: bold;
+            padding: 10px 24px;
+            text-decoration: none;
+            margin: 10px;
+        }
+        .myButton2:hover {
+            background-color: #0062cc;
+        }
+        .myButton2:active {
+            position: relative;
+            top: 1px;
+        }
+
+        .center-controls {
+            text-align: center;
+            margin-top: 30px;
+            margin-bottom: 50px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1 id="mainTitle">Léxico "El cliché de la siesta"</h1>
+
+    <!-- SECTION 1: Un cliché & Conséquences -->
+    <div class="top-section">
+        <!-- Left Column: Un cliché -->
+        <div class="column">
+            <div class="section-label">Un cliché</div>
+            <div>
+                <input type="text" autocomplete="off" id="1" class="box-input">
+                <span id="correction1" class="correction-mark"></span>
+            </div>
+            <div>
+                <input type="text" autocomplete="off" id="2" class="box-input">
+                <span id="correction2" class="correction-mark"></span>
+            </div>
+            <div>
+                <input type="text" autocomplete="off" id="3" class="box-input">
+                <span id="correction3" class="correction-mark"></span>
+            </div>
+            <div>
+                <input type="text" autocomplete="off" id="4" class="box-input">
+                <span id="correction4" class="correction-mark"></span>
+            </div>
+        </div>
+
+        <!-- Arrow: consecuencia -->
+        <div class="arrow-container">
+            <div class="arrow-shape" id="arrowText">Consecuencia</div>
+        </div>
+
+        <!-- Right Column: Conséquences -->
+        <div class="column">
+            <div style="height: 26px;"></div> <!-- Spacer matching title height -->
+            <div>
+                <input type="text" autocomplete="off" id="5" class="box-input" placeholder="Juger trop vite">
+                <span id="correction5" class="correction-mark"></span>
+            </div>
+            <div>
+                <input type="text" autocomplete="off" id="6" class="box-input" placeholder="Donner une mauvaise image de">
+                <span id="correction6" class="correction-mark"></span>
+            </div>
+            <div>
+                <input type="text" autocomplete="off" id="7" class="box-input" placeholder="Porter préjudice à">
+                <span id="correction7" class="correction-mark"></span>
+            </div>
+            <div>
+                <input type="text" autocomplete="off" id="8" class="box-input" placeholder="Nuire à la réputation des Espagnols">
+                <span id="correction8" class="correction-mark"></span>
+            </div>
+        </div>
+    </div>
+
+    <!-- BOTTOM SECTIONS -->
+    <div class="bottom-section">
+        <!-- Bottom Left Section -->
+        <div class="column">
+            <div>
+                <input type="text" autocomplete="off" id="9" class="box-input" placeholder="Faire la sieste">
+                <span id="correction9" class="correction-mark"></span>
+            </div>
+            <div>
+                <input type="text" autocomplete="off" id="10" class="box-input" placeholder="Être fatigué">
+                <span id="correction10" class="correction-mark"></span>
+            </div>
+            <div>
+                <input type="text" autocomplete="off" id="11" class="box-input" placeholder="se reposer">
+                <span id="correction11" class="correction-mark"></span>
+            </div>
+        </div>
+
+        <!-- Bottom Right Section: Les horaires de travail -->
+        <div class="column">
+            <div>
+                <input type="text" autocomplete="off" id="12" class="box-input" placeholder="Les horaires de travail">
+                <span id="correction12" class="correction-mark"></span>
+            </div>
+            <div class="inline-group">
+                <span>&gt;</span>
+                <input type="text" autocomplete="off" id="13" class="box-input" placeholder="En Espagne, on travaille" style="width: 260px;">
+                <span id="correction13" class="correction-mark"></span>
+                <select id="14" class="box-input">
+                    <option value="" disabled selected>Option...</option>
+                    <option value="tarde">tarde</option>
+                    <option value="temprano">temprano</option>
+                </select>
+                <span id="correction14" class="correction-mark"></span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Control Buttons -->
+    <div class="center-controls">
+        <a href="javascript:void(0)" class="myButton" onclick="myFunction()" id="Terminado">Terminé</a>
+        <a href="javascript:void(0)" class="myButton2" onclick="reset()">Réinitialiser</a>
+    </div>
+</div>
+
+<script>
+    function cleanStr(str) {
+        if (!str) return "";
+        return str.trim().toLowerCase()
+            .normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+    }
+
+    function myFunction() {
+        document.getElementById("Terminado").style.display = "none";
+
+        // Section 1: Left column (Un cliché)
+        const validCliche = ["un topico", "un cliche", "un estereotipo", "una idea preconcebida"];
+        const defaultsCliche = ["Un tópico", "Un cliché", "Un estereotipo", "Una idea preconcebida"];
+        const usedCliche = [];
+
+        for (let i = 1; i <= 4; i++) {
+            const inputElem = document.getElementById(i.toString());
+            const corrElem = document.getElementById("correction" + i);
+            const valClean = cleanStr(inputElem.value);
+
+            if (valClean !== "" && validCliche.includes(valClean) && !usedCliche.includes(valClean)) {
+                usedCliche.push(valClean);
+                inputElem.style.color = "green";
+                corrElem.innerHTML = "✓";
+                corrElem.className = "correction-mark correct";
+            } else if (valClean === "") {
+                // Empty input: Fill textbox in red, cross only
+                inputElem.value = defaultsCliche[i - 1];
+                inputElem.style.color = "red";
+                corrElem.innerHTML = "✕";
+                corrElem.className = "correction-mark incorrect";
+            } else {
+                // Wrong input: Keep user text red, cross + correct answer outside
+                inputElem.style.color = "red";
+                corrElem.innerHTML = "✕ " + defaultsCliche[i - 1];
+                corrElem.className = "correction-mark incorrect";
+            }
+        }
+
+        // Section 1: Right column & lower sections
+        const fieldMap = [
+            { id: 5, target: "juzgar demasiado rapido", display: "Juzgar demasiado rápido" },
+            { id: 6, target: "dar una mala imagen de", display: "Dar una mala imagen de" },
+            { id: 7, target: "perjudicar a", display: "Perjudicar a" },
+            { id: 8, target: "danar la reputacion de los espanoles", display: "Dañar la reputación de los españoles", altTarget: "danar la reputacion de los espanol" },
+            { id: 9, target: "dormir la siesta", display: "Dormir la siesta" },
+            { id: 10, target: "estar cansado", display: "Estar cansado" },
+            { id: 11, target: "descansar", display: "descansar" },
+            { id: 12, target: "los horarios de trabajo", display: "Los horarios de trabajo" },
+            { id: 13, target: "en espana se trabaja", display: "En España se trabaja" }
+        ];
+
+        fieldMap.forEach(item => {
+            const inputElem = document.getElementById(item.id.toString());
+            const corrElem = document.getElementById("correction" + item.id);
+            const valClean = cleanStr(inputElem.value);
+
+            if (valClean !== "" && (valClean === item.target || (item.altTarget && valClean === item.altTarget))) {
+                inputElem.style.color = "green";
+                corrElem.innerHTML = "✓";
+                corrElem.className = "correction-mark correct";
+            } else if (valClean === "") {
+                // Empty input: Fill textbox in red, cross only
+                inputElem.value = item.display;
+                inputElem.style.color = "red";
+                corrElem.innerHTML = "✕";
+                corrElem.className = "correction-mark incorrect";
+            } else {
+                // Wrong input: Keep user text red, cross + correct answer outside
+                inputElem.style.color = "red";
+                corrElem.innerHTML = "✕ " + item.display;
+                corrElem.className = "correction-mark incorrect";
+            }
+        });
+
+        // Field 14: Select Option
+        const selectElem = document.getElementById("14");
+        const corrSelect = document.getElementById("correction14");
+        if (selectElem.value === "tarde") {
+            selectElem.style.color = "green";
+            corrSelect.innerHTML = "✓";
+            corrSelect.className = "correction-mark correct";
+        } else {
+            selectElem.value = "tarde";
+            selectElem.style.color = "red";
+            corrSelect.innerHTML = "✕";
+            corrSelect.className = "correction-mark incorrect";
+        }
+    }
+
+    function reset() {
+        document.getElementById("Terminado").style.display = "inline-block";
+
+        for (let i = 1; i <= 13; i++) {
+            const inputElem = document.getElementById(i.toString());
+            const corrElem = document.getElementById("correction" + i);
+
+            inputElem.value = "";
+            inputElem.style.color = "black";
+            if (corrElem) corrElem.innerHTML = "";
+        }
+
+        const selectElem = document.getElementById("14");
+        const corrSelect = document.getElementById("correction14");
+        selectElem.selectedIndex = 0;
+        selectElem.style.color = "black";
+        if (corrSelect) corrSelect.innerHTML = "";
+    }
+</script>
+</body>
+</html>

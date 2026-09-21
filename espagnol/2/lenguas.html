@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Léxico "Lenguas de España"</title>
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background-color: #ffffff;
+            color: #000000;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 42px;
+            font-weight: normal;
+            margin-bottom: 30px;
+            color: #000;
+        }
+
+        .divider-line {
+            width: 100%;
+            height: 1px;
+            background-color: #a0a0a0;
+            margin-bottom: 30px;
+        }
+
+        h2.section-heading {
+            font-size: 32px;
+            font-weight: normal;
+            color: #88c070;
+            margin: 30px 0 20px 0;
+        }
+
+        /* Generic Box Styling */
+        .box-input {
+            border: 2px solid #000;
+            padding: 6px 10px;
+            font-size: 18px;
+            outline: none;
+            background: #fff;
+            box-sizing: border-box;
+            color: #000;
+            text-align: center;
+        }
+
+        .box-input::placeholder {
+            color: #1a0dab;
+            opacity: 1;
+        }
+
+        /* Layout Structure */
+        .centered-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .row-group {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin: 8px 0;
+            font-size: 18px;
+            flex-wrap: wrap;
+        }
+
+        .label-text {
+            font-size: 18px;
+            min-width: 120px;
+            text-align: right;
+        }
+
+        /* Feedback styling */
+        .correction-mark {
+            font-weight: bold;
+            font-size: 18px;
+            margin-left: 6px;
+        }
+
+        .correct {
+            color: #008000 !important;
+        }
+
+        .incorrect {
+            color: #cc0000 !important;
+        }
+
+        /* Control Buttons */
+        .center-controls {
+            text-align: center;
+            margin-top: 40px;
+            margin-bottom: 50px;
+        }
+
+        .myButton, .myButton2 {
+            background-color: #e0e0e0;
+            border: 1px solid #707070;
+            color: #000;
+            padding: 8px 20px;
+            text-decoration: none;
+            font-size: 16px;
+            margin: 0 10px;
+            cursor: pointer;
+            border-radius: 3px;
+        }
+
+        .myButton:hover, .myButton2:hover {
+            background-color: #d0d0d0;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Léxico "Lenguas de España"</h1>
+    <div class="divider-line"></div>
+
+    <!-- UPPER SECTION: LENGUAS -->
+    <div class="centered-group">
+        <div>
+            <input type="text" autocomplete="off" id="1" class="box-input" placeholder="Langue officielle" style="width: 280px;">
+            <span id="correction1" class="correction-mark"></span>
+        </div>
+
+        <div class="row-group">
+            <span>&gt;</span>
+            <input type="text" autocomplete="off" id="2" class="box-input" style="width: 130px;">
+            <span id="correction2" class="correction-mark"></span>
+            <span>/</span>
+            <input type="text" autocomplete="off" id="3" class="box-input" style="width: 130px;">
+            <span id="correction3" class="correction-mark"></span>
+        </div>
+
+        <div style="margin-top: 10px;">
+            <input type="text" autocomplete="off" id="4" class="box-input" placeholder="Langues co-officielles" style="width: 280px;">
+            <span id="correction4" class="correction-mark"></span>
+        </div>
+
+        <div class="row-group">
+            <span>&gt;</span>
+            <input type="text" autocomplete="off" id="5" class="box-input" style="width: 250px;">
+            <span id="correction5" class="correction-mark"></span>
+        </div>
+        <div class="row-group">
+            <span>&gt;</span>
+            <input type="text" autocomplete="off" id="6" class="box-input" style="width: 250px;">
+            <span id="correction6" class="correction-mark"></span>
+        </div>
+        <div class="row-group">
+            <span>&gt;</span>
+            <input type="text" autocomplete="off" id="7" class="box-input" style="width: 250px;">
+            <span id="correction7" class="correction-mark"></span>
+        </div>
+        <div class="row-group">
+            <span>&gt;</span>
+            <input type="text" autocomplete="off" id="8" class="box-input" style="width: 250px;">
+            <span id="correction8" class="correction-mark"></span>
+        </div>
+    </div>
+
+    <h2 class="section-heading">Vocabulaire</h2>
+
+    <!-- LOWER SECTION: VOCABULARY -->
+    <div style="display: flex; flex-direction: column; align-items: center;">
+        
+        <div class="row-group">
+            <span class="label-text">Dont :</span>
+            <input type="text" autocomplete="off" id="9" class="box-input" style="width: 180px;">
+            <span id="correction9" class="correction-mark"></span>
+        </div>
+
+        <div class="row-group">
+            <span class="label-text">Pourquoi :</span>
+            <input type="text" autocomplete="off" id="10" class="box-input" style="width: 180px;">
+            <span id="correction10" class="correction-mark"></span>
+        </div>
+
+        <div class="row-group">
+            <span class="label-text">Parce que :</span>
+            <input type="text" autocomplete="off" id="11" class="box-input" style="width: 180px;">
+            <span id="correction11" class="correction-mark"></span>
+        </div>
+
+        <div class="row-group">
+            <span class="label-text">Il y a :</span>
+            <input type="text" autocomplete="off" id="12" class="box-input" style="width: 180px;">
+            <span id="correction12" class="correction-mark"></span>
+        </div>
+
+        <div class="row-group">
+            <span class="label-text">Il y a eu :</span>
+            <input type="text" autocomplete="off" id="13" class="box-input" style="width: 180px;">
+            <span id="correction13" class="correction-mark"></span>
+        </div>
+
+        <div class="row-group">
+            <span class="label-text">Interdire :</span>
+            <input type="text" autocomplete="off" id="14" class="box-input" style="width: 180px;">
+            <span id="correction14" class="correction-mark"></span>
+        </div>
+
+        <div class="row-group">
+            <span class="label-text">La dictature :</span>
+            <input type="text" autocomplete="off" id="15" class="box-input" style="width: 180px;">
+            <span id="correction15" class="correction-mark"></span>
+        </div>
+
+        <div class="row-group">
+            <span class="label-text">La démocratie :</span>
+            <input type="text" autocomplete="off" id="16" class="box-input" style="width: 180px;">
+            <span id="correction16" class="correction-mark"></span>
+        </div>
+
+        <div class="row-group">
+            <span class="label-text">Un changement :</span>
+            <input type="text" autocomplete="off" id="17" class="box-input" style="width: 180px;">
+            <span id="correction17" class="correction-mark"></span>
+            <span>/</span>
+            <input type="text" autocomplete="off" id="18" class="box-input" style="width: 180px;">
+            <span id="correction18" class="correction-mark"></span>
+        </div>
+
+        <div class="row-group">
+            <span class="label-text">La Constitution :</span>
+            <input type="text" autocomplete="off" id="19" class="box-input" style="width: 180px;">
+            <span id="correction19" class="correction-mark"></span>
+            <span>(</span>
+            <input type="text" autocomplete="off" id="20" class="box-input" placeholder="année" style="width: 170px;">
+            <span id="correction20" class="correction-mark"></span>
+            <span>)</span>
+        </div>
+
+        <div class="row-group">
+            <span>L'espagnol a été imposed : El castellano</span>
+            <input type="text" autocomplete="off" id="21" class="box-input" style="width: 180px;">
+            <span id="correction21" class="correction-mark"></span>
+        </div>
+
+        <div class="row-group">
+            <span class="label-text">Le droit à :</span>
+            <input type="text" autocomplete="off" id="22" class="box-input" style="width: 180px;">
+            <span id="correction22" class="correction-mark"></span>
+        </div>
+
+        <div class="row-group">
+            <span class="label-text">Être capable :</span>
+            <input type="text" autocomplete="off" id="23" class="box-input" style="width: 180px;">
+            <span id="correction23" class="correction-mark"></span>
+        </div>
+
+        <div class="row-group">
+            <span class="label-text">Être inconnu :</span>
+            <input type="text" autocomplete="off" id="24" class="box-input" style="width: 180px;">
+            <span id="correction24" class="correction-mark"></span>
+        </div>
+
+        <div class="row-group">
+            <span class="label-text">Siffler :</span>
+            <input type="text" autocomplete="off" id="25" class="box-input" style="width: 180px;">
+            <span id="correction25" class="correction-mark"></span>
+        </div>
+
+        <div class="row-group">
+            <span class="label-text">En sifflant :</span>
+            <input type="text" autocomplete="off" id="26" class="box-input" style="width: 180px;">
+            <span id="correction26" class="correction-mark"></span>
+        </div>
+
+        <div class="row-group">
+            <span class="label-text">Exprimer :</span>
+            <input type="text" autocomplete="off" id="27" class="box-input" style="width: 180px;">
+            <span id="correction27" class="correction-mark"></span>
+        </div>
+
+        <div class="row-group">
+            <span class="label-text">Maîtriser :</span>
+            <input type="text" autocomplete="off" id="28" class="box-input" style="width: 180px;">
+            <span id="correction28" class="correction-mark"></span>
+        </div>
+
+        <div class="row-group">
+            <span class="label-text">Une langue :</span>
+            <input type="text" autocomplete="off" id="29" class="box-input" style="width: 150px;">
+            <span id="correction29" class="correction-mark"></span>
+            <span>/</span>
+            <input type="text" autocomplete="off" id="30" class="box-input" style="width: 150px;">
+            <span id="correction30" class="correction-mark"></span>
+            <span>/</span>
+            <input type="text" autocomplete="off" id="31" class="box-input" style="width: 150px;">
+            <span id="correction31" class="correction-mark"></span>
+        </div>
+
+        <div class="row-group">
+            <span class="label-text">Important :</span>
+            <input type="text" autocomplete="off" id="32" class="box-input" style="width: 180px;">
+            <span id="correction32" class="correction-mark"></span>
+            <span>/</span>
+            <input type="text" autocomplete="off" id="33" class="box-input" style="width: 180px;">
+            <span id="correction33" class="correction-mark"></span>
+        </div>
+
+        <div class="row-group">
+            <span class="label-text">Avant :</span>
+            <input type="text" autocomplete="off" id="34" class="box-input" style="width: 180px;">
+            <span id="correction34" class="correction-mark"></span>
+        </div>
+
+        <div class="row-group">
+            <span class="label-text">Après :</span>
+            <input type="text" autocomplete="off" id="35" class="box-input" style="width: 180px;">
+            <span id="correction35" class="correction-mark"></span>
+        </div>
+
+    </div>
+
+    <!-- BUTTONS -->
+    <div class="center-controls">
+        <a href="javascript:void(0)" class="myButton" onclick="myFunction()" id="Terminado">Terminé</a>
+        <a href="javascript:void(0)" class="myButton2" onclick="reset()">Réinitialiser</a>
+    </div>
+</div>
+
+<script>
+    function cleanStr(str) {
+        if (!str) return "";
+        return str.trim().toLowerCase()
+            .normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+    }
+
+    const fieldMap = [
+        { id: 1, target: "lengua oficial", display: "Lengua oficial" },
+        { id: 2, target: "castellano", display: "castellano" },
+        { id: 3, target: "espanol", display: "español" },
+        { id: 4, target: "lenguas cooficiales", display: "Lenguas cooficiales" },
+        { id: 5, target: "gallego", display: "gallego" },
+        { id: 6, target: "catalan", display: "catalán" },
+        { id: 7, target: "aranes", display: "aranés" },
+        { id: 8, target: "euskera", display: "euskera" },
+        { id: 9, target: "cuyo", display: "cuyo" },
+        { id: 10, target: "por que", display: "Por qué" },
+        { id: 11, target: "porque", display: "Porque" },
+        { id: 12, target: "hay", display: "Hay" },
+        { id: 13, target: "hubo", display: "hubo" },
+        { id: 14, target: "prohibir", display: "Prohibir" },
+        { id: 15, target: "la dictadura", display: "La dictadura" },
+        { id: 16, target: "la democracia", display: "La democracia" },
+        { id: 17, target: "un cambio", display: "Un cambio" },
+        { id: 18, target: "una evolucion", display: "Una evolución", altTarget: "un evolucion" },
+        { id: 19, target: "la constitucion", display: "La Constitución" },
+        { id: 20, target: "1978", display: "1978" },
+        { id: 21, target: "fue impuesto", display: "fue impuesto" },
+        { id: 22, target: "el derecho a", display: "El derecho a" },
+        { id: 23, target: "ser capaz", display: "Ser capaz" },
+        { id: 24, target: "ser desconocido", display: "Ser desconocido" },
+        { id: 25, target: "silbar", display: "Silba", altTarget: "silba" },
+        { id: 26, target: "silbando", display: "Silbando" },
+        { id: 27, target: "expresar", display: "Expresar" },
+        { id: 28, target: "dominar", display: "Dominar" },
+        { id: 29, target: "una lengua", display: "Una lengua" },
+        { id: 30, target: "un idioma", display: "Un idioma" },
+        { id: 31, target: "un lenguaje", display: "Un lenguaje" },
+        { id: 32, target: "significativo", display: "Significativo" },
+        { id: 33, target: "importante", display: "importante" },
+        { id: 34, target: "antes", display: "Antes" },
+        { id: 35, target: "despues", display: "Después" }
+    ];
+
+    function myFunction() {
+        document.getElementById("Terminado").style.display = "none";
+
+        fieldMap.forEach(item => {
+            const inputElem = document.getElementById(item.id.toString());
+            const corrElem = document.getElementById("correction" + item.id);
+            if (!inputElem || !corrElem) return;
+
+            const valClean = cleanStr(inputElem.value);
+
+            if (valClean !== "" && (valClean === item.target || (item.altTarget && valClean === item.altTarget))) {
+                inputElem.style.color = "green";
+                corrElem.innerHTML = "✓";
+                corrElem.className = "correction-mark correct";
+            } else if (valClean === "") {
+                inputElem.value = item.display;
+                inputElem.style.color = "red";
+                corrElem.innerHTML = "✕";
+                corrElem.className = "correction-mark incorrect";
+            } else {
+                inputElem.style.color = "red";
+                corrElem.innerHTML = "✕ " + item.display;
+                corrElem.className = "correction-mark incorrect";
+            }
+        });
+    }
+
+    function reset() {
+        document.getElementById("Terminado").style.display = "inline-block";
+
+        fieldMap.forEach(item => {
+            const inputElem = document.getElementById(item.id.toString());
+            const corrElem = document.getElementById("correction" + item.id);
+            if (inputElem) {
+                inputElem.value = "";
+                inputElem.style.color = "black";
+            }
+            if (corrElem) {
+                corrElem.innerHTML = "";
+            }
+        });
+    }
+</script>
+</body>
+</html>

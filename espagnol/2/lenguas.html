@@ -313,8 +313,8 @@
 
     const fieldMap = [
         { id: 1, target: "lengua oficial", display: "Lengua oficial" },
-        { id: 2, target: "castellano", display: "castellano" },
-        { id: 3, target: "espanol", display: "español" },
+        { id: 2, group: [2, 3], targets: ["castellano", "espanol"], display: "castellano" },
+        { id: 3, group: [2, 3], targets: ["castellano", "espanol"], display: "español" },
         { id: 4, target: "lenguas cooficiales", display: "Lenguas cooficiales" },
         { id: 5, target: "gallego", display: "gallego" },
         { id: 6, target: "catalan", display: "catalán" },
@@ -328,23 +328,23 @@
         { id: 14, target: "prohibir", display: "Prohibir" },
         { id: 15, target: "la dictadura", display: "La dictadura" },
         { id: 16, target: "la democracia", display: "La democracia" },
-        { id: 17, target: "un cambio", display: "Un cambio" },
-        { id: 18, target: "una evolucion", display: "Una evolución", altTarget: "un evolucion" },
+        { id: 17, group: [17, 18], targets: ["un cambio", "una evolucion", "un evolucion"], display: "Un cambio" },
+        { id: 18, group: [17, 18], targets: ["un cambio", "una evolucion", "un evolucion"], display: "Una evolución" },
         { id: 19, target: "la constitucion", display: "La Constitución" },
         { id: 20, target: "1978", display: "1978" },
         { id: 21, target: "fue impuesto", display: "fue impuesto" },
         { id: 22, target: "el derecho a", display: "El derecho a" },
         { id: 23, target: "ser capaz", display: "Ser capaz" },
         { id: 24, target: "ser desconocido", display: "Ser desconocido" },
-        { id: 25, target: "silbar", display: "Silba", altTarget: "silba" },
+        { id: 25, target: "silbar", display: "Silbar", altTarget: "silba" },
         { id: 26, target: "silbando", display: "Silbando" },
         { id: 27, target: "expresar", display: "Expresar" },
         { id: 28, target: "dominar", display: "Dominar" },
-        { id: 29, target: "una lengua", display: "Una lengua" },
-        { id: 30, target: "un idioma", display: "Un idioma" },
-        { id: 31, target: "un lenguaje", display: "Un lenguaje" },
-        { id: 32, target: "significativo", display: "Significativo" },
-        { id: 33, target: "importante", display: "importante" },
+        { id: 29, group: [29, 30, 31], targets: ["una lengua", "un idioma", "un lenguaje"], display: "Una lengua" },
+        { id: 30, group: [29, 30, 31], targets: ["una lengua", "un idioma", "un lenguaje"], display: "Un idioma" },
+        { id: 31, group: [29, 30, 31], targets: ["una lengua", "un idioma", "un lenguaje"], display: "Un lenguaje" },
+        { id: 32, group: [32, 33], targets: ["significativo", "importante"], display: "Significativo" },
+        { id: 33, group: [32, 33], targets: ["significativo", "importante"], display: "importante" },
         { id: 34, target: "antes", display: "Antes" },
         { id: 35, target: "despues", display: "Después" }
     ];
@@ -359,7 +359,28 @@
 
             const valClean = cleanStr(inputElem.value);
 
-            if (valClean !== "" && (valClean === item.target || (item.altTarget && valClean === item.altTarget))) {
+            let isCorrect = false;
+
+            if (item.group) {
+                // If the item belongs to a grouped set (like 2/3 or 29/30/31), check against all group targets
+                if (item.targets.includes(valClean)) {
+                    // Make sure the answer hasn't been duplicated in another field of the same group
+                    const otherFieldValues = item.group
+                        .filter(otherId => otherId !== item.id)
+                        .map(otherId => cleanStr(document.getElementById(otherId.toString())?.value));
+
+                    if (!otherFieldValues.includes(valClean)) {
+                        isCorrect = true;
+                    }
+                }
+            } else {
+                // Standard single item check
+                if (valClean !== "" && (valClean === item.target || (item.altTarget && valClean === item.altTarget))) {
+                    isCorrect = true;
+                }
+            }
+
+            if (isCorrect) {
                 inputElem.style.color = "green";
                 corrElem.innerHTML = "✓";
                 corrElem.className = "correction-mark correct";

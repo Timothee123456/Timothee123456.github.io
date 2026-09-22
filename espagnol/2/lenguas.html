@@ -311,15 +311,10 @@
             .normalize("NFD").replace(/[\u0300-\u036f]/g, "");
     }
 
-    const fieldMap = [
+    // Single fields
+    const singleFields = [
         { id: 1, target: "lengua oficial", display: "Lengua oficial" },
-        { id: 2, group: [2, 3], targets: ["castellano", "espanol"], display: "castellano" },
-        { id: 3, group: [2, 3], targets: ["castellano", "espanol"], display: "español" },
         { id: 4, target: "lenguas cooficiales", display: "Lenguas cooficiales" },
-        { id: 5, target: "gallego", display: "gallego" },
-        { id: 6, target: "catalan", display: "catalán" },
-        { id: 7, target: "aranes", display: "aranés" },
-        { id: 8, target: "euskera", display: "euskera" },
         { id: 9, target: "cuyo", display: "cuyo" },
         { id: 10, target: "por que", display: "Por qué" },
         { id: 11, target: "porque", display: "Porque" },
@@ -328,8 +323,6 @@
         { id: 14, target: "prohibir", display: "Prohibir" },
         { id: 15, target: "la dictadura", display: "La dictadura" },
         { id: 16, target: "la democracia", display: "La democracia" },
-        { id: 17, group: [17, 18], targets: ["un cambio", "una evolucion", "un evolucion"], display: "Un cambio" },
-        { id: 18, group: [17, 18], targets: ["un cambio", "una evolucion", "un evolucion"], display: "Una evolución" },
         { id: 19, target: "la constitucion", display: "La Constitución" },
         { id: 20, target: "1978", display: "1978" },
         { id: 21, target: "fue impuesto", display: "fue impuesto" },
@@ -340,45 +333,63 @@
         { id: 26, target: "silbando", display: "Silbando" },
         { id: 27, target: "expresar", display: "Expresar" },
         { id: 28, target: "dominar", display: "Dominar" },
-        { id: 29, group: [29, 30, 31], targets: ["una lengua", "un idioma", "un lenguaje"], display: "Una lengua" },
-        { id: 30, group: [29, 30, 31], targets: ["una lengua", "un idioma", "un lenguaje"], display: "Un idioma" },
-        { id: 31, group: [29, 30, 31], targets: ["una lengua", "un idioma", "un lenguaje"], display: "Un lenguaje" },
-        { id: 32, group: [32, 33], targets: ["significativo", "importante"], display: "Significativo" },
-        { id: 33, group: [32, 33], targets: ["significativo", "importante"], display: "importante" },
         { id: 34, target: "antes", display: "Antes" },
         { id: 35, target: "despues", display: "Después" }
+    ];
+
+    // Groups where order does not matter
+    const fieldGroups = [
+        {
+            ids: [2, 3],
+            targets: [
+                { clean: "castellano", display: "castellano" },
+                { clean: "espanol", display: "español" }
+            ]
+        },
+        {
+            ids: [5, 6, 7, 8],
+            targets: [
+                { clean: "gallego", display: "gallego" },
+                { clean: "catalan", display: "catalán" },
+                { clean: "aranes", display: "aranés" },
+                { clean: "euskera", display: "euskera" }
+            ]
+        },
+        {
+            ids: [17, 18],
+            targets: [
+                { clean: "un cambio", display: "Un cambio" },
+                { clean: "una evolucion", display: "Una evolución", altClean: "un evolucion" }
+            ]
+        },
+        {
+            ids: [29, 30, 31],
+            targets: [
+                { clean: "una lengua", display: "Una lengua" },
+                { clean: "un idioma", display: "Un idioma" },
+                { clean: "un lenguaje", display: "Un lenguaje" }
+            ]
+        },
+        {
+            ids: [32, 33],
+            targets: [
+                { clean: "significativo", display: "Significativo" },
+                { clean: "importante", display: "importante" }
+            ]
+        }
     ];
 
     function myFunction() {
         document.getElementById("Terminado").style.display = "none";
 
-        fieldMap.forEach(item => {
+        // 1. Process Single Fields
+        singleFields.forEach(item => {
             const inputElem = document.getElementById(item.id.toString());
             const corrElem = document.getElementById("correction" + item.id);
             if (!inputElem || !corrElem) return;
 
             const valClean = cleanStr(inputElem.value);
-
-            let isCorrect = false;
-
-            if (item.group) {
-                // If the item belongs to a grouped set (like 2/3 or 29/30/31), check against all group targets
-                if (item.targets.includes(valClean)) {
-                    // Make sure the answer hasn't been duplicated in another field of the same group
-                    const otherFieldValues = item.group
-                        .filter(otherId => otherId !== item.id)
-                        .map(otherId => cleanStr(document.getElementById(otherId.toString())?.value));
-
-                    if (!otherFieldValues.includes(valClean)) {
-                        isCorrect = true;
-                    }
-                }
-            } else {
-                // Standard single item check
-                if (valClean !== "" && (valClean === item.target || (item.altTarget && valClean === item.altTarget))) {
-                    isCorrect = true;
-                }
-            }
+            const isCorrect = valClean !== "" && (valClean === item.target || (item.altTarget && valClean === item.altTarget));
 
             if (isCorrect) {
                 inputElem.style.color = "green";
@@ -395,14 +406,68 @@
                 corrElem.className = "correction-mark incorrect";
             }
         });
+
+        // 2. Process Grouped Fields (Flexible Arrangement & Dynamic Correction)
+        fieldGroups.forEach(group => {
+            // Track available target objects for this group
+            let availableTargets = [...group.targets];
+
+            // First Pass: Find and mark correct answers
+            const results = group.ids.map(id => {
+                const inputElem = document.getElementById(id.toString());
+                const corrElem = document.getElementById("correction" + id);
+                const valClean = cleanStr(inputElem.value);
+
+                // Check if user input matches any available target in the group
+                const matchedIndex = availableTargets.findIndex(t => 
+                    valClean === t.clean || (t.altClean && valClean === t.altClean)
+                );
+
+                if (valClean !== "" && matchedIndex !== -1) {
+                    // Consume matched target so duplicate answers aren't counted twice
+                    availableTargets.splice(matchedIndex, 1);
+                    return { id, inputElem, corrElem, valClean, isCorrect: true };
+                }
+
+                return { id, inputElem, corrElem, valClean, isCorrect: false };
+            });
+
+            // Second Pass: Mark remaining incorrect or empty fields using leftover targets
+            results.forEach(res => {
+                if (res.isCorrect) {
+                    res.inputElem.style.color = "green";
+                    res.corrElem.innerHTML = "✓";
+                    res.corrElem.className = "correction-mark correct";
+                } else {
+                    // Assign the next available leftover target display
+                    const fallbackTarget = availableTargets.shift();
+                    const correctDisplay = fallbackTarget ? fallbackTarget.display : "";
+
+                    res.inputElem.style.color = "red";
+                    res.corrElem.className = "correction-mark incorrect";
+
+                    if (res.valClean === "") {
+                        res.inputElem.value = correctDisplay;
+                        res.corrElem.innerHTML = "✕";
+                    } else {
+                        res.corrElem.innerHTML = "✕ " + correctDisplay;
+                    }
+                }
+            });
+        });
     }
 
     function reset() {
         document.getElementById("Terminado").style.display = "inline-block";
 
-        fieldMap.forEach(item => {
-            const inputElem = document.getElementById(item.id.toString());
-            const corrElem = document.getElementById("correction" + item.id);
+        const allIds = [
+            ...singleFields.map(f => f.id),
+            ...fieldGroups.flatMap(g => g.ids)
+        ];
+
+        allIds.forEach(id => {
+            const inputElem = document.getElementById(id.toString());
+            const corrElem = document.getElementById("correction" + id);
             if (inputElem) {
                 inputElem.value = "";
                 inputElem.style.color = "black";

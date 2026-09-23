@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Révisions - Tests Chimiques</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f4f7f6;
+      color: #333;
+      max-width: 1000px;
+      margin: 20px auto;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+      color: #2c3e50;
+    }
+    p.desc {
+      text-align: center;
+      color: #7f8c8d;
+      margin-bottom: 20px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    th, td {
+      border: 1px solid #e0e0e0;
+      padding: 12px 15px;
+      text-align: left;
+    }
+    th {
+      background-color: #34495e;
+      color: white;
+      text-transform: uppercase;
+      font-size: 14px;
+      letter-spacing: 0.5px;
+    }
+    tr:nth-child(even) {
+      background-color: #f8f9fa;
+    }
+    input[type="text"] {
+      width: 55%;
+      padding: 8px;
+      border: 2px solid #3498db;
+      border-radius: 4px;
+      font-size: 14px;
+      outline: none;
+    }
+    input.correct {
+      border-color: #2ecc71;
+      background-color: #e8f8f5;
+    }
+    input.incorrect {
+      border-color: #e74c3c;
+      background-color: #fadbd8;
+    }
+    .correction-text {
+      color: #e74c3c;
+      font-weight: bold;
+      margin-left: 8px;
+      font-size: 13px;
+    }
+    .btn-container {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin-top: 25px;
+    }
+    button {
+      padding: 12px 25px;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .btn-check {
+      background-color: #2ecc71;
+      color: white;
+    }
+    .btn-check:hover {
+      background-color: #27ae60;
+    }
+    .btn-reset {
+      background-color: #e74c3c;
+      color: white;
+    }
+    .btn-reset:hover {
+      background-color: #c0392b;
+    }
+    #result-msg {
+      text-align: center;
+      margin-top: 15px;
+      font-size: 18px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Identification des Espèces Chimiques</h1>
+  <p class="desc">Complète la case manquante sur chaque ligne puis valide tes réponses.</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Espèce chimique à identifier</th>
+        <th>Test à effectuer</th>
+        <th>Couleur / Observation</th>
+      </tr>
+    </thead>
+    <tbody id="table-body">
+      <!-- Le contenu est généré dynamiquement en JavaScript -->
+    </tbody>
+  </table>
+
+  <div class="btn-container">
+    <button class="btn-check" onclick="checkAnswers()">Corriger</button>
+    <button class="btn-reset" onclick="generateTable()">Réinitialiser</button>
+  </div>
+
+  <div id="result-msg"></div>
+
+  <script>
+    // Données exactes de la feuille avec exigences strictes
+    const originalData = [
+      {
+        espece: { full: "CO₂", accepted: ["co2", "co₂"] },
+        test: { full: "L'eau de chaux", accepted: ["eau de chaux", "l'eau de chaux", "l eau de chaux"] },
+        obs: { full: "Précipité blanc", accepted: ["precipite blanc", "précipité blanc"] }
+      },
+      {
+        espece: { full: "H₂O", accepted: ["h2o", "h₂o"] },
+        test: { full: "Le sulfate de cuivre anhydre", accepted: ["sulfate de cuivre anhydre", "le sulfate de cuivre anhydre"] },
+        obs: { full: "Devient bleu", accepted: ["bleu", "devient bleu"] }
+      },
+      {
+        espece: { full: "H₂", accepted: ["h2", "h₂"] },
+        test: { full: "Une flamme", accepted: ["flamme", "une flamme"] },
+        obs: { full: "Détonation", accepted: ["detonation", "détonation"] }
+      },
+      {
+        espece: { full: "O₂", accepted: ["o2", "o₂"] },
+        test: { full: "Du bois incandescent", accepted: ["bois incandescent", "du bois incandescent"] },
+        obs: { full: "Flamme", accepted: ["flamme", "flamme vive"] }
+      },
+      {
+        espece: { full: "Fe³⁺", accepted: ["fe3+", "fe³⁺"] },
+        test: { full: "La soude (hydroxyde de sodium)", accepted: ["soude", "la soude", "hydroxyde de sodium"] },
+        obs: { full: "Précipité rouille", accepted: ["precipite rouille", "précipité rouille"] }
+      },
+      {
+        espece: { full: "Fe²⁺", accepted: ["fe2+", "fe²⁺"] },
+        test: { full: "La soude (hydroxyde de sodium)", accepted: ["soude", "la soude", "hydroxyde de sodium"] },
+        obs: { full: "Précipité vert", accepted: ["precipite vert", "précipité vert"] }
+      },
+      {
+        espece: { full: "Cu²⁺", accepted: ["cu2+", "cu²⁺"] },
+        test: { full: "La soude (hydroxyde de sodium)", accepted: ["soude", "la soude", "hydroxyde de sodium"] },
+        obs: { full: "Précipité bleu", accepted: ["precipite bleu", "précipité bleu"] }
+      },
+      {
+        espece: { full: "Cl⁻", accepted: ["cl-", "cl⁻"] },
+        test: { full: "Nitrate d'argent", accepted: ["nitrate d'argent", "nitrate d argent"] },
+        obs: { full: "Précipité blanc qui noircit à la lumière", accepted: ["précipité blanc qui noircit à la lumière", "precipite blanc qui noircit a la lumiere", "précipité blanc qui noircit", "precipite blanc qui noircit"] }
+      },
+      {
+        espece: { full: "H⁺", accepted: ["h+", "h⁺"] },
+        test: { full: "Test du pH", accepted: ["ph", "test du ph", "papier ph", "phmètre", "phmetre"] },
+        obs: { full: "< 7", accepted: ["< 7", "<7"] }
+      },
+      {
+        espece: { full: "HO⁻", accepted: ["ho-", "ho⁻"] },
+        test: { full: "Test du pH", accepted: ["ph", "test du ph", "papier ph", "phmètre", "phmetre"] },
+        obs: { full: "> 7", accepted: ["> 7", ">7"] }
+      }
+    ];
+
+    let currentData = [];
+
+    function cleanText(text) {
+      return text.toLowerCase().trim().replace(/['’]/g, " ").replace(/\s+/g, " ");
+    }
+
+    // Mélange des lignes
+    function shuffle(array) {
+      let shuffled = [...array];
+      for (let i = shuffled.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+      }
+      return shuffled;
+    }
+
+    function generateTable() {
+      const tbody = document.getElementById('table-body');
+      tbody.innerHTML = '';
+      document.getElementById('result-msg').innerHTML = '';
+
+      currentData = shuffle(originalData);
+
+      currentData.forEach((row, index) => {
+        const tr = document.createElement('tr');
+        const missingCol = Math.floor(Math.random() * 3);
+
+        // Espèce
+        const tdEspece = document.createElement('td');
+        if (missingCol === 0) {
+          tdEspece.innerHTML = `<input type="text" data-row="${index}" data-type="espece"><span class="corr-span"></span>`;
+        } else {
+          tdEspece.textContent = row.espece.full;
+        }
+        tr.appendChild(tdEspece);
+
+        // Test
+        const tdTest = document.createElement('td');
+        if (missingCol === 1) {
+          tdTest.innerHTML = `<input type="text" data-row="${index}" data-type="test"><span class="corr-span"></span>`;
+        } else {
+          tdTest.textContent = row.test.full;
+        }
+        tr.appendChild(tdTest);
+
+        // Observation
+        const tdObs = document.createElement('td');
+        if (missingCol === 2) {
+          tdObs.innerHTML = `<input type="text" data-row="${index}" data-type="obs"><span class="corr-span"></span>`;
+        } else {
+          tdObs.textContent = row.obs.full;
+        }
+        tr.appendChild(tdObs);
+
+        tbody.appendChild(tr);
+      });
+    }
+
+    function checkAnswers() {
+      const inputs = document.querySelectorAll('tbody input');
+      let correctCount = 0;
+
+      inputs.forEach(input => {
+        const rowIndex = input.getAttribute('data-row');
+        const type = input.getAttribute('data-type');
+        const userValue = cleanText(input.value);
+        const corrSpan = input.nextElementSibling;
+        
+        const validAnswers = currentData[rowIndex][type].accepted.map(ans => cleanText(ans));
+        const fullCorrection = currentData[rowIndex][type].full;
+
+        corrSpan.textContent = "";
+        corrSpan.className = "corr-span";
+
+        if (userValue === "") {
+          // Si la case est vide
+          input.value = fullCorrection;
+          input.className = "incorrect";
+        } else {
+          // Vérification stricte : l'utilisateur doit avoir fourni une réponse valide complète
+          const isCorrect = validAnswers.some(ans => userValue === ans);
+
+          if (isCorrect) {
+            input.className = "correct";
+            correctCount++;
+          } else {
+            // Si la réponse est fausse ou incomplète, affichage de la correction entière à côté
+            input.className = "incorrect";
+            corrSpan.textContent = ` (${fullCorrection})`;
+            corrSpan.className = "corr-span correction-text";
+          }
+        }
+      });
+
+      const msg = document.getElementById('result-msg');
+      if (correctCount === inputs.length) {
+        msg.style.color = "#2ecc71";
+        msg.textContent = "🎉 Excellent ! Tout est parfait !";
+      } else {
+        msg.style.color = "#e74c3c";
+        msg.textContent = `Score : ${correctCount} / ${inputs.length}`;
+      }
+    }
+
+    window.onload = generateTable;
+  </script>
+
+</body>
+</html>

@@ -3,8 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
     <title>Léxico "El cliché de la siesta"</title>
     <style>
+        /* General styling for clean background and centered elements */
         body {
             font-family: Arial, Helvetica, sans-serif;
             background-color: #ffffff;
@@ -28,6 +30,7 @@
             color: #f00;
         }
 
+        /* Input Boxes & Fields */
         .box-input {
             border: 2px solid #000;
             padding: 8px 12px;
@@ -39,6 +42,7 @@
             color: #000;
         }
 
+        /* Section Layouts */
         .top-section {
             display: flex;
             align-items: center;
@@ -60,6 +64,7 @@
             font-weight: normal;
         }
 
+        /* Arrow Block styling */
         .arrow-container {
             position: relative;
             display: flex;
@@ -85,6 +90,7 @@
             box-sizing: border-box;
         }
 
+        /* Bottom Sections */
         .bottom-section {
             display: flex;
             justify-content: space-between;
@@ -101,14 +107,20 @@
             font-size: 18px;
         }
 
+        /* Select / Options element */
         select.box-input {
             width: 120px;
             cursor: pointer;
         }
 
+        /* Feedback Indicators */
         .correction-mark {
             font-weight: bold;
             font-size: 16px;
+        }
+
+        /* Spacing for inline indicators */
+        .column .correction-mark {
             margin-left: 8px;
         }
 
@@ -125,20 +137,6 @@
             margin-top: 30px;
             margin-bottom: 50px;
         }
-
-        .myButton, .myButton2 {
-            display: inline-block;
-            padding: 10px 20px;
-            font-size: 16px;
-            cursor: pointer;
-            text-decoration: none;
-            color: #fff;
-            border-radius: 4px;
-            margin: 0 5px;
-        }
-
-        .myButton { background-color: #008000; }
-        .myButton2 { background-color: #555; }
     </style>
 </head>
 <body>
@@ -148,6 +146,7 @@
 
     <!-- SECTION 1: Un cliché & Conséquences -->
     <div class="top-section">
+        <!-- Left Column: Un cliché -->
         <div class="column">
             <div class="section-label">Un cliché</div>
             <div>
@@ -168,12 +167,14 @@
             </div>
         </div>
 
+        <!-- Arrow: consecuencia -->
         <div class="arrow-container">
             <div class="arrow-shape" id="arrowText">Consecuencia</div>
         </div>
 
+        <!-- Right Column: Conséquences -->
         <div class="column">
-            <div style="height: 26px;"></div>
+            <div style="height: 26px;"></div> <!-- Spacer matching title height -->
             <div>
                 <input type="text" autocomplete="off" id="5" class="box-input" placeholder="Juger trop vite">
                 <span id="correction5" class="correction-mark"></span>
@@ -195,6 +196,7 @@
 
     <!-- BOTTOM SECTIONS -->
     <div class="bottom-section">
+        <!-- Bottom Left Section -->
         <div class="column">
             <div>
                 <input type="text" autocomplete="off" id="9" class="box-input" placeholder="Faire la sieste">
@@ -210,6 +212,7 @@
             </div>
         </div>
 
+        <!-- Bottom Right Section: Les horaires de travail -->
         <div class="column">
             <div>
                 <input type="text" autocomplete="off" id="12" class="box-input" placeholder="Les horaires de travail">
@@ -229,6 +232,7 @@
         </div>
     </div>
 
+    <!-- Control Buttons -->
     <div class="center-controls">
         <a href="javascript:void(0)" class="myButton" onclick="myFunction()" id="Terminado">Terminé</a>
         <a href="javascript:void(0)" class="myButton2" onclick="reset()">Réinitialiser</a>
@@ -239,54 +243,42 @@
     function cleanStr(str) {
         if (!str) return "";
         return str.trim().toLowerCase()
-            .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
-            .replace(/ñ/g, "n");
+            .normalize("NFD").replace(/[\u0300-\u036f]/g, "");
     }
 
     function myFunction() {
         document.getElementById("Terminado").style.display = "none";
 
-        // Section 1: "Un cliché" (Boxes 1-4) flexible order matching
-        const clicheMap = [
-            { target: "un topico", display: "Un tópico" },
-            { target: "un cliche", display: "Un cliché" },
-            { target: "un estereotipo", display: "Un estereotipo" },
-            { target: "una idea preconcebida", display: "Una idea preconcebida" }
-        ];
+        // Section 1: Left column (Un cliché)
+        const validCliche = ["un topico", "un cliche", "un estereotipo", "una idea preconcebida"];
+        const defaultsCliche = ["Un tópico", "Un cliché", "Un estereotipo", "Una idea preconcebida"];
+        const usedCliche = [];
 
-        let availableOptions = [...clicheMap];
-        const boxStatus = [null, null, null, null];
-
-        // Pass 1: Identify valid unique matches
-        for (let i = 0; i < 4; i++) {
-            const inputElem = document.getElementById((i + 1).toString());
+        for (let i = 1; i <= 4; i++) {
+            const inputElem = document.getElementById(i.toString());
+            const corrElem = document.getElementById("correction" + i);
             const valClean = cleanStr(inputElem.value);
-            const matchIndex = availableOptions.findIndex(item => item.target === valClean);
 
-            if (matchIndex !== -1) {
-                boxStatus[i] = { correct: true, display: availableOptions[matchIndex].display };
-                availableOptions.splice(matchIndex, 1);
-            }
-        }
-
-        // Pass 2: Handle incorrect or duplicate answers
-        for (let i = 0; i < 4; i++) {
-            const inputElem = document.getElementById((i + 1).toString());
-            const corrElem = document.getElementById("correction" + (i + 1));
-
-            if (boxStatus[i] && boxStatus[i].correct) {
+            if (valClean !== "" && validCliche.includes(valClean) && !usedCliche.includes(valClean)) {
+                usedCliche.push(valClean);
                 inputElem.style.color = "green";
                 corrElem.innerHTML = "✓";
                 corrElem.className = "correction-mark correct";
-            } else {
-                const fallback = availableOptions.shift();
+            } else if (valClean === "") {
+                // Empty input: Fill textbox in red, cross only
+                inputElem.value = defaultsCliche[i - 1];
                 inputElem.style.color = "red";
-                corrElem.innerHTML = "✕ " + (fallback ? fallback.display : "");
+                corrElem.innerHTML = "✕";
+                corrElem.className = "correction-mark incorrect";
+            } else {
+                // Wrong input: Keep user text red, cross + correct answer outside
+                inputElem.style.color = "red";
+                corrElem.innerHTML = "✕ " + defaultsCliche[i - 1];
                 corrElem.className = "correction-mark incorrect";
             }
         }
 
-        // Section 2: Fixed fields 5 to 13
+        // Section 1: Right column & lower sections
         const fieldMap = [
             { id: 5, target: "juzgar demasiado rapido", display: "Juzgar demasiado rápido" },
             { id: 6, target: "dar una mala imagen de", display: "Dar una mala imagen de" },
@@ -294,7 +286,7 @@
             { id: 8, target: "danar la reputacion de los espanoles", display: "Dañar la reputación de los españoles", altTarget: "danar la reputacion de los espanol" },
             { id: 9, target: "dormir la siesta", display: "Dormir la siesta" },
             { id: 10, target: "estar cansado", display: "Estar cansado" },
-            { id: 11, target: "descansar", display: "Descansar" },
+            { id: 11, target: "descansar", display: "descansar" },
             { id: 12, target: "los horarios de trabajo", display: "Los horarios de trabajo" },
             { id: 13, target: "en espana se trabaja", display: "En España se trabaja" }
         ];
@@ -308,14 +300,21 @@
                 inputElem.style.color = "green";
                 corrElem.innerHTML = "✓";
                 corrElem.className = "correction-mark correct";
+            } else if (valClean === "") {
+                // Empty input: Fill textbox in red, cross only
+                inputElem.value = item.display;
+                inputElem.style.color = "red";
+                corrElem.innerHTML = "✕";
+                corrElem.className = "correction-mark incorrect";
             } else {
+                // Wrong input: Keep user text red, cross + correct answer outside
                 inputElem.style.color = "red";
                 corrElem.innerHTML = "✕ " + item.display;
                 corrElem.className = "correction-mark incorrect";
             }
         });
 
-        // Field 14: Dropdown Option
+        // Field 14: Select Option
         const selectElem = document.getElementById("14");
         const corrSelect = document.getElementById("correction14");
         if (selectElem.value === "tarde") {
@@ -323,8 +322,9 @@
             corrSelect.innerHTML = "✓";
             corrSelect.className = "correction-mark correct";
         } else {
+            selectElem.value = "tarde";
             selectElem.style.color = "red";
-            corrSelect.innerHTML = "✕ (tarde)";
+            corrSelect.innerHTML = "✕";
             corrSelect.className = "correction-mark incorrect";
         }
     }

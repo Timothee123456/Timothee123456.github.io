@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Révisions Physiques - États & Composition</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #f0f4f8;
+      color: #2c3e50;
+      max-width: 900px;
+      margin: 20px auto;
+      padding: 20px;
+    }
+    h1, h2 {
+      text-align: center;
+      color: #1e3799;
+    }
+    .card {
+      background: white;
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+      margin-bottom: 25px;
+    }
+    .diagram-container {
+      position: relative;
+      width: 600px;
+      height: 400px;
+      margin: 20px auto;
+      background: #fafafa;
+      border: 2px dashed #cbd5e1;
+      border-radius: 10px;
+    }
+    .state-box {
+      position: absolute;
+      width: 120px;
+      height: 80px;
+      background: #4a69bd;
+      color: white;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+    #solide { top: 20px; left: 240px; background: #eb2f06; }
+    #liquide { bottom: 30px; left: 40px; background: #1e3799; }
+    #gazeux { bottom: 30px; right: 40px; background: #78e08f; color: #1e3799; }
+
+    .arrow-input {
+      position: absolute;
+      width: 130px;
+    }
+    .arrow-input input {
+      width: 100%;
+      padding: 5px;
+      font-size: 11px;
+      text-align: center;
+      border: 2px solid #60a5fa;
+      border-radius: 4px;
+    }
+
+    /* Placement des zones d'input sur les flèches */
+    #input-fusion { top: 130px; left: 110px; }
+    #input-solidification { top: 190px; left: 130px; }
+    #input-vaporisation { bottom: 65px; left: 235px; }
+    #input-liquefaction { bottom: 20px; left: 235px; }
+    #input-sublimation { top: 130px; right: 110px; }
+    #input-condensation { top: 190px; right: 130px; }
+
+    .inline-inputs {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      flex-wrap: wrap;
+      margin: 15px 0;
+    }
+    .inline-inputs label {
+      font-weight: bold;
+    }
+    .inline-inputs input {
+      width: 70px;
+      padding: 8px;
+      border: 2px solid #cbd5e1;
+      border-radius: 6px;
+      text-align: center;
+    }
+
+    button {
+      background-color: #0c2461;
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 14px;
+      transition: 0.2s;
+    }
+    button:hover {
+      background-color: #4a69bd;
+    }
+    .feedback {
+      margin-top: 15px;
+      padding: 12px;
+      border-radius: 6px;
+      font-weight: bold;
+      display: none;
+    }
+    .correct { background-color: #d1fae5; color: #065f46; border: 1px solid #a7f3d0; }
+    .incorrect { background-color: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
+  </style>
+</head>
+<body>
+
+  <h1>Interro de Physique-Chimie (Niveau Difficile)</h1>
+
+  <!-- EXERCICE 1: Le Schéma des États -->
+  <div class="card">
+    <h2>1. Schéma des changements d'état</h2>
+    <p>Remplis le nom exact du changement d'état pour chaque flèche :</p>
+    
+    <div class="diagram-container">
+      <div id="solide" class="state-box">État Solide</div>
+      <div id="liquide" class="state-box">État Liquide</div>
+      <div id="gazeux" class="state-box">État Gazeux</div>
+
+      <div id="input-fusion" class="arrow-input">
+        <input type="text" id="q_fusion" placeholder="Solide ➔ Liquide">
+      </div>
+      <div id="input-solidification" class="arrow-input">
+        <input type="text" id="q_solidification" placeholder="Liquide ➔ Solide">
+      </div>
+      <div id="input-vaporisation" class="arrow-input">
+        <input type="text" id="q_vaporisation" placeholder="Liquide ➔ Gaz">
+      </div>
+      <div id="input-liquefaction" class="arrow-input">
+        <input type="text" id="q_liquefaction" placeholder="Gaz ➔ Liquide">
+      </div>
+      <div id="input-sublimation" class="arrow-input">
+        <input type="text" id="q_sublimation" placeholder="Solide ➔ Gaz">
+      </div>
+      <div id="input-condensation" class="arrow-input">
+        <input type="text" id="q_condensation" placeholder="Gaz ➔ Solide">
+      </div>
+    </div>
+
+    <button onclick="checkDiagram()">Corriger le schéma</button>
+    <div id="fb-diagram" class="feedback"></div>
+  </div>
+
+  <!-- EXERCICE 2: Proportions de l'air -->
+  <div class="card">
+    <h2>2. Composition approchée de l'air (en volume)</h2>
+    <p>Indique le pourcentage exact de chaque composant présent dans l'air :</p>
+    
+    <div class="inline-inputs">
+      <label>N₂ :</label>
+      <input type="text" id="q_n2" placeholder="%">
+      
+      <label>O₂ :</label>
+      <input type="text" id="q_o2" placeholder="%">
+      
+      <label>Ar :</label>
+      <input type="text" id="q_ar" placeholder="%">
+    </div>
+
+    <button onclick="checkComposition()">Corriger la composition</button>
+    <div id="fb-composition" class="feedback"></div>
+  </div>
+
+  <!-- EXERCICE 3: Masses Volumiques -->
+  <div class="card">
+    <h2>3. Masses Volumiques à mémoriser</h2>
+    <p>Complète les équivalences suivantes (valeurs numériques uniquement) :</p>
+    
+    <div class="inline-inputs">
+      <label>ρ(air) =</label>
+      <input type="text" id="q_air_gl" placeholder="...">
+      <span>g/L</span>
+      <span>soit environ</span>
+      <input type="text" id="q_air_kgm3" placeholder="...">
+      <span>kg pour 1 m³</span>
+    </div>
+
+    <div class="inline-inputs">
+      <label>ρ(eau) =</label>
+      <input type="text" id="q_eau_kgl" placeholder="...">
+      <span>kg/L</span>
+      <span>soit environ</span>
+      <input type="text" id="q_eau_kgm3" placeholder="...">
+      <span>kg pour 1 m³</span>
+    </div>
+
+    <button onclick="checkVolumic()">Corriger les masses volumiques</button>
+    <div id="fb-volumic" class="feedback"></div>
+  </div>
+
+  <script>
+    function clean(text) {
+      return text.toLowerCase().trim().replace(',', '.');
+    }
+
+    function checkDiagram() {
+      const answers = {
+        fusion: ["fusion"],
+        solidification: ["solidification"],
+        vaporisation: ["vaporisation"],
+        liquefaction: ["liquefaction", "liquéfaction", "condensation liquide"],
+        sublimation: ["sublimation"],
+        condensation: ["condensation solide", "condensation"]
+      };
+
+      let mistakes = [];
+
+      if (!answers.fusion.includes(clean(document.getElementById('q_fusion').value))) mistakes.push("Solide ➔ Liquide (Fusion)");
+      if (!answers.solidification.includes(clean(document.getElementById('q_solidification').value))) mistakes.push("Liquide ➔ Solide (Solidification)");
+      if (!answers.vaporisation.includes(clean(document.getElementById('q_vaporisation').value))) mistakes.push("Liquide ➔ Gaz (Vaporisation)");
+      if (!answers.liquefaction.includes(clean(document.getElementById('q_liquefaction').value))) mistakes.push("Gaz ➔ Liquide (Liquéfaction / Condensation liquide)");
+      if (!answers.sublimation.includes(clean(document.getElementById('q_sublimation').value))) mistakes.push("Solide ➔ Gaz (Sublimation)");
+      if (!answers.condensation.includes(clean(document.getElementById('q_condensation').value))) mistakes.push("Gaz ➔ Solide (Condensation solide)");
+
+      const fb = document.getElementById('fb-diagram');
+      fb.style.display = 'block';
+
+      if (mistakes.length === 0) {
+        fb.className = "feedback correct";
+        fb.innerHTML = "✔ Parfait ! Tous les changements d'état sont corrects.";
+      } else {
+        fb.className = "feedback incorrect";
+        fb.innerHTML = "✘ Erreur(s) détectée(s) sur : <br>- " + mistakes.join("<br>- ");
+      }
+    }
+
+    function checkComposition() {
+      const n2 = clean(document.getElementById('q_n2').value);
+      const o2 = clean(document.getElementById('q_o2').value);
+      const ar = clean(document.getElementById('q_ar').value);
+
+      const fb = document.getElementById('fb-composition');
+      fb.style.display = 'block';
+
+      if (n2 === "78" && o2 === "21" && ar === "1") {
+        fb.className = "feedback correct";
+        fb.innerHTML = "✔ Bravo ! L'air contient 78% de N₂, 21% de O₂ et 1% d'Argon.";
+      } else {
+        fb.className = "feedback incorrect";
+        fb.innerHTML = "✘ Faux. Réponses attendues : N₂ = 78%, O₂ = 21%, Ar = 1%.";
+      }
+    }
+
+    function checkVolumic() {
+      const airGL = clean(document.getElementById('q_air_gl').value);
+      const airKgm3 = clean(document.getElementById('q_air_kgm3').value);
+      const eauKgl = clean(document.getElementById('q_eau_kgl').value);
+      const eauKgm3 = clean(document.getElementById('q_eau_kgm3').value);
+
+      const fb = document.getElementById('fb-volumic');
+      fb.style.display = 'block';
+
+      const isAirCorrect = (airGL === "1.2" || airGL === "1,2") && (airKgm3 === "1.2" || airKgm3 === "1,2");
+      const isEauCorrect = (eauKgl === "1" || eauKgl === "1.0" || eauKgl === "1,0") && (eauKgm3 === "1000" || eauKgm3 === "1 000");
+
+      if (isAirCorrect && isEauCorrect) {
+        fb.className = "feedback correct";
+        fb.innerHTML = "✔ Excellent ! Toutes les masses volumiques sont exactes.";
+      } else {
+        fb.className = "feedback incorrect";
+        fb.innerHTML = "✘ Erreur. Réponses attendues : <br>- Air : 1,2 g/L et 1,2 kg/m³<br>- Eau : 1,0 kg/L et 1 000 kg/m³.";
+      }
+    }
+  </script>
+</body>
+</html>

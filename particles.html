@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Particle Playground</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #0a0a0f;
+    overflow: hidden;
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    color: #e0e0e0;
+    cursor: crosshair;
+  }
+  canvas { display: block; }
+  #controls {
+    position: fixed;
+    top: 16px;
+    left: 16px;
+    background: rgba(20, 20, 30, 0.85);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 14px;
+    padding: 20px 24px;
+    z-index: 10;
+    min-width: 260px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+  }
+  #controls h1 {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 4px;
+    background: linear-gradient(135deg, #00f0ff, #ff00e0);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  #controls p {
+    font-size: 11px;
+    color: #888;
+    margin-bottom: 16px;
+  }
+  .control-row {
+    margin-bottom: 14px;
+    padding: 4px 8px;
+    margin-left: -8px;
+    margin-right: -8px;
+    border-radius: 8px;
+    transition: background 0.2s;
+  }
+  .control-row.active {
+    background: rgba(0, 240, 255, 0.08);
+    box-shadow: 0 0 0 1px rgba(0, 240, 255, 0.3);
+  }
+  .control-row label {
+    display: block;
+    font-size: 12px;
+    color: #aaa;
+    margin-bottom: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .control-row input[type="range"] {
+    width: 100%;
+    accent-color: #00f0ff;
+  }
+  .key-hint {
+    display: inline-block;
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 4px;
+    padding: 1px 6px;
+    font-size: 10px;
+    font-weight: 700;
+    color: #00f0ff;
+    margin-left: 4px;
+  }
+  #shortcuts-help {
+    margin-top: 14px;
+    padding-top: 14px;
+    border-top: 1px solid rgba(255,255,255,0.08);
+    font-size: 11px;
+    color: #666;
+    line-height: 1.6;
+  }
+  #shortcuts-help b { color: #00f0ff; font-weight: 600; }
+  .btn-group {
+    display: flex;
+    gap: 8px;
+    margin-top: 16px;
+    flex-wrap: wrap;
+  }
+  button {
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.15);
+    color: #e0e0e0;
+    padding: 8px 14px;
+    border-radius: 8px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-weight: 600;
+  }
+  button:hover {
+    background: rgba(0, 240, 255, 0.15);
+    border-color: #00f0ff;
+  }
+  button.active {
+    background: rgba(0, 240, 255, 0.2);
+    border-color: #00f0ff;
+    color: #00f0ff;
+  }
+  #stats {
+    position: fixed;
+    bottom: 16px;
+    left: 16px;
+    font-size: 12px;
+    color: #666;
+    z-index: 10;
+  }
+  #hint {
+    position: fixed;
+    bottom: 16px;
+    right: 16px;
+    font-size: 12px;
+    color: #555;
+    z-index: 10;
+  }
+</style>
+</head>
+<body>
+<canvas id="canvas"></canvas>
+
+<div id="controls">
+  <h1>Particle Playground</h1>
+  <p>Move your mouse to attract particles. Click to burst.</p>
+
+  <div class="control-row" data-setting="count">
+    <label>Particle Count: <span id="count-val">150</span> <span class="key-hint">Q</span></label>
+    <input type="range" id="count" min="20" max="500" value="150">
+  </div>
+
+  <div class="control-row" data-setting="gravity">
+    <label>Gravity: <span id="gravity-val">0.0</span> <span class="key-hint">W</span></label>
+    <input type="range" id="gravity" min="0" max="50" value="0">
+  </div>
+
+  <div class="control-row" data-setting="force">
+    <label>Mouse Force: <span id="force-val">5</span> <span class="key-hint">E</span></label>
+    <input type="range" id="force" min="0" max="20" value="5">
+  </div>
+
+  <div class="control-row" data-setting="trail">
+    <label>Trail Length: <span id="trail-val">0.05</span> <span class="key-hint">R</span></label>
+    <input type="range" id="trail" min="1" max="30" value="5">
+  </div>
+
+  <div class="btn-group">
+    <button id="mode-attract" class="active">Attract <span class="key-hint">1</span></button>
+    <button id="mode-repel">Repel <span class="key-hint">2</span></button>
+    <button id="mode-orbit">Orbit <span class="key-hint">3</span></button>
+    <button id="reset">Reset</button>
+  </div>
+
+  <div id="shortcuts-help">
+    <b>1/2/3</b> Switch mode &nbsp;
+    <b>Q/W/E/R</b> Select setting &nbsp;
+    <b>&larr;/&rarr;</b> Adjust selected &nbsp;
+    <b>Z</b> Min &nbsp;
+    <b>X</b> Max &nbsp;
+    <b>C</b> Clear trails &nbsp;
+    <b>H</b> Hide panel
+  </div>
+</div>
+
+<div id="stats">Particles: <span id="p-count">0</span> | FPS: <span id="fps">0</span></div>
+<div id="hint">Click anywhere for a burst &middot; Press H to hide panel</div>
+
+<script>
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+
+let W, H;
+function resize() {
+  W = canvas.width = window.innerWidth;
+  H = canvas.height = window.innerHeight;
+}
+resize();
+window.addEventListener('resize', resize);
+
+const mouse = { x: W / 2, y: H / 2, down: false };
+
+window.addEventListener('mousemove', (e) => {
+  mouse.x = e.clientX;
+  mouse.y = e.clientY;
+});
+
+canvas.addEventListener('click', (e) => {
+  burst(e.clientX, e.clientY);
+});
+
+// Settings
+let settings = {
+  count: 150,
+  gravity: 0,
+  force: 5,
+  trail: 0.05,
+  mode: 'attract'
+};
+
+// UI bindings
+const sliderConfigs = {};
+
+function bind(id, valId, key, scale = 1, decimals = 0) {
+  const el = document.getElementById(id);
+  const valEl = document.getElementById(valId);
+  const config = { el, valEl, key, scale, decimals, min: parseFloat(el.min), max: parseFloat(el.max) };
+  sliderConfigs[key] = config;
+  el.addEventListener('input', () => {
+    settings[key] = parseFloat(el.value) * scale;
+    valEl.textContent = decimals ? settings[key].toFixed(decimals) : Math.round(settings[key]);
+    if (key === 'count') adjustParticles();
+  });
+}
+
+bind('count', 'count-val', 'count', 1, 0);
+bind('gravity', 'gravity-val', 'gravity', 0.1, 1);
+bind('force', 'force-val', 'force', 1, 0);
+bind('trail', 'trail-val', 'trail', 0.01, 2);
+
+// Set a setting programmatically via slider value
+function setSetting(key, sliderValue) {
+  const config = sliderConfigs[key];
+  if (!config) return;
+  const clamped = Math.max(config.min, Math.min(config.max, sliderValue));
+  config.el.value = clamped;
+  settings[key] = clamped * config.scale;
+  config.valEl.textContent = config.decimals ? settings[key].toFixed(config.decimals) : Math.round(settings[key]);
+  if (key === 'count') adjustParticles();
+}
+
+// Selected setting for keyboard control
+let activeSetting = null;
+
+function setActiveSetting(key) {
+  activeSetting = key;
+  document.querySelectorAll('.control-row').forEach(row => {
+    row.classList.toggle('active', row.dataset.setting === key);
+  });
+}
+
+// Arrow step size per setting (in slider units)
+const arrowSteps = { count: 10, gravity: 1, force: 1, trail: 1 };
+
+function adjustSetting(delta) {
+  if (!activeSetting) return;
+  const config = sliderConfigs[activeSetting];
+  const current = parseFloat(config.el.value);
+  setSetting(activeSetting, current + delta);
+}
+
+function setSettingMin() {
+  if (!activeSetting) return;
+  const config = sliderConfigs[activeSetting];
+  setSetting(activeSetting, config.min);
+}
+
+function setSettingMax() {
+  if (!activeSetting) return;
+  const config = sliderConfigs[activeSetting];
+  setSetting(activeSetting, config.max);
+}
+
+function clearTrails() {
+  ctx.fillStyle = '#0a0a0f';
+  ctx.fillRect(0, 0, W, H);
+}
+
+function togglePanel() {
+  const panel = document.getElementById('controls');
+  panel.style.display = panel.style.display === 'none' ? '' : 'none';
+}
+
+// Keyboard shortcuts
+window.addEventListener('keydown', (e) => {
+  const k = e.key.toLowerCase();
+
+  // Mode switching
+  if (k === '1') { setMode('attract'); return; }
+  if (k === '2') { setMode('repel'); return; }
+  if (k === '3') { setMode('orbit'); return; }
+
+  // Hide panel
+  if (k === 'h') { togglePanel(); return; }
+
+  // Clear trails
+  if (k === 'c') { clearTrails(); return; }
+
+  // Select setting
+  if (k === 'q') { setActiveSetting('count'); return; }
+  if (k === 'w') { setActiveSetting('gravity'); return; }
+  if (k === 'e') { setActiveSetting('force'); return; }
+  if (k === 'r') { setActiveSetting('trail'); return; }
+
+  // Adjust selected setting with arrows
+  if (e.key === 'ArrowLeft') { e.preventDefault(); adjustSetting(-arrowSteps[activeSetting] || -1); return; }
+  if (e.key === 'ArrowRight') { e.preventDefault(); adjustSetting(arrowSteps[activeSetting] || 1); return; }
+
+  // Min / Max for selected setting
+  if (k === 'z') { setSettingMin(); return; }
+  if (k === 'x') { setSettingMax(); return; }
+});
+
+document.getElementById('mode-attract').addEventListener('click', () => setMode('attract'));
+document.getElementById('mode-repel').addEventListener('click', () => setMode('repel'));
+document.getElementById('mode-orbit').addEventListener('click', () => setMode('orbit'));
+document.getElementById('reset').addEventListener('click', () => initParticles());
+
+function setMode(m) {
+  settings.mode = m;
+  document.querySelectorAll('.btn-group button').forEach(b => b.classList.remove('active'));
+  document.getElementById('mode-' + m).classList.add('active');
+}
+
+class Particle {
+  constructor(x, y) {
+    this.x = x ?? Math.random() * W;
+    this.y = y ?? Math.random() * H;
+    this.vx = (Math.random() - 0.5) * 2;
+    this.vy = (Math.random() - 0.5) * 2;
+    this.radius = Math.random() * 3 + 1;
+    this.hue = Math.random() * 360;
+    this.life = 1;
+  }
+
+  update() {
+    const dx = mouse.x - this.x;
+    const dy = mouse.y - this.y;
+    const dist = Math.sqrt(dx * dx + dy * dy) + 0.001;
+
+    if (settings.mode === 'attract') {
+      this.vx += (dx / dist) * settings.force * 0.05;
+      this.vy += (dy / dist) * settings.force * 0.05;
+    } else if (settings.mode === 'repel') {
+      this.vx -= (dx / dist) * settings.force * 0.05;
+      this.vy -= (dy / dist) * settings.force * 0.05;
+    } else if (settings.mode === 'orbit') {
+      // Perpendicular force for orbiting
+      this.vx += (-dy / dist) * settings.force * 0.05;
+      this.vy += (dx / dist) * settings.force * 0.05;
+      // Slight attraction to maintain orbit
+      this.vx += (dx / dist) * 0.02;
+      this.vy += (dy / dist) * 0.02;
+    }
+
+    this.vy += settings.gravity * 0.1;
+    this.vx *= 0.99;
+    this.vy *= 0.99;
+
+    this.x += this.vx;
+    this.y += this.vy;
+
+    // Wrap around
+    if (this.x < 0) this.x = W;
+    if (this.x > W) this.x = 0;
+    if (this.y < 0) this.y = H;
+    if (this.y > H) this.y = 0;
+  }
+
+  draw() {
+    const speed = Math.sqrt(this.vx * this.vx + this.vy * this.vy);
+    const lightness = 50 + Math.min(speed * 10, 30);
+    ctx.fillStyle = `hsl(${this.hue}, 90%, ${lightness}%)`;
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+    ctx.fill();
+  }
+}
+
+let particles = [];
+
+function initParticles() {
+  particles = [];
+  for (let i = 0; i < settings.count; i++) {
+    particles.push(new Particle());
+  }
+}
+
+function adjustParticles() {
+  while (particles.length < settings.count) {
+    particles.push(new Particle());
+  }
+  while (particles.length > settings.count) {
+    particles.pop();
+  }
+}
+
+function burst(x, y) {
+  for (let i = 0; i < 30; i++) {
+    const p = new Particle(x, y);
+    const angle = (i / 30) * Math.PI * 2;
+    const speed = Math.random() * 8 + 3;
+    p.vx = Math.cos(angle) * speed;
+    p.vy = Math.sin(angle) * speed;
+    p.hue = Math.random() * 60 + 180; // cyan-ish burst
+    particles.push(p);
+  }
+  // Trim if over count + burst allowance
+  while (particles.length > settings.count + 100) {
+    particles.shift();
+  }
+}
+
+// Draw connections between nearby particles
+function drawConnections() {
+  const maxDist = 100;
+  for (let i = 0; i < particles.length; i++) {
+    for (let j = i + 1; j < particles.length; j++) {
+      const dx = particles[i].x - particles[j].x;
+      const dy = particles[i].y - particles[j].y;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      if (dist < maxDist) {
+        const alpha = (1 - dist / maxDist) * 0.15;
+        ctx.strokeStyle = `rgba(0, 240, 255, ${alpha})`;
+        ctx.lineWidth = 0.5;
+        ctx.beginPath();
+        ctx.moveTo(particles[i].x, particles[i].y);
+        ctx.lineTo(particles[j].x, particles[j].y);
+        ctx.stroke();
+      }
+    }
+  }
+}
+
+// FPS counter
+let lastTime = performance.now();
+let frames = 0;
+let fps = 0;
+
+function animate() {
+  // Trail effect
+  ctx.fillStyle = `rgba(10, 10, 15, ${settings.trail})`;
+  ctx.fillRect(0, 0, W, H);
+
+  drawConnections();
+
+  for (const p of particles) {
+    p.update();
+    p.draw();
+  }
+
+  // FPS
+  frames++;
+  const now = performance.now();
+  if (now - lastTime >= 1000) {
+    fps = Math.round(frames * 1000 / (now - lastTime));
+    frames = 0;
+    lastTime = now;
+    document.getElementById('fps').textContent = fps;
+    document.getElementById('p-count').textContent = particles.length;
+  }
+
+  requestAnimationFrame(animate);
+}
+
+initParticles();
+animate();
+</script>
+</body>
+</html>

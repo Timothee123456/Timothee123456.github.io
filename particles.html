@@ -160,10 +160,14 @@
     <button id="mode-repel">Repel <span class="key-hint">2</span></button>
     <button id="mode-orbit">Orbit <span class="key-hint">3</span></button>
     <button id="reset">Reset</button>
+    <button id="pin">Pin <span class="key-hint">P</span></button>
+    <button id="music">Music <span class="key-hint">M</span></button>
   </div>
 
   <div id="shortcuts-help">
     <b>1/2/3</b> Switch mode &nbsp;
+    <b>P</b> Pin pointer to center &nbsp;
+    <b>M</b> Toggle music &nbsp;
     <b>Q/W/E/R</b> Select setting &nbsp;
     <b>&larr;/&rarr;</b> Adjust selected &nbsp;
     <b>Z</b> Min &nbsp;
@@ -191,6 +195,7 @@ window.addEventListener('resize', resize);
 const mouse = { x: W / 2, y: H / 2, down: false };
 
 window.addEventListener('mousemove', (e) => {
+  if (pointerLocked) return; // ignore real mouse when locked
   mouse.x = e.clientX;
   mouse.y = e.clientY;
 });
@@ -281,6 +286,25 @@ function togglePanel() {
   panel.style.display = panel.style.display === 'none' ? '' : 'none';
 }
 
+// Snap all particles immediately to the pointer position
+// (removed)
+
+// Pin pointer to center of screen
+let pointerLocked = false;
+let lockIndicatorTime = 0; // timestamp when lock indicator should fade
+const LOCK_INDICATOR_DURATION = 1500; // ms to show crosshair
+
+function togglePointerLock() {
+  pointerLocked = !pointerLocked;
+  const btn = document.getElementById('pin');
+  btn.classList.toggle('active', pointerLocked);
+  if (pointerLocked) {
+    mouse.x = W / 2;
+    mouse.y = H / 2;
+    lockIndicatorTime = performance.now() + LOCK_INDICATOR_DURATION;
+  }
+}
+
 // Keyboard shortcuts
 window.addEventListener('keydown', (e) => {
   const k = e.key.toLowerCase();
@@ -292,6 +316,12 @@ window.addEventListener('keydown', (e) => {
 
   // Hide panel
   if (k === 'h') { togglePanel(); return; }
+
+  // Pin/unpin pointer to center
+  if (k === 'p') { togglePointerLock(); return; }
+
+  // Toggle music
+  if (k === 'm') { Music.toggle(); document.getElementById('music').classList.toggle('active', Music.enabled); return; }
 
   // Clear trails
   if (k === 'c') { clearTrails(); return; }
@@ -315,6 +345,8 @@ document.getElementById('mode-attract').addEventListener('click', () => setMode(
 document.getElementById('mode-repel').addEventListener('click', () => setMode('repel'));
 document.getElementById('mode-orbit').addEventListener('click', () => setMode('orbit'));
 document.getElementById('reset').addEventListener('click', () => initParticles());
+document.getElementById('pin').addEventListener('click', () => togglePointerLock());
+document.getElementById('music').addEventListener('click', () => { Music.toggle(); document.getElementById('music').classList.toggle('active', Music.enabled); });
 
 function setMode(m) {
   settings.mode = m;
@@ -438,15 +470,32 @@ let frames = 0;
 let fps = 0;
 
 function animate() {
+  // Keep pointer locked to center if pinned
+  if (pointerLocked) {
+    mouse.x = W / 2;
+    mouse.y = H / 2;
+  }
+
   // Trail effect
   ctx.fillStyle = `rgba(10, 10, 15, ${settings.trail})`;
   ctx.fillRect(0, 0, W, H);
 
   drawConnections();
+  drawPointerIndicator();
 
   for (const p of particles) {
     p.update();
     p.draw();
+  }
+
+  // Feed data to adaptive music
+  if (Music.enabled) {
+    let avgSpeed = 0;
+    for (const p of particles) {
+      avgSpeed += Math.sqrt(p.vx * p.vx + p.vy * p.vy);
+    }
+    avgSpeed = particles.length > 0 ? avgSpeed / particles.length : 0;
+    Music.update(avgSpeed, particles.length, settings.mode);
   }
 
   // FPS
@@ -463,8 +512,562 @@ function animate() {
   requestAnimationFrame(animate);
 }
 
+// Draw a crosshair indicator briefly when pointer is locked
+function drawPointerIndicator() {
+  if (!pointerLocked) return;
+  const now = performance.now();
+  if (now > lockIndicatorTime) return;
+  // Fade out over the last 500ms
+  const remaining = lockIndicatorTime - now;
+  const alpha = Math.min(1, remaining / 500) * 0.6;
+  const cx = W / 2;
+  const cy = H / 2;
+  ctx.strokeStyle = `rgba(0, 240, 255, ${alpha})`;
+  ctx.lineWidth = 1.5;
+  ctx.beginPath();
+  ctx.arc(cx, cy, 12, 0, Math.PI * 2);
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(cx - 18, cy);
+  ctx.lineTo(cx - 6, cy);
+  ctx.moveTo(cx + 6, cy);
+  ctx.lineTo(cx + 18, cy);
+  ctx.moveTo(cx, cy - 18);
+  ctx.lineTo(cx, cy - 6);
+  ctx.moveTo(cx, cy + 6);
+  ctx.lineTo(cx, cy + 18);
+  ctx.stroke();
+}
+
+// ==================== ADAPTIVE MUSIC SYSTEM ====================
+const Music = {
+  ctx: null,
+  masterGain: null,
+  reverb: null,
+  reverbGain: null,
+  dryGain: null,
+  enabled: false,
+  lastNoteTime: 0,
+  lastChordTime: 0,
+  chordIndex: 0,
+
+  // Chord progressions per mode (calm jazz voicings)
+  chords: {
+    attract: [ // C major - warm, welcoming
+      ['C3', 'E3', 'G3', 'B3'],
+      ['F2', 'A3', 'C3', 'E3'],
+      ['G2', 'B3', 'D3', 'F3'],
+      ['C3', 'E3', 'G3', 'A3'],
+    ],
+    repel: [ // A minor - melancholic
+      ['A2', 'C3', 'E3', 'G3'],
+      ['D3', 'F3', 'A3', 'C4'],
+      ['E3', 'G3', 'B3', 'D4'],
+      ['F3', 'A3', 'C4', 'E4'],
+    ],
+    orbit: [ // D dorian - mysterious, floating
+      ['D3', 'F3', 'A3', 'C4'],
+      ['G3', 'Bb3', 'D4', 'F4'],
+      ['A3', 'C4', 'E4', 'G4'],
+      ['D3', 'F3', 'A3', 'B3'],
+    ],
+  },
+
+  // Melodic scales per mode (one octave up)
+  scales: {
+    attract: [523.25, 587.33, 659.25, 698.46, 783.99, 880.00, 987.77],
+    repel:   [440.00, 493.88, 523.25, 587.33, 659.25, 698.46, 783.99],
+    orbit:   [587.33, 659.25, 698.46, 783.99, 880.00, 987.77, 1046.50],
+  },
+
+  noteFreq(name) {
+    const noteMap = { 'C':0,'C#':1,'Db':1,'D':2,'D#':3,'Eb':3,'E':4,'F':5,'F#':6,'Gb':6,'G':7,'G#':8,'Ab':8,'A':9,'A#':10,'Bb':10,'B':11 };
+    const m = name.match(/^([A-G][#b]?)(\d)$/);
+    if (!m) return 440;
+    const semitones = noteMap[m[1]];
+    const octave = parseInt(m[2]);
+    return 440 * Math.pow(2, (semitones + (octave - 4) * 12 - 9) / 12);
+  },
+
+  createImpulse(duration, decay) {
+    const rate = this.ctx.sampleRate;
+    const length = Math.floor(rate * duration);
+    const impulse = this.ctx.createBuffer(2, length, rate);
+    for (let ch = 0; ch < 2; ch++) {
+      const data = impulse.getChannelData(ch);
+      for (let i = 0; i < length; i++) {
+        data[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / length, decay);
+      }
+    }
+    return impulse;
+  },
+
+  init() {
+    this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+
+    // Master gain
+    this.masterGain = this.ctx.createGain();
+    this.masterGain.gain.value = 0;
+    this.masterGain.connect(this.ctx.destination);
+
+    // Reverb via convolution
+    this.reverb = this.ctx.createConvolver();
+    this.reverb.buffer = this.createImpulse(3.5, 2.5);
+
+    this.reverbGain = this.ctx.createGain();
+    this.reverbGain.gain.value = 0.45;
+
+    this.dryGain = this.ctx.createGain();
+    this.dryGain.gain.value = 0.6;
+
+    // Routing: source -> dry + reverb -> master
+    this.dryGain.connect(this.masterGain);
+    this.reverb.connect(this.reverbGain);
+    this.reverbGain.connect(this.masterGain);
+  },
+
+  // Connect a node to both dry and wet (reverb) paths
+  connect(node) {
+    node.connect(this.dryGain);
+    node.connect(this.reverb);
+  },
+
+  playPad(freq, duration) {
+    const now = this.ctx.currentTime;
+    const osc1 = this.ctx.createOscillator();
+    const osc2 = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    const filter = this.ctx.createBiquadFilter();
+
+    osc1.type = 'sine';
+    osc1.frequency.value = freq;
+    osc2.type = 'sine';
+    osc2.frequency.value = freq;
+    osc2.detune.value = 7;
+
+    filter.type = 'lowpass';
+    filter.frequency.value = 1800;
+    filter.Q.value = 0.5;
+
+    gain.gain.setValueAtTime(0, now);
+    gain.gain.linearRampToValueAtTime(0.06, now + duration * 0.3);
+    gain.gain.linearRampToValueAtTime(0.04, now + duration * 0.7);
+    gain.gain.linearRampToValueAtTime(0, now + duration);
+
+    osc1.connect(filter);
+    osc2.connect(filter);
+    filter.connect(gain);
+    this.connect(gain);
+
+    osc1.start(now);
+    osc2.start(now);
+    osc1.stop(now + duration);
+    osc2.stop(now + duration);
+  },
+
+  playNote(freq, duration) {
+    const now = this.ctx.currentTime;
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    const filter = this.ctx.createBiquadFilter();
+
+    osc.type = 'triangle';
+    osc.frequency.value = freq;
+
+    filter.type = 'lowpass';
+    filter.frequency.value = 2500;
+    filter.Q.value = 1;
+
+    gain.gain.setValueAtTime(0, now);
+    gain.gain.linearRampToValueAtTime(0.1, now + 0.03);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + duration);
+
+    osc.connect(filter);
+    filter.connect(gain);
+    this.connect(gain);
+
+    osc.start(now);
+    osc.stop(now + duration);
+  },
+
+  update(avgSpeed, particleCount, mode) {
+    if (!this.enabled || !this.ctx) return;
+    const now = this.ctx.currentTime;
+
+    // Play evolving pad chord — interval shortens with energy but stays calm
+    const chordInterval = 8 - Math.min(avgSpeed * 0.4, 3); // 5–8s
+    if (now - this.lastChordTime > chordInterval) {
+      this.lastChordTime = now;
+      const chordSet = this.chords[mode] || this.chords.attract;
+      const chord = chordSet[this.chordIndex % chordSet.length];
+      this.chordIndex++;
+      const padDur = chordInterval + 3;
+      for (const note of chord) {
+        this.playPad(this.noteFreq(note), padDur);
+      }
+    }
+
+    // Melodic notes — calm when slow, more frequent when energetic
+    const noteInterval = Math.max(0.7, 4 - avgSpeed * 0.35); // 0.7–4s
+    if (now - this.lastNoteTime > noteInterval) {
+      this.lastNoteTime = now;
+      const scale = this.scales[mode] || this.scales.attract;
+      const freq = scale[Math.floor(Math.random() * scale.length)];
+      // Occasionally go up an octave for sparkle
+      const finalFreq = Math.random() > 0.75 ? freq * 2 : freq;
+      const dur = 1.5 + Math.random() * 2;
+      this.playNote(finalFreq, dur);
+    }
+
+    // Master volume scales gently with particle count
+    const targetVol = 0.15 + Math.min(particleCount / 600, 0.2);
+    this.masterGain.gain.setTargetAtTime(targetVol, now, 2);
+  },
+
+  toggle() {
+    if (!this.ctx) this.init();
+    if (this.ctx.state === 'suspended') this.ctx.resume();
+    this.enabled = !this.enabled;
+    if (!this.enabled) {
+      this.masterGain.gain.setTargetAtTime(0, this.ctx.currentTime, 0.5);
+    } else {
+      this.masterGain.gain.setTargetAtTime(0.25, this.ctx.currentTime, 1);
+      // Kick off first chord
+      this.lastChordTime = this.ctx.currentTime - 10;
+    }
+  }
+};
+
 initParticles();
 animate();
 </script>
-</body>
+<script data-pplx-inline-edit>
+(function () {
+  if (window === window.top) return;
+
+  const allowedParentOrigins = ["https://www.perplexity.ai","https://perplexity.ai","https://testing.perplexity.ai","https://staging.perplexity.ai","https://*.preview.i.perplexity.ai","http://perplexity.localhost","http://localhost:1420","http://127.0.0.1:1420","http://localhost:3000","http://127.0.0.1:3000","http://localhost:5173","http://127.0.0.1:5173"];
+  const MAX_FONT_BYTES = 500 * 1024;
+  const MAX_TOTAL_FONT_BYTES = 2 * 1024 * 1024;
+  let scrollForwarding = false;
+  let scrollRaf = 0;
+  let trustedTopOrigin = null;
+
+  // Allow entries like "https://*.preview.i.perplexity.ai" — the wildcard
+  // matches a single DNS label (no dots), so "https://*.foo" cannot stretch
+  // across multiple labels.
+  function matchesAllowedOrigin(origin) {
+    if (!origin) return false;
+    for (const entry of allowedParentOrigins) {
+      if (!entry.includes("*")) {
+        if (entry === origin) return true;
+        continue;
+      }
+      const pattern = new RegExp(
+        "^" +
+          entry.replace(/[.+?^${}()|[\]\\]/g, "\\$&").replace(/\*/g, "[^.]+") +
+          "$",
+      );
+      if (pattern.test(origin)) return true;
+    }
+    return false;
+  }
+
+  // Trust decision: when the sender is same-origin-visible (event.origin is a
+  // real origin like https://www.perplexity.ai) we trust event.origin directly.
+  // When event.origin is "null" (opaque broker srcdoc), we fall back to the
+  // broker's stamped `parentOrigin` to identify the top window. The fallback
+  // is claim-only — we rely on the browser's native `targetOrigin` enforcement
+  // on the response path (see postToTrustedTop) to ensure replies can't be
+  // delivered to anyone but the actual top window of that claimed origin.
+  function getTrustedParentOrigin(event) {
+    const forwardedParentOrigin =
+      typeof event.data.parentOrigin === "string" ? event.data.parentOrigin : null;
+    const parentOrigin = event.origin === "null" ? forwardedParentOrigin : event.origin;
+    return matchesAllowedOrigin(parentOrigin) ? parentOrigin : null;
+  }
+
+  // All responses go to window.top with targetOrigin = the allowlisted origin.
+  // An attacker that iframes us inside their own null-origin broker can claim
+  // any parentOrigin they like, but the browser will drop the reply whenever
+  // the real top's origin doesn't match — so the screenshot never leaves.
+  function postToTrustedTop(message) {
+    if (!trustedTopOrigin) return;
+    try {
+      window.top.postMessage(message, trustedTopOrigin);
+    } catch (_error) {}
+  }
+
+  function inlineAll(original, clone) {
+    if (original.nodeType !== 1 || clone.nodeType !== 1) return;
+
+    try {
+      const computedStyle = getComputedStyle(original);
+      // cssText on a computed style is the serialized declaration in modern
+      // Chromium/Safari — a single read beats enumerating ~400 longhand
+      // properties. Firefox returns "" here, so we fall back on empty.
+      const serialized = computedStyle.cssText;
+      if (serialized) {
+        clone.style.cssText = serialized;
+      } else {
+        const parts = new Array(computedStyle.length);
+        for (let index = 0; index < computedStyle.length; index += 1) {
+          const property = computedStyle[index];
+          parts[index] = `${property}:${computedStyle.getPropertyValue(property)};`;
+        }
+        clone.style.cssText = parts.join("");
+      }
+    } catch (_error) {}
+
+    const originalChildren = original.children;
+    const clonedChildren = clone.children;
+    for (
+      let index = 0;
+      index < originalChildren.length && index < clonedChildren.length;
+      index += 1
+    ) {
+      inlineAll(originalChildren[index], clonedChildren[index]);
+    }
+  }
+
+  function extractFontUrl(srcValue) {
+    const matches = [
+      ...srcValue.matchAll(
+        /url\(["']?([^"')]+)["']?\)(?:\s*format\(["']?([^"')]+)["']?\))?/gi,
+      ),
+    ];
+    if (matches.length === 0) return null;
+    const woff2 = matches.find((m) => m[2] && m[2].toLowerCase().includes("woff2"));
+    if (woff2) return woff2[1];
+    const woff = matches.find((m) => m[2] && m[2].toLowerCase().includes("woff"));
+    if (woff) return woff[1];
+    return matches[0][1];
+  }
+
+  // Cache resolved font URL -> data URI across captures. Fonts on a page
+  // essentially never change, and a batch run emits multiple captures back to
+  // back — without this we'd refetch + re-base64 every time.
+  const fontDataUriCache = new Map();
+  const SRC_DECLARATION_RE = /src\s*:\s*[^;}]+/i;
+
+  async function fetchAsDataUri(url) {
+    if (fontDataUriCache.has(url)) return fontDataUriCache.get(url);
+    let dataUri = null;
+    try {
+      const response = await fetch(url, { mode: "cors", credentials: "omit" });
+      if (response.ok) {
+        const blob = await response.blob();
+        if (blob.size <= MAX_FONT_BYTES) {
+          dataUri = await new Promise((resolve) => {
+            const reader = new FileReader();
+            reader.onloadend = () =>
+              resolve(typeof reader.result === "string" ? reader.result : null);
+            reader.onerror = () => resolve(null);
+            reader.readAsDataURL(blob);
+          });
+        }
+      }
+    } catch (_error) {
+      dataUri = null;
+    }
+    fontDataUriCache.set(url, dataUri);
+    return dataUri;
+  }
+
+  function collectFontFaceRuleTexts() {
+    const rules = [];
+    for (const sheet of document.styleSheets) {
+      let cssRules;
+      try {
+        cssRules = sheet.cssRules;
+      } catch (_error) {
+        continue;
+      }
+      if (!cssRules) continue;
+      for (const rule of cssRules) {
+        const cssText = rule.cssText || "";
+        if (cssText.startsWith("@font-face")) rules.push(cssText);
+      }
+    }
+    return rules;
+  }
+
+  async function buildInlinedFontCss() {
+    const ruleTexts = collectFontFaceRuleTexts();
+    if (ruleTexts.length === 0) return null;
+
+    const resolved = ruleTexts.map((cssText) => {
+      if (!SRC_DECLARATION_RE.test(cssText)) return null;
+      const srcMatch = cssText.match(/src\s*:\s*([^;}]+)[;}]/i);
+      if (!srcMatch) return null;
+      const url = extractFontUrl(srcMatch[1]);
+      if (!url) return null;
+      try {
+        return { cssText, url: new URL(url, document.baseURI).href };
+      } catch (_error) {
+        return null;
+      }
+    });
+
+    const dataUris = await Promise.all(
+      resolved.map((entry) => (entry ? fetchAsDataUri(entry.url) : Promise.resolve(null))),
+    );
+
+    const inlined = [];
+    let totalBytes = 0;
+    for (let index = 0; index < resolved.length; index += 1) {
+      const entry = resolved[index];
+      const dataUri = dataUris[index];
+      if (!entry || !dataUri) continue;
+      const approxBytes = dataUri.length * 0.75;
+      if (totalBytes + approxBytes > MAX_TOTAL_FONT_BYTES) break;
+      totalBytes += approxBytes;
+      inlined.push(entry.cssText.replace(SRC_DECLARATION_RE, `src: url("${dataUri}")`));
+    }
+    return inlined.length > 0 ? inlined.join("\n") : null;
+  }
+
+  function stripExternal(clone) {
+    const images = clone.querySelectorAll("img");
+    for (let index = 0; index < images.length; index += 1) {
+      const src = images[index].getAttribute("src");
+      if (src && !src.startsWith("data:")) images[index].removeAttribute("src");
+    }
+
+    const elements = clone.querySelectorAll("*");
+    for (let index = 0; index < elements.length; index += 1) {
+      const style = elements[index].style.cssText;
+      if (style && style.includes("url(")) {
+        elements[index].style.cssText = style.replace(
+          /url\(["']?(?!data:)[^)"']*["']?\)/gi,
+          "none",
+        );
+      }
+    }
+  }
+
+  function emitScroll() {
+    scrollRaf = 0;
+    if (!scrollForwarding) return;
+    postToTrustedTop({
+      type: "INLINE_EDIT_SCROLL",
+      scrollX: window.scrollX,
+      scrollY: window.scrollY,
+    });
+  }
+
+  window.addEventListener(
+    "scroll",
+    function () {
+      if (!scrollForwarding || scrollRaf) return;
+      scrollRaf = requestAnimationFrame(emitScroll);
+    },
+    { passive: true, capture: true },
+  );
+
+  async function handleCaptureRequest(event) {
+    const requestId = event.data.requestId;
+    const scrollX = window.scrollX;
+    const scrollY = window.scrollY;
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+
+    function postResult(dataUrl) {
+      postToTrustedTop({
+        type: "INLINE_EDIT_SCREENSHOT_RESULT",
+        requestId,
+        dataUrl,
+        scrollX,
+        scrollY,
+      });
+    }
+
+    try {
+      // Wait for any pending web fonts to resolve so both inline metrics and
+      // the @font-face inlining below see the same loaded faces.
+      if (document.fonts && document.fonts.ready) {
+        try {
+          await document.fonts.ready;
+        } catch (_error) {}
+      }
+
+      const clone = document.documentElement.cloneNode(true);
+      inlineAll(document.documentElement, clone);
+
+      const removedNodes = clone.querySelectorAll("script,link[rel=\"stylesheet\"],style");
+      for (let index = 0; index < removedNodes.length; index += 1) {
+        removedNodes[index].remove();
+      }
+
+      stripExternal(clone);
+
+      // Re-embed web fonts as data-URI @font-face rules so the SVG rasterizer
+      // can resolve them — external font URLs aren't fetched during
+      // foreignObject rendering, which would otherwise force a fallback face
+      // and change text metrics.
+      const inlinedFontCss = await buildInlinedFontCss();
+      if (inlinedFontCss) {
+        const styleEl = document.createElement("style");
+        styleEl.textContent = inlinedFontCss;
+        const head = clone.querySelector("head");
+        if (head) head.appendChild(styleEl);
+        else clone.insertBefore(styleEl, clone.firstChild);
+      }
+
+      const html = new XMLSerializer().serializeToString(clone);
+      const svg =
+        `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}">` +
+        '<foreignObject width="100%" height="100%">' +
+        `<div xmlns="http://www.w3.org/1999/xhtml" style="width:${width}px;height:${height}px;overflow:hidden">` +
+        `<div style="position:relative;left:-${scrollX}px;top:-${scrollY}px">` +
+        html +
+        "</div></div></foreignObject></svg>";
+      const svgUrl = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
+      const image = new Image();
+      image.onload = function () {
+        const canvas = document.createElement("canvas");
+        canvas.width = width;
+        canvas.height = height;
+        canvas.getContext("2d").drawImage(image, 0, 0);
+        postResult(canvas.toDataURL("image/png"));
+      };
+      image.onerror = function () {
+        postResult(null);
+      };
+      image.src = svgUrl;
+    } catch (_error) {
+      postResult(null);
+    }
+  }
+
+  window.addEventListener("message", function (event) {
+    if (!event.data) return;
+    // Only accept messages from the direct parent frame. Blocks sibling /
+    // unrelated-window postMessage senders that could otherwise reach us.
+    if (event.source !== window.parent) return;
+
+    const trustedParentOrigin = getTrustedParentOrigin(event);
+    if (!trustedParentOrigin) return;
+    trustedTopOrigin = trustedParentOrigin;
+
+    if (event.data.type === "INLINE_EDIT_SCROLL_START") {
+      scrollForwarding = true;
+      emitScroll();
+      return;
+    }
+
+    if (event.data.type === "INLINE_EDIT_SCROLL_STOP") {
+      scrollForwarding = false;
+      if (scrollRaf) cancelAnimationFrame(scrollRaf);
+      scrollRaf = 0;
+      return;
+    }
+
+    if (event.data.type !== "INLINE_EDIT_CAPTURE_REQUEST") return;
+
+    handleCaptureRequest(event);
+  });
+})();
+
+
+</script></body>
 </html>

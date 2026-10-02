@@ -68,7 +68,7 @@
 
         .label-text {
             font-size: 18px;
-            min-width: 120px;
+            min-width: 240px;
             text-align: right;
         }
 
@@ -331,6 +331,91 @@
             <span id="correction35" class="correction-mark"></span>
         </div>
 
+        <!-- NEW VOCABULARY ITEMS -->
+        <div class="row-group">
+            <span class="label-text">Piège :</span>
+            <input type="text" autocomplete="off" id="42" class="box-input" style="width: 180px;">
+            <span id="correction42" class="correction-mark"></span>
+        </div>
+
+        <div class="row-group">
+            <span class="label-text">Penser :</span>
+            <input type="text" autocomplete="off" id="43" class="box-input" style="width: 180px;">
+            <span id="correction43" class="correction-mark"></span>
+        </div>
+
+        <div class="row-group">
+            <span class="label-text">Touriste :</span>
+            <input type="text" autocomplete="off" id="44" class="box-input" style="width: 180px;">
+            <span id="correction44" class="correction-mark"></span>
+        </div>
+
+        <div class="row-group">
+            <span class="label-text">Ne pas connaître :</span>
+            <input type="text" autocomplete="off" id="45" class="box-input" style="width: 180px;">
+            <span id="correction45" class="correction-mark"></span>
+        </div>
+
+        <div class="row-group">
+            <span class="label-text">Fermer :</span>
+            <input type="text" autocomplete="off" id="46" class="box-input" style="width: 180px;">
+            <span id="correction46" class="correction-mark"></span>
+        </div>
+
+        <div class="row-group">
+            <span class="label-text">Ouvrir :</span>
+            <input type="text" autocomplete="off" id="47" class="box-input" style="width: 180px;">
+            <span id="correction47" class="correction-mark"></span>
+        </div>
+
+        <div class="row-group">
+            <span class="label-text">Être fatigué de :</span>
+            <input type="text" autocomplete="off" id="48" class="box-input" style="width: 180px;">
+            <span id="correction48" class="correction-mark"></span>
+        </div>
+
+        <div class="row-group">
+            <span class="label-text">Blague :</span>
+            <input type="text" autocomplete="off" id="49" class="box-input" style="width: 150px;">
+            <span id="correction49" class="correction-mark"></span>
+            <span>/</span>
+            <input type="text" autocomplete="off" id="50" class="box-input" style="width: 150px;">
+            <span id="correction50" class="correction-mark"></span>
+        </div>
+
+        <div class="row-group">
+            <span class="label-text">Danger :</span>
+            <input type="text" autocomplete="off" id="51" class="box-input" style="width: 180px;">
+            <span id="correction51" class="correction-mark"></span>
+        </div>
+
+        <div class="row-group">
+            <span class="label-text">Paresseux :</span>
+            <input type="text" autocomplete="off" id="52" class="box-input" style="width: 150px;">
+            <span id="correction52" class="correction-mark"></span>
+            <span>/</span>
+            <input type="text" autocomplete="off" id="53" class="box-input" style="width: 150px;">
+            <span id="correction53" class="correction-mark"></span>
+        </div>
+
+        <div class="row-group">
+            <span class="label-text">Géographie de l'île :</span>
+            <input type="text" autocomplete="off" id="54" class="box-input" style="width: 250px;">
+            <span id="correction54" class="correction-mark"></span>
+        </div>
+
+        <div class="row-group">
+            <span class="label-text">Les nouvelles technologies :</span>
+            <input type="text" autocomplete="off" id="55" class="box-input" style="width: 250px;">
+            <span id="correction55" class="correction-mark"></span>
+        </div>
+
+        <div class="row-group">
+            <span class="label-text">Pour éviter les déplacements :</span>
+            <input type="text" autocomplete="off" id="56" class="box-input" style="width: 280px;">
+            <span id="correction56" class="correction-mark"></span>
+        </div>
+
     </div>
 
     <!-- BUTTONS -->
@@ -376,7 +461,18 @@
         { id: 38, target: "se habla", display: "Se habla" },
         { id: 39, target: "se ensena", display: "Se enseña" },
         { id: 40, target: "se protege", display: "Se protege" },
-        { id: 41, target: "se reconoce", display: "Se reconoce" }
+        { id: 41, target: "se reconoce", display: "Se reconoce" },
+        { id: 42, target: "trampa", display: "trampa" },
+        { id: 43, target: "pensar", display: "pensar" },
+        { id: 44, target: "turista", display: "turista" },
+        { id: 45, target: "no conocer", display: "no conocer" },
+        { id: 46, target: "cerrar", display: "Cerrar" },
+        { id: 47, target: "abrir", display: "Abrir" },
+        { id: 48, target: "estar harto", display: "Estar harto" },
+        { id: 51, target: "el peligro", display: "El peligro" },
+        { id: 54, target: "geografia de la isla", display: "geografía de la isla" },
+        { id: 55, target: "las nuevas tecnologias", display: "las nuevas tecnologías" },
+        { id: 56, target: "para evitar los desplazamientos", display: "Para evitar los desplazamientos" }
     ];
 
     // Groups where order does not matter
@@ -418,6 +514,20 @@
                 { clean: "significativo", display: "Significativo" },
                 { clean: "importante", display: "importante" }
             ]
+        },
+        {
+            ids: [49, 50],
+            targets: [
+                { clean: "un chiste", display: "un chiste" },
+                { clean: "una broma", display: "una broma" }
+            ]
+        },
+        {
+            ids: [52, 53],
+            targets: [
+                { clean: "vago", display: "vago" },
+                { clean: "perezoso", display: "perezoso" }
+            ]
         }
     ];
 
@@ -451,22 +561,18 @@
 
         // 2. Process Grouped Fields (Flexible Arrangement & Dynamic Correction)
         fieldGroups.forEach(group => {
-            // Track available target objects for this group
             let availableTargets = [...group.targets];
 
-            // First Pass: Find and mark correct answers
             const results = group.ids.map(id => {
                 const inputElem = document.getElementById(id.toString());
                 const corrElem = document.getElementById("correction" + id);
                 const valClean = cleanStr(inputElem.value);
 
-                // Check if user input matches any available target in the group
                 const matchedIndex = availableTargets.findIndex(t => 
                     valClean === t.clean || (t.altClean && valClean === t.altClean)
                 );
 
                 if (valClean !== "" && matchedIndex !== -1) {
-                    // Consume matched target so duplicate answers aren't counted twice
                     availableTargets.splice(matchedIndex, 1);
                     return { id, inputElem, corrElem, valClean, isCorrect: true };
                 }
@@ -474,14 +580,12 @@
                 return { id, inputElem, corrElem, valClean, isCorrect: false };
             });
 
-            // Second Pass: Mark remaining incorrect or empty fields using leftover targets
             results.forEach(res => {
                 if (res.isCorrect) {
                     res.inputElem.style.color = "green";
                     res.corrElem.innerHTML = "✓";
                     res.corrElem.className = "correction-mark correct";
                 } else {
-                    // Assign the next available leftover target display
                     const fallbackTarget = availableTargets.shift();
                     const correctDisplay = fallbackTarget ? fallbackTarget.display : "";
 

@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Léxico "Tauromaquia"</title>
+    <style>
+        /* General layout and typography settings */
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background-color: #ffffff;
+            color: #000000;
+            margin: 0;
+            padding: 30px 20px;
+            box-sizing: border-box;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            text-align: left;
+        }
+
+        /* Title style */
+        h1.main-title {
+            text-align: center;
+            font-size: 52px;
+            font-weight: 900;
+            margin-top: 0;
+            margin-bottom: 35px;
+            color: #8b0000; /* Dark red tone as seen in header */
+            letter-spacing: 1px;
+            font-family: 'Arial Black', Arial, sans-serif;
+        }
+
+        /* Grid layout for 4 quadrants (2x2) */
+        .exercise-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px 50px;
+            margin-bottom: 40px;
+        }
+
+        @media (max-width: 850px) {
+            .exercise-grid {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+        }
+
+        .quadrant {
+            font-size: 20px;
+            line-height: 2.2;
+        }
+
+        .quadrant h2 {
+            font-size: 22px;
+            font-weight: bold;
+            text-decoration: underline;
+            margin-top: 0;
+            margin-bottom: 15px;
+            color: #000;
+        }
+
+        /* Inline input and select elements */
+        .box-input {
+            border: 2px solid #000000;
+            padding: 4px 8px;
+            font-size: 18px;
+            font-family: inherit;
+            outline: none;
+            background: #ffffff;
+            box-sizing: border-box;
+            color: #000000;
+            vertical-align: middle;
+            border-radius: 0px;
+        }
+
+        /* Styling blue default placeholders as seen in Image 1 */
+        .box-input::placeholder {
+            opacity: 1;
+            font-size: 17px;
+        }
+
+        /* Select box styling */
+        select.box-input {
+            cursor: pointer;
+            padding-right: 5px;
+        }
+
+        select.box-input option {
+            color: #000000;
+        }
+
+        /* Dynamic correction indicators */
+        .correction-mark {
+            font-weight: bold;
+            font-size: 18px;
+            margin-left: 5px;
+            display: inline-block;
+        }
+
+        .correct {
+            color: #008000 !important;
+        }
+
+        .incorrect {
+            color: #cc0000 !important;
+        }
+
+        .correct-answer-text {
+            color: #008000;
+            font-weight: bold;
+            margin-left: 6px;
+            font-size: 18px;
+        }
+
+        /* Buttons styling */
+        .center-controls {
+            text-align: center;
+            margin-top: 40px;
+            margin-bottom: 30px;
+        }
+
+        /* Section layout specific tweaks */
+        .line-item {
+            margin-bottom: 12px;
+            word-wrap: break-word;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- Main Header -->
+    <h1 class="main-title">Tauromaquia</h1>
+
+    <!-- 2x2 Grid Section -->
+    <div class="exercise-grid">
+        
+        <!-- QUADRANT 1: Top-Left (La ley) -->
+        <div class="quadrant">
+            <div class="line-item">
+                <input type="text" autocomplete="off" id="1" class="box-input" style="width: 220px;" placeholder="La loi">
+                <span id="correction1" class="correction-mark"></span>
+            </div>
+            
+            <div class="line-item">
+                -La tauromaquia es 
+                <select id="2" class="box-input" style="width: 130px;">
+                    <option value="" disabled selected>option 1 / option 2</option>
+                    <option value="legal">legal</option>
+                    <option value="ilegal">ilegal</option>
+                </select>
+                <span id="correction2" class="correction-mark"></span>
+            </div>
+            
+            <div class="line-item">
+                -Forma parte del 
+                <input type="text" autocomplete="off" id="3" class="box-input" style="width: 220px;" placeholder="patrimoine culturel">
+                <span id="correction3" class="correction-mark"></span>
+                de España
+            </div>
+            
+            <div class="line-item">
+                &gt; 
+                <input type="text" autocomplete="off" id="4" class="box-input" style="width: 140px;" placeholder="Cependant">
+                <span id="correction4" class="correction-mark"></span>
+                , existe otra ley sobre la 
+                <input type="text" autocomplete="off" id="5" class="box-input" style="width: 130px;" placeholder="protection">
+                <span id="correction5" class="correction-mark"></span>
+                y el 
+                <input type="text" autocomplete="off" id="6" class="box-input" style="width: 130px;" placeholder="bien-être">
+                <span id="correction6" class="correction-mark"></span>
+                de los animales
+            </div>
+        </div>
+
+        <!-- QUADRANT 2: Top-Right (Argumentos a favor) -->
+        <div class="quadrant">
+            <h2>Argumentos de los que están a favor:</h2>
+            
+            <div class="line-item">
+                -Hay que proteger 
+                <input type="text" autocomplete="off" id="7" class="box-input" style="width: 260px;" placeholder="le patrimoine et la culture">
+                <span id="correction7" class="correction-mark"></span>
+            </div>
+            
+            <div class="line-item">
+                -Es 
+                <input type="text" autocomplete="off" id="8" class="box-input" style="width: 220px;" placeholder="une tradition">
+                <span id="correction8" class="correction-mark"></span>
+            </div>
+        </div>
+
+        <!-- QUADRANT 3: Bottom-Left (Argumentos en contra) -->
+        <div class="quadrant">
+            <h2>Argumentos de los que están en contra:</h2>
+            
+            <div class="line-item">
+                - 
+                <input type="text" autocomplete="off" id="9" class="box-input" style="width: 140px;" placeholder="Ils maltraitent">
+                <span id="correction9" class="correction-mark"></span>
+                a los animales
+            </div>
+            
+            <div class="line-item">
+                -Los animales 
+                <input type="text" autocomplete="off" id="10" class="box-input" style="width: 140px;" placeholder="souffrent">
+                <span id="correction10" class="correction-mark"></span>
+                y son 
+                <input type="text" autocomplete="off" id="11" class="box-input" style="width: 150px;" placeholder="considérés">
+                <span id="correction11" class="correction-mark"></span>
+                como objetos
+            </div>
+            
+            <div class="line-item">
+                -Debemos/Tenemos que defender los 
+                <input type="text" autocomplete="off" id="12" class="box-input" style="width: 230px;" placeholder="droits des animaux">
+                <span id="correction12" class="correction-mark"></span>
+            </div>
+        </div>
+
+        <!-- QUADRANT 4: Bottom-Right (La situación en otros países) -->
+        <div class="quadrant">
+            <div class="line-item">
+                <input type="text" autocomplete="off" id="13" class="box-input" style="width: 320px;" placeholder="La situation dans d'autres pays">
+                <span id="correction13" class="correction-mark"></span>
+            </div>
+            
+            <div class="line-item">
+                -Países donde la Tauromaquia:
+            </div>
+            
+            <div class="line-item">
+                &gt; Está 
+                <input type="text" autocomplete="off" id="14" class="box-input" style="width: 170px;" placeholder="autorisée">
+                <span id="correction14" class="correction-mark"></span>
+                : Venezuela / sur de Francia / Portugal / Ecuador (sin matar al animal) / México / Perú
+            </div>
+            
+            <div class="line-item">
+                &gt; NO está autorizada : Colombia
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Control Buttons -->
+    <div class="center-controls">
+        <button class="myButton" onclick="myFunction()" id="Terminado">Terminé</button>
+        <button class="myButton2" onclick="reset()">Réinitialiser</button>
+    </div>
+</div>
+
+<script>
+    /**
+     * Normalizes string by removing accents, converting to lowercase and trimming spaces
+     */
+    function cleanStr(str) {
+        if (!str) return "";
+        return str.trim().toLowerCase()
+            .normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+    }
+
+    /**
+     * Validation function triggered on clicking "Terminé"
+     */
+    function myFunction() {
+        // Hide the finish button after validation like original script
+        document.getElementById("Terminado").style.display = "none";
+
+        // Answer mapping based on image 2 (green text corrections)
+        const fieldMap = [
+            { id: 1, targets: ["la ley"], display: "La ley" },
+            { id: 3, targets: ["patrimonio cultural"], display: "patrimonio cultural" },
+            { id: 4, targets: ["sin embargo"], display: "Sin embargo" },
+            { id: 5, targets: ["proteccion", "protección"], display: "protección" },
+            { id: 6, targets: ["bienestar", "bien-estar"], display: "bienestar" },
+            { id: 7, targets: ["el patrimonio y la cultura", "patrimonio y cultura"], display: "el patrimonio y la cultura" },
+            { id: 8, targets: ["una tradicion", "una tradición"], display: "una tradición" },
+            { id: 9, targets: ["maltratan"], display: "Maltratan" },
+            { id: 10, targets: ["sufren"], display: "sufren" },
+            { id: 11, targets: ["considerados"], display: "considerados" },
+            { id: 12, targets: ["derechos animales", "derechos de los animales"], display: "derechos animales" },
+            { id: 13, targets: ["la situacion en otros paises", "la situación en otros países"], display: "La situación en otros países" },
+            { id: 14, targets: ["autorizada"], display: "autorizada" }
+        ];
+
+        // Validate text input fields
+        fieldMap.forEach(item => {
+            const inputElem = document.getElementById(item.id.toString());
+            const corrElem = document.getElementById("correction" + item.id);
+            const valClean = cleanStr(inputElem.value);
+
+            if (valClean !== "" && item.targets.some(target => cleanStr(target) === valClean)) {
+                // Correct answer
+                inputElem.style.color = "#008000";
+                inputElem.style.fontWeight = "bold";
+                corrElem.innerHTML = "✓";
+                corrElem.className = "correction-mark correct";
+            } else if (valClean === "") {
+                // Empty answer: Fill text in green or show red mark according to logic
+                inputElem.value = item.display;
+                inputElem.style.color = "#008000";
+                inputElem.style.fontWeight = "bold";
+                corrElem.innerHTML = "✕";
+                corrElem.className = "correction-mark incorrect";
+            } else {
+                // Incorrect user answer: mark input red and show correct text next to it in green
+                inputElem.style.color = "#cc0000";
+                corrElem.innerHTML = '✕ <span class="correct-answer-text">' + item.display + '</span>';
+                corrElem.className = "correction-mark incorrect";
+            }
+        });
+
+        // Validate Select field (id 2)
+        const selectElem = document.getElementById("2");
+        const corrSelect = document.getElementById("correction2");
+        if (selectElem.value === "legal") {
+            selectElem.style.color = "#008000";
+            selectElem.style.fontWeight = "bold";
+            corrSelect.innerHTML = "✓";
+            corrSelect.className = "correction-mark correct";
+        } else {
+            selectElem.value = "legal";
+            selectElem.style.color = "#008000";
+            selectElem.style.fontWeight = "bold";
+            corrSelect.innerHTML = "✕";
+            corrSelect.className = "correction-mark incorrect";
+        }
+    }
+
+    /**
+     * Resets all inputs and corrections to initial state
+     */
+    function reset() {
+        // Show "Terminé" button again
+        document.getElementById("Terminado").style.display = "inline-block";
+
+        // Reset text inputs
+        for (let i = 1; i <= 14; i++) {
+            if (i === 2) continue; // Skip select element here
+            const inputElem = document.getElementById(i.toString());
+            const corrElem = document.getElementById("correction" + i);
+
+            if (inputElem) {
+                inputElem.value = "";
+                inputElem.style.color = "#000000";
+                inputElem.style.fontWeight = "normal";
+            }
+            if (corrElem) {
+                corrElem.innerHTML = "";
+            }
+        }
+
+        // Reset select input
+        const selectElem = document.getElementById("2");
+        const corrSelect = document.getElementById("correction2");
+        if (selectElem) {
+            selectElem.selectedIndex = 0;
+            selectElem.style.color = "#0000ff";
+            selectElem.style.fontWeight = "normal";
+        }
+        if (corrSelect) {
+            corrSelect.innerHTML = "";
+        }
+    }
+</script>
+</body>

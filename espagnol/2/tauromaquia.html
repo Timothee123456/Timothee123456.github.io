@@ -149,7 +149,7 @@
             <div class="line-item">
                 -La tauromaquia es 
                 <select id="2" class="box-input" style="width: 130px;">
-                    <option value="" disabled selected>option 1 / option 2</option>
+                    <option value="" disabled selected>select</option>
                     <option value="legal">legal</option>
                     <option value="ilegal">ilegal</option>
                 </select>
@@ -303,8 +303,7 @@
             } else if (valClean === "") {
                 // Empty answer: Fill text in green or show red mark according to logic
                 inputElem.value = item.display;
-                inputElem.style.color = "#008000";
-                inputElem.style.fontWeight = "bold";
+                inputElem.style.color = "#cc0000";
                 corrElem.innerHTML = "✕";
                 corrElem.className = "correction-mark incorrect";
             } else {

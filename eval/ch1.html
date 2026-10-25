@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>SES – Réviser la création de richesses</title>
+<style>
+:root{--bg:#f3f6f9;--card:#fff;--ink:#12213b;--mut:#5b6678;--line:#d9e0e9;--acc:#0b6e8a;--accb:#e3f2f7;--ok:#14803c;--okb:#e2f6e9;--ko:#c0262d;--kob:#fde8e9;--hint:#fff6dc;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0e1520;--card:#17212f;--ink:#e8eef7;--mut:#9aa8bc;--line:#2a374a;--acc:#4fc3e0;--accb:#13303b;--ok:#5fd68a;--okb:#133524;--ko:#ff8087;--kob:#3b1a1d;--hint:#3a3217;color-scheme:dark}}
+html{height:100%;scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;min-height:100%;background:var(--bg);color:var(--ink);font:16px/1.55 "Segoe UI",system-ui,-apple-system,Roboto,sans-serif}
+header{padding:28px 20px 8px;max-width:900px;margin:auto}
+h1{font:700 1.9rem/1.2 Georgia,"Times New Roman",serif;margin:0 0 4px}
+header p{margin:0;color:var(--mut)}
+nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);border-bottom:1px solid var(--line);display:flex;gap:6px;overflow-x:auto;padding:10px 20px;max-width:100%}
+nav button{flex:none;border:1px solid var(--line);background:var(--card);color:var(--ink);padding:8px 14px;border-radius:20px;font:inherit;font-size:.9rem;cursor:pointer}
+nav button[aria-selected=true]{background:var(--acc);border-color:var(--acc);color:#fff}
+main{max-width:900px;margin:auto;padding:20px}
+section{display:none}section.on{display:block}
+h2{font:700 1.35rem Georgia,serif;margin:0 0 6px}
+.lead{color:var(--mut);margin:0 0 18px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 18px;margin-bottom:14px}
+.card h3{margin:0 0 8px;font-size:1.02rem}
+.f{font-family:Georgia,serif;font-size:1.1rem;background:var(--accb);padding:6px 10px;border-radius:6px;display:inline-block;margin:2px 0}
+.q{margin-bottom:14px}.q legend,.q .t{font-weight:600;margin-bottom:8px;padding:0}
+.q fieldset{border:0;margin:0;padding:0}
+.opt{display:flex;gap:10px;align-items:flex-start;padding:8px 10px;border:1px solid var(--line);border-radius:8px;margin:6px 0;cursor:pointer}
+.opt:focus-within{outline:2px solid var(--acc)}
+.opt.ok{background:var(--okb);border-color:var(--ok)}.opt.ko{background:var(--kob);border-color:var(--ko)}
+.exp{margin-top:8px;padding:10px 12px;border-radius:8px;background:var(--accb);font-size:.93rem;display:none}
+.exp.show{display:block}.exp.ok{background:var(--okb)}.exp.ko{background:var(--kob)}
+.btn{background:var(--acc);color:#fff;border:0;border-radius:8px;padding:10px 18px;font:inherit;font-weight:600;cursor:pointer;margin:6px 8px 6px 0}
+.btn.alt{background:transparent;color:var(--acc);border:1px solid var(--acc)}
+.score{font:700 1.2rem Georgia,serif;margin:8px 0}
+input[type=text],input[type=number],select{font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:8px 10px;width:100%}
+input.ok{border-color:var(--ok);background:var(--okb)}input.ko{border-color:var(--ko);background:var(--kob)}
+.row{display:grid;grid-template-columns:1fr 170px;gap:10px;align-items:center;margin:8px 0}
+.step{margin:2px 0 8px}
+@media(max-width:560px){.row{grid-template-columns:1fr}}
+.pills{display:flex;gap:8px;flex-wrap:wrap}
+.pills button{flex:1;min-width:130px}
+.hint{background:var(--hint);padding:8px 12px;border-radius:8px;margin-top:8px;font-size:.93rem}
+.stat{display:flex;gap:16px;flex-wrap:wrap;color:var(--mut);font-size:.9rem;margin-bottom:12px}
+.item{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:center}
+.item .it{flex:1;min-width:230px}.item small{color:var(--mut)}
+ul{padding-left:20px;margin:6px 0}
+:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+</style>
+</head>
+<body>
+<header><h1>Comment crée-t-on des richesses&nbsp;?</h1><p>Révisions interactives de SES : calculs, PIB, production marchande, ESS. Tout est auto-corrigé.</p></header>
+<nav role="tablist" id="tabs"></nav>
+<main>
+<section id="cours"></section>
+<section id="qcm"></section>
+<section id="calc"></section>
+<section id="march"></section>
+<section id="form"></section>
+<section id="chiffres"></section>
+<section id="vf"></section>
+</main>
+<script>
+const $=s=>document.querySelector(s);
+const TABS=[["cours","Cours"],["qcm","QCM pièges"],["calc","Calculs"],["march","Marchand ou non"],["form","Atelier des formules"],["chiffres","Chiffres de l’ESS"],["vf","Vrai/Faux argumenté"]];
+const nav=$("#tabs");
+TABS.forEach(([id,l],i)=>{const b=document.createElement("button");b.textContent=l;b.setAttribute("role","tab");b.onclick=()=>show(id);b.dataset.id=id;nav.appendChild(b)});
+function show(id){document.querySelectorAll("section").forEach(s=>s.classList.toggle("on",s.id===id));nav.querySelectorAll("button").forEach(b=>b.setAttribute("aria-selected",b.dataset.id===id));scrollTo(0,0)}
+const H=(id,t,l)=>{$("#"+id).innerHTML=`<h2>${t}</h2><p class="lead">${l}</p>`};
+const esc=s=>s;
+
+/* ---------- COURS ---------- */
+$("#cours").innerHTML=`<h2>Rappel de cours</h2><p class="lead">Les formules et critères à connaître par cœur.</p>
+<div class="card"><h3>Les indicateurs d’une entreprise</h3>
+<p><span class="f">CA = quantités vendues × prix de vente</span></p>
+<p><span class="f">CI = matières premières + énergie</span> (biens «&nbsp;détruits&nbsp;» ou transformés)</p>
+<p><span class="f">VA = CA − CI</span> : la richesse réellement créée, qui sert à payer salaires, impôts, et le reste pour l’entreprise.</p>
+<p><span class="f">Bénéfice = produits (recettes) − charges (dépenses)</span>. Concrètement : VA − salaires − charges sociales − impôts et taxes.</p></div>
+<div class="card"><h3>Le PIB</h3><p>PIB = somme des valeurs ajoutées de toutes les organisations productives (entreprises, administrations, associations) d’un territoire sur un an. On n’additionne pas les CA pour éviter les doubles comptes (blé → farine → pain).</p>
+<p><b>Limites :</b> oublie le travail domestique, bénévole et l’économie souterraine&nbsp;; compte positivement les externalités négatives (marée noire, accidents)&nbsp;; ne mesure pas les inégalités ni le bien-être. «&nbsp;Compteur de vitesse, pas indicateur de trajectoire&nbsp;».</p></div>
+<div class="card"><h3>Marchand / non marchand</h3><p>Production <b>marchande</b> : vendue à un prix significatif, <b>supérieur à 50&nbsp;% du coût de production</b> (environ 3/4 du PIB). Production <b>non marchande</b> : gratuite ou prix inférieur à 50&nbsp;% du coût, financée par impôts et cotisations (environ 1/4 du PIB), évaluée à son coût de production.</p>
+<p>Producteurs : entreprises (but lucratif), administrations publiques (non lucratif, redistribuent), organisations de l’ESS.</p></div>
+<div class="card"><h3>L’Économie Sociale et Solidaire</h3><ul><li>Lucrativité limitée : profit réinvesti, réserves obligatoires non partageables</li><li>Gouvernance démocratique : une personne = une voix, quel que soit le capital</li><li>Gestion rigoureuse et utilité sociale</li></ul>
+<p>Familles : associations, coopératives (SCOP : salariés ≥ 51&nbsp;% du capital et 65&nbsp;% des droits de vote), mutuelles, fondations. Environ 10&nbsp;% du PIB et 14&nbsp;% de l’emploi salarié privé (2,4 millions de salariés).</p></div>`;
+
+/* ---------- QCM ---------- */
+const QCM=[
+["Un boulanger vend 60 000 € de baguettes. Il a acheté 35 000 € de farine et 3 000 € d’eau et d’énergie. Sa valeur ajoutée est de…",["60 000 €","25 000 €","22 000 €","38 000 €"],2,"VA = CA − CI = 60 000 − (35 000 + 3 000) = 22 000 €. La farine est bien une consommation intermédiaire, achetée à un autre producteur."],
+["Pourquoi calcule-t-on le PIB en additionnant les valeurs ajoutées plutôt que les chiffres d’affaires ?",["Parce que les CA sont secrets","Pour éviter de compter plusieurs fois la même production (blé, farine, pain)","Parce que la VA inclut les impôts mais pas les salaires","Parce que le CA ne concerne que les grandes entreprises"],1,"Additionner les CA compterait le blé trois fois : dans le CA de l’agriculteur, du meunier et du boulanger. La VA ne compte que la richesse nouvelle à chaque étape."],
+["Une marée noire provoque 200 M€ de dépenses de nettoyage. Quel est l’effet probable sur le PIB ?",["Il baisse, car l’environnement est détruit","Il peut augmenter, car les dépenses de nettoyage sont de la production comptabilisée","Aucun effet, c’est un événement non économique","Il est annulé pour l’année"],1,"Le PIB compte les activités monétaires, pas les destructions de capital naturel. Une externalité négative est donc comptée «&nbsp;positivement&nbsp;»."],
+["Quelle activité relève de la production non marchande ?",["Un abonnement Netflix","La réparation de vélos dans un atelier associatif facturée à 80 % de son coût","L’entrée d’un musée municipal facturée 20 % de son coût de production","Un billet de train"],2,"Le critère est le prix par rapport au coût : sous 50 %, c’est non marchand. L’atelier associatif facturé à 80 % reste marchand malgré son statut d’association."],
+
+["Dans l’exercice des smartphones, quel élément n’est PAS une consommation intermédiaire ?",["Les boîtiers et emballages","Les factures d’électricité et de serveurs cloud","Les salaires des ingénieurs et ouvriers","Les écrans et composants"],2,"Les salaires rémunèrent le travail : ils sont prélevés sur la VA, ils ne sont pas achetés à une autre entreprise pour être transformés."],
+["Une entreprise a une VA de 120 000 €, verse 70 000 € de salaires et charges, et paie 10 000 € d’impôts. Son bénéfice est…",["120 000 €","50 000 €","40 000 €","190 000 €"],2,"Bénéfice = VA − salaires − impôts = 120 000 − 70 000 − 10 000 = 40 000 €."],
+["Un pays a un PIB par habitant très élevé. Que peut-on en conclure sans risque ?",["Chaque habitant est riche","Les inégalités y sont faibles","Une richesse importante est produite en moyenne, sans information sur sa répartition","Le bien-être y est maximal"],2,"Le PIB par habitant est une moyenne : il peut masquer de fortes disparités et ne mesure ni le bien-être ni la soutenabilité."],
+["Laquelle de ces caractéristiques est FAUSSE pour l’ESS ?",["Gouvernance démocratique","Profits majoritairement réinvestis dans l’activité","Partage libre et illimité des bénéfices entre associés","Recherche d’utilité collective et d’équité sociale"],2,"L’ESS repose sur la lucrativité limitée : les excédents vont majoritairement aux réserves obligatoires non partageables."]];
+H("qcm","QCM : questions pièges","Une seule bonne réponse par question. Corrigez tout d’un coup pour voir votre score et les explications.");
+const qd=document.createElement("div");$("#qcm").appendChild(qd);
+function buildQ(){qd.innerHTML=QCM.map((q,i)=>`<div class="card q"><fieldset><legend>${i+1}. ${q[0]}</legend>${q[1].map((o,j)=>`<label class="opt"><input type="radio" name="q${i}" value="${j}"><span>${o}</span></label>`).join("")}</fieldset><div class="exp" id="qe${i}"></div></div>`).join("")+`<button class="btn" id="qgo">Corriger le QCM</button><button class="btn alt" id="qre">Recommencer</button><div class="score" id="qs"></div>`;
+$("#qgo").onclick=()=>{let s=0;QCM.forEach((q,i)=>{const c=document.querySelector(`input[name=q${i}]:checked`);const lab=[...document.querySelectorAll(`input[name=q${i}]`)].map(x=>x.parentElement);lab.forEach((l,j)=>{l.classList.toggle("ok",j===q[2]);l.classList.toggle("ko",!!c&&+c.value===j&&j!==q[2])});const ok=c&&+c.value===q[2];if(ok)s++;const e=$("#qe"+i);e.className="exp show "+(ok?"ok":"ko");e.innerHTML=(c?(ok?"Bonne réponse. ":"Raté. "):"Sans réponse. ")+q[3]});
+$("#qs").textContent=`Score : ${s} / ${QCM.length} — ${s>=QCM.length-1?"excellent !":s>=QCM.length*0.6?"solide, relisez les explications rouges.":"revoyez le cours puis réessayez."}`};
+$("#qre").onclick=()=>{buildQ();scrollTo(0,0)}}
+buildQ();
+
+/* ---------- CALCULS ---------- */
+const EX=[
+{t:"Cas 1 – La filière du meuble",tx:"Un forestier vend son bois 10 000 € à une scierie (aucune CI). La scierie utilise 1 500 € d’énergie et vend ses planches 24 000 € à un menuisier. Le menuisier achète 2 500 € de vernis et de visserie, puis vend ses tables 50 000 € aux ménages.",
+st:[["VA du forestier (€)",10000,"Aucune CI : VA = 10 000 − 0."],["VA de la scierie (€)",12500,"CI = 10 000 (bois) + 1 500 (énergie) = 11 500, donc VA = 24 000 − 11 500."],["VA du menuisier (€)",23500,"CI = 24 000 (planches) + 2 500 = 26 500, donc VA = 50 000 − 26 500."],["Somme des VA de la filière (€)",46000,"10 000 + 12 500 + 23 500."],["Écart entre les ventes finales (50 000 €) et la somme des VA (€)",4000,"Cet écart correspond aux 1 500 € d’énergie et 2 500 € de vernis achetés hors filière : ce sont des CI d’autres producteurs."]]},
+{t:"Cas 2 – La brasserie de Lina",tx:"En un an, la brasserie vend 8 000 menus à 25 € l’unité. Elle achète 60 000 € de produits frais et 12 000 € d’énergie et d’eau. Elle verse 70 000 € de salaires et charges sociales et 8 000 € d’impôts et taxes.",
+st:[["Chiffre d’affaires (€)",200000,"CA = 8 000 × 25."],["Consommations intermédiaires (€)",72000,"CI = 60 000 + 12 000. Les salaires et impôts n’en font pas partie."],["Valeur ajoutée (€)",128000,"VA = 200 000 − 72 000."],["Bénéfice (€)",50000,"Bénéfice = VA − salaires − impôts = 128 000 − 70 000 − 8 000."]]},
+{t:"Cas 3 – Vélos électriques",tx:"Une usine produit et vend 2 000 vélos électriques à 1 500 € pièce. Par vélo, elle achète 400 € de batterie et 150 € de cadre et pièces. Elle paie 100 000 € d’électricité pour l’année, 1 100 000 € de salaires, 200 000 € de cotisations sociales et 100 000 € d’impôts sur la production.",
+st:[["Chiffre d’affaires (€)",3000000,"CA = 2 000 × 1 500."],["Consommations intermédiaires (€)",1200000,"CI = (400 + 150) × 2 000 + 100 000 = 1 100 000 + 100 000."],["Valeur ajoutée (€)",1800000,"VA = 3 000 000 − 1 200 000."],["Bénéfice (€)",400000,"1 800 000 − 1 100 000 − 200 000 − 100 000."]]}];
+H("calc","Exercices de calcul","Saisissez vos résultats en euros (sans unité nécessaire). La correction apparaît étape par étape.");
+EX.forEach((e,i)=>{const c=document.createElement("div");c.className="card";
+c.innerHTML=`<h3>${e.t}</h3><p>${e.tx}</p>`+e.st.map((s,j)=>`<div class="row"><label for="c${i}_${j}">${s[0]}</label><input type="text" inputmode="decimal" id="c${i}_${j}" autocomplete="off"></div><div class="exp" id="ce${i}_${j}"></div>`).join("")+`<button class="btn">Valider mes résultats</button><button class="btn alt">Effacer</button><div class="score"></div>`;
+const [go,rs]=c.querySelectorAll("button"),sc=c.querySelector(".score");
+go.onclick=()=>{let n=0;sc.textContent="";e.st.forEach((s,j)=>{const inp=$(`#c${i}_${j}`),ex=$(`#ce${i}_${j}`);const v=parseFloat(inp.value.replace(/[\s\u202f€]/g,"").replace(",","."));const ok=v===s[1];if(ok)n++;ex.className="exp";inp.className="";
+setTimeout(()=>{inp.className=ok?"ok":"ko";ex.className="exp show "+(ok?"ok":"ko");ex.innerHTML=(ok?"Exact. ":`Attendu : ${s[1].toLocaleString("fr-FR")} €. `)+s[2]},j*450)});
+setTimeout(()=>{sc.textContent=`${n} / ${e.st.length} étapes justes`},e.st.length*450)};
+rs.onclick=()=>{c.querySelectorAll("input").forEach(x=>{x.value="";x.className=""});c.querySelectorAll(".exp").forEach(x=>x.className="exp");sc.textContent=""};
+$("#calc").appendChild(c)});
+
+/* ---------- MARCHAND ---------- */
+const MA=[
+["Cours dispensés dans un collège public","gratuit, financé par l’impôt",0],
+["Billet de train vendu par une entreprise ferroviaire","prix ≈ 90 % du coût",1],
+["Entrée d’un musée municipal à 3 € (coût : 12 €)","prix = 25 % du coût",0],
+["Abonnement Netflix","vendu sur un marché, but lucratif",1],
+["Repas gratuits des Restos du Cœur","association, gratuit",0],
+["Réparation de vélo dans un atelier associatif payant (80 % du coût)","prix > 50 % du coût : l’association ne change pas la règle",1],
+["Séance de justice","service gratuit financé par l’impôt",0],
+["Coupe de cheveux en salon","prix couvrant le coût",1],
+["Cantine scolaire facturée 1,50 € pour un coût réel de 6 €","prix = 25 % du coût",0],
+["Vente de pain dans une boulangerie","but lucratif, prix > coût",1],
+["Consultation à l’hôpital public (financée par la Sécurité sociale)","prix payé par l’usager très inférieur au coût",0],
+["Chambre d’hôtel du groupe Accor","service marchand",1]];
+H("march","Production marchande ou non marchande ?","Classez chaque activité. Critère : le prix est-il significatif, c’est-à-dire supérieur à 50 % du coût de production ?");
+const ms=document.createElement("div");$("#march").appendChild(ms);
+function buildM(){let s=0,d=0;ms.innerHTML=`<div class="stat"><span id="mst"></span></div>`+MA.map((a,i)=>`<div class="card"><div class="item"><div class="it">${a[0]}</div><div class="pills"><button class="btn alt" data-i="${i}" data-v="1">Marchande</button><button class="btn alt" data-i="${i}" data-v="0">Non marchande</button></div></div><div class="exp" id="me${i}"></div></div>`).join("")+`<button class="btn alt" id="mre">Recommencer</button>`;
+const up=()=>{$("#mst").textContent=`Réussi : ${s} / ${d} répondus (sur ${MA.length})`};up();
+ms.querySelectorAll(".pills button").forEach(b=>b.onclick=()=>{const i=+b.dataset.i;if(b.parentElement.dataset.done)return;b.parentElement.dataset.done=1;const a=MA[i],ok=+b.dataset.v===a[2];d++;if(ok)s++;b.parentElement.querySelectorAll("button").forEach(x=>{if(+x.dataset.v===a[2])x.style.cssText="background:var(--ok);color:#fff;border-color:var(--ok)";else if(x===b)x.style.cssText="background:var(--ko);color:#fff;border-color:var(--ko)"});const e=$("#me"+i);e.className="exp show "+(ok?"ok":"ko");e.innerHTML=(ok?"Juste. ":"Raté. ")+`C’est ${a[2]?"marchand":"non marchand"} (${a[1]}). Seuil : prix &gt; 50 % du coût de production.`;up()});
+$("#mre").onclick=buildM}
+buildM();
+
+/* ---------- FORMULES ---------- */
+const N=s=>{s=s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[’']/g,"").replace(/\s+/g,"").replace(/[−–—]/g,"-");const k=s.lastIndexOf("=");if(k>=0&&s.slice(0,k).length<40)s=s.slice(k+1);return s.replace(/valeurdelaproduction|chiffredaffaires?/g,"ca").replace(/quantites?vendues?|quantites?|qte/g,"q").replace(/prixdevente(unitaire)?|prixunitaire|prix/g,"p").replace(/consommationsintermediaires?/g,"ci").replace(/valeursajoutees?|valeurajoutee/g,"va").replace(/totaldes|totaldu|total/g,"").replace(/recettes/g,"produits").replace(/depenses/g,"charges").replace(/[x×·.]/g,"*")};
+const FO=[
+["Chiffre d’affaires : CA = …","CA = quantités vendues × prix de vente",s=>["q*p","p*q"].includes(s),s=>s.includes("+")?"Un chiffre d’affaires se calcule par une multiplication, pas une addition.":"Pense à ce qui est vendu (combien d’unités) et à quel prix unitaire."],
+["Consommations intermédiaires : CI = …","CI = matières premières + énergie",(s,r)=>/matiere|ingredient|biens/.test(r)&&/energie|electricite|services/.test(r)&&/\+|et/.test(r),()=>"Les CI sont achetées à d’autres entreprises et détruites ou transformées : pense aux ingrédients et à l’électricité. Les salaires n’en font pas partie."],
+["Valeur ajoutée : VA = …","VA = CA − CI",s=>s==="ca-ci",s=>s==="ci-ca"?"L’ordre est inversé : on part de ce que l’on vend, puis on retranche ce qu’on a consommé.":s.includes("+")?"La valeur ajoutée est ce que l’entreprise ajoute en plus des CI : une soustraction.":s.includes("salaire")?"Les salaires sont payés avec la VA, ils ne servent pas à la calculer.":"Compare le chiffre d’affaires et les consommations intermédiaires."],
+["Bénéfice : Bénéfice = …","Bénéfice = produits − charges (ou VA − salaires − charges sociales − impôts)",s=>s==="produits-charges"||/^(va|ca-ci)-/.test(s),s=>s.includes("+")?"Le bénéfice est un reste : on retranche des charges aux recettes.":"Pense à ce qu’il reste une fois les dépenses payées."],
+["PIB : PIB = …","PIB = somme des valeurs ajoutées de toutes les organisations productives du territoire",(s,r)=>/somme|sum|ajoutee|va\+va/.test(r)&&/va|ajoutee/.test(r),(s,r)=>/ca|chiffre/.test(r)?"Attention : additionner les CA compterait plusieurs fois la même production.":"Quel indicateur d’entreprise faut-il additionner pour éviter les doubles comptes ?"],
+["Seuil marchand : une production est marchande si son prix de vente est … à …","Marchande si prix de vente > 50 % du coût de production",(s,r)=>/50/.test(r)&&/sup|>|plus|depasse/.test(r)&&!/inf|<|moins/.test(r),(s,r)=>/inf|<|moins/.test(r)?"Inférieur à 50 % du coût, c’est justement le critère du non marchand.":"Le seuil porte sur le prix comparé au coût de production, exprimé en pourcentage."]];
+H("form","L’Atelier des formules","Écrivez chaque formule avec vos propres mots ou abréviations (CA, CI, VA, ×, x, *, −). Les accents et les espaces sont ignorés.");
+FO.forEach((f,i)=>{const c=document.createElement("div");c.className="card";c.innerHTML=`<h3>${f[0]}</h3><input type="text" id="f${i}" autocomplete="off" placeholder="Votre formule"><button class="btn">Vérifier ma formule</button><div class="exp" id="fe${i}"></div>`;
+c.querySelector("button").onclick=()=>{const raw=$("#f"+i).value,r=raw.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[’']/g,"").replace(/\s+/g,""),s=N(raw),e=$("#fe"+i);if(!raw.trim()){e.className="exp show ko";e.textContent="Écrivez une formule avant de la vérifier.";return}
+const ok=f[2](s,r);e.className="exp show "+(ok?"ok":"ko");e.innerHTML=ok?`Correct. Rappel : ${f[1]}.`:`Pas tout à fait. Indice : ${f[3](s,r)}<br><small>Quand vous aurez réfléchi, la réponse attendue est : ${f[1]}.</small>`};
+$("#form").appendChild(c)});
+
+/* ---------- VRAI / FAUX ---------- */
+const VF=[
+["Le PIB mesure le niveau de bien-être d’une population.",0,["Il mesure la production de richesses (somme des VA) et ignore le bien-être qualitatif","Il intègre directement le bonheur des habitants","Il corrige automatiquement des inégalités"],0],
+["Le travail domestique et le bénévolat informel sont comptés dans le PIB.",0,["Ils sont comptés mais sous-évalués","Ils ne sont ni rémunérés ni déclarés sur un marché, donc exclus de la production officielle","Ils sont comptés au coût de production"],1],
+["Dans l’ESS, les bénéfices sont majoritairement réinvestis dans l’activité.",1,["Grâce à la lucrativité limitée et aux réserves obligatoires non partageables","Parce que l’État l’impose à toutes les entreprises","Parce que l’ESS ne produit que du non marchand"],0],
+["Dans une société anonyme (SA), la règle est « une personne = une voix ».",0,["Le pouvoir de vote y est lié au capital détenu","Les SA appartiennent aux salariés","Les SA sont des organisations publiques"],0],
+["L’école publique est comptabilisée dans le PIB à son coût de production.",1,["Elle n’a pas de prix de marché, on l’évalue donc par ses coûts","Elle est vendue au prix du marché","Elle n’est jamais comptabilisée"],0],
+["Si les accidents de la route augmentent, le PIB baisse mécaniquement.",0,["Les dépenses de santé, de réparation et d’assurance font monter le PIB","Les accidents détruisent de la valeur ajoutée","Le PIB ne compte jamais les services de santé"],0]];
+H("vf","Vrai/Faux argumenté","Choisissez Vrai ou Faux, puis la justification correcte.");
+VF.forEach((v,i)=>{const c=document.createElement("div");c.className="card q";
+c.innerHTML=`<div class="t">${i+1}. ${v[0]}</div><div class="pills"><label class="opt"><input type="radio" name="v${i}" value="1">Vrai</label><label class="opt"><input type="radio" name="v${i}" value="0">Faux</label></div><div class="t" style="margin-top:8px">Justification :</div>`+v[2].map((o,j)=>`<label class="opt"><input type="radio" name="j${i}" value="${j}"><span>${o}</span></label>`).join("")+`<button class="btn">Vérifier</button><div class="exp"></div>`;
+c.querySelector("button").onclick=()=>{const a=c.querySelector(`input[name=v${i}]:checked`),b=c.querySelector(`input[name=j${i}]:checked`),e=c.querySelector(".exp");if(!a||!b){e.className="exp show ko";e.textContent="Répondez aux deux questions : Vrai/Faux et justification.";return}
+const o1=+a.value===v[1],o2=+b.value===v[3];e.className="exp show "+(o1&&o2?"ok":"ko");e.innerHTML=(o1&&o2?"Bravo, réponse et argument justes. ":o1?"Bon verdict, mais la justification est fausse. ":"Mauvais verdict. ")+`C’est ${v[1]?"vrai":"faux"} : ${v[2][v[3]]}.`};
+$("#vf").appendChild(c)});
+
+/* ---------- CHIFFRES ESS ---------- */
+H("chiffres","Les chiffres clés de l’ESS","Écrivez de mémoire les trois chiffres du cours. Les symboles et unités (%, millions) sont acceptés mais facultatifs.");
+const CH=[
+["Part de l’ESS dans le PIB (%)",[10],"L’ESS représente environ 10 % du PIB.","Ne confondez pas avec la part de l’emploi salarié privé."],
+["Part de l’ESS dans l’emploi salarié privé (%)",[14],"L’ESS représente environ 14 % de l’emploi salarié privé.","Ne confondez pas avec la part du PIB : l’ESS pèse proportionnellement plus en emplois qu’en richesse produite."],
+["Nombre de salariés de l’ESS (en millions)",[2.4,2400000],"L’ESS emploie environ 2,4 millions de salariés.","Il s’agit d’un nombre de salariés, pas d’un pourcentage : pensez à l’ordre de grandeur en millions."]];
+const pn=s=>{s=s.toLowerCase().replace(/[^\d,.]/g,"");if(/^\d{1,3}(\.\d{3})+$/.test(s))s=s.replace(/\./g,"");return parseFloat(s.replace(",","."))};
+const cc=document.createElement("div");$("#chiffres").appendChild(cc);
+CH.forEach((c,i)=>{cc.insertAdjacentHTML("beforeend",`<div class="card"><div class="row"><label for="h${i}">${c[0]}</label><input type="text" inputmode="decimal" id="h${i}" autocomplete="off"></div><div class="exp" id="he${i}"></div></div>`)});
+cc.insertAdjacentHTML("beforeend",`<button class="btn" id="hgo">Vérifier mes chiffres</button><button class="btn alt" id="hre">Effacer</button><div class="score" id="hs"></div>`);
+$("#hgo").onclick=()=>{let n=0;CH.forEach((c,i)=>{const inp=$("#h"+i),e=$("#he"+i),v=pn(inp.value),ok=c[1].includes(v);if(ok)n++;inp.className=ok?"ok":"ko";e.className="exp show "+(ok?"ok":"ko");e.textContent=ok?"Exact. "+c[2]:(inp.value.trim()?"Pas tout à fait. ":"Champ vide. ")+c[3]+" Réponse : "+c[2]});$("#hs").textContent=`${n} / ${CH.length} chiffres justes`};
+$("#hre").onclick=()=>{cc.querySelectorAll("input").forEach(x=>{x.value="";x.className=""});cc.querySelectorAll(".exp").forEach(x=>x.className="exp");$("#hs").textContent=""};
+
+show("cours");
+</script>
+</body>
+</html>

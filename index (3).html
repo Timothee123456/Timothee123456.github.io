@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full bg-slate-900 text-slate-100">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GitHub File Explorer</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f172a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #475569;
+        }
+    </style>
+</head>
+<body class="h-full flex flex-col font-sans antialiased selection:bg-indigo-500 selection:text-white">
+
+    <!-- Header / Navbar -->
+    <header class="border-b border-slate-800 bg-slate-950/80 backdrop-blur sticky top-0 z-30">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+            <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+                
+                <!-- Logo & Title -->
+                <div class="flex items-center gap-3">
+                    <div class="p-2.5 bg-indigo-600/20 text-indigo-400 rounded-xl border border-indigo-500/30">
+                        <i class="fa-brands fa-github text-2xl"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-bold tracking-tight text-white flex items-center gap-2">
+                            <span>Timothée's Hub</span>
+                            <span id="repo-badge" class="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-indigo-950 text-indigo-300 border border-indigo-800">
+                                Timothee123456.github.io
+                            </span>
+                        </h1>
+                        <p class="text-xs text-slate-400">Live dynamic file browser</p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 flex flex-col">
+        
+        <!-- Top Toolbar: Breadcrumbs & Search -->
+        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6 bg-slate-950/40 p-4 rounded-xl border border-slate-800/80">
+            
+            <!-- Breadcrumbs -->
+            <nav class="flex items-center flex-wrap gap-1.5 text-sm font-medium text-slate-400 overflow-x-auto w-full sm:w-auto" id="breadcrumbs">
+                <!-- Breadcrumbs will be rendered here dynamically -->
+            </nav>
+
+            <!-- Search Filter Input -->
+            <div class="relative w-full sm:w-64">
+                <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 text-xs"></i>
+                <input 
+                    type="text" 
+                    id="search-input" 
+                    placeholder="Filter current folder..." 
+                    class="w-full bg-slate-900 border border-slate-800 rounded-lg pl-8 pr-4 py-1.5 text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-indigo-500 transition-colors"
+                />
+            </div>
+
+        </div>
+
+        <!-- Main Explorer Content Card -->
+        <div class="bg-slate-950/60 rounded-2xl border border-slate-800 flex-1 flex flex-col overflow-hidden shadow-2xl">
+            
+            <!-- Table Header -->
+            <div class="grid grid-cols-12 gap-4 px-6 py-3 bg-slate-900/60 border-b border-slate-800 text-xs font-semibold text-slate-400 uppercase tracking-wider">
+                <div class="col-span-7 sm:col-span-6 md:col-span-6 flex items-center gap-2">Name</div>
+                <div class="hidden sm:block sm:col-span-3 md:col-span-3 text-right">Size</div>
+                <div class="col-span-5 sm:col-span-3 md:col-span-3 text-right">Actions / Links</div>
+            </div>
+
+            <!-- Explorer List / Loading / Error Container -->
+            <div class="flex-1 overflow-y-auto relative" id="explorer-container">
+                
+                <!-- Loading Spinner State -->
+                <div id="loading-state" class="hidden absolute inset-0 bg-slate-950/80 backdrop-blur-sm flex flex-col items-center justify-center gap-3 z-20">
+                    <div class="w-8 h-8 border-3 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>
+                    <span class="text-sm font-medium text-slate-400 animate-pulse">Fetching contents from GitHub...</span>
+                </div>
+
+                <!-- Error Message State -->
+                <div id="error-state" class="hidden p-12 text-center flex flex-col items-center justify-center h-full">
+                    <div class="w-16 h-16 bg-red-500/10 text-red-400 rounded-full flex items-center justify-center mb-4 border border-red-500/20">
+                        <i class="fa-solid fa-triangle-exclamation text-2xl"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold text-slate-200 mb-1" id="error-title">Failed to load repository</h3>
+                    <p class="text-sm text-slate-400 max-w-md mb-6" id="error-message">Make sure the repository is public and the owner/repo name is correct.</p>
+                    <button id="retry-btn" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-xs font-medium text-slate-200 rounded-lg transition-colors border border-slate-700">
+                        Try Again
+                    </button>
+                </div>
+
+                <!-- Empty State -->
+                <div id="empty-state" class="hidden p-12 text-center flex flex-col items-center justify-center h-full">
+                    <div class="w-12 h-12 bg-slate-800 text-slate-500 rounded-full flex items-center justify-center mb-3">
+                        <i class="fa-regular fa-folder-open text-xl"></i>
+                    </div>
+                    <p class="text-sm text-slate-400">This folder is empty or no files match your filter.</p>
+                </div>
+
+                <!-- Dynamic Items List -->
+                <div id="file-list" class="divide-y divide-slate-800/60">
+                    <!-- Dynamic rows populate here -->
+                </div>
+
+            </div>
+
+            <!-- Explorer Footer -->
+            <div class="px-6 py-3 bg-slate-900/40 border-t border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-slate-400">
+                <div id="status-info">
+                    Items: <span id="item-count" class="font-semibold text-slate-300">0</span>
+                </div>
+                <div class="flex items-center gap-4">
+                    <span id="rate-limit-badge" class="hidden sm:inline-block">API Requests remaining: <span id="rate-remaining" class="font-semibold text-slate-300">--</span></span>
+                    <a id="github-link" href="#" target="_blank" rel="noopener noreferrer" class="hover:text-indigo-400 transition-colors flex items-center gap-1">
+                        View on GitHub <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
+                    </a>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- File Preview Modal -->
+    <div id="preview-modal" class="hidden fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-4xl max-h-[85vh] flex flex-col shadow-2xl overflow-hidden">
+            <!-- Modal Header -->
+            <div class="px-6 py-4 border-b border-slate-800 flex items-center justify-between bg-slate-950/50">
+                <div class="flex items-center gap-3 overflow-hidden pr-4">
+                    <i id="preview-icon" class="fa-regular fa-file text-indigo-400 text-lg"></i>
+                    <h3 id="preview-title" class="font-semibold text-slate-200 text-sm sm:text-base truncate">File Preview</h3>
+                </div>
+                <button id="close-modal-btn" class="text-slate-400 hover:text-slate-200 p-1.5 rounded-lg hover:bg-slate-800 transition-colors">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+            <!-- Modal Body -->
+            <div class="p-6 overflow-y-auto flex-1 font-mono text-xs text-slate-300 bg-slate-950/80" id="preview-content">
+                <!-- Preview content (text, image, iframe) loaded here -->
+            </div>
+            <!-- Modal Footer -->
+            <div class="px-6 py-3 border-t border-slate-800 bg-slate-950/50 flex items-center justify-between text-xs">
+                <span id="preview-size" class="text-slate-400"></span>
+                <div class="flex items-center gap-3" id="modal-action-buttons">
+                    <a id="preview-open-tab-btn" href="#" target="_blank" class="hidden px-3 py-1.5 bg-indigo-600 hover:bg-indigo-500 text-white font-medium rounded-md transition-colors flex items-center gap-1.5">
+                        <i class="fa-solid fa-arrow-up-right-from-square text-[11px]"></i> Open Page
+                    </a>
+                    <a id="preview-raw-btn" href="#" target="_blank" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 font-medium rounded-md transition-colors flex items-center gap-1.5">
+                        <i class="fa-solid fa-arrow-down-long text-[11px]"></i> Download Raw
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript Explorer Logic -->
+    <script>
+        // Fixed repository target
+        const state = {
+            owner: 'Timothee123456',
+            repo: 'Timothee123456.github.io',
+            currentPath: '',
+            items: [],
+            filteredItems: [],
+            history: []
+        };
+
+        // DOM Elements
+        const breadcrumbs = document.getElementById('breadcrumbs');
+        const fileList = document.getElementById('file-list');
+        const searchInput = document.getElementById('search-input');
+        const itemCount = document.getElementById('item-count');
+        const githubLink = document.getElementById('github-link');
+        const rateRemaining = document.getElementById('rate-remaining');
+        
+        // State UI Elements
+        const loadingState = document.getElementById('loading-state');
+        const errorState = document.getElementById('error-state');
+        const emptyState = document.getElementById('empty-state');
+        const errorTitle = document.getElementById('error-title');
+        const errorMessage = document.getElementById('error-message');
+        const retryBtn = document.getElementById('retry-btn');
+
+        // Modal Elements
+        const previewModal = document.getElementById('preview-modal');
+        const closeModalBtn = document.getElementById('close-modal-btn');
+        const previewTitle = document.getElementById('preview-title');
+        const previewIcon = document.getElementById('preview-icon');
+        const previewContent = document.getElementById('preview-content');
+        const previewSize = document.getElementById('preview-size');
+        const previewRawBtn = document.getElementById('preview-raw-btn');
+
+        // Initialize App
+        document.addEventListener('DOMContentLoaded', () => {
+            githubLink.href = `https://github.com/${state.owner}/${state.repo}`;
+            fetchDirectoryContents('');
+            setupEventListeners();
+        });
+
+        // Event Listeners Setup
+        function setupEventListeners() {
+            searchInput.addEventListener('input', (e) => {
+                filterItems(e.target.value.toLowerCase());
+            });
+
+            retryBtn.addEventListener('click', () => {
+                fetchDirectoryContents(state.currentPath);
+            });
+
+            closeModalBtn.addEventListener('click', closeModal);
+            previewModal.addEventListener('click', (e) => {
+                if (e.target === previewModal) closeModal();
+            });
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && !previewModal.classList.contains('hidden')) {
+                    closeModal();
+                }
+            });
+        }
+
+        // Helper: Build correct published URL for GitHub user pages
+        function getPublishedPageUrl(filePath) {
+            // For username.github.io repositories, the root site URL is:
+            // https://username.github.io/filePath
+            return `https://${state.owner.toLowerCase()}.github.io/${filePath}`;
+        }
+
+        // Fetch contents using GitHub REST API
+        async function fetchDirectoryContents(path = '') {
+            showLoading(true);
+            hideError();
+            emptyState.classList.add('hidden');
+            state.currentPath = path;
+
+            // GitHub API endpoint
+            const url = `https://api.github.com/repos/${state.owner}/${state.repo}/contents/${path}`;
+
+            try {
+                const response = await fetch(url, {
+                    headers: {
+                        'Accept': 'application/vnd.github.v3+json'
+                    }
+                });
+
+                // Read API rate limits from headers
+                const remaining = response.headers.get('x-ratelimit-remaining');
+                if (remaining !== null) {
+                    rateRemaining.textContent = remaining;
+                }
+
+                if (!response.ok) {
+                    if (response.status === 404) {
+                        throw new Error('Repository or folder path not found.');
+                    } else if (response.status === 403) {
+                        throw new Error('GitHub API rate limit exceeded. Please try again later.');
+                    } else {
+                        throw new Error(`GitHub API returned error ${response.status}`);
+                    }
+                }
+
+                const data = await response.json();
+
+                if (!Array.isArray(data)) {
+                    throw new Error('The requested path is a file, not a directory.');
+                }
+
+                // Sort: Folders first, then Files alphabetically
+                state.items = data.sort((a, b) => {
+                    if (a.type === b.type) {
+                        return a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: 'base' });
+                    }
+                    return a.type === 'dir' ? -1 : 1;
+                });
+
+                state.filteredItems = [...state.items];
+                searchInput.value = '';
+
+                renderBreadcrumbs();
+                renderFileList();
+
+            } catch (err) {
+                showError('Error Loading Directory', err.message);
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        // Render Navigation Breadcrumbs
+        function renderBreadcrumbs() {
+            breadcrumbs.innerHTML = '';
+
+            // Root / Repo Home
+            const rootItem = document.createElement('button');
+            rootItem.className = 'hover:text-indigo-400 text-slate-200 transition-colors flex items-center gap-1 px-1.5 py-1 rounded-md hover:bg-slate-900';
+            rootItem.innerHTML = `<i class="fa-solid fa-database text-xs text-indigo-400"></i> <span class="font-semibold">${state.repo}</span>`;
+            rootItem.addEventListener('click', () => fetchDirectoryContents(''));
+            breadcrumbs.appendChild(rootItem);
+
+            if (!state.currentPath) return;
+
+            const parts = state.currentPath.split('/');
+            let accumulatedPath = '';
+
+            parts.forEach((part, idx) => {
+                accumulatedPath += (idx === 0 ? '' : '/') + part;
+                const pathForBtn = accumulatedPath;
+
+                // Separator Slash
+                const separator = document.createElement('span');
+                separator.className = 'text-slate-600 text-xs';
+                separator.textContent = '/';
+                breadcrumbs.appendChild(separator);
+
+                // Breadcrumb Link
+                const item = document.createElement('button');
+                const isLast = idx === parts.length - 1;
+
+                if (isLast) {
+                    item.className = 'text-indigo-400 font-semibold px-1.5 py-1 rounded-md bg-indigo-950/40 border border-indigo-900/50';
+                    item.textContent = part;
+                } else {
+                    item.className = 'hover:text-indigo-400 transition-colors px-1.5 py-1 rounded-md hover:bg-slate-900';
+                    item.textContent = part;
+                    item.addEventListener('click', () => fetchDirectoryContents(pathForBtn));
+                }
+
+                breadcrumbs.appendChild(item);
+            });
+        }
+
+        // Render File & Folder List
+        function renderFileList() {
+            fileList.innerHTML = '';
+            itemCount.textContent = state.filteredItems.length;
+
+            if (state.filteredItems.length === 0) {
+                emptyState.classList.remove('hidden');
+                return;
+            }
+
+            emptyState.classList.add('hidden');
+
+            // Render Parent Folder Link ("..") if inside a subfolder
+            if (state.currentPath !== '') {
+                const parentRow = document.createElement('div');
+                parentRow.className = 'grid grid-cols-12 gap-4 px-6 py-3 hover:bg-slate-900/80 transition-colors cursor-pointer text-sm group items-center';
+                parentRow.innerHTML = `
+                    <div class="col-span-7 sm:col-span-6 md:col-span-6 flex items-center gap-3 text-slate-400 group-hover:text-indigo-400 font-medium">
+                        <i class="fa-solid fa-level-up-alt rotate-90 text-indigo-400"></i>
+                        <span>..</span>
+                    </div>
+                    <div class="hidden sm:block sm:col-span-3 md:col-span-3 text-right text-xs text-slate-500">-</div>
+                    <div class="col-span-5 sm:col-span-3 md:col-span-3 text-right text-xs text-slate-500">Parent Directory</div>
+                `;
+                parentRow.addEventListener('click', () => {
+                    const parts = state.currentPath.split('/');
+                    parts.pop();
+                    fetchDirectoryContents(parts.join('/'));
+                });
+                fileList.appendChild(parentRow);
+            }
+
+            // Render File & Directory Items
+            state.filteredItems.forEach(item => {
+                const row = document.createElement('div');
+                row.className = 'grid grid-cols-12 gap-4 px-6 py-3.5 hover:bg-slate-900/50 transition-colors text-sm items-center border-b border-slate-900/50 last:border-none cursor-pointer';
+
+                const iconClass = getFileIcon(item.name, item.type);
+                const formattedSize = item.size ? formatBytes(item.size) : '-';
+                const isHtml = item.name.toLowerCase().endsWith('.html') || item.name.toLowerCase().endsWith('.htm');
+
+                row.innerHTML = `
+                    <div class="col-span-7 sm:col-span-6 md:col-span-6 flex items-center gap-3 overflow-hidden">
+                        <i class="${iconClass} text-base flex-shrink-0"></i>
+                        <span class="truncate font-medium ${item.type === 'dir' ? 'text-slate-100 hover:text-indigo-400' : 'text-slate-300 hover:text-indigo-300'} item-name">
+                            ${escapeHtml(item.name)}
+                        </span>
+                    </div>
+                    <div class="hidden sm:block sm:col-span-3 md:col-span-3 text-right text-xs text-slate-400 font-mono">
+                        ${formattedSize}
+                    </div>
+                    <div class="col-span-5 sm:col-span-3 md:col-span-3 flex items-center justify-end gap-2 text-xs">
+                        ${item.type === 'file' ? `
+                            <button class="preview-btn px-2.5 py-1 ${isHtml ? 'bg-indigo-600 hover:bg-indigo-500 text-white' : 'bg-slate-800 hover:bg-slate-700 text-slate-300'} rounded-md transition-all flex items-center gap-1.5" title="${isHtml ? 'Open page directly' : 'Preview file'}">
+                                <i class="${isHtml ? 'fa-solid fa-arrow-up-right-from-square' : 'fa-regular fa-eye'}"></i>
+                                <span class="hidden md:inline">${isHtml ? 'Open Page' : 'Open'}</span>
+                            </button>
+                            <a href="${item.download_url}" target="_blank" download class="p-1.5 bg-slate-800/80 hover:bg-slate-700 text-slate-400 hover:text-slate-200 rounded-md transition-colors" title="Download Raw File" onclick="event.stopPropagation();">
+                                <i class="fa-solid fa-download"></i>
+                            </a>
+                        ` : `
+                            <span class="text-slate-500 text-xs italic">Folder</span>
+                        `}
+                    </div>
+                `;
+
+                // Handle row clicks
+                if (item.type === 'dir') {
+                    row.addEventListener('click', (e) => {
+                        if (!e.target.closest('a')) {
+                            fetchDirectoryContents(item.path);
+                        }
+                    });
+                } else if (isHtml) {
+                    row.addEventListener('click', (e) => {
+                        if (!e.target.closest('a')) {
+                            // Direct navigation to published HTML page without address doubling
+                            window.open(getPublishedPageUrl(item.path), '_blank');
+                        }
+                    });
+                } else {
+                    row.addEventListener('click', (e) => {
+                        if (!e.target.closest('a')) {
+                            openPreview(item);
+                        }
+                    });
+                }
+
+                fileList.appendChild(row);
+            });
+        }
+
+        // Filter files in real time
+        // Open File Preview Modal for Non-HTML files
+        async function openPreview(item) {
+            const openTabBtn = document.getElementById('preview-open-tab-btn');
+            openTabBtn.classList.add('hidden');
+            
+            previewTitle.textContent = item.name;
+            previewIcon.className = getFileIcon(item.name, item.type) + ' text-indigo-400 text-lg';
+            previewSize.textContent = `Size: ${formatBytes(item.size)}`;
+            previewRawBtn.href = item.download_url;
+            previewContent.innerHTML = '<div class="flex items-center justify-center p-8 text-slate-400"><div class="w-6 h-6 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin mr-3"></div> Loading content...</div>';
+            
+            previewModal.classList.remove('hidden');
+
+            const ext = item.name.split('.').pop().toLowerCase();
+            const imageExts = ['png', 'jpg', 'jpeg', 'gif', 'svg', 'webp', 'ico'];
+
+            if (imageExts.includes(ext)) {
+                // Image Preview Mode
+                previewContent.innerHTML = `
+                    <div class="flex items-center justify-center p-4 bg-slate-950/60 rounded-lg border border-slate-800 min-h-[300px]">
+                        <img src="${item.download_url}" alt="${escapeHtml(item.name)}" class="max-h-[60vh] max-w-full object-contain rounded shadow-lg" />
+                    </div>
+                `;
+            } else {
+                // Code / Text Document Mode
+                try {
+                    const res = await fetch(item.download_url);
+                    if (!res.ok) throw new Error('Could not fetch file content');
+                    const text = await res.text();
+
+                    previewContent.innerHTML = `<pre class="whitespace-pre-wrap break-words leading-relaxed font-mono"><code>${escapeHtml(text)}</code></pre>`;
+                } catch (err) {
+                    previewContent.innerHTML = `<div class="text-red-400 p-4 border border-red-500/20 bg-red-500/10 rounded-lg">Unable to display text preview.<br>Use the "Download Raw" button below to view it directly.</div>`;
+                }
+            }
+        }
+
+        function closeModal() {
+            previewModal.classList.add('hidden');
+        }
+
+        // UI State Helpers
+        function showLoading(show) {
+            if (show) loadingState.classList.remove('hidden');
+            else loadingState.classList.add('hidden');
+        }
+
+        function showError(title, message) {
+            errorTitle.textContent = title;
+            errorMessage.textContent = message;
+            errorState.classList.remove('hidden');
+            fileList.innerHTML = '';
+        }
+
+        function hideError() {
+            errorState.classList.add('hidden');
+        }
+
+        // Icon Resolution Helper
+        function getFileIcon(filename, type) {
+            if (type === 'dir') return 'fa-solid fa-folder text-amber-400';
+
+            const ext = filename.split('.').pop().toLowerCase();
+
+            switch (ext) {
+                case 'html': case 'htm':
+                    return 'fa-brands fa-html5 text-orange-500';
+                case 'css':
+                    return 'fa-brands fa-css3-alt text-blue-500';
+                case 'js': case 'jsx': case 'ts': case 'tsx':
+                    return 'fa-brands fa-js text-yellow-400';
+                case 'json':
+                    return 'fa-solid fa-code text-yellow-300';
+                case 'py':
+                    return 'fa-brands fa-python text-blue-400';
+                case 'md':
+                    return 'fa-brands fa-markdown text-slate-300';
+                case 'png': case 'jpg': case 'jpeg': case 'gif': case 'svg': case 'webp':
+                    return 'fa-regular fa-file-image text-emerald-400';
+                case 'pdf':
+                    return 'fa-regular fa-file-pdf text-red-400';
+                case 'zip': case 'tar': case 'gz': case '7z':
+                    return 'fa-regular fa-file-zipper text-purple-400';
+                default:
+                    return 'fa-regular fa-file-code text-slate-400';
+            }
+        }
+
+        // Utility: Format File Size Bytes
+        function formatBytes(bytes, decimals = 2) {
+            if (!bytes || bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const dm = decimals < 0 ? 0 : decimals;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+        }
+
+        // Utility: HTML Sanitizer
+        function escapeHtml(str) {
+            return str.replace(/&/g, "&amp;")
+                      .replace(/</g, "&lt;")
+                      .replace(/>/g, "&gt;")
+                      .replace(/"/g, "&quot;")
+                      .replace(/'/g, "&#039;");
+        }
+    </script>
+</body>
+</html>

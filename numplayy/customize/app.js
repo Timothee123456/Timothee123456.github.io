@@ -720,6 +720,9 @@
     const block = (id) => k.script.blocks[id] || kit.script.blocks[id];
     const index = (id) => (k.byId[id] || byId[id]).index;
     files['numplay.ld'] = head + sel.slice().sort((a, b) => index(a) - index(b)).map(block).join('') + k.script.tail;
+    console.log('SEL', sel);
+    console.log('LD SCRIPT\n' + files['numplay.ld']);
+    console.log('ARGS', args);
     const l = await run(t.ld, args.concat(['-o', 'out.nwa']), files);
     if (l.code) throw new Error(l.log || 'ld ' + l.code);
     const s = await run(t.oc, ['--strip-unneeded', 'in.nwa', 'out.nwa'], { 'in.nwa': l.m.FS.readFile('out.nwa') });

@@ -39,7 +39,6 @@
 </script>
 <link rel="stylesheet" href="app.css">
 <script>
-  // (the intro plays the first time: the page stays hidden until it starts, so it doesn't show twice)
   try {
     if ((!localStorage.getItem('numplay-intro3') || /[?&]intro\b/.test(location.search)) && innerWidth >= 900 &&
         !matchMedia('(prefers-reduced-motion: reduce)').matches) document.documentElement.classList.add('intro-wait');
@@ -105,9 +104,7 @@
       <div class="plate">
         <img class="calc-img" src="calculator.webp" alt="A NumWorks calculator" draggable="false" width="1018" height="2000">
         <span class="legend ok" aria-hidden="true">install</span>
-        <span class="legend back" aria-hidden="true">download</span>
         <button id="install" class="ok-key" type="button" aria-label="Install your NumPlay on your calculator" data-tip="Install it on your calculator"></button>
-        <button id="download" class="dl" type="button" aria-label="Download NumPlay.nwa" data-tip="Download NumPlay.nwa"></button>
       </div>
       <div class="well">
         <img class="well-img" src="calculator.webp" alt="" draggable="false" width="1018" height="2000">
@@ -186,14 +183,10 @@
   </div>
 </div>
 
-
 <noscript><p class="noscript">NumPlay Studio needs JavaScript to build your NumPlay. You can also <a href="https://github.com/Mason363/NumPlay/releases/latest/download/NumPlay.nwa">download NumPlay.nwa</a> with all of its games.</p></noscript>
 
 <div id="dock" class="dock" aria-label="Your NumPlay">
   <span id="dock-used" class="dock-used"></span>
-  <button id="dock-download" type="button" class="dock-dl" aria-label="Download NumPlay.nwa">
-    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11"/><path d="M7 10l5 5 5-5"/><path d="M5 20h14"/></svg>
-  </button>
   <button id="dock-install" type="button" class="install dock-install">Install</button>
 </div>
 

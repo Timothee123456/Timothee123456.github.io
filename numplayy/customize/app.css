@@ -1,7 +1,7 @@
 :root {
   --bg: #f2f1ef;
   --ink: #1d1d1f;
-  --text: #5f5c56;    /* (body text on --bg: 5.7 to 1) */
+  --text: #5f5c56;
   --mute: #6b6862;
   --track: #e3e1dd;
   --card: #ffffff;
@@ -13,7 +13,6 @@
   --ease: cubic-bezier(0.2, 0.9, 0.25, 1);
   --spring: cubic-bezier(0.3, 1.45, 0.45, 1);
   --t: 180ms;
-  /* the columns: what NumPlay is and its games, the calculator up close, the big games and your own */
   --left: clamp(330px, 29vw, 540px);
   --side: clamp(250px, 21vw, 390px);
   --cw: clamp(400px, min(calc((100vh - 24px) * 0.925), calc(100vw - var(--left) - var(--side) - 150px)), 820px);
@@ -35,8 +34,6 @@ a { color: inherit; }
 .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 [hidden] { display: none !important; }
 
-/* ---- the page: what NumPlay is and its games on the left, the calculator up close in the middle, the big
-   games and your own on the right */
 main {
   display: grid; grid-template-columns: var(--left) minmax(0, 1fr) var(--side);
   grid-template-rows: auto 1fr; grid-template-areas: "head device side" "games device side";
@@ -54,10 +51,8 @@ main {
 .row-head:first-child { margin-top: 0; }
 .row-head h2 { margin: 0; font-size: 15px; font-weight: 700; letter-spacing: -0.1px; }
 
-/* ---- the game grids: the same size for every game, the best first */
 .grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 14px 12px; }
 .grid.big { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px 14px; }
-/* (beside the calculator the games fill their column: app.js, fitGrid, picks how many to a row and how big) */
 .grid.small.fit { grid-template-columns: repeat(var(--cols), var(--s)); justify-content: space-between; row-gap: calc(var(--s) * 0.3); }
 .grid:empty { display: none; }
 
@@ -66,7 +61,6 @@ main {
   -webkit-tap-highlight-color: transparent;
   transition: transform 300ms var(--spring), opacity var(--t) var(--ease), translate 200ms var(--ease);
 }
-/* (the icons have their own rounded corners, so their shadow follows them, not a box) */
 .app img { display: block; width: 100%; aspect-ratio: 55 / 56; pointer-events: none; user-select: none; transition: filter var(--t) var(--ease), opacity var(--t) var(--ease); }
 .app .badge {
   position: absolute; right: -5px; top: -5px; width: 22px; height: 22px; border-radius: 11px;
@@ -76,8 +70,6 @@ main {
 }
 .app .badge svg { width: 13px; height: 13px; }
 .app .badge .b-plus { display: none; }
-/* in: lifted, a blue tick. Out but it fits: a little smaller and paler, a white + to add it. Doesn't fit:
-   grey, faint, nothing to press */
 .app.on img { filter: var(--lift); }
 .app.on .badge { transform: scale(1); }
 .app.off { transform: scale(0.9); }
@@ -92,7 +84,6 @@ main {
 .app.nofit img { filter: grayscale(1) contrast(0.85); }
 .app.on:hover { transform: translateY(-2px); }
 .app:active { transform: scale(0.84); transition-duration: 90ms; }
-/* picked: it springs back up and the tick draws itself; taken out: it settles back small; can't go in: no */
 .app.pop-on { animation: pop-on 460ms var(--spring); }
 .app.pop-on .b-tick path { stroke-dasharray: 11; animation: tick 300ms var(--ease) 90ms backwards; }
 .app.pop-off { animation: pop-off 380ms var(--spring); }
@@ -105,14 +96,11 @@ main {
 .app.placeholder .badge { display: none; }
 .drag-ghost { position: fixed; left: 0; top: 0; z-index: 60; pointer-events: none; will-change: transform; }
 .drag-ghost img { display: block; width: 100%; aspect-ratio: 55 / 56; filter: drop-shadow(0 16px 20px rgba(0, 0, 0, 0.28)); }
-/* while dragging, the other icons only slide aside */
 body.dragging-icon .app { pointer-events: none; }
 body.dragging-icon, body.dragging-icon * { cursor: grabbing !important; user-select: none; }
 .app.held { outline: 2.5px solid var(--blue); outline-offset: 4px; border-radius: 22%; }
 
-/* ---- the calculator, up close: its screen is the space, OK installs, Back downloads */
 .device { grid-area: device; position: sticky; top: 0; height: 100vh; overflow: hidden; align-self: start; perspective: 2400px; perspective-origin: 50% 32%; }
-/* beside the calculator: the space used, a block for each game, stacked from the bottom in the launcher's order */
 .meter { position: absolute; z-index: 1; left: calc(50% - var(--cw) / 2 - 66px); width: 52px; top: calc(30px + var(--cw) * 0.105); bottom: 34px; display: flex; flex-direction: column; align-items: center; gap: 10px; }
 .used { font-size: 18px; font-weight: 750; letter-spacing: -0.4px; font-variant-numeric: tabular-nums; line-height: 1; }
 .cap-of { font-size: 12px; font-weight: 600; color: var(--mute); white-space: nowrap; font-variant-numeric: tabular-nums; line-height: 1; }
@@ -123,10 +111,6 @@ body.dragging-icon, body.dragging-icon * { cursor: grabbing !important; user-sel
 }
 .bar.over { box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.12), 0 0 0 3px rgba(255, 69, 58, 0.45); }
 .seg { display: block; width: 100%; flex-shrink: 0; height: 0; box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.25); transition: height var(--t) var(--ease); }
-/* a real calculator, built in 3D from its photo (--u is one of the photo's pixels): the front, with holes for
-   the screen and the keys; the screen down in its recess with the recess's walls; the keys standing up with
-   their sides; rounded edges, sides and top (app.js, build3d). It faces you, and turns a little toward the
-   pointer when it's over it (--rx, --ry) */
 .calc {
   position: absolute; left: calc(50% - var(--cw) / 2); top: 30px; width: var(--cw); aspect-ratio: 1018 / 2000; --u: calc(var(--cw) / 1018);
   transform-style: preserve-3d; transform-origin: 50% 24%; transform: rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
@@ -144,27 +128,22 @@ body.dragging-icon, body.dragging-icon * { cursor: grabbing !important; user-sel
 .facet { position: absolute; top: 0; height: 100%; display: block; }
 .body3d .top { position: absolute; left: 0; top: 0; width: 100%; transform-origin: 0 0; transform: rotateX(-90deg); display: block; }
 .rim, .kwall { position: absolute; transform-origin: 0 0; display: block; }
-.keybed { position: absolute; display: block; background: #a6a6a8; }  /* (seen only in the hairline round each key) */
+.keybed { position: absolute; display: block; background: #a6a6a8; }
 
-/* the keys: each its top, cut from the photo, standing on its sides (app.js, keys3d). OK and Back go in
-   under the pointer, as keys do */
 .key3d { position: absolute; transition: transform 90ms var(--ease); }
 .ktop { position: absolute; inset: 0; display: block; overflow: hidden; -webkit-mask: var(--key) 0 0 / 100% 100% no-repeat; mask: var(--key) 0 0 / 100% 100% no-repeat; }
 .ktop img { position: absolute; max-width: none; pointer-events: none; user-select: none; }
-.ok-key, .dl {
+.ok-key {
   position: absolute; inset: 0; border: 0; padding: 0; border-radius: 50%; background: transparent; cursor: pointer;
   pointer-events: auto; -webkit-tap-highlight-color: transparent;
 }
-.key3d:has(> .ok-key:hover), .key3d:has(> .dl:hover) { transform: translateZ(calc(var(--u) * -3)); }
-.key3d:has(> .ok-key:active), .key3d:has(> .dl:active), .key3d.down { transform: translateZ(calc(var(--u) * -9)); }
-.ok-key:focus-visible, .dl:focus-visible { outline-offset: 4px; }
-.ok-key.busy, .dl.busy { cursor: progress; }
-/* what they do, printed on the plastic above them in the calculator's own amber, as its cut, copy and paste are */
+.key3d:has(> .ok-key:hover) { transform: translateZ(calc(var(--u) * -3)); }
+.key3d:has(> .ok-key:active), .key3d.down { transform: translateZ(calc(var(--u) * -9)); }
+.ok-key:focus-visible { outline-offset: 4px; }
+.ok-key.busy { cursor: progress; }
 .legend { position: absolute; top: 41.2%; transform: translateX(-50%); font-size: calc(var(--u) * 25); font-weight: 700; color: #a8690a; white-space: nowrap; pointer-events: none; }
 .legend.ok { left: 70.53%; }
-.legend.back { left: 84.23%; }
 
-/* the screen: the calculator's space, each game a block its size, and a game playing when you point at it */
 .screen {
   position: absolute; left: 14.538%; top: 7.7%; width: 70.923%; height: 27.1%;
   background: #0c0d10; overflow: hidden; container-type: size;
@@ -198,18 +177,17 @@ body.dragging-icon, body.dragging-icon * { cursor: grabbing !important; user-sel
 .drop-hint svg { width: 12cqh; height: 12cqh; }
 body.dragging .drop-hint { display: flex; }
 
-/* ---- your NumPlay's icon, name and language */
 .chip {
   height: 46px; padding: 0 12px 0 9px; border: 0; border-radius: 23px; background: var(--card); cursor: pointer;
   display: flex; align-items: center; gap: 8px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08); white-space: nowrap;
   font-size: 14px; font-weight: 650;
 }
 .chip img { width: 28px; height: 28px; display: block; }
-.chip img.custom { clip-path: inset(0 round 22%); }  /* (a picture of your own: the corners every icon has) */
+.chip img.custom { clip-path: inset(0 round 22%); }
 .chip.lang { padding: 0 12px 0 14px; font-size: 13px; font-weight: 750; }
 .chip .caret { color: var(--mute); flex-shrink: 0; }
 .chip:hover { background: #fafafa; }
-.chip:disabled { opacity: 0.35; cursor: default; box-shadow: none; }  /* (a game on its own: its own icon and language) */
+.chip:disabled { opacity: 0.35; cursor: default; box-shadow: none; }
 .install {
   position: relative; border: 0; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; justify-content: center;
   background: var(--btn); color: var(--btn-ink); padding: 13px 30px; border-radius: 999px; font-size: 15px; font-weight: 600;
@@ -239,7 +217,6 @@ body.dragging .drop-hint { display: flex; }
 .segctl.col button[aria-checked="true"] { background: #eceef1; box-shadow: none; }
 .tick { display: flex; align-items: center; gap: 5px; font-size: 13px; color: var(--mute); white-space: nowrap; }
 
-/* ---- your calculator's space for apps: it depends on its software, and on Nwagra */
 .space-chip {
   display: flex; align-items: center; gap: 6px; height: 30px; padding: 0 10px 0 12px; border: 0; border-radius: 15px; flex-shrink: 0;
   background: var(--card); box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08); cursor: pointer; white-space: nowrap;
@@ -256,7 +233,6 @@ body.dragging .drop-hint { display: flex; }
 .xl-warn { margin: 0; font-size: 13px; line-height: 1.45; color: #8a4b00; background: #fff4e0; border-radius: 10px; padding: 8px 10px; }
 .xl-steps { margin: 0; padding-left: 20px; font-size: 13px; line-height: 1.6; color: #3a3d42; }
 
-/* ---- Retro-Go: your own games, as cartridges */
 .retro { display: flex; flex-direction: column; gap: 12px; margin-top: 10px; }
 .retro input[type=file] { position: absolute; left: -9999px; }
 .drop {
@@ -267,8 +243,6 @@ body.dragging .drop-hint { display: flex; }
 .drop:hover, body.dragging .drop { border-color: var(--blue); background: rgba(10, 132, 255, 0.05); }
 .drop:active { transform: scale(0.97); transition-duration: 90ms; }
 .drop.shake { animation: shake 380ms var(--ease); }
-/* three cartridges, fanned: a Game Boy's, an NES's and a Master System's, with their labels; they lift
-   apart when you point at the box or bring files over the page */
 .drop-art { position: relative; width: 92px; height: 58px; margin-bottom: 8px; }
 .drop-art i {
   position: absolute; bottom: 0; width: 36px; height: 44px; border-radius: 3px 10px 3px 3px;
@@ -310,7 +284,6 @@ body.dragging .drop-hint { display: flex; }
 .cart.enter { animation: slot 420ms var(--spring); }
 @keyframes slot { 0% { transform: translateY(-22px) scale(0.8); opacity: 0; } 100% { transform: none; opacity: 1; } }
 
-/* ---- tooltip, toast and the install sheet */
 .tip {
   position: fixed; left: 0; top: 0; z-index: 40; pointer-events: none;
   background: rgba(29, 29, 31, 0.92); color: #ffffff; font-size: 12px; font-weight: 600; white-space: nowrap;
@@ -341,8 +314,6 @@ body.dragging .drop-hint { display: flex; }
 .foot a:hover { color: var(--ink); }
 .noscript { text-align: center; padding: 0 16px; }
 
-/* ---- the light calculator, for slow computers and phones (app.js, buildFlat): the same photo, flat. OK and Back
-   are cut from it, over a gap that shows round them as they go in */
 html.flat .device { perspective: none; }
 html.flat .calc { transform: none; transform-style: flat; }
 html.flat .calc-img { clip-path: none; -webkit-mask: none; mask: none; }
@@ -351,19 +322,16 @@ html.flat .well-img, html.flat .body3d { display: none; }
 .fkey { position: absolute; border-radius: 50%; background: radial-gradient(closest-side, #858589 92%, #b9b9bd 100%); }
 .ftop { position: absolute; inset: 0; border-radius: 50%; overflow: hidden; display: block; transition: transform 90ms var(--ease); }
 .ftop img { position: absolute; max-width: none; pointer-events: none; user-select: none; }
-.fkey:has(> .ok-key:hover) .ftop, .fkey:has(> .dl:hover) .ftop { transform: scale(0.985); }
-.fkey:has(> .ok-key:active) .ftop, .fkey:has(> .dl:active) .ftop, .fkey.down .ftop { transform: scale(0.94); }
+.fkey:has(> .ok-key:hover) .ftop { transform: scale(0.985); }
+.fkey:has(> .ok-key:active) .ftop, .fkey.down .ftop { transform: scale(0.94); }
 
-/* ---- on a phone, the keys under your thumb once the calculator is scrolled away (app.js, dock) */
 .dock { display: none; }
 
-/* ---- the intro: the games flying into the calculator */
 .flyer { position: fixed; left: 0; top: 0; z-index: 70; pointer-events: none; will-change: transform, opacity; }
 .flyer img { display: block; width: 100%; aspect-ratio: 55 / 56; filter: drop-shadow(0 10px 14px rgba(0, 0, 0, 0.22)); }
 body.intro-on main { pointer-events: none; }
 html.intro-wait main { opacity: 0; }
 
-/* ---- smaller windows: the big games under the games; then one column */
 @media (max-width: 1180px) {
   :root { --side: 0px; --left: clamp(330px, 38vw, 440px); }
   main { grid-template-columns: var(--left) minmax(0, 1fr); grid-template-rows: auto auto 1fr; grid-template-areas: "head device" "games device" "side device"; }
@@ -376,7 +344,6 @@ html.intro-wait main { opacity: 0; }
   .head { padding: 24px 16px 0; }
   .games { padding: 8px 16px 0; }
   .side { padding: 22px 16px 24px; }
-  /* (the calculator down to just above its first row of keys, fading out there) */
   .device {
     position: relative; height: calc(var(--cw) * 1.066 + 30px); margin: 8px auto 0; width: min(calc(var(--cw) + 40px), 100%); perspective-origin: 50% 20%;
     -webkit-mask: linear-gradient(#000 calc(100% - 18px), transparent); mask: linear-gradient(#000 calc(100% - 18px), transparent);
@@ -392,11 +359,10 @@ html.intro-wait main { opacity: 0; }
   .dock.show { transform: none; visibility: visible; transition: transform 220ms var(--ease); }
   .dock-used { flex: 1; min-width: 0; font-size: 15px; font-weight: 700; font-variant-numeric: tabular-nums; white-space: nowrap; }
   .dock.over .dock-used { color: #d70015; }
-  .dock-dl { width: 48px; height: 48px; flex-shrink: 0; border: 0; border-radius: 24px; background: var(--track); cursor: pointer; display: flex; align-items: center; justify-content: center; }
   .dock-install { height: 48px; padding: 0 28px; flex-shrink: 0; }
   .dock button.busy { cursor: progress; opacity: 0.6; }
   body.docked .toast { bottom: 82px; }
-  .side { padding-bottom: 92px; }  /* (room for it under the footer) */
+  .side { padding-bottom: 92px; }
   .space-chip { height: 40px; padding: 0 14px 0 16px; border-radius: 20px; font-size: 14px; }
 }
 @media (max-width: 520px) {

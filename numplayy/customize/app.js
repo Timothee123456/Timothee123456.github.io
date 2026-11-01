@@ -129,7 +129,7 @@
         rx += cw; rw -= cw;
       } else {
         const ch = rw ? sum / rw : 0; let cx = rx;
-        for (const r of row) { const cw = ch ? r.a / ch : 0; out.push({ ...r, x: cx, y: ry, w: cw, h: ch }); cx += cw; }
+        for (const r of row) { const cw = ch ? r.a / ch : 0; out.push({ ...r, x: cx, y: ry, w: cx, h: ch }); cx += cw; }
         ry += ch; rh -= ch;
       }
       rest = rest.slice(row.length);
@@ -237,11 +237,8 @@
     $('#dock-used').textContent = (used / MiB).toFixed(2) + ' of ' + mb(cap);
     $('#dock').classList.toggle('over', over);
     // (a game on its own has its own icon, name and language)
-    const s = solo(), file = s ? game(s).alone.file : 'NumPlay.nwa';
+    const s = solo();
     for (const c of [$('#app-chip'), $('#lang-chip')]) c.disabled = !!s;
-    $('#download').setAttribute('aria-label', 'Download ' + file);
-    $('#download').dataset.tip = 'Download ' + file;
-    $('#dock-download').setAttribute('aria-label', 'Download ' + file);
     $('#app-chip-icon').src = iconUrl();
     $('#app-chip-icon').classList.toggle('custom', st.app.icon === 'custom');
     $('#app-chip').dataset.tip = (s ? byId[s].title : st.app.name.trim() || 'No name') + '|its icon and name on your calculator, and how it opens';
@@ -297,7 +294,6 @@
   }
 
   // ------------------------------------------------------------------ picking
-  // the icon's answer to a press: up with a tick, back down, or no
   function bump(b, cls) {
     if (!b) return;
     b.classList.remove('pop-on', 'pop-off', 'shake');
@@ -353,7 +349,6 @@
     }
     render();
   }
-  // a game too big for this space even with nothing else in NumPlay: the space it needs, plainly
   function tooBig(r) {
     const alone = total([], [r]);
     if (alone <= capacity()) return false;
@@ -365,7 +360,7 @@
     setTimeout(() => render(), 500);
     return true;
   }
-  function romName(file) {  // (its name without the extension, at most 40 bytes of UTF-8, no letter cut)
+  function romName(file) {
     const enc = new TextEncoder();
     let n = '';
     for (const ch of file.replace(/\.[^.]*$/, '')) {
@@ -380,8 +375,6 @@
   }
 
   // ------------------------------------------------------------------ moving games around
-  // Drag an icon to change where its game sits in the launcher; a click still picks it. On a
-  // phone, hold an icon, then tap where it goes.
   let dragging = null, justDragged = false, holding = null;
   function flip(box, change) {
     const kids = [...box.children], before = new Map(kids.map((k) => [k, k.getBoundingClientRect()]));
@@ -400,15 +393,13 @@
     st.order = small.concat(big, st.order.filter((id) => !small.includes(id) && !big.includes(id)));
     render();
   }
-  // The slot under the pointer comes from where the slots were when the drag began (they don't
-  // move: only which icon sits in them), so an icon sliding away can never send it back.
   function sortable(box) {
     box.addEventListener('pointerdown', (e) => {
       const b = e.target.closest('.app');
       if (!b || e.button) return;
       if (e.pointerType === 'touch') {
         if (holding === b) { b.classList.remove('held'); holding = null; justDragged = true; return; }
-        if (holding && holding !== b) {  // (a phone: the held icon goes where you tap)
+        if (holding && holding !== b) {
           const from = holding;
           holding.classList.remove('held'); holding = null; justDragged = true;
           if (from.parentNode === box) flip(box, () => box.insertBefore(from, [...box.children].indexOf(from) < [...box.children].indexOf(b) ? b.nextSibling : b));
@@ -443,7 +434,7 @@
       }
       d.px = e.clientX; d.py = e.clientY;
       if (frame) return;
-      frame = requestAnimationFrame(() => {  // (once a frame: the pointer can move faster than the screen)
+      frame = requestAnimationFrame(() => {
         frame = 0;
         if (!dragging || !d.on) return;
         d.ghost.style.transform = 'translate(' + (d.px - d.dx) + 'px,' + (d.py - d.dy) + 'px) scale(1.1) rotate(-4deg)';
@@ -461,7 +452,7 @@
       justDragged = true;
       setTimeout(() => { justDragged = false; }, 0);
       const r = d.b.getBoundingClientRect(), g = d.ghost;
-      g.style.transition = 'transform 160ms cubic-bezier(0.2, 0.9, 0.25, 1)';  // (into its place)
+      g.style.transition = 'transform 160ms cubic-bezier(0.2, 0.9, 0.25, 1)';
       g.style.transform = 'translate(' + r.left + 'px,' + r.top + 'px) scale(1) rotate(0deg)';
       setTimeout(() => { g.remove(); d.b.classList.remove('placeholder'); }, 170);
       document.body.classList.remove('dragging-icon');
@@ -481,9 +472,9 @@
     if (a.name !== (PRESETS[a.icon] || [0, 'NumPlay'])[1]) p.set('name', a.name);
     if (a.open === 'matrices') p.set('open', 'matrices' + (a.secret ? '-' + a.secret : '') + (a.hint ? '' : '-nohint'));
     const h = p.toString();
-    try { history.replaceState(null, '', '#' + h); } catch (e) { /* (a file:// page) */ }
-    store('numplay-studio2', h);  // (2: since the games are ranked)
-    store('numplay-order2', st.order.join(','));  // (2: since the games are ranked)
+    try { history.replaceState(null, '', '#' + h); } catch (e) {}
+    store('numplay-studio2', h);
+    store('numplay-order2', st.order.join(','));
   }
   function restore() {
     let h = location.hash.slice(1);
@@ -492,7 +483,6 @@
     const known = kit.games.filter((g) => g !== rg).sort((a, b) => (a.xl - b.xl) || ((a.rank || 99) - (b.rank || 99))).map((g) => g.id);
     const saved = (store('numplay-order2') || '').split(',').filter((id) => known.includes(id));
     const linked = p.has('games') ? p.get('games').split(',').filter((id) => known.includes(id)) : null;
-    // the order: the link's picks first, in its order, then the rest as last time, then the kit's
     st.order = [...new Set([...(linked || []), ...saved, ...known])];
     st.picked = new Set(linked || kit.games.filter((g) => g.default).map((g) => g.id));
     st.cap = spaces().some((x) => x.id === p.get('space')) ? p.get('space') : 'std';
@@ -505,7 +495,6 @@
     st.app.secret = Math.min(SECRETS.length - 1, Math.max(0, parseInt(open[1], 10) || 0));
     st.app.hint = !open.includes('nohint');
     if (solo()) st.picked = new Set([solo()]);
-    // a pick that no longer fits the calculator (the kit grew): drop the biggest games until it does
     const big = ordered().sort((a, b) => flash(a) - flash(b));
     while (usedBytes() > capacity() && big.length) st.picked.delete(big.pop());
   }
@@ -524,8 +513,6 @@
     return p;
   }
   const fetchObj = (rel) => fetchBytes(KIT + rel + '.gz');
-  // a game's object in the app's language, or English when that language's kit hasn't got it
-  // (a big game's is the English one: kit.json "en")
   const objPath = (id) => {
     const g = st.lang !== 'en' && kits[st.lang] && kits[st.lang].byId[id];
     return (g && !g.en ? st.lang + '/' : '') + 'games/' + id + '.o';
@@ -566,8 +553,6 @@
     return { m, code, log };
   }
 
-  // A relocatable ARM object (e_flags 0, like nwlink's): one section and one global symbol for
-  // each of `secs` ({ name, data, sym, flags, type }).
   function elfObject(secs) {
     const enc = new TextEncoder();
     const shstr = '\0' + secs.map((s) => s.name).join('\0') + '\0.symtab\0.strtab\0.shstrtab\0';
@@ -603,8 +588,6 @@
     return b;
   }
 
-  // The ROM table Retro-Go reads (np_roms, as tools/romtable.py makes it): "NPRM", version 1, the
-  // count, then 52 bytes per game (offset, size, system, 3 spare bytes, its name in 40), then the games.
   function romTable(roms) {
     let at = align4(ROM_HEAD + ROM_ENTRY * roms.length);
     const offs = roms.map((r) => { const o = at; at = align4(at + r.bytes.length); return o; });
@@ -619,7 +602,6 @@
     return d;
   }
   const romObject = (table) => elfObject([{ name: '.rodata.np_roms', sym: 'np_roms', data: table, align: 4 }]);
-  // The app's name, and how it starts (launcher/app_name.c): 'D', 1, flags (1 Matrices, 2 no hint), the secret
   function appObject() {
     const a = st.app, name = new TextEncoder().encode((a.name || ' ').slice(0, 20));
     const nz = new Uint8Array(name.length + 1); nz.set(name);
@@ -628,12 +610,11 @@
                       { name: '.rodata.np_defaults', sym: 'np_defaults', data: new Uint8Array([0x44, 1, flags, a.secret]) }]);
   }
 
-  // An icon of your own: 55x56 pixels in RGB565, LZ4 compressed, as nwlink's png-icon-o makes them
   function lz4(src) {
     const n = src.length, out = [], hash = new Int32Array(4096).fill(-1);
     const len = (l) => { while (l >= 255) { out.push(255); l -= 255; } out.push(l); };
     let anchor = 0, i = 0;
-    while (i + 12 <= n) {  // (a match starts 12 bytes before the end at the latest, and ends 5 before)
+    while (i + 12 <= n) {
       const k = Math.imul(src[i] | src[i + 1] << 8 | src[i + 2] << 16 | src[i + 3] << 24, 2654435761) >>> 20, ref = hash[k];
       hash[k] = i;
       if (ref >= 0 && i - ref < 65536 && src[ref] === src[i] && src[ref + 1] === src[i + 1] && src[ref + 2] === src[i + 2] && src[ref + 3] === src[i + 3]) {
@@ -659,7 +640,7 @@
     const c = document.createElement('canvas');
     c.width = 55; c.height = 56;
     const g = c.getContext('2d');
-    g.fillStyle = '#ffffff';  // (the calculator's home screen is white: see-through parts become white)
+    g.fillStyle = '#ffffff';
     g.fillRect(0, 0, 55, 56);
     const s = Math.max(55 / img.width, 56 / img.height);
     g.imageSmoothingQuality = 'high';
@@ -673,7 +654,6 @@
     return { url: c.toDataURL('image/png'), obj };
   }
 
-  // Bytes the installer writes for an .nwa (tools/kit.py's installed_size), less its own start code.
   function installedSize(nwa) {
     const v = new DataView(nwa.buffer, nwa.byteOffset, nwa.byteLength);
     const shoff = v.getUint32(32, true), shnum = v.getUint16(48, true), shstrndx = v.getUint16(50, true);
@@ -712,11 +692,8 @@
       files['roms.o'] = romObject(romTable(st.roms));
       args.push('roms.o');
     }
-    // the launcher shows the games in the order of their entries: yours, not the kit's
     const entries = sel.map((id) => 'KEEP(*(.rodata.np_games.' + String((k.byId[id] || byId[id]).index).padStart(2, '0') + '))').join('\n    ');
     const head = k.script.head.replace('KEEP(*(SORT_BY_NAME(.rodata.np_games.*)))', entries);
-    // ...and the games' blocks in the kit's order: NumPlay's own games first, in the app area, then the big ones,
-    // which find the calculator's files past it too (Enlarged Extra Apps)
     const block = (id) => k.script.blocks[id] || kit.script.blocks[id];
     const index = (id) => (k.byId[id] || byId[id]).index;
     files['numplay.ld'] = head + sel.slice().sort((a, b) => index(a) - index(b)).map(block).join('') + k.script.tail;
@@ -740,7 +717,7 @@
     if (btn.classList.contains('busy')) return;
     btn.classList.add('busy');
     const key = btn.closest('.key3d, .fkey');
-    if (key) key.classList.add('down');  // (its key stays in while NumPlay is made)
+    if (key) key.classList.add('down');
     try {
       const out = await build();
       download(out.bytes, out.file);
@@ -778,7 +755,7 @@
   function placePop() {
     const pop = popOpen, [chip, side] = popAt;
     const r = chip.getBoundingClientRect(), w = pop.offsetWidth, h = pop.offsetHeight;
-    if (side && r.right + 16 + w < innerWidth - 12) {  // (beside it, over the calculator, not over the games)
+    if (side && r.right + 16 + w < innerWidth - 12) {
       pop.style.left = (r.right + 16) + 'px';
       pop.style.top = Math.max(12, Math.min(innerHeight - h - 12, r.bottom - h)) + 'px';
       return;
@@ -829,7 +806,7 @@
         try { await loadKit(l); } catch (e) { toast("That language didn't load, try again"); return; }
         const was = st.lang;
         st.lang = l;
-        const over = usedBytes() - capacity();  // (NumPlay in another language is a little bigger or smaller)
+        const over = usedBytes() - capacity();
         if (over > 0) { st.lang = was; toast('In ' + LANGS[l][1] + ' that\'s ' + size(over) + ' too much: take a game out first'); return; }
         closePops(); renderApp(); render();
       });
@@ -838,7 +815,6 @@
   }
 
   // ------------------------------------------------------------------ the calculator's space for apps
-  // Pick yours: its name and size, the installer's figure on each; with Nwagra, how to get it
   function renderSpaces() {
     const box = $('#spaces');
     box.textContent = '';
@@ -860,11 +836,11 @@
     const was = st.cap, picked = new Set(st.picked), had = before;
     st.cap = id;
     const one = ordered().find(alone);
-    if (one && ordered().length > 1) {  // (it goes on its own here: the rest come back when it's out)
+    if (one && ordered().length > 1) {
       before = ordered().filter((x) => x !== one);
       st.picked = new Set([one]);
       toast(byId[one].title + ' goes on its own in ' + mb(capacity()) + '. Pick it again to get your other games back');
-    } else if (before && !solo()) {  // (room beside it here: your other games come back, as many as fit)
+    } else if (before && !solo()) {
       for (const x of before) if (total(ordered().concat([x])) <= capacity()) st.picked.add(x);
       before = null;
     }
@@ -875,20 +851,15 @@
   }
 
   // ------------------------------------------------------------------ the calculator in 3D
-  // The calculator is built from its photo (1018 by 2000 pixels; --u is one of them on the page): its front
-  // has a hole where the screen sits, down in a recess 14 deep, with the recess's walls round it; its long
-  // edges are rounded (a quarter circle of 30, as the photo shows them) before its sides, 132 deep.
   const EDGE_R = 30, EDGE_N = 9, EDGE_C = 2 * EDGE_R * Math.sin(Math.PI / 4 / EDGE_N), DEPTH = 132;
-  const EDGE_A = Array.from({ length: EDGE_N }, (_, i) => (i + 0.5) * 90 / EDGE_N);  // (each facet's angle)
+  const EDGE_A = Array.from({ length: EDGE_N }, (_, i) => (i + 0.5) * 90 / EDGE_N);
   const LIGHT = [-0.25, -0.6, 0.76];
-  const lit = (n) => 0.78 + 0.22 * (n[0] * LIGHT[0] + n[1] * LIGHT[1] + n[2] * LIGHT[2]) / 0.76;  // (the front is 1)
+  const lit = (n) => 0.78 + 0.22 * (n[0] * LIGHT[0] + n[1] * LIGHT[1] + n[2] * LIGHT[2]) / 0.76;
   const U = (n) => 'calc(var(--u) * ' + (+n.toFixed(3)) + ')';
   const grey = (n, base) => { const v = Math.round(Math.min(255, base * lit(n))); return 'rgb(' + v + ',' + v + ',' + v + ')'; };
   const part = (parent, tag, cls, css) => { const e = el(tag, cls); Object.assign(e.style, css); parent.appendChild(e); return e; };
   const deg = (a) => a * Math.PI / 180;
 
-  // The keys at the top of the keypad, where the photo has them (measured from it): the D-pad's cross with
-  // its corners rounded (a quadratic curve through each corner), OK and Back's circles, and pills.
   const KEY_H = 12;
   function roundPoly(pts, radii, n) {
     const out = [];
@@ -905,7 +876,6 @@
   }
   const circlePts = (cx, cy, r, n = 40) => Array.from({ length: n }, (_, i) => [cx + r * Math.cos(i * 2 * Math.PI / n), cy + r * Math.sin(i * 2 * Math.PI / n)]);
   const pill = (x0, y0, x1, y1, r, n = 7) => roundPoly([[x0, y0], [x1, y0], [x1, y1], [x0, y1]], [r, r, r, r], n);
-  // an outline moved out by d (along each corner's bisector), for the hole a key stands in
   function grow(pts, d) {
     const nrm = (a, b) => { const dx = b[0] - a[0], dy = b[1] - a[1], l = Math.hypot(dx, dy) || 1; return [dy / l, -dx / l]; };
     return pts.map((p, i) => {
@@ -915,7 +885,6 @@
       return [p[0] + bx / l * k, p[1] + by / l * k];
     });
   }
-  // a shape as a mask (outlines in the photo's pixels, drawn on a canvas, w x h from x0, y0; evenodd: holes)
   function maskOf(outlines, x0, y0, w, h, scale, evenodd) {
     const c = el('canvas');
     c.width = Math.ceil(w * scale); c.height = Math.ceil(h * scale);
@@ -928,9 +897,6 @@
     return 'url(' + c.toDataURL() + ')';
   }
   function keyOutlines() {
-    // Measured from the photo: each key's outline runs along the outer edge of the dark line the photo draws
-    // round it, so its top carries that line and none of the front's white. Its sides follow a coarser outline
-    // (fewer walls) laid just outside it, and it stands in a hole a hair wider, the gap only a crease.
     const cross = [[193, 797], [266.5, 797], [266.5, 887.5], [355.5, 887.5], [355.5, 957.5], [266.5, 957.5], [266.5, 1050.5], [193, 1050.5],
       [193, 957.5], [104, 957.5], [104, 887.5], [193, 887.5]];
     const cr = [22, 22, 7.5, 22, 22, 7.5, 22, 22, 7.5, 22, 22, 7.5];
@@ -955,9 +921,6 @@
     }
     return keys;
   }
-  // each key: its top, cut from the photo, standing on its sides, a wall at each step of its outline lit by
-  // the calculator's light, a little darker where it meets the front and dark down in its hole. Under them
-  // all, the keypad's bed. OK and Back carry Install and Download.
   const KEY_DOWN = 8;
   function keys3d(calc, keys) {
     part(calc, 'i', 'keybed', { left: U(90), top: U(780), width: U(840), height: U(1220), transform: 'translateZ(' + U(-KEY_DOWN) + ')' });
@@ -970,10 +933,10 @@
       k.walls.forEach(([x, y], i) => {
         const [x2, y2] = k.walls[(i + 1) % k.walls.length], len = Math.hypot(x2 - x, y2 - y);
         if (len < 0.01) return;
-        const phi = Math.atan2(y2 - y, x2 - x), n = [Math.sin(phi), -Math.cos(phi), 0];  // (facing out)
+        const phi = Math.atan2(y2 - y, x2 - x), n = [Math.sin(phi), -Math.cos(phi), 0];
         const tone = (f) => 'rgb(' + k.side.map((v) => Math.round(Math.min(255, v * lit(n) * f))).join(',') + ')';
         const at = (z) => (100 * (z + KEY_DOWN) / (KEY_H + KEY_DOWN)).toFixed(1) + '%';
-        part(g, 'i', 'kwall', { left: U(x - x0), top: U(y - y0), width: U(len + 1.4), height: U(KEY_H + KEY_DOWN),  // (over its neighbours: no seams)
+        part(g, 'i', 'kwall', { left: U(x - x0), top: U(y - y0), width: U(len + 1.4), height: U(KEY_H + KEY_DOWN),
           transform: 'rotateZ(' + (phi * 180 / Math.PI).toFixed(2) + 'deg) translate3d(' + U(-0.7) + ', 0, ' + U(-KEY_DOWN) + ') rotateX(90deg)',
           background: 'linear-gradient(' + tone(0.4) + ', ' + tone(0.78) + ' ' + at(0) + ', ' + tone(0.94) + ' ' + at(KEY_H * 0.45) + ', ' + tone(1) + ')' });
       });
@@ -983,15 +946,13 @@
       Object.assign(img.style, { left: U(-x0), top: U(-y0), width: U(1018), height: U(2000) });
       top.appendChild(img);
     }
-    for (const [key, b] of [['ok', $('#install')], ['back', $('#download')]]) {
-      calc.querySelector('.key3d[data-key="' + key + '"]').appendChild(b);
-      b.style.transform = 'translateZ(' + U(KEY_H + 0.5) + ')';
-    }
+    const installBtn = $('#install');
+    calc.querySelector('.key3d[data-key="ok"]').appendChild(installBtn);
+    installBtn.style.transform = 'translateZ(' + U(KEY_H + 0.5) + ')';
   }
 
   function build3d() {
     const body = document.querySelector('.body3d');
-    // the rounded edges and the sides: the quarter circle in facets, then the side
     const step = 90 / EDGE_N;
     for (const dir of [1, -1]) {
       let f = part(body, 'i', 'fold', { left: U(dir > 0 ? 1018 - EDGE_R : EDGE_R), transform: 'rotateY(' + step / 2 * dir + 'deg)' });
@@ -1001,12 +962,11 @@
           background: 'linear-gradient(' + (dir > 0 ? 90 : 270) + 'deg, ' + grey(n0, 248) + ', ' + grey(n1, 248) + ')' });
         f = part(f, 'i', 'fold', { left: U(EDGE_C * dir), transform: 'rotateY(' + (i < EDGE_N - 1 ? step : step / 2) * dir + 'deg)' });
       });
-      const side = DEPTH - EDGE_R, n = [dir, 0, 0];  // (its front edge meets the last facet's light)
+      const side = DEPTH - EDGE_R, n = [dir, 0, 0];
       part(f, 'i', 'facet', { left: dir > 0 ? '0' : U(-side), width: U(side),
         background: 'linear-gradient(' + (dir > 0 ? 90 : 270) + 'deg, ' + grey(n, 246) + ', ' + grey(n, 240) + ' 46%, ' + grey(n, 214) + ' 47%, ' +
           grey(n, 236) + ' 48.5%, ' + grey(n, 222) + ')' });
     }
-    // the top, its ends following the rounded edges
     const prof = [[0, 0]];
     for (const a of EDGE_A) { const [x, y] = prof[prof.length - 1]; prof.push([x + EDGE_C * Math.cos(deg(a)), y + EDGE_C * Math.sin(deg(a))]); }
     const right = prof.map(([x, y]) => [1018 - EDGE_R + x, y]), left = prof.map(([x, y]) => [EDGE_R - x, y]);
@@ -1015,26 +975,23 @@
     part(body, 'i', 'top', { height: U(DEPTH), clipPath: 'polygon(' + poly + ')',
       background: 'linear-gradient(' + grey([0, -1, 0], 244) + ', ' + grey([0, -1, 0], 236) + ' 46%, ' + grey([0, -1, 0], 212) + ' 47%, ' +
         grey([0, -1, 0], 232) + ' 48.5%, ' + grey([0, -1, 0], 220) + ')' });
-    // the walls of the screen's recess, all the way round its rounded corners
     const X0 = 104, X1 = 915, Y0 = 107, Y1 = 743, R = 36, ring = [];
     const corner = (cx, cy, a0) => { for (let i = 0; i <= 4; i++) { const a = deg(a0 + 22.5 * i); ring.push([cx + R * Math.cos(a), cy + R * Math.sin(a)]); } };
     corner(X1 - R, Y0 + R, -90); corner(X1 - R, Y1 - R, 0); corner(X0 + R, Y1 - R, 90); corner(X0 + R, Y0 + R, 180);
     ring.forEach(([x, y], i) => {
       const [x2, y2] = ring[(i + 1) % ring.length], len = Math.hypot(x2 - x, y2 - y);
       if (len < 0.01) return;
-      const phi = Math.atan2(y2 - y, x2 - x), n = [-Math.sin(phi), Math.cos(phi), 0];  // (facing into the recess)
+      const phi = Math.atan2(y2 - y, x2 - x), n = [-Math.sin(phi), Math.cos(phi), 0];
       part(body, 'i', 'rim', { left: U(x), top: U(y), width: U(len + 0.6), height: U(14.6),
         transform: 'rotateZ(' + (phi * 180 / Math.PI).toFixed(2) + 'deg) rotateX(-90deg)',
         background: 'linear-gradient(' + grey(n, 236) + ', ' + grey(n, 214) + ')' });
     });
-    // the keys, standing up off the front, each a hole in its photo
     const keys = keyOutlines();
     keys3d(document.querySelector('#calc'), keys);
     $('#calc').style.setProperty('--plate-mask', maskOf([[[0, 0], [1018, 0], [1018, 2000], [0, 2000]], pill(104, 107, 915, 743, 36)]
       .concat(keys.map((k) => k.hole)), 0, 0, 1018, 2000, 2, true));
   }
 
-  // The calculator faces you straight, and turns a little toward the pointer when it's on it.
   function depth() {
     if (matchMedia('(prefers-reduced-motion: reduce)').matches || light.on) return;
     const calc = $('#calc'), dev = document.querySelector('.device');
@@ -1065,19 +1022,14 @@
   }
 
   // ------------------------------------------------------------------ the light calculator
-  // The 3D calculator is heavy for slow computers and phones. The light one is the same photo, flat: OK and Back
-  // go in when pressed. It's the light one from the start on small or touch screens, with reduced motion, or with ?flat
-  // in the address (?3d: never); otherwise the page times its frames while things move, in its first seconds and as the
-  // calculator turns, and goes light for the rest of the visit when they're slow.
   const light = { on: false, later: false, list: [], last: 0 };
   const flag = (f) => new RegExp('[?&]' + f + '(=|&|$)').test(location.search);
   function lightFromStart() {
     if (flag('3d')) return false;
     if (flag('flat')) return true;
-    try { if (sessionStorage.getItem('numplay-flat')) return true; } catch (e) { /* (no storage) */ }
+    try { if (sessionStorage.getItem('numplay-flat')) return true; } catch (e) {}
     return innerWidth < 900 || matchMedia('(pointer: coarse)').matches || matchMedia('(prefers-reduced-motion: reduce)').matches;
   }
-  // each frame drawn while something moves: when half of 30 in a row take over 30 ms (fewer than 33 a second), slow
   function frameTime(now) {
     if (light.on || flag('3d') || now - light.last < 1) return;
     if (document.hidden) { light.last = 0; return; }
@@ -1088,7 +1040,7 @@
     light.list = [];
     if (median > 30) goLight();
   }
-  function watchFrames() {  // (the first seconds: the page coming up, and the intro the first time)
+  function watchFrames() {
     const t0 = performance.now();
     const tick = (now) => {
       if (light.on || now - t0 > 6000) { light.last = 0; return; }
@@ -1099,11 +1051,11 @@
   }
   function goLight() {
     if (light.on) return;
-    if (introRun) { light.later = true; return; }  // (once the intro is over)
-    try { sessionStorage.setItem('numplay-flat', '1'); } catch (e) { /* (no storage: light until the page is left) */ }
-    // the 3D calculator goes: its sides, its keys (OK and Back keep their buttons)
+    if (introRun) { light.later = true; return; }
+    try { sessionStorage.setItem('numplay-flat', '1'); } catch (e) {}
     const calc = $('#calc'), plate = calc.querySelector('.plate');
-    for (const b of [$('#install'), $('#download')]) { b.style.transform = ''; plate.appendChild(b); }
+    const installBtn = $('#install');
+    installBtn.style.transform = ''; plate.appendChild(installBtn);
     for (const e of calc.querySelectorAll('.key3d, .keybed')) e.remove();
     document.querySelector('.body3d').textContent = '';
     for (const v of ['--plate-mask', '--rx', '--ry', '--lx']) calc.style.removeProperty(v);
@@ -1113,18 +1065,16 @@
     light.on = true;
     document.documentElement.classList.add('flat');
     const plate = $('#calc').querySelector('.plate'), r = 57.5, cy = 924;
-    for (const [key, b, cx] of [['ok', $('#install'), 718.5], ['back', $('#download'), 858]]) {
-      const k = part(plate, 'div', 'fkey', { left: U(cx - r), top: U(cy - r), width: U(2 * r), height: U(2 * r) });
-      k.dataset.key = key;
-      const img = el('img', '', { src: 'calculator.webp', alt: '', draggable: 'false' });
-      Object.assign(img.style, { left: U(r - cx), top: U(r - cy), width: U(1018), height: U(2000) });
-      part(k, 'i', 'ftop', {}).appendChild(img);
-      k.appendChild(b);
-    }
+    const installBtn = $('#install'), cx = 718.5;
+    const k = part(plate, 'div', 'fkey', { left: U(cx - r), top: U(cy - r), width: U(2 * r), height: U(2 * r) });
+    k.dataset.key = 'ok';
+    const img = el('img', '', { src: 'calculator.webp', alt: '', draggable: 'false' });
+    Object.assign(img.style, { left: U(r - cx), top: U(r - cy), width: U(1018), height: U(2000) });
+    part(k, 'i', 'ftop', {}).appendChild(img);
+    k.appendChild(installBtn);
   }
 
   // ------------------------------------------------------------------ on a phone: install from under your thumb
-  // Once the calculator's keys are scrolled away, a bar at the bottom has them, with the space used.
   function dock() {
     const d = $('#dock'), keys = $('.legend.ok');
     if (!window.IntersectionObserver) return;
@@ -1175,10 +1125,6 @@
   }
 
   // ------------------------------------------------------------------ the intro
-  // The page puts itself together. The calculator comes up into place, then the name and what NumPlay is,
-  // and the games take their places. Then each game you have goes into the calculator, in launcher order:
-  // its tick comes on, it lifts off its place, flies into the screen, and its block opens there as the
-  // count of space goes up. Last, the big games and your own come in beside it. Any key or click ends it.
   let introRun = null;
   function intro(force) {
     const ready = () => document.documentElement.classList.remove('intro-wait');
@@ -1194,12 +1140,11 @@
     hidePreview();
     document.body.classList.add('intro-on');
     $('#tip').classList.remove('show');
-    // where everything ends up, before anything moves
-    const list = items(), cap = capacity(), used = list.reduce((a, it) => a + it.bytes, 0);
+    const list = items(), cap = capacity();
     const games = ordered().filter((id) => buttons.get(id) && buttons.get(id).parentNode.id === 'small');
     const from = new Map(games.map((id) => [id, rect(buttons.get(id).querySelector('img'))]));
     const to = new Map(games.map((id) => [id, tiles.get(id) && rect(tiles.get(id))]));
-    // 1. the calculator, then the words, then the games in their places (a wave down the grid)
+    
     anim($('.device'), [{ opacity: 0 }, { opacity: 1 }], { duration: 700, easing: 'linear' });
     anim($('#calc'), [{ translate: '0 80px', scale: '0.93' }, { translate: '0 0', scale: '1' }], { duration: 1400, easing: E.out });
     anim($('.meter'), [{ opacity: 0, transform: 'translateY(24px)' }, { opacity: 1, transform: 'none' }], { duration: 900, delay: 500, easing: E.out });
@@ -1210,10 +1155,10 @@
     [...$('#small').children].forEach((b, i) => {
       anim(b.querySelector('img'), [{ opacity: 0, transform: 'translateY(14px) scale(0.6)' }, { opacity: 1, transform: 'none' }],
         { duration: 700, delay: 560 + i * 24, easing: E.spring });
-      if (!st.picked.has(b.dataset.id))  // (their + comes with them)
+      if (!st.picked.has(b.dataset.id))
         anim(b.querySelector('.badge'), [{ opacity: 0 }, { opacity: 1 }], { duration: 300, delay: 900 + i * 24, easing: 'linear' });
     });
-    // 2. on the screen: the free space and NumPlay's own block first, the games' blocks as they land
+    
     const T0 = 1150, GAP = 70, FLY = 760, landed = [];
     for (const [key, e] of tiles) {
       const id = key, gi = games.indexOf(id);
@@ -1224,7 +1169,7 @@
       const it = list.find((x) => x.key === key);
       if (it) landed.push([at, it.bytes]);
     }
-    // 3. the flights: each game's copy lifts off its place and arcs into its block on the screen
+    
     games.forEach((id, i) => {
       const a = from.get(id), b = to.get(id), btn = buttons.get(id);
       anim(btn.querySelector('.badge'), [{ transform: 'scale(0)' }, { transform: 'scale(1)' }], { duration: 420, delay: T0 + i * GAP - 60, easing: E.spring });
@@ -1237,7 +1182,7 @@
       const tw = Math.max(10, Math.min(b.width, b.height) * 0.62);
       flyers.push({ f, start: T0 + i * GAP, x0: a.left, y0: a.top, w0: a.width, x1: b.left + b.width / 2 - tw / 2, y1: b.top + b.height / 2 - tw / 2, w1: tw });
     });
-    // the count of space and the flights, a frame at a time
+    
     const t0 = performance.now(), ease = (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
     let raf = 0, shown = 0;
     const end = T0 + games.length * GAP + FLY + 300;
@@ -1263,7 +1208,7 @@
     };
     raf = requestAnimationFrame(frame);
     ready();
-    // 4. beside it: the big games and your own
+    
     const S = T0 + games.length * GAP + 200;
     const side = $('.side');
     [...side.querySelectorAll(':scope > .row-head, #retro > .row-head, .drop, .foot')].forEach((n, i) =>
@@ -1271,7 +1216,6 @@
     [...$('#big').children].forEach((b, i) =>
       anim(b, [{ opacity: 0, translate: '18px 0' }, { opacity: 1, translate: '0 0' }], { duration: 800, delay: S + 80 + i * 26, easing: E.out }));
     function finish(e) {
-      // (a click that ends it is only that: it doesn't also pick the game under it)
       if (e && e.type === 'pointerdown') addEventListener('click', (c) => { c.stopPropagation(); c.preventDefault(); }, { capture: true, once: true });
       cancelAnimationFrame(raf);
       for (const a of anims) a.finish();
@@ -1290,8 +1234,6 @@
     introRun = finish;
   }
 
-  // the games in NumPlay fill their column down to the bottom of the window: as many to a row, and as big, as fits
-  // (in the narrower layouts, where more comes under them, five to a row)
   function fitGrid() {
     const box = $('#small'), n = box.children.length;
     if (!n || innerWidth <= 1180) { box.classList.remove('fit'); return; }
@@ -1354,7 +1296,6 @@
     addEventListener('resize', () => requestAnimationFrame(fitGrid));
     if (document.fonts) document.fonts.ready.then(fitGrid);
 
-    // the app's settings
     const sec = $('#secret');
     SECRETS.forEach((s, i) => { const o = el('option', '', { value: String(i) }); o.textContent = s; sec.appendChild(o); });
     sec.addEventListener('change', () => { st.app.secret = +sec.value; render(); });
@@ -1382,11 +1323,9 @@
 
     $('#space-chip').addEventListener('click', (e) => { renderSpaces(); openPop($('#space-pop'), e.currentTarget, true); });
     $('#install').addEventListener('click', (e) => go(e.currentTarget, true));
-    $('#download').addEventListener('click', (e) => go(e.currentTarget, false));
     $('#dock-install').addEventListener('click', (e) => go(e.currentTarget, true));
-    $('#dock-download').addEventListener('click', (e) => go(e.currentTarget, false));
     dock();
-    for (const b of [$('#install'), $('#download'), $('#dock-install'), $('#dock-download'), $('#app-chip'), $('#lang-chip')]) {
+    for (const b of [$('#install'), $('#dock-install'), $('#app-chip'), $('#lang-chip')]) {
       b.addEventListener('pointerenter', prefetch, { once: true });
       b.addEventListener('focus', prefetch, { once: true });
     }

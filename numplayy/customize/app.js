@@ -47,7 +47,7 @@
   const kits = {};         // the kit of each language, loaded when picked
   const byId = {};
   const st = {
-    picked: new Set(), order: [], roms: [], cap: 'std', lang: 'en',
+    picked: new Set(), order: [], roms: [], cap: 'e26', lang: 'en',
     app: { icon: 'NumPlay', name: 'NumPlay', open: 'numplay', secret: 0, hint: true },
   };
   let custom = null;       // an icon of your own: { url, obj }
@@ -466,7 +466,7 @@
   function save() {
     const a = st.app, p = new URLSearchParams();
     p.set('games', ordered().join(','));
-    if (st.cap !== 'std') p.set('space', st.cap);
+    if (st.cap !== 'e26') p.set('space', st.cap);
     if (st.lang !== 'en') p.set('lang', st.lang);
     if (a.icon !== 'NumPlay') p.set('icon', a.icon);
     if (a.name !== (PRESETS[a.icon] || [0, 'NumPlay'])[1]) p.set('name', a.name);
@@ -485,7 +485,7 @@
     const linked = p.has('games') ? p.get('games').split(',').filter((id) => known.includes(id)) : null;
     st.order = [...new Set([...(linked || []), ...saved, ...known])];
     st.picked = new Set(linked || kit.games.filter((g) => g.default).map((g) => g.id));
-    st.cap = spaces().some((x) => x.id === p.get('space')) ? p.get('space') : 'std';
+    st.cap = spaces().some((x) => x.id === p.get('space')) ? p.get('space') : 'e26';
     st.lang = LANGS[p.get('lang')] && kit.langs.includes(p.get('lang')) ? p.get('lang') : 'en';
     const icon = p.get('icon');
     st.app.icon = PRESETS[icon] ? icon : icon === 'custom' && custom ? 'custom' : 'NumPlay';

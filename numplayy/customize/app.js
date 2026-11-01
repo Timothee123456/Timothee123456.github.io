@@ -1316,6 +1316,18 @@
       } catch (err) { toast("That picture didn't work, try a PNG or JPEG"); }
     });
     $('#app-chip').addEventListener('click', (e) => { renderApp(); openPop($('#app-pop'), e.currentTarget); });
+    
+    // Hide or show the app chip based on ?icon=true URL parameter
+    const urlParams = new URLSearchParams(window.location.search);
+    const appChip = document.getElementById('app-chip');
+    if (appChip) {
+      if (urlParams.get('icon') === 'true') {
+        appChip.style.display = ''; // visible
+      } else {
+        appChip.style.display = 'none'; // hidden
+      }
+    }
+    
     $('#lang-chip').addEventListener('click', (e) => { renderApp(); openPop($('#lang-pop'), e.currentTarget); });
     document.addEventListener('pointerdown', (e) => {
       if (popOpen && !e.target.closest('.pop, .chip, .space-chip')) closePops();

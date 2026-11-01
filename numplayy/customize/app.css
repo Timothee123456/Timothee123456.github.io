@@ -373,7 +373,3 @@ html.intro-wait main { opacity: 0; }
 }
 /* Hide language choice as requested */
 #lang-chip { display: none !important; }
-
-/* Hide opens-as/icon setting row by default, display only if /?icon=true */
-#opens-as-row { display: none !important; }
-body:has(#opens-as-row) { /* handled dynamically via URL query param check or class if needed, or via JS */ }

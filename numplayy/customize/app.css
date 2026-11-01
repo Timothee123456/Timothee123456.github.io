@@ -371,3 +371,5 @@ html.intro-wait main { opacity: 0; }
   .grid { grid-template-columns: repeat(5, minmax(0, 1fr)); }
   .pop { width: calc(100vw - 32px); }
 }
+/* Hide language choice as requested */
+#lang-chip { display: none !important; }

@@ -720,9 +720,6 @@
     const block = (id) => k.script.blocks[id] || kit.script.blocks[id];
     const index = (id) => (k.byId[id] || byId[id]).index;
     files['numplay.ld'] = head + sel.slice().sort((a, b) => index(a) - index(b)).map(block).join('') + k.script.tail;
-    console.log('SEL', sel);
-    console.log('LD SCRIPT\n' + files['numplay.ld']);
-    console.log('ARGS', args);
     const l = await run(t.ld, args.concat(['-o', 'out.nwa']), files);
     if (l.code) throw new Error(l.log || 'ld ' + l.code);
     const s = await run(t.oc, ['--strip-unneeded', 'in.nwa', 'out.nwa'], { 'in.nwa': l.m.FS.readFile('out.nwa') });
@@ -877,13 +874,10 @@
     return true;
   }
 
-  // ------------------------------------------------------------------ the calculator in 3D, and its sticker
+  // ------------------------------------------------------------------ the calculator in 3D
   // The calculator is built from its photo (1018 by 2000 pixels; --u is one of them on the page): its front
   // has a hole where the screen sits, down in a recess 14 deep, with the recess's walls round it; its long
-  // edges are rounded (a quarter circle of 30, as the photo shows them) before its sides, 132 deep. The
-  // star sticker is one piece of foil laid over all of that: flat on the frame by the screen, down the step
-  // into the recess, and round the edge onto the side. Each surface is lit from the same light.
-  const STAR = { size: 230, from: 849, lip: 915, step: 14, edge: 988, top: 215 };  // (the artwork's span, unfolded)
+  // edges are rounded (a quarter circle of 30, as the photo shows them) before its sides, 132 deep.
   const EDGE_R = 30, EDGE_N = 9, EDGE_C = 2 * EDGE_R * Math.sin(Math.PI / 4 / EDGE_N), DEPTH = 132;
   const EDGE_A = Array.from({ length: EDGE_N }, (_, i) => (i + 0.5) * 90 / EDGE_N);  // (each facet's angle)
   const LIGHT = [-0.25, -0.6, 0.76];
@@ -892,156 +886,6 @@
   const grey = (n, base) => { const v = Math.round(Math.min(255, base * lit(n))); return 'rgb(' + v + ',' + v + ',' + v + ')'; };
   const part = (parent, tag, cls, css) => { const e = el(tag, cls); Object.assign(e.style, css); parent.appendChild(e); return e; };
   const deg = (a) => a * Math.PI / 180;
-  // The sticker itself is a picture drawn by a small WebGL shader, from a map of what's where on it (drawn
-  // with a 2D canvas: the white vinyl die-cut round a star, the gold foil on it, the ink printed on the foil,
-  // and the height of it all, for its rounded edge and the line embossed in the foil). The vinyl is matte
-  // white with a soft edge and a thin shadow under it; the foil is metal, so it shows the room it's in (soft
-  // lights up left and up right, a strip light above, a darker floor), with a fine grain, and that sliding
-  // across it as the calculator turns; the ink is matte; a clear gloss coat over it all catches the
-  // pointer's light. Every piece of the sticker on the calculator copies this one picture.
-  const ART = 512;
-  const sticker = { draw: null, leaves: [], text: ['STAR', 'ON GITHUB'], view: [0.3, 0.05], light: [-0.5, 0.6, 0.8] };
-  function starPath(ctx, k, scale) {  // (the star of app.css's --star-paper: 100 units, turned -12 degrees)
-    ctx.beginPath();
-    for (let i = 0; i < 10; i++) {
-      const a = deg(-90 + 36 * i - 12), r = (i % 2 ? 17.5 : 40) * scale;
-      const x = (50 + r * Math.cos(a)) * k, y = (52 + r * Math.sin(a)) * k;
-      if (i) ctx.lineTo(x, y); else ctx.moveTo(x, y);
-    }
-    ctx.closePath();
-  }
-  function stickerMap() {
-    const k = ART / 100;
-    const layer = (draw, blur) => {
-      const c = el('canvas');
-      c.width = c.height = ART;
-      const x = c.getContext('2d', { willReadFrequently: true });
-      if (blur) x.filter = 'blur(' + blur + 'px)';
-      x.fillStyle = x.strokeStyle = '#ffffff';
-      x.lineJoin = 'round';
-      draw(x);
-      return x.getImageData(0, 0, ART, ART).data;
-    };
-    const font = (w, px) => w + ' ' + px + 'px -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif';
-    const vinyl = (x) => { starPath(x, k, 1); x.lineWidth = 14 * k; x.fill(); x.stroke(); };
-    const foil = (x) => { starPath(x, k, 1); x.lineWidth = 3 * k; x.fill(); x.stroke(); };
-    const ridge = (x) => { starPath(x, k, 0.8); x.lineWidth = 0.8 * k; x.stroke(); };
-    const ink = (x) => {
-      const [big, small] = sticker.text;
-      x.translate(50 * k, 53 * k);
-      x.rotate(deg(-12));
-      x.textAlign = 'center';
-      x.font = font(800, (big.length > 3 ? 11.5 : 14.5) * k);
-      x.fillText(big, 0, 2.5 * k);
-      x.font = font(750, 3.6 * k);
-      if ('letterSpacing' in x) x.letterSpacing = (0.5 * k) + 'px';
-      x.fillText(small, 0, 8.6 * k);
-    };
-    const V = layer(vinyl), F = layer(foil), I = layer(ink), Vb = layer(vinyl, 0.9 * k), Fb = layer(foil, 0.3 * k), Rb = layer(ridge, 0.35 * k);
-    const out = new Uint8Array(ART * ART * 4);
-    for (let i = 3; i < out.length; i += 4) {
-      out[i - 3] = V[i]; out[i - 2] = F[i]; out[i - 1] = I[i];
-      out[i] = Math.min(255, Vb[i] * 0.6 + Fb[i] * 0.16 + Rb[i] * 0.3 + I[i] * 0.04);
-    }
-    return out;
-  }
-  const STICKER_FS = `precision highp float;
-    varying vec2 uv;
-    uniform sampler2D map;
-    uniform vec3 light;  // toward the light, in the sticker's space (x right, y up, z out of it)
-    uniform vec2 view;   // where the viewer is, as the calculator turns
-    uniform float px;
-    uniform float shadowed;  // (the pieces round the edge overlap a little: only the flat ones draw the shadow)
-    float H(vec2 q) { return texture2D(map, q).a; }
-    float hash(vec2 q) { return fract(sin(dot(q, vec2(12.9898, 78.233))) * 43758.5453); }
-    float blob(vec2 q, vec2 c, float r) { vec2 d = q - c; return exp(-dot(d, d) / r); }
-    // the room behind the viewer, as a mirror at this angle sees it: brighter above, a soft box up left, a
-    // strip light across the ceiling, a window to the right, something dark low down
-    float room(vec3 R) {
-      vec2 q = R.xy / max(R.z, 0.2);
-      float e = 0.34 + 0.24 * clamp(q.y + 0.35, 0.0, 1.0);
-      e += 1.3 * blob(q, vec2(-0.55, 0.12), 0.035);
-      e += 0.85 * exp(-pow((q.y - 0.3 + 0.18 * q.x) / 0.035, 2.0));
-      e += 0.75 * blob(q, vec2(0.22, -0.08), 0.02);
-      e -= 0.24 * blob(q, vec2(-0.25, -0.5), 0.06);
-      return max(e, 0.05);
-    }
-    void main() {
-      vec4 m = texture2D(map, uv);
-      float g = hash(floor(uv * 640.0));
-      vec3 n = normalize(vec3((H(uv - vec2(px, 0.0)) - H(uv + vec2(px, 0.0))) * 9.0 + (g - 0.5) * 0.05 * m.g,
-        (H(uv + vec2(0.0, px)) - H(uv - vec2(0.0, px))) * 9.0 + (hash(floor(uv * 640.0) + 7.0) - 0.5) * 0.05 * m.g, 1.0));
-      vec2 p = (uv - 0.5) * vec2(1.0, -1.0);
-      vec3 V = normalize(vec3(view - p * 0.9, 1.0)), L = normalize(light), R = reflect(-V, n);
-      float e = room(R) + 1.1 * pow(max(dot(R, L), 0.0), 16.0);
-      float flake = pow(g, 28.0) * pow(max(dot(R, L), 0.0), 3.0) * 1.4;
-      vec3 gold = vec3(1.0, 0.76, 0.33);
-      vec3 foil = gold * e * (0.92 + 0.16 * g) + vec3(1.0, 0.95, 0.82) * (pow(max(e - 0.9, 0.0), 2.0) * 0.5 + flake);
-      float diff = max(dot(n, L), 0.0);
-      vec3 vinyl = vec3(0.968, 0.964, 0.955) * (0.8 + 0.2 * diff) * (0.985 + 0.03 * hash(floor(uv * 860.0)));
-      vec3 ink = vec3(0.2, 0.12, 0.02) * (0.85 + 0.15 * diff);
-      vec3 c = mix(vinyl, foil, m.g);
-      c = mix(c, ink, m.b * m.g);
-      vec3 h = normalize(L + V);
-      c += pow(max(dot(n, h), 0.0), 160.0) * 0.6 + pow(1.0 - max(dot(n, V), 0.0), 4.0) * 0.1;
-      float shadow = shadowed * (1.0 - m.r) * texture2D(map, uv + vec2(-light.x, light.y) * 2.5 * px).a * 0.34;
-      gl_FragColor = vec4(c * m.r, m.r + shadow);
-    }`;
-  function stickerRenderer() {
-    const c = el('canvas');
-    c.width = c.height = ART;
-    const gl = c.getContext('webgl', { premultipliedAlpha: true, preserveDrawingBuffer: true, antialias: false });
-    if (!gl) {  // (no WebGL: the same sticker, flat)
-      const x = c.getContext('2d'), k = ART / 100;
-      x.lineJoin = 'round';
-      return () => {
-        x.clearRect(0, 0, ART, ART);
-        starPath(x, k, 1); x.lineWidth = 14 * k; x.fillStyle = x.strokeStyle = '#f6f5f2'; x.fill(); x.stroke();
-        const gr = x.createLinearGradient(0, 0, ART, ART);
-        gr.addColorStop(0, '#fbe7a1'); gr.addColorStop(0.5, '#c8901a'); gr.addColorStop(1, '#f2cf6a');
-        starPath(x, k, 1); x.lineWidth = 3 * k; x.fillStyle = x.strokeStyle = gr; x.fill(); x.stroke();
-        return c;
-      };
-    }
-    const sh = (type, src) => { const o = gl.createShader(type); gl.shaderSource(o, src); gl.compileShader(o); return o; };
-    const prog = gl.createProgram();
-    gl.attachShader(prog, sh(gl.VERTEX_SHADER, 'attribute vec2 p; varying vec2 uv; void main() { uv = vec2(p.x * 0.5 + 0.5, 0.5 - p.y * 0.5); gl_Position = vec4(p, 0.0, 1.0); }'));
-    gl.attachShader(prog, sh(gl.FRAGMENT_SHADER, STICKER_FS));
-    gl.linkProgram(prog);
-    gl.useProgram(prog);
-    gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer());
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 1, -1, -1, 1, -1, 1, 1, -1, 1, 1]), gl.STATIC_DRAW);
-    const p = gl.getAttribLocation(prog, 'p');
-    gl.enableVertexAttribArray(p);
-    gl.vertexAttribPointer(p, 2, gl.FLOAT, false, 0, 0);
-    gl.bindTexture(gl.TEXTURE_2D, gl.createTexture());
-    for (const [k, v] of [[gl.TEXTURE_MIN_FILTER, gl.LINEAR], [gl.TEXTURE_MAG_FILTER, gl.LINEAR], [gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE], [gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE]])
-      gl.texParameteri(gl.TEXTURE_2D, k, v);
-    const upload = (data) => gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, ART, ART, 0, gl.RGBA, gl.UNSIGNED_BYTE, data);
-    sticker.lose = () => { const e = gl.getExtension('WEBGL_lose_context'); if (e) e.loseContext(); };
-    upload(stickerMap());
-    sticker.remap = () => upload(stickerMap());
-    const u = (n) => gl.getUniformLocation(prog, n);
-    gl.uniform1f(u('px'), 1 / ART);
-    gl.viewport(0, 0, ART, ART);
-    return (shadowed) => {
-      gl.uniform1f(u('shadowed'), shadowed ? 1 : 0);
-      gl.uniform3fv(u('light'), sticker.light);
-      gl.uniform2fv(u('view'), sticker.view);
-      gl.clearColor(0, 0, 0, 0);
-      gl.clear(gl.COLOR_BUFFER_BIT);
-      gl.drawArrays(gl.TRIANGLES, 0, 6);
-      return c;
-    };
-  }
-  // draw the sticker, then each of its pieces on the calculator
-  function paintSticker() {
-    if (!sticker.draw) return;
-    for (const shadowed of [true, false]) {
-      const src = sticker.draw(shadowed);
-      for (const l of sticker.leaves) if (l.shadowed === shadowed) { l.x.clearRect(0, 0, ART, ART); l.x.drawImage(src, 0, 0); }
-    }
-  }
 
   // The keys at the top of the keypad, where the photo has them (measured from it): the D-pad's cross with
   // its corners rounded (a quadratic curve through each corner), OK and Back's circles, and pills.
@@ -1146,7 +990,7 @@
   }
 
   function build3d() {
-    const body = document.querySelector('.body3d'), star = $('#star');
+    const body = document.querySelector('.body3d');
     // the rounded edges and the sides: the quarter circle in facets, then the side
     const step = 90 / EDGE_N;
     for (const dir of [1, -1]) {
@@ -1188,75 +1032,14 @@
     keys3d(document.querySelector('#calc'), keys);
     $('#calc').style.setProperty('--plate-mask', maskOf([[[0, 0], [1018, 0], [1018, 2000], [0, 2000]], pill(104, 107, 915, 743, 36)]
       .concat(keys.map((k) => k.hole)), 0, 0, 1018, 2000, 2, true));
-    // the sticker: each piece shows its own span of the one artwork
-    const S = STAR;
-    Object.assign(star.style, { left: (100 * S.lip / 1018) + '%', top: (100 * S.top / 2000) + '%', width: U(S.edge - S.lip), height: U(S.size) });
-    star.style.setProperty('--star', U(S.size));
-    const paper = el('canvas');
-    paper.width = paper.height = 256;
-    const px = paper.getContext('2d');
-    starPath(px, 2.56, 1);
-    px.lineWidth = 14 * 2.56; px.lineJoin = 'round'; px.fill(); px.stroke();
-    star.style.setProperty('--star-paper', 'url(' + paper.toDataURL() + ')');
-    const art = (key) => {
-      const a = el('canvas', 'art');
-      a.width = a.height = ART;
-      sticker.leaves.push({ x: a.getContext('2d'), shadowed: ['front', 'step', 'floor'].includes(key) });
-      return a;
-    };
-    const leaf = (parent, from, to, x, key, over = 0) => {  // (over: how far it runs under the next piece)
-      const l = part(parent, 'span', 'leaf', { left: U(x), width: U(to - from + over) });
-      const a = art(key);
-      a.style.left = U(S.from - from);
-      l.appendChild(a);
-      const sh = part(l, 'span', 'shade', { left: U(S.from - from), backgroundSize: U(to - from + over) + ' 100%', backgroundPosition: U(from - S.from) + ' 0' });
-      sh.dataset.piece = key;
-      sh.dataset.end = (100 * (to - from) / (to - from + over)).toFixed(2);  // (its light runs on over the overlap)
-      return l;
-    };
-    const fold = (parent, x, transform) => part(parent, 'span', 'fold', { left: U(x), transform });
-    leaf(star, S.lip, S.edge, 0, 'front', 1.5);
-    let f = fold(star, 0, 'rotateY(-90deg)');  // down the step...
-    leaf(f, S.lip - S.step, S.lip, -S.step, 'step');
-    f = fold(f, -S.step, 'rotateY(90deg)');  // ...onto the recess's floor
-    leaf(f, S.from, S.lip - S.step, -(S.lip - S.step - S.from), 'floor');
-    let g = fold(star, S.edge - S.lip, 'rotateY(var(--b0))');  // round the edge, onto the side
-    let u = S.edge;
-    EDGE_A.forEach((a, i) => {
-      leaf(g, u, u + EDGE_C, 0, 'bend' + i, 1.5);  // (a little over the next, so no hairline shows between them)
-      u += EDGE_C;
-      g = fold(g, EDGE_C, 'rotateY(var(--b' + (i < EDGE_N - 1 ? 1 : 2) + '))');
-    });
-    leaf(g, u, S.from + S.size, 0, 'side');
-    shadeStar(0);
-    sticker.draw = stickerRenderer();
-    paintSticker();
-  }
-  // how much light each piece of the sticker gets, as the part round the edge lifts (0 to 1)
-  function shadeStar(lift) {
-    const k = 1 - 0.85 * lift, step = 90 / EDGE_N * k, star = $('#star');
-    star.style.setProperty('--b0', (step / 2).toFixed(2) + 'deg');
-    star.style.setProperty('--b1', step.toFixed(2) + 'deg');
-    star.style.setProperty('--b2', (step / 2).toFixed(2) + 'deg');
-    // (each piece from the light at its one edge to the light at its other, so the curve has no bands)
-    const at = (a) => lit([Math.sin(deg(a)), 0, Math.cos(deg(a))]);
-    const dark = (l) => 'rgba(20, 14, 0, ' + Math.max(0, 1 - l).toFixed(3) + ')';
-    const light = { front: [1, 1], step: [lit([-1, 0, 0]) * 0.94, lit([-1, 0, 0]) * 0.94], floor: [0.97, 0.97], side: [at(90 * k), at(90 * k) * 0.97] };
-    EDGE_A.forEach((a, i) => { light['bend' + i] = [at((a - 45 / EDGE_N) * k), at((a + 45 / EDGE_N) * k)]; });
-    for (const sh of star.querySelectorAll('.shade')) {
-      const [l0, l1] = light[sh.dataset.piece];
-      sh.style.backgroundImage = 'linear-gradient(90deg, ' + dark(l0) + ', ' + dark(l1) + ' ' + sh.dataset.end + '%, ' + dark(l1) + ')';
-    }
   }
 
-  // The calculator faces you straight, and turns a little toward the pointer when it's on it. The light on
-  // the foil comes from where the pointer is, and under the pointer the part of the sticker round the edge
-  // peels up off the side.
+  // The calculator faces you straight, and turns a little toward the pointer when it's on it.
   function depth() {
     if (matchMedia('(prefers-reduced-motion: reduce)').matches || light.on) return;
-    const calc = $('#calc'), star = $('#star'), dev = document.querySelector('.device');
+    const calc = $('#calc'), dev = document.querySelector('.device');
     let mx = innerWidth * 0.6, my = innerHeight * 0.2, tx = 0, ty = 0, x = 0, y = 0;
-    let over = false, lift = 0, raf = 0;
+    let raf = 0;
     const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
     const draw = (now) => {
       raf = 0;
@@ -1266,15 +1049,7 @@
       calc.style.setProperty('--ry', (x * 18).toFixed(2) + 'deg');
       calc.style.setProperty('--rx', (-y * 10).toFixed(2) + 'deg');
       calc.style.setProperty('--lx', (50 - x * 100).toFixed(1) + '%');
-      const r = star.getBoundingClientRect(), cx = r.left + r.width * 0.68, cy = r.top + r.height / 2;
-      const want = over ? 0.45 + 0.55 * clamp((mx - r.left) / (r.width * 1.3), 0, 1) : 0;
-      lift += (want - lift) * 0.14;
-      // (the pointer is the light; the calculator's turn is where the sticker is seen from)
-      sticker.light = [(mx - cx) / 260, -(my - cy) / 260, 0.85];
-      sticker.view = [-x * 18 / 38 + 0.12, -y * 10 / 38];
-      paintSticker();
-      shadeStar(lift);
-      if (Math.abs(tx - x) + Math.abs(ty - y) > 0.0005 || Math.abs(want - lift) > 0.002) raf = requestAnimationFrame(draw);
+      if (Math.abs(tx - x) + Math.abs(ty - y) > 0.0005) raf = requestAnimationFrame(draw);
     };
     const kick = () => { if (!raf && !light.on) raf = requestAnimationFrame(draw); };
     addEventListener('pointermove', (e) => {
@@ -1286,17 +1061,14 @@
       kick();
     }, { passive: true });
     document.documentElement.addEventListener('pointerleave', () => { tx = 0; ty = 0; kick(); });
-    star.addEventListener('pointerenter', (e) => { if (e.pointerType !== 'touch') { over = true; kick(); } });
-    star.addEventListener('pointerleave', () => { over = false; kick(); });
     kick();
   }
 
   // ------------------------------------------------------------------ the light calculator
   // The 3D calculator is heavy for slow computers and phones. The light one is the same photo, flat: OK and Back
-  // go in when pressed, and the sticker is drawn once, as the 3D one looks from the front. It's the light one from
-  // the start on small or touch screens, with reduced motion, or with ?flat in the address (?3d: never); otherwise
-  // the page times its frames while things move, in its first seconds and as the calculator turns, and goes light
-  // for the rest of the visit when they're slow.
+  // go in when pressed. It's the light one from the start on small or touch screens, with reduced motion, or with ?flat
+  // in the address (?3d: never); otherwise the page times its frames while things move, in its first seconds and as the
+  // calculator turns, and goes light for the rest of the visit when they're slow.
   const light = { on: false, later: false, list: [], last: 0 };
   const flag = (f) => new RegExp('[?&]' + f + '(=|&|$)').test(location.search);
   function lightFromStart() {
@@ -1329,16 +1101,11 @@
     if (light.on) return;
     if (introRun) { light.later = true; return; }  // (once the intro is over)
     try { sessionStorage.setItem('numplay-flat', '1'); } catch (e) { /* (no storage: light until the page is left) */ }
-    // the 3D calculator goes: its sides, its keys (OK and Back keep their buttons), its sticker
+    // the 3D calculator goes: its sides, its keys (OK and Back keep their buttons)
     const calc = $('#calc'), plate = calc.querySelector('.plate');
     for (const b of [$('#install'), $('#download')]) { b.style.transform = ''; plate.appendChild(b); }
     for (const e of calc.querySelectorAll('.key3d, .keybed')) e.remove();
     document.querySelector('.body3d').textContent = '';
-    if (sticker.lose) sticker.lose();
-    Object.assign(sticker, { draw: null, remap: null, lose: null, leaves: [] });
-    const star = $('#star');
-    star.textContent = '';
-    star.removeAttribute('style');
     for (const v of ['--plate-mask', '--rx', '--ry', '--lx']) calc.style.removeProperty(v);
     buildFlat();
   }
@@ -1354,82 +1121,6 @@
       part(k, 'i', 'ftop', {}).appendChild(img);
       k.appendChild(b);
     }
-    flatStar();
-  }
-  // The sticker, flat: its picture (the white vinyl, the gold foil and the line embossed in it, the ink), then seen
-  // from the front as it lies on the calculator: over the screen's bezel, a little darker down in it, and round the
-  // edge, squeezed and darker as the edge turns away; the part on the side is out of sight.
-  function stickerArt() {
-    const c = el('canvas');
-    c.width = c.height = ART;
-    const x = c.getContext('2d'), k = ART / 100;
-    x.lineJoin = 'round';
-    x.save();
-    x.shadowColor = 'rgba(0, 0, 0, 0.3)'; x.shadowBlur = 1.4 * k; x.shadowOffsetY = 0.5 * k;
-    starPath(x, k, 1); x.lineWidth = 14 * k; x.fillStyle = x.strokeStyle = '#f7f6f2'; x.fill(); x.stroke();
-    x.restore();
-    const g = x.createLinearGradient(14 * k, 8 * k, 84 * k, 96 * k);
-    [[0, '#fff0b5'], [0.2, '#e8bd52'], [0.42, '#b47e14'], [0.6, '#f4d47c'], [0.78, '#c28b1c'], [1, '#f2d27a']]
-      .forEach(([o, col]) => g.addColorStop(o, col));
-    starPath(x, k, 1); x.lineWidth = 3 * k; x.fillStyle = x.strokeStyle = g; x.fill(); x.stroke();
-    for (const [d, col] of [[0.3, 'rgba(120, 76, 0, 0.55)'], [-0.3, 'rgba(255, 249, 222, 0.75)']]) {
-      x.save(); x.translate(d * k, d * k); starPath(x, k, 0.8); x.lineWidth = 0.7 * k; x.strokeStyle = col; x.stroke(); x.restore();
-    }
-    const [big, small] = sticker.text;
-    x.save();
-    x.translate(50 * k, 53 * k);
-    x.rotate(deg(-12));
-    x.textAlign = 'center';
-    x.fillStyle = 'rgba(52, 31, 4, 0.92)';
-    const font = (w, px) => w + ' ' + px + 'px -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif';
-    x.font = font(800, (big.length > 3 ? 11.5 : 14.5) * k);
-    x.fillText(big, 0, 2.5 * k);
-    x.font = font(750, 3.6 * k);
-    if ('letterSpacing' in x) x.letterSpacing = (0.5 * k) + 'px';
-    x.fillText(small, 0, 8.6 * k);
-    x.restore();
-    return c;
-  }
-  function flatStar() {
-    // (the step down into the bezel, which the front doesn't see, shifts it as much: its tip at the screen's edge)
-    const S = STAR, star = $('#star'), K = ART / S.size, x0 = S.from + S.step, x1 = 1018;
-    const art = stickerArt(), c = el('canvas'), w = Math.ceil((x1 - x0) * K);
-    c.width = w; c.height = ART;
-    const x = c.getContext('2d');
-    for (let i = 0; i < w; i++) {
-      const px = x0 + (i + 0.5) / K;  // (in the photo's pixels)
-      let u = px - S.step, du = 1, l = 1;
-      if (px < S.lip) l = px > S.lip - 1.6 ? 0.84 : 0.96;  // (down in the bezel, and its edge)
-      else if (px > S.edge) {  // (round the edge)
-        const a = Math.asin(Math.min(1, (px - S.edge) / EDGE_R));
-        u = S.edge - S.step + EDGE_R * a; du = 1 / Math.max(0.2, Math.cos(a)); l = lit([Math.sin(a), 0, Math.cos(a)]);
-      }
-      x.drawImage(art, (u - S.from) * K - du / 2, 0, du, ART, i, 0, 1, ART);
-      if (l < 1) {
-        x.save(); x.globalCompositeOperation = 'source-atop'; x.fillStyle = 'rgba(20, 14, 0, ' + (1 - l).toFixed(3) + ')';
-        x.fillRect(i, 0, 1, ART); x.restore();
-      }
-    }
-    star.textContent = '';
-    Object.assign(star.style, { left: (100 * x0 / 1018) + '%', top: (100 * S.top / 2000) + '%', width: U(x1 - x0), height: U(S.size) });
-    star.appendChild(c);
-  }
-
-  // ------------------------------------------------------------------ GitHub's star count, for the sticker
-  async function stars() {
-    try {
-      let n = sessionStorage.getItem('numplay-stars');
-      if (!n) {
-        const r = await fetch('https://api.github.com/repos/Mason363/NumPlay');
-        if (!r.ok) return;
-        n = String((await r.json()).stargazers_count);
-        sessionStorage.setItem('numplay-stars', n);
-      }
-      const v = +n, t = v >= 1000 ? (v / 1000).toFixed(v >= 10000 ? 0 : 1) + 'k' : String(v);
-      sticker.text = [t, v === 1 ? 'STAR' : 'STARS'];
-      if (sticker.remap) { sticker.remap(); paintSticker(); }
-      if (light.on) flatStar();
-    } catch (e) { /* (offline, or GitHub said no: the button still works) */ }
   }
 
   // ------------------------------------------------------------------ on a phone: install from under your thumb
@@ -1733,7 +1424,6 @@
     $('#replay').addEventListener('click', () => intro(true));
     requestAnimationFrame(() => intro(new URLSearchParams(location.search).has('intro')));
     addEventListener('hashchange', () => { restore(); render(); });
-    stars();
     (window.requestIdleCallback || setTimeout)(() => loadTools().catch(() => {}), { timeout: 3000 });
   }
   start();

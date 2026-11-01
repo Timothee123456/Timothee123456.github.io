@@ -110,7 +110,7 @@ body.dragging-icon .app { pointer-events: none; }
 body.dragging-icon, body.dragging-icon * { cursor: grabbing !important; user-select: none; }
 .app.held { outline: 2.5px solid var(--blue); outline-offset: 4px; border-radius: 22%; }
 
-/* ---- the calculator, up close: its screen is the space, OK installs, Back downloads, a star sticker on it */
+/* ---- the calculator, up close: its screen is the space, OK installs, Back downloads */
 .device { grid-area: device; position: sticky; top: 0; height: 100vh; overflow: hidden; align-self: start; perspective: 2400px; perspective-origin: 50% 32%; }
 /* beside the calculator: the space used, a block for each game, stacked from the bottom in the launcher's order */
 .meter { position: absolute; z-index: 1; left: calc(50% - var(--cw) / 2 - 66px); width: 52px; top: calc(30px + var(--cw) * 0.105); bottom: 34px; display: flex; flex-direction: column; align-items: center; gap: 10px; }
@@ -133,13 +133,13 @@ body.dragging-icon, body.dragging-icon * { cursor: grabbing !important; user-sel
 }
 .plate, .well, .body3d { position: absolute; inset: 0; }
 .plate { container-type: inline-size; }
-.calc, .plate, .well, .body3d { pointer-events: none; }  /* (so a click on the sticker or a key is theirs) */
-#screen, .sticker { pointer-events: auto; }
+.calc, .plate, .well, .body3d { pointer-events: none; }
+#screen { pointer-events: auto; }
 .calc-img, .well-img { position: absolute; inset: 0; width: 100%; height: 100%; user-select: none; pointer-events: none; }
 .calc-img { clip-path: inset(0 2.947% 0 2.947%); -webkit-mask: var(--plate-mask) 0 0 / 100% 100% no-repeat; mask: var(--plate-mask) 0 0 / 100% 100% no-repeat; }
-.well { transform: translateZ(calc(var(--u) * -14.6)); }  /* (a hair under the sticker, which lies on it at 14) */
+.well { transform: translateZ(calc(var(--u) * -14.6)); }
 .well-img { clip-path: inset(5.35% 10.118% 62.85% 10.216% round calc(var(--u) * 36)); }
-.body3d, .fold, .sticker, .key3d { transform-style: preserve-3d; }
+.body3d, .fold, .key3d { transform-style: preserve-3d; }
 .fold { position: absolute; top: 0; height: 100%; width: 0; transform-origin: 0 0; }
 .facet { position: absolute; top: 0; height: 100%; display: block; }
 .body3d .top { position: absolute; left: 0; top: 0; width: 100%; transform-origin: 0 0; transform: rotateX(-90deg); display: block; }
@@ -163,17 +163,6 @@ body.dragging-icon, body.dragging-icon * { cursor: grabbing !important; user-sel
 .legend { position: absolute; top: 41.2%; transform: translateX(-50%); font-size: calc(var(--u) * 25); font-weight: 700; color: #a8690a; white-space: nowrap; pointer-events: none; }
 .legend.ok { left: 70.53%; }
 .legend.back { left: 84.23%; }
-
-/* GitHub: a die-cut star sticker of gold foil, stuck on the calculator by its screen: flat on the frame,
-   down the step into the screen's recess, and round the edge onto the side (app.js folds it, build3d).
-   Each piece shows its own part of one picture (.art, drawn by app.js's stickerRenderer), and the part
-   round the edge lifts off the side under the pointer (--b0 --b1 --b2, app.js) */
-.sticker { position: absolute; text-decoration: none; -webkit-tap-highlight-color: transparent; }
-.sticker:focus-visible { outline-offset: 2px; border-radius: 8px; }
-.leaf { position: absolute; top: 0; height: 100%; overflow: hidden; display: block; transform: translateZ(calc(var(--u) * 0.5)); }  /* (a hair off the plastic, as a sticker is) */
-.art, .shade { position: absolute; top: 0; width: var(--star); height: var(--star); display: block; }
-/* each piece's light, darker as it turns away (app.js, shadeStar): over the sticker's own shape only */
-.shade { -webkit-mask: var(--star-paper) center / 100% 100% no-repeat; mask: var(--star-paper) center / 100% 100% no-repeat; background-repeat: no-repeat; }
 
 /* the screen: the calculator's space, each game a block its size, and a game playing when you point at it */
 .screen {
@@ -346,8 +335,6 @@ body.dragging .drop-hint { display: flex; }
 .steps li { display: flex; align-items: center; gap: 14px; font-size: 15px; font-weight: 550; line-height: 1.35; }
 .step-icon { width: 42px; height: 42px; border-radius: 12px; background: var(--track); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
 .install.wide { width: 100%; }
-.star-ask { display: block; margin-top: 14px; padding: 12px 14px; border-radius: 14px; background: #fff7e0; text-decoration: none; font-size: 14px; font-weight: 600; line-height: 1.4; }
-.star-ask:hover { background: #ffefc2; }
 
 .foot { margin-top: auto; padding-top: 22px; font-size: 12px; color: var(--mute); display: flex; flex-wrap: wrap; gap: 4px 8px; }
 .foot a { color: var(--mute); text-decoration: none; }
@@ -355,8 +342,7 @@ body.dragging .drop-hint { display: flex; }
 .noscript { text-align: center; padding: 0 16px; }
 
 /* ---- the light calculator, for slow computers and phones (app.js, buildFlat): the same photo, flat. OK and Back
-   are cut from it, over a gap that shows round them as they go in; the sticker is drawn once, as the 3D one
-   looks from the front */
+   are cut from it, over a gap that shows round them as they go in */
 html.flat .device { perspective: none; }
 html.flat .calc { transform: none; transform-style: flat; }
 html.flat .calc-img { clip-path: none; -webkit-mask: none; mask: none; }
@@ -367,7 +353,6 @@ html.flat .well-img, html.flat .body3d { display: none; }
 .ftop img { position: absolute; max-width: none; pointer-events: none; user-select: none; }
 .fkey:has(> .ok-key:hover) .ftop, .fkey:has(> .dl:hover) .ftop { transform: scale(0.985); }
 .fkey:has(> .ok-key:active) .ftop, .fkey:has(> .dl:active) .ftop, .fkey.down .ftop { transform: scale(0.94); }
-html.flat .sticker canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
 
 /* ---- on a phone, the keys under your thumb once the calculator is scrolled away (app.js, dock) */
 .dock { display: none; }

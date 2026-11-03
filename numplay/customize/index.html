@@ -167,19 +167,38 @@
     <button type="button" class="sheet-close" aria-label="Close">
       <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
     </button>
-    <h2 id="sheet-title"><span class="sheet-file">NumPlay.nwa</span> is downloading</h2>
-    <ol class="steps">
-      <li><span class="step-icon">
-        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2" width="12" height="20" rx="2.5"/><rect x="8.5" y="4.5" width="7" height="5" rx="0.5"/><path d="M9 13h.01M12 13h.01M15 13h.01M9 16h.01M12 16h.01M15 16h.01M9 19h.01M12 19h.01M15 19h.01"/></svg>
-      </span><span>Plug your calculator into this computer</span></li>
-      <li class="xl-only"><span class="step-icon">
-        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12v18l-6-4-6 4z"/></svg>
-      </span><span>Click the <a href="https://nwagyu.org/guide/help/enlarge-your-memory.html" target="_blank" rel="noopener">Nwagra</a> bookmark on the installer page</span></li>
-      <li><span class="step-icon">
-        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V3"/><path d="M7 8l5-5 5 5"/><path d="M4 15v4a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-4"/></svg>
-      </span><span>Open NumWorks' installer and drop <span class="sheet-file">NumPlay.nwa</span> into it</span></li>
-    </ol>
-    <a class="install wide" href="https://timothee123456.github.io/numplayy/upload" target="_blank" rel="noopener">Open the installer</a>
+    <h2 id="sheet-title">Installing NumPlay</h2>
+
+    <div id="sheet-connect" hidden>
+      <ol class="steps">
+        <li><span class="step-icon"><i class="glyphicon glyphicon-flash" aria-hidden="true"></i></span><span>Plug your calculator into this computer with its USB cable</span></li>
+        <li><span class="step-icon"><i class="glyphicon glyphicon-transfer" aria-hidden="true"></i></span><span>Click <b>Connect</b> and choose your NumWorks in the list</span></li>
+        <li><span class="step-icon"><i class="glyphicon glyphicon-download-alt" aria-hidden="true"></i></span><span>It installs by itself. Keep it plugged in</span></li>
+      </ol>
+      <button id="btn-connect" class="install wide" type="button">Connect</button>
+      <p class="sheet-note">This replaces the other extra apps on your calculator.</p>
+    </div>
+
+    <div id="sheet-upload" class="nw" hidden>
+      <p id="install-label" class="nw-label" role="status">Looking for your calculator</p>
+      <div class="progress"><div id="install-progress" class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" style="width: 0%">0%</div></div>
+      <p class="sheet-note">Keep your calculator plugged in.</p>
+    </div>
+
+    <div id="sheet-done" class="nw" hidden>
+      <p class="nw-done"><i class="glyphicon glyphicon-ok" aria-hidden="true"></i></p>
+      <p class="nw-label">Done!<br>You can disconnect your calculator.</p>
+      <button id="btn-done" class="install wide" type="button">Close</button>
+    </div>
+
+    <div id="sheet-error" hidden>
+      <p class="err-icon" aria-hidden="true"><i class="glyphicon glyphicon-warning-sign"></i></p>
+      <p id="install-error-text" class="err-text"></p>
+      <p id="install-error-hint" class="sheet-note" hidden></p>
+      <p id="install-error-detail" class="err-detail" hidden></p>
+      <button id="btn-retry" class="install wide" type="button">Try again</button>
+      <button id="btn-alt" class="sheet-link" type="button" hidden></button>
+    </div>
   </div>
 </div>
 
@@ -192,6 +211,28 @@
 
 <div id="tip" class="tip" role="tooltip"></div>
 <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+<div id="uploader-app" style="display:none"><uploader></uploader></div>
+<script>
+  /* NumWorks' installer (37791e1e.js) asks cdn.numworks.com for its two wasm tools. They are in this folder:
+     use them from here, and fall back to the CDN only if one is missing. */
+  (function () {
+    var re = /^https:\/\/cdn\.numworks\.com\/([0-9a-f]{8}\.wasm)(\?.*)?$/, f = window.fetch;
+    if (f) window.fetch = function (input, init) {
+      var u = typeof input === 'string' ? input : input && input.url, m = u && re.exec(u);
+      if (!m) return f.call(this, input, init);
+      var self = this;
+      return f.call(self, m[1], init).then(function (r) { return r.ok ? r : f.call(self, input, init); }, function () { return f.call(self, input, init); });
+    };
+    var o = XMLHttpRequest.prototype.open;
+    XMLHttpRequest.prototype.open = function (method, url) {
+      var m = typeof url === 'string' && re.exec(url), a = Array.prototype.slice.call(arguments);
+      if (m) a[1] = m[1];
+      return o.apply(this, a);
+    };
+  })();
+</script>
+<script src="37791e1e.js"></script>
 <script src="app.js"></script>
 </body>
 </html>

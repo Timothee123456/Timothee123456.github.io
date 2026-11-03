@@ -1,3 +1,8 @@
+/* The fonts of NumWorks' own installer page (the progress bar's), from this folder */
+@font-face { font-family: "Source Sans Pro"; src: url(8939b32c.woff) format("woff"); font-display: swap; }
+@font-face { font-family: "Source Sans Pro"; src: url(44ea2d7e.woff) format("woff"); font-weight: 700; font-display: swap; }
+@font-face { font-family: "Glyphicons Halflings"; src: url(be810be3.woff2) format("woff2"); font-display: block; }
+
 :root {
   --bg: #f2f1ef;
   --ink: #1d1d1f;
@@ -373,3 +378,50 @@ html.intro-wait main { opacity: 0; }
 }
 /* Hide language choice as requested */
 #lang-chip { display: none !important; }
+
+/* Installing onto the calculator: NumWorks' own progress bar, icons and wording, inside NumPlay's sheet */
+.glyphicon { position: relative; top: 1px; display: inline-block; font-family: "Glyphicons Halflings"; font-style: normal; font-weight: 400; line-height: 1; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+.glyphicon-ok:before { content: "\e013"; }
+.glyphicon-warning-sign:before { content: "\e107"; }
+.glyphicon-flash:before { content: "\e162"; }
+.glyphicon-transfer:before { content: "\e178"; }
+.glyphicon-download-alt:before { content: "\e025"; }
+.steps .step-icon .glyphicon { font-size: 19px; color: var(--ink); }
+.steps li b { font-weight: 750; }
+.sheet-note { margin: 14px 0 0; font-size: 13px; line-height: 1.4; color: var(--mute); text-align: center; }
+.sheet-link { display: block; margin: 12px auto 4px; padding: 6px 10px; border: 0; background: none; font-size: 14px; font-weight: 600; color: var(--mute); text-decoration: underline; cursor: pointer; }
+.sheet-link:hover { color: var(--ink); }
+.install:disabled { opacity: 0.55; cursor: default; }
+.nw { font-family: "Source Sans Pro", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif; font-size: 16px; line-height: 1.45; color: var(--ink); }
+.nw-label { margin: 0 0 10px; text-align: center; }
+.nw-done { margin: 2px auto 16px; width: 56px; height: 56px; border-radius: 50%; background: #5cb85c; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 24px; }
+.nw-done .glyphicon { top: 0; }
+.nw + .sheet-note { margin: -8px 0 4px; }
+.err-icon { margin: 0 0 10px; font-size: 26px; color: #d70015; }
+.err-icon .glyphicon { top: 0; }
+.err-text { margin: 0; font-size: 16px; font-weight: 600; line-height: 1.4; }
+.err-text + .sheet-note { text-align: left; margin-top: 8px; }
+.err-detail { margin: 10px 0 0; font-size: 12px; line-height: 1.35; color: var(--mute); word-break: break-word; }
+#sheet-error .install.wide { margin-top: 18px; }
+
+/* NumWorks' progress bar (bootstrap's, as on its extra apps page) */
+.progress {
+  height: 24px;
+  margin-bottom: 24px;
+  overflow: hidden;
+  background-color: #f5f5f5;
+  border-radius: 0;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+.progress-bar {
+  float: left;
+  width: 0;
+  height: 100%;
+  font-size: 15px;
+  line-height: 24px;
+  color: #fff;
+  text-align: center;
+  background-color: #ffb734;
+  box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.15);
+  transition: width 0.6s ease;
+}

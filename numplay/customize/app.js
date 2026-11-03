@@ -53,6 +53,16 @@
   let custom = null;       // an icon of your own: { url, obj }
   let romKey = 0;
 
+  // NumWorks' own uploader (37791e1e.js, the one behind my.numworks.com/apps) sits hidden in #uploader-app and does
+  // the USB part. The installs below hand it the NumPlay.nwa that was just built, so nobody drags a file anywhere.
+  function getUploader() {
+    const root = document.querySelector('#uploader-app');
+    const vm = root && root.__vue__;
+    if (!vm) return null;
+    const u = vm.$children.find((c) => c.$options && c.$options.name === 'Uploader') || vm.$children[0];
+    return u && typeof u.addNWA === 'function' && u.app_group ? u : null;
+  }
+
   // ------------------------------------------------------------------ sizes
   const spaces = () => kit.spaces && kit.spaces.length ? kit.spaces :
     [{ id: 'std', size: kit.appSpace }, { id: 'xl', size: kit.xlAppSpace || XL_SPACE }];
@@ -713,15 +723,14 @@
     a.click();
     setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 2000);
   }
-  async function go(btn, sheet) {
+  async function go(btn) {
     if (btn.classList.contains('busy')) return;
     btn.classList.add('busy');
     const key = btn.closest('.key3d, .fkey');
     if (key) key.classList.add('down');
     try {
       const out = await build();
-      download(out.bytes, out.file);
-      if (sheet) openSheet(out.file);
+      openSheet(out.file, out.bytes);
     } catch (e) {
       console.error(e);
       toast(/more than/.test(e.message) ? e.message : solo() ? "Couldn't get " + game(solo()).alone.file + ', try again' : "Couldn't make NumPlay.nwa, try again");
@@ -1086,14 +1095,238 @@
   }
 
   // ------------------------------------------------------------------ the sheet, tips and toasts
-  function openSheet(file) {
-    const s = $('#sheet');
-    for (const f of s.querySelectorAll('.sheet-file')) f.textContent = file;
-    for (const li of s.querySelectorAll('.xl-only')) li.hidden = !nwagra();
-    s.hidden = false;
-    s.querySelector('.sheet-card a.install').focus();
+  // Install: straight onto the calculator over WebUSB (Chrome, Edge and other Chromium browsers)
+  const USB_FILTERS = [{ vendorId: 0x0483, productId: 0xA291 }, { vendorId: 0x0483, productId: 0xA51A }];  // NumWorks
+  const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+  const hasCalc = (u) => !!(u.calculator && u.calculator.infos);
+  const PANES = ['connect', 'upload', 'done', 'error'];
+  let inst = null;  // what the sheet is installing: { file, bytes, name, loading, flashing }
+
+  function pane(name) {
+    for (const p of PANES) $('#sheet-' + p).hidden = p !== name;
+    $('.sheet-close').hidden = !!(inst && inst.flashing);  // (no walking away mid-install)
   }
-  function closeSheet() { $('#sheet').hidden = true; }
+  const heading = (t) => { $('#sheet-title').textContent = t; };
+  function setProgress(pct) {
+    const p = Math.max(0, Math.min(100, pct)), bar = $('#install-progress');
+    bar.style.width = p + '%';
+    bar.textContent = Math.round(p) + '%';
+    bar.setAttribute('aria-valuenow', Math.round(p));
+  }
+  function status(sess, label, title) {
+    heading(title || 'Installing ' + sess.name);
+    $('#install-label').textContent = label;
+    pane('upload');
+  }
+  // an error, with what to try; opts.primary / opts.secondary are { label, run }
+  function fail(sess, o) {
+    if (sess !== inst) return;
+    sess.flashing = false;
+    heading(o.title);
+    $('#install-error-text').textContent = o.text || '';
+    $('#install-error-hint').textContent = o.hint || '';
+    $('#install-error-hint').hidden = !o.hint;
+    $('#install-error-detail').textContent = o.detail || '';
+    $('#install-error-detail').hidden = !o.detail;
+    const p = o.primary || { label: 'Try again', run: () => begin(sess) }, a = o.secondary;
+    const bp = $('#btn-retry'), bs = $('#btn-alt');
+    bp.textContent = p.label; bp.onclick = p.run;
+    bs.hidden = !a;
+    if (a) { bs.textContent = a.label; bs.onclick = a.run; }
+    pane('error');
+    bp.focus();
+  }
+  function explain(e, name) {
+    const m = String(e && e.message ? (e.name ? e.name + ': ' : '') + e.message : e || '');
+    if (/claim|OPEN failed|Access denied|in use|busy/i.test(m)) {
+      return { title: "Couldn't reach your calculator", text: 'Another tab or program is already using it.',
+        hint: 'Close other tabs or apps that use it (like my.numworks.com), unplug it and plug it back in, then try again.', detail: m };
+    }
+    if (/disconnect|no device|NetworkError|transfer error|LEAVE|device was|No such device/i.test(m)) {
+      return { title: "Couldn't install " + name, text: 'Your calculator was unplugged or stopped answering.',
+        hint: 'Plug it back in and try again. ' + name + ' is not installed yet.', detail: m };
+    }
+    if (/SecurityError|NotAllowed|blocked|permission/i.test(m)) {
+      return { title: "Couldn't reach your calculator", text: 'Your browser blocked access to USB devices.',
+        hint: "Allow USB for this page in your browser's site settings, then try again.", detail: m };
+    }
+    return { title: "Couldn't install " + name, text: 'Something went wrong while talking to your calculator.',
+      hint: 'Unplug it, plug it back in, and try again.', detail: m };
+  }
+
+  // NumPlay.nwa goes into the uploader, which links it (async: its size is only known when that is done)
+  async function loadApp(u, sess) {
+    const g = u.app_group;
+    g.apps.splice(0);
+    let bad = 0;
+    const onBad = (e) => { if (typeof e.reason === 'string' && !bad) bad = Date.now(); };  // (the linker's own errors)
+    addEventListener('unhandledrejection', onBad);
+    try {
+      await u.addNWA([new File([sess.bytes], sess.file, { type: 'application/octet-stream' })]);
+      const app = g.apps[g.apps.length - 1], t0 = Date.now();
+      for (;;) {
+        if (app.needsExternalData) throw new Error(sess.file + ' needs extra data');
+        if (typeof app.size === 'number') return app;
+        if ((bad && Date.now() - bad > 2000) || Date.now() - t0 > 180000) throw new Error("Couldn't read " + sess.file);
+        await sleep(80);
+      }
+    } finally {
+      removeEventListener('unhandledrejection', onBad);
+    }
+  }
+
+  // a calculator that is plugged in and already allowed on this page: 'ready'; nothing plugged in: 'none'
+  async function findCalculator(u) {
+    for (let i = 0; i < 4; i++) {
+      u.calculator = false;
+      await u.autoconnect();
+      if (hasCalc(u)) return 'ready';
+      let seen = [];
+      try {
+        seen = (await navigator.usb.getDevices()).filter((d) => USB_FILTERS.some((f) => f.vendorId === d.vendorId && f.productId === d.productId));
+      } catch (e) {}
+      if (!seen.length) return 'none';
+      await sleep(1200);  // (it may just be restarting after the last install)
+    }
+    return 'stuck';
+  }
+
+  function openSheet(file, bytes) {
+    const sess = inst = { file, bytes, name: file.replace(/\.nwa$/i, ''), loading: null, flashing: false };
+    $('#sheet').hidden = false;
+    begin(sess);
+  }
+
+  async function begin(sess) {
+    if (sess !== inst) return;
+    sess.flashing = false;
+    const u = getUploader();
+    if (!u) {
+      return fail(sess, { title: "Couldn't install " + sess.name, text: "The installer didn't load.", hint: 'Refresh the page and try again.' });
+    }
+    if (!navigator.usb) {
+      return fail(sess, {
+        title: "This browser can't install it",
+        text: 'Installing straight onto your calculator needs Chrome, Edge or another Chromium browser on a computer.',
+        hint: "Firefox and Safari can't talk to a calculator over USB.",
+        primary: { label: 'Download ' + sess.file, run: () => download(sess.bytes, sess.file) },
+        secondary: { label: 'Close', run: closeSheet },
+      });
+    }
+    status(sess, 'Looking for your calculator');
+    setProgress(0);
+    if (!sess.loading) sess.loading = loadApp(u, sess);  // (links while the calculator is looked for)
+    sess.loading.catch(() => {});
+    const found = await findCalculator(u);
+    if (sess !== inst) return;
+    if (found === 'ready') return install(sess, u);
+    if (found === 'stuck') {
+      return fail(sess, explain('claim', sess.name));
+    }
+    askConnect(sess, u);
+  }
+
+  function askConnect(sess, u) {
+    heading('Connect your calculator');
+    pane('connect');
+    const b = $('#btn-connect');
+    b.disabled = false;
+    b.textContent = 'Connect';
+    b.focus();
+    b.onclick = async () => {
+      b.disabled = true;
+      try {
+        await navigator.usb.requestDevice({ filters: USB_FILTERS });  // (right in the click, as browsers require)
+      } catch (e) {
+        b.disabled = false;
+        if (e && e.name === 'NotFoundError') return;  // closed the list without choosing
+        return fail(sess, explain(e, sess.name));
+      }
+      if (sess !== inst) return;
+      status(sess, 'Looking for your calculator');
+      setProgress(0);
+      const found = await findCalculator(u);
+      if (sess !== inst) return;
+      if (found === 'ready') return install(sess, u);
+      fail(sess, explain(found === 'stuck' ? 'claim' : 'disconnected', sess.name));
+    };
+  }
+
+  async function install(sess, u) {
+    const name = sess.name;
+    status(sess, 'Getting ' + name + ' ready');
+    setProgress(0);
+    let app;
+    try {
+      app = await sess.loading;
+    } catch (e) {
+      sess.loading = null;
+      console.error(e);
+      return fail(sess, { title: "Couldn't prepare " + name, text: "The installer couldn't read " + sess.file + '.',
+        hint: 'Try again. If it keeps happening, refresh the page.', detail: String((e && e.message) || e).slice(0, 160) });
+    }
+    if (sess !== inst) return;
+
+    const fw = u.calculator.infos.firmware;
+    const have = fw.externalAppsFlashEnd - fw.externalAppsFlashStart;
+    if (![fw.externalAppsFlashStart, fw.externalAppsFlashEnd, fw.externalAppsRamStart, fw.externalAppsRamEnd, fw.trampolineAddress].every(Number.isFinite) || have <= 0) {
+      return fail(sess, { title: "Can't install on this calculator", text: "Its software doesn't support extra apps like " + name + '.',
+        hint: 'Update it at my.numworks.com, then try again.' });
+    }
+    const need = u.app_group.totalSize();
+    if (need > have) {
+      return fail(sess, { title: 'Not enough space',
+        text: name + ' needs ' + size(need) + ', and your calculator has ' + size(have) + ' for apps.',
+        hint: 'Remove about ' + size(need - have) + ' of games, or set the space (the button above Big games) to match your calculator.',
+        primary: { label: 'Choose games', run: closeSheet } });
+    }
+
+    u.app_group.apps.splice(0, u.app_group.apps.length, app);
+    sess.flashing = true;
+    status(sess, 'Installing');
+    setProgress(0);
+    const o = { flashStart: fw.externalAppsFlashStart, flashLength: have, ramStart: fw.externalAppsRamStart,
+      ramLength: fw.externalAppsRamEnd - fw.externalAppsRamStart, trampolineStart: fw.trampolineAddress };
+    const tick = (p) => { if (sess === inst) setProgress(p * 100); };
+    let flashed = false;
+    try {
+      const bin = await u.app_group.flatBin(o);
+      await u.calculator.process((c) => c.downloadFlash(o.flashStart, bin, (p) => tick(0.2 * p), (p) => tick(0.2 + 0.8 * p))
+        .then(() => { flashed = true; return c.dfu.leave(o.flashStart); }));
+    } catch (e) {
+      // (once everything is written, the calculator restarts, and that can look like an error from here)
+      if (!flashed) {
+        console.error(e);
+        u.calculator = false;
+        const m = String((e && e.message) || e || '');
+        if (/overflow/i.test(m)) {
+          return fail(sess, { title: 'Not enough space', text: name + " doesn't fit on your calculator.",
+            hint: 'Remove a few games and try again.', primary: { label: 'Choose games', run: closeSheet } });
+        }
+        return fail(sess, explain(e, name));
+      }
+    }
+    if (sess !== inst) return;
+    tick(1);
+    await sleep(700);  // (lets the bar finish)
+    u.calculator = false;  // (it restarts: the next install finds it again)
+    u.app_group.apps.splice(0);
+    sess.flashing = false;
+    if (sess !== inst) return;
+    heading(name + ' is installed');
+    pane('done');
+    $('#btn-done').focus();
+  }
+
+  function closeSheet() {
+    if (inst && inst.flashing) return;
+    $('#sheet').hidden = true;
+    inst = null;
+  }
+  function wireSheet() {
+    $('#btn-done').onclick = closeSheet;
+    addEventListener('beforeunload', (e) => { if (inst && inst.flashing) { e.preventDefault(); e.returnValue = ''; } });
+  }
   let toastTimer = 0;
   function toast(msg) {
     const t = $('#toast');
@@ -1251,6 +1484,7 @@
 
   // ------------------------------------------------------------------ start
   async function start() {
+    wireSheet();
     try {
       kit = await fetch(KIT + 'kit.json').then((r) => { if (!r.ok) throw new Error(r.status); return r.json(); });
     } catch (e) {
@@ -1334,8 +1568,8 @@
     });
 
     $('#space-chip').addEventListener('click', (e) => { renderSpaces(); openPop($('#space-pop'), e.currentTarget, true); });
-    $('#install').addEventListener('click', (e) => go(e.currentTarget, true));
-    $('#dock-install').addEventListener('click', (e) => go(e.currentTarget, true));
+    $('#install').addEventListener('click', (e) => go(e.currentTarget));
+    $('#dock-install').addEventListener('click', (e) => go(e.currentTarget));
     dock();
     for (const b of [$('#install'), $('#dock-install'), $('#app-chip'), $('#lang-chip')]) {
       b.addEventListener('pointerenter', prefetch, { once: true });

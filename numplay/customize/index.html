@@ -64,17 +64,26 @@
   </div>
 
   <div class="games">
-    <div class="row-head"><h2>Games in NumPlay</h2></div>
+    <div class="row-head">
+      <h2>Games in NumPlay</h2>
+      <div class="row-actions">
+        <button id="small-all" type="button" class="space-chip pick-all" data-tip="Every game that fits">Select all</button>
+        <button id="small-none" type="button" class="space-chip pick-all" data-tip="Take all of them out">Deselect all</button>
+      </div>
+    </div>
     <section id="small" class="grid small" aria-label="Games in NumPlay, best first"></section>
   </div>
 
   <aside class="side" aria-label="Big games, and your own Game Boy, NES and Sega games">
     <div class="row-head">
       <h2>Big games</h2>
-      <button id="space-chip" type="button" class="space-chip" aria-haspopup="dialog" aria-expanded="false" aria-label="Your calculator's space for apps">
+      <div class="row-actions">
+        <button id="big-none" type="button" class="space-chip pick-all" data-tip="Take all the big games out">Deselect all</button>
+        <button id="space-chip" type="button" class="space-chip" aria-haspopup="dialog" aria-expanded="false" aria-label="Your calculator's space for apps">
         <span id="space-chip-label">1.94 MB</span>
         <svg class="caret" viewBox="0 0 12 12" width="10" height="10" aria-hidden="true"><path d="M3 4.5l3 3 3-3" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
       </button>
+      </div>
     </div>
     <section id="big" class="grid big" aria-label="Big games, best first"></section>
     <section id="retro" class="retro" aria-label="Your own Game Boy, NES and Sega games" hidden>

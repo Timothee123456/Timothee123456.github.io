@@ -238,6 +238,10 @@
       b.dataset.tip = g.title + '|' + (alone(id) ? size(game(id).alone.size) + ', on its own' : size(flash(id)) +
         (g.xl && st.lang !== 'en' ? ' · in English' : '') + ' · drag to move');
     }
+    const smalls = smallIds();
+    $('#small-all').disabled = !!s0 || !smalls.some((id) => !st.picked.has(id) && total(picks.concat([id])) <= cap);
+    $('#small-none').disabled = !smalls.some((id) => st.picked.has(id));
+    $('#big-none').disabled = !st.order.some((id) => buttons.has(id) && byId[id].xl && st.picked.has(id));
     for (const box of [$('#small'), $('#big')]) {
       const want2 = st.order.map((id) => buttons.get(id)).filter((b) => b && b.parentNode === box);
       if ([...box.children].some((c, i) => c !== want2[i])) for (const b of want2) box.appendChild(b);
@@ -328,7 +332,7 @@
       bump(b, 'pop-on');
       if (!quiet) {
         toast(byId[id].title + ' fills the whole calculator, so it goes on its own. Pick it again to get your games back');
-        fetchBytes(KIT + 'apps/' + id + '.nwa.gz').catch(() => {});
+        fetchObj(objPath(id)).catch(() => {});
       }
     } else {
       if (s) { if (!quiet) { bump(b, 'shake'); toast(byId[s].title + ' takes the whole calculator. Pick it again to take it out'); } return; }
@@ -337,6 +341,31 @@
       st.picked.add(id);
       bump(b, 'pop-on');
       if (!quiet) fetchObj(objPath(id)).catch(() => {});  // (ready by the time you install)
+    }
+    render();
+  }
+
+  // all at once: every small game that fits, or none of them / none of the big ones
+  const smallIds = () => st.order.filter((id) => buttons.has(id) && !byId[id].xl);
+  function selectAll() {
+    const s = solo();
+    if (s) { toast(byId[s].title + ' takes the whole calculator. Pick it again to take it out'); return; }
+    let skipped = 0;
+    for (const id of smallIds()) {
+      if (st.picked.has(id)) continue;
+      if (total(ordered().concat([id])) > capacity()) { skipped++; continue; }
+      st.picked.add(id);
+      bump(buttons.get(id), 'pop-on');
+    }
+    if (skipped) toast(skipped + (skipped === 1 ? " game didn't" : " games didn't") + ' fit' + (st.cap === 'std' ? '. Epsilon 26 and Nwagra give more space' : ''));
+    render();
+  }
+  function deselectAll(big) {
+    if (big && solo() && before) { st.picked = new Set(before); before = null; }  // (your games, back from the one on its own)
+    for (const id of [...st.picked]) {
+      if (!buttons.has(id) || !!byId[id].xl !== big) continue;
+      st.picked.delete(id);
+      bump(buttons.get(id), 'pop-off');
     }
     render();
   }
@@ -612,8 +641,8 @@
     return d;
   }
   const romObject = (table) => elfObject([{ name: '.rodata.np_roms', sym: 'np_roms', data: table, align: 4 }]);
-  function appObject() {
-    const a = st.app, name = new TextEncoder().encode((a.name || ' ').slice(0, 20));
+  function appObject(a = st.app) {
+    const name = new TextEncoder().encode((a.name || ' ').slice(0, 20));
     const nz = new Uint8Array(name.length + 1); nz.set(name);
     const flags = (a.open === 'matrices' ? 1 : 0) | (a.hint ? 0 : 2);
     return elfObject([{ name: '.rodata.eadk_app_name', sym: 'eadk_app_name', data: nz },
@@ -683,19 +712,29 @@
     return at;
   }
 
+  // a game on its own has its own icon on the calculator
+  async function gameIcon(id) {
+    if (byId[id].icon) {
+      try {
+        const r = await fetch(KIT + 'icons/' + id + '.png');
+        if (r.ok) return (await iconFrom(await r.blob())).obj;
+      } catch (e) {}
+    }
+    return st.app.icon === 'custom' && custom ? custom.obj : fetchObj('variants/' + st.app.icon + '-icon.o');
+  }
+
   async function build() {
-    const one = solo();
-    if (one) return { bytes: await fetchBytes(KIT + 'apps/' + one + '.nwa.gz'), file: game(one).alone.file };
+    const one = solo();  // (a game on its own is linked from its objects like any other)
     await loadKit(st.lang);
     const k = langKit();
     const sel = ordered();
-    const roms = rg && st.roms.length;
+    const roms = !one && rg && st.roms.length;
     if (roms) sel.push(rg.id);
     const lang = st.lang === 'en' ? '' : st.lang + '/';
-    const iconObj = st.app.icon === 'custom' && custom ? Promise.resolve(custom.obj) : fetchObj('variants/' + st.app.icon + '-icon.o');
+    const iconObj = one ? gameIcon(one) : st.app.icon === 'custom' && custom ? Promise.resolve(custom.obj) : fetchObj('variants/' + st.app.icon + '-icon.o');
     const [t, base, arena, icon, ...objs] = await Promise.all([loadTools(), fetchObj(lang + 'base.o'), fetchObj(lang + 'arena.o'), iconObj]
       .concat(sel.map((id) => fetchObj(objPath(id)))));
-    const files = { 'base.o': base, 'arena.o': arena, 'app.o': appObject(), 'icon.o': icon };
+    const files = { 'base.o': base, 'arena.o': arena, 'app.o': one ? appObject({ name: byId[one].title, open: 'numplay', hint: true, secret: 0 }) : appObject(), 'icon.o': icon };
     sel.forEach((id, i) => { files[id + '.o'] = objs[i]; });
     const args = k.link.concat(['-T', 'numplay.ld', 'base.o', 'arena.o', 'app.o', 'icon.o'], sel.map((id) => id + '.o'));
     if (roms) {
@@ -713,8 +752,8 @@
     if (s.code) throw new Error(s.log || 'objcopy ' + s.code);
     const nwa = s.m.FS.readFile('out.nwa');
     const n = installedSize(nwa) + k.runtime;
-    if (n > capacity()) throw new Error("That's " + size(n - capacity()) + ' more than the calculator holds');
-    return { bytes: nwa, file: 'NumPlay.nwa' };
+    if (!one && n > capacity()) throw new Error("That's " + size(n - capacity()) + ' more than the calculator holds');
+    return { bytes: nwa, file: one ? game(one).alone.file : 'NumPlay.nwa' };
   }
 
   function download(bytes, file) {
@@ -733,14 +772,13 @@
       openSheet(out.file, out.bytes);
     } catch (e) {
       console.error(e);
-      toast(/more than/.test(e.message) ? e.message : solo() ? "Couldn't get " + game(solo()).alone.file + ', try again' : "Couldn't make NumPlay.nwa, try again");
+      toast(/more than/.test(e.message) ? e.message : "Couldn't make " + (solo() ? game(solo()).alone.file : 'NumPlay.nwa') + ', try again');
     } finally {
       btn.classList.remove('busy');
       if (key) key.classList.remove('down');
     }
   }
   function prefetch() {
-    if (solo()) { fetchBytes(KIT + 'apps/' + solo() + '.nwa.gz').catch(() => {}); return; }
     loadTools().catch(() => {});
     loadKit(st.lang).then(() => {
       const lang = st.lang === 'en' ? '' : st.lang + '/';
@@ -1567,6 +1605,9 @@
       if (popOpen && !e.target.closest('.pop, .chip, .space-chip')) closePops();
     });
 
+    $('#small-all').addEventListener('click', selectAll);
+    $('#small-none').addEventListener('click', () => deselectAll(false));
+    $('#big-none').addEventListener('click', () => deselectAll(true));
     $('#space-chip').addEventListener('click', (e) => { renderSpaces(); openPop($('#space-pop'), e.currentTarget, true); });
     $('#install').addEventListener('click', (e) => go(e.currentTarget));
     $('#dock-install').addEventListener('click', (e) => go(e.currentTarget));

@@ -229,6 +229,9 @@ body.dragging .drop-hint { display: flex; }
 }
 .space-chip .caret { color: var(--mute); }
 .space-chip:hover { background: #fafafa; }
+.space-chip:disabled { opacity: 0.35; cursor: default; box-shadow: none; background: var(--card); }
+.row-head { flex-wrap: wrap; }
+.row-actions { display: flex; align-items: center; justify-content: flex-end; flex-wrap: wrap; gap: 6px; margin-left: auto; }
 .space-pop { width: 310px; gap: 8px; padding: 12px 8px 8px; }
 .pop-title { font-size: 13px; font-weight: 650; color: var(--mute); padding: 0 12px; }
 .spaces button { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }

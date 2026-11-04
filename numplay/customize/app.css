@@ -379,8 +379,6 @@ html.intro-wait main { opacity: 0; }
   .grid { grid-template-columns: repeat(5, minmax(0, 1fr)); }
   .pop { width: calc(100vw - 32px); }
 }
-/* Hide language choice as requested */
-#lang-chip { display: none !important; }
 
 /* Installing onto the calculator: NumWorks' own progress bar, icons and wording, inside NumPlay's sheet */
 .glyphicon { position: relative; top: 1px; display: inline-block; font-family: "Glyphicons Halflings"; font-style: normal; font-weight: 400; line-height: 1; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }

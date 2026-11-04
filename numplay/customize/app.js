@@ -4,8 +4,9 @@
  * here the same way. */
 'use strict';
 (() => {
-  const KIT = 'kit/';
-  const MEDIA = '../docs/media/';  // the games' clips (kit.json: previews/ or gallery/)
+  const SITE = 'https://mason363.github.io/NumPlay/';
+  const KIT = SITE + 'customize/kit/';
+  const MEDIA = SITE + 'docs/media/';  // the games' clips (kit.json: previews/ or gallery/)
   const MiB = 1048576;
   // The calculator's space for apps (kit.json "spaces"): from where its software ends, 0x90200000 or, on Epsilon 26,
   // 0x90180000, to 0x903F0000; with Enlarged Extra Apps (nwagyu's Nwagra) on to the end of the flash, 0x90800000

@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Révision — Structure de l'atome</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; min-height: 100vh; padding: 24px 16px 60px;
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    background: linear-gradient(135deg, #eef2ff, #f0fdfa);
+    color: #1e293b; display: flex; justify-content: center;
+  }
+  .app { width: 100%; max-width: 720px; }
+  h1 { font-size: 1.45rem; text-align: center; margin: 0 0 20px; color: #312e81; }
+  h2 { font-size: 1rem; margin: 0 0 14px; color: #4338ca; text-transform: uppercase;
+       letter-spacing: .06em; }
+  .card {
+    background: #fff; border-radius: 20px; padding: 22px 24px;
+    box-shadow: 0 10px 30px rgba(49,46,129,.10); margin-bottom: 16px;
+  }
+
+  /* --- Atome --- */
+  .nuclide { display: flex; align-items: center; justify-content: center; gap: 4px;
+             font-family: Georgia, "Times New Roman", serif; }
+  .az { display: flex; flex-direction: column; align-items: flex-end;
+        line-height: 1; font-size: 1.15rem; font-weight: 700; color: #4f46e5; }
+  .az span:first-child { margin-bottom: 3px; }
+  .sym { font-size: 3.6rem; font-weight: 700; color: #1e293b; line-height: 1; }
+  .elname { text-align: center; margin: 10px 0 0; color: #64748b; font-size: .9rem;
+            min-height: 1.2em; font-style: italic; }
+
+  /* --- Questions --- */
+  .q-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px 18px; }
+  @media (max-width: 520px) { .q-grid { grid-template-columns: 1fr; } }
+  .q { display: flex; flex-direction: column; gap: 6px; }
+  .q label { font-size: .88rem; font-weight: 600; color: #475569; }
+  .q input {
+    padding: 10px 12px; border-radius: 10px; border: 2px solid #e2e8f0;
+    font-size: 1rem; width: 100%; outline: none; transition: .15s; background: #f8fafc;
+  }
+  .q input:focus { border-color: #6366f1; background:#fff; box-shadow: 0 0 0 3px rgba(99,102,241,.15); }
+  .q input.ok { border-color: #22c55e; background: #f0fdf4; }
+  .q input.ko { border-color: #ef4444; background: #fef2f2; }
+  .feedback { font-size: .78rem; color: #ef4444; min-height: 1em; font-weight: 600; }
+
+  /* --- Configuration électronique --- */
+  textarea {
+    width: 100%; min-height: 100px; padding: 12px 14px; border-radius: 12px;
+    border: 2px solid #e2e8f0; font-family: ui-monospace, "SF Mono", Consolas, monospace;
+    font-size: 1rem; resize: vertical; outline: none; background: #f8fafc; transition: .15s;
+  }
+  textarea:focus { border-color: #6366f1; background:#fff; box-shadow: 0 0 0 3px rgba(99,102,241,.15); }
+  .preview {
+    margin-top: 12px; padding: 14px 16px; border-radius: 12px; background: #eef2ff;
+    min-height: 54px; font-size: 1.2rem; letter-spacing: .5px; color: #312e81;
+    font-family: Georgia, serif; word-break: break-word; line-height: 1.6;
+  }
+  .preview sup { font-size: .68em; }
+  .preview .ph { color: #a5b4fc; font-style: italic; font-size: .95rem;
+                 font-family: system-ui, sans-serif; letter-spacing: 0; }
+  .cfg-feedback { margin-top: 10px; font-size: .88rem; font-weight: 600; min-height: 1.2em; }
+  .cfg-feedback.good { color: #15803d; }
+  .cfg-feedback.bad  { color: #b91c1c; }
+  .cfg-feedback sup  { font-size: .7em; }
+
+  /* --- Boutons --- */
+  .actions { display: flex; gap: 12px; justify-content: center; margin-top: 4px; }
+  .btn { border: none; border-radius: 12px; padding: 13px 26px; font-size: 1rem;
+         font-weight: 700; cursor: pointer; transition: .15s; }
+  .btn-primary { background: #4f46e5; color: #fff; box-shadow: 0 6px 16px rgba(79,70,229,.32); }
+  .btn-primary:hover { background: #4338ca; transform: translateY(-1px); }
+  .btn-ghost { background: #e2e8f0; color: #334155; }
+  .btn-ghost:hover { background: #cbd5e1; }
+
+  .result {
+    margin-top: 18px; text-align: center; font-weight: 700; font-size: 1.05rem;
+    padding: 14px; border-radius: 14px; display: none;
+  }
+  .result.show { display: block; }
+  .result.good { background: #dcfce7; color: #15803d; }
+  .result.bad  { background: #fee2e2; color: #b91c1c; }
+</style>
+</head>
+<body>
+<div class="app">
+  <h1>⚛️ Révision — Structure de l'atome</h1>
+
+  <section class="card">
+    <div class="nuclide">
+      <div class="az"><span id="dispA">—</span><span id="dispZ">—</span></div>
+      <div class="sym" id="dispSym">X</div>
+    </div>
+    <p class="elname" id="elname">&nbsp;</p>
+  </section>
+
+  <section class="card">
+    <h2>Questions</h2>
+    <div class="q-grid" id="questions"></div>
+  </section>
+
+  <section class="card">
+    <h2>Configuration électronique</h2>
+    <textarea id="cfgInput" placeholder="" spellcheck="false"
+              autocomplete="off" autocapitalize="off"></textarea>
+    <div class="preview" id="preview"><span class="ph">L'aperçu s'affichera ici…</span></div>
+    <div class="cfg-feedback" id="cfgFeedback"></div>
+  </section>
+
+  <section class="card">
+    <h2>Électrons de valence et de cœur</h2>
+    <div class="q-grid">
+      <div class="q">
+        <label for="valInput">Électrons de valence</label>
+        <input type="text" id="valInput" autocomplete="off" spellcheck="false">
+        <div class="feedback" id="valFeedback"></div>
+      </div>
+      <div class="q">
+        <label for="coreInput">Électrons de cœur</label>
+        <input type="text" id="coreInput" autocomplete="off" spellcheck="false">
+        <div class="feedback" id="coreFeedback"></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="actions">
+    <button class="btn btn-primary" id="checkBtn">Corriger</button>
+    <button class="btn btn-ghost" id="resetBtn">Recommencer</button>
+  </div>
+
+  <div class="result" id="result"></div>
+</div>
+
+<script>
+/* ------------------------------------------------------------------ */
+/*  Données : éléments Z ≤ 40 respectant la règle de Klechkowski       */
+/*  (exclusion de Z = 24 (Cr) et Z = 29 (Cu))                          */
+/* ------------------------------------------------------------------ */
+const ELEMENTS = [
+  {Z:1,  sym:'H',  name:'hydrogène',  A:1},
+  {Z:2,  sym:'He', name:'hélium',     A:4},
+  {Z:3,  sym:'Li', name:'lithium',    A:7},
+  {Z:4,  sym:'Be', name:'béryllium',  A:9},
+  {Z:5,  sym:'B',  name:'bore',       A:11},
+  {Z:6,  sym:'C',  name:'carbone',    A:12},
+  {Z:7,  sym:'N',  name:'azote',      A:14},
+  {Z:8,  sym:'O',  name:'oxygène',    A:16},
+  {Z:9,  sym:'F',  name:'fluor',      A:19},
+  {Z:10, sym:'Ne', name:'néon',       A:20},
+  {Z:11, sym:'Na', name:'sodium',     A:23},
+  {Z:12, sym:'Mg', name:'magnésium',  A:24},
+  {Z:13, sym:'Al', name:'aluminium',  A:27},
+  {Z:14, sym:'Si', name:'silicium',   A:28},
+  {Z:15, sym:'P',  name:'phosphore',  A:31},
+  {Z:16, sym:'S',  name:'soufre',     A:32},
+  {Z:17, sym:'Cl', name:'chlore',     A:35},
+  {Z:18, sym:'Ar', name:'argon',      A:40},
+  {Z:19, sym:'K',  name:'potassium',  A:39},
+  {Z:20, sym:'Ca', name:'calcium',    A:40},
+  {Z:21, sym:'Sc', name:'scandium',   A:45},
+  {Z:22, sym:'Ti', name:'titane',     A:48},
+  {Z:23, sym:'V',  name:'vanadium',   A:51},
+  /* Z=24 (Cr) exclu car ne respecte pas Klechkowski */
+  {Z:25, sym:'Mn', name:'manganèse',  A:55},
+  {Z:26, sym:'Fe', name:'fer',        A:56},
+  {Z:27, sym:'Co', name:'cobalt',     A:59},
+  {Z:28, sym:'Ni', name:'nickel',     A:58},
+  /* Z=29 (Cu) exclu car ne respecte pas Klechkowski */
+  {Z:30, sym:'Zn', name:'zinc',       A:64},
+  {Z:31, sym:'Ga', name:'gallium',    A:69},
+  {Z:32, sym:'Ge', name:'germanium',  A:74},
+  {Z:33, sym:'As', name:'arsenic',    A:75},
+  {Z:34, sym:'Se', name:'sélénium',   A:80},
+  {Z:35, sym:'Br', name:'brome',      A:79},
+  {Z:36, sym:'Kr', name:'krypton',    A:84},
+  {Z:37, sym:'Rb', name:'rubidium',   A:85},
+  {Z:38, sym:'Sr', name:'strontium',  A:88},
+  {Z:39, sym:'Y',  name:'yttrium',    A:89},
+  {Z:40, sym:'Zr', name:'zirconium',  A:90}
+];
+
+/* Ordre de remplissage (règle de Klechkowski) */
+const ORBITALS = [['1','s'],['2','s'],['2','p'],['3','s'],['3','p'],
+                  ['4','s'],['3','d'],['4','p'],['5','s'],['4','d'],['5','p']];
+const CAP = {s:2, p:6, d:10, f:14};
+
+/* ------------------------------------------------------------------ */
+/*  Éléments DOM                                                       */
+/* ------------------------------------------------------------------ */
+const dispA   = document.getElementById('dispA');
+const dispZ   = document.getElementById('dispZ');
+const dispSym = document.getElementById('dispSym');
+const elname  = document.getElementById('elname');
+const qBox    = document.getElementById('questions');
+const cfgInput= document.getElementById('cfgInput');
+const preview = document.getElementById('preview');
+const cfgFb   = document.getElementById('cfgFeedback');
+const valInput= document.getElementById('valInput');
+const valFb   = document.getElementById('valFeedback');
+const coreInput=document.getElementById('coreInput');
+const coreFb  = document.getElementById('coreFeedback');
+const resultEl= document.getElementById('result');
+
+let current = null;
+let lastZ   = null;
+
+/* ------------------------------------------------------------------ */
+/*  Utilitaires                                                        */
+/* ------------------------------------------------------------------ */
+function shuffle(a){
+  for (let i = a.length - 1; i > 0; i--){
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function buildConfig(Z){
+  let reste = Z;
+  const parts = [];
+  for (const [n, l] of ORBITALS){
+    if (reste <= 0) break;
+    const e = Math.min(reste, CAP[l]);
+    parts.push({n, l, e});
+    reste -= e;
+  }
+  return parts;
+}
+
+function configToString(parts){
+  return parts.map(p => p.n + p.l + p.e).join(' ');
+}
+
+/* Aperçu : met en exposant n'importe quelle lettre saisie */
+function formatConfig(str){
+  const esc = str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  return esc.replace(/([1-7])\s*([a-zA-Z])\s*(\d+)/g,
+    (m, n, l, e) => n + l.toLowerCase() + '<sup>' + e + '</sup>');
+}
+
+/* Correction : seules les lettres s, p, d, f sont valides */
+function parseConfig(str){
+  const re = /([1-7])\s*([spdfSPDF])\s*(\d+)/g;
+  const map = {};
+  let m;
+  while ((m = re.exec(str)) !== null){
+    const e = parseInt(m[3], 10);
+    if (e > 0){
+      const key = m[1] + m[2].toLowerCase();
+      map[key] = (map[key] || 0) + e;
+    }
+  }
+  return map;
+}
+
+function mapsEqual(a, b){
+  const ka = Object.keys(a);
+  const kb = Object.keys(b);
+  return ka.length === kb.length && ka.every(k => a[k] === b[k]);
+}
+
+/* Calcule valence et cœur :
+   - valence = électrons de la couche de n le plus élevé
+               + électrons des sous-couches inférieures incomplètes
+   - cœur = le reste */
+function computeValenceCore(config){
+  const nmax = Math.max(...config.map(p => Number(p.n)));
+  const valParts = config.filter(p =>
+    Number(p.n) === nmax || (Number(p.n) < nmax && p.e < CAP[p.l])
+  );
+  const coreParts = config.filter(p => !valParts.includes(p));
+  return {
+    valParts,
+    coreParts,
+    valCount: valParts.reduce((s, p) => s + p.e, 0),
+    coreCount: coreParts.reduce((s, p) => s + p.e, 0)
+  };
+}
+
+/* ------------------------------------------------------------------ */
+/*  Nouvel exercice                                                    */
+/* ------------------------------------------------------------------ */
+function newExercise(){
+  let el;
+  do { el = ELEMENTS[Math.floor(Math.random() * ELEMENTS.length)]; }
+  while (ELEMENTS.length > 1 && el.Z === lastZ);
+  lastZ = el.Z;
+
+  current = {
+    A: el.A,
+    Z: el.Z,
+    sym: el.sym,
+    name: el.name,
+    config: buildConfig(el.Z)
+  };
+  current.configStr = configToString(current.config);
+  current.valCore = computeValenceCore(current.config);
+
+  dispA.textContent   = current.A;
+  dispZ.textContent   = current.Z;
+  dispSym.textContent = current.sym;
+  elname.innerHTML    = '&nbsp;';
+
+  const liste = shuffle([
+    {id:'A',   label:'A = ?',                    ans: current.A},
+    {id:'Z',   label:'Z = ?',                    ans: current.Z},
+    {id:'nuc', label:'Nombre de nucléons = ?',   ans: current.A},
+    {id:'pro', label:'Nombre de protons = ?',    ans: current.Z},
+    {id:'ele', label:"Nombre d'électrons = ?",   ans: current.Z},
+    {id:'neu', label:'Nombre de neutrons = ?',   ans: current.A - current.Z}
+  ]);
+
+  qBox.innerHTML = liste.map(q => `
+    <div class="q" data-ans="${q.ans}">
+      <label for="in-${q.id}">${q.label}</label>
+      <input type="number" id="in-${q.id}" inputmode="numeric" autocomplete="off">
+      <div class="feedback"></div>
+    </div>`).join('');
+
+  cfgInput.value = '';
+  preview.innerHTML = '<span class="ph">L\'aperçu s\'affichera ici…</span>';
+  cfgFb.textContent = '';
+  cfgFb.className = 'cfg-feedback';
+
+  valInput.value = '';
+  coreInput.value = '';
+  valInput.classList.remove('ok','ko');
+  coreInput.classList.remove('ok','ko');
+  valFb.textContent = '';
+  coreFb.textContent = '';
+
+  resultEl.className = 'result';
+  resultEl.textContent = '';
+
+  window.scrollTo({top: 0, behavior: 'smooth'});
+}
+
+/* ------------------------------------------------------------------ */
+/*  Aperçu en direct de la configuration                               */
+/* ------------------------------------------------------------------ */
+cfgInput.addEventListener('input', () => {
+  const v = cfgInput.value.trim();
+  preview.innerHTML = v
+    ? formatConfig(cfgInput.value)
+    : '<span class="ph">L\'aperçu s\'affichera ici…</span>';
+});
+
+/* ------------------------------------------------------------------ */
+/*  Vérification d'un champ valence / cœur                             */
+/* ------------------------------------------------------------------ */
+function checkElectronField(input, fb, expectedParts, expectedCount){
+  input.classList.remove('ok','ko');
+  fb.innerHTML = '';
+
+  const raw = input.value.trim();
+  let ok = false;
+
+  if (/^\d+$/.test(raw)){
+    ok = Number(raw) === expectedCount;
+  } else if (raw !== ''){
+    const map = parseConfig(raw);
+    const expectedMap = {};
+    expectedParts.forEach(p => expectedMap[p.n + p.l] = p.e);
+    ok = mapsEqual(map, expectedMap);
+  }
+
+  if (ok){
+    input.classList.add('ok');
+    return true;
+  } else {
+    input.classList.add('ko');
+    let expectedTxt;
+    if (expectedParts.length === 0){
+      expectedTxt = '0';
+    } else {
+      expectedTxt = formatConfig(configToString(expectedParts))
+                    + ' ou ' + expectedCount;
+    }
+    fb.innerHTML = 'Réponse attendue : <strong>' + expectedTxt + '</strong>';
+    return false;
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/*  Correction                                                         */
+/* ------------------------------------------------------------------ */
+function correct(){
+  let score = 0;
+  const TOTAL = 9;
+
+  /* Questions numériques */
+  document.querySelectorAll('.q[data-ans]').forEach(q => {
+    const input = q.querySelector('input');
+    const fb    = q.querySelector('.feedback');
+    const ans   = Number(q.dataset.ans);
+    const val   = input.value.trim();
+
+    input.classList.remove('ok', 'ko');
+    fb.textContent = '';
+
+    if (val !== '' && Number(val) === ans){
+      input.classList.add('ok');
+      score++;
+    } else {
+      input.classList.add('ko');
+      fb.textContent = 'Réponse : ' + ans;
+    }
+  });
+
+  /* Configuration électronique complète */
+  const userMap = parseConfig(cfgInput.value);
+  const keys = Object.keys(userMap);
+  const expectedMap = {};
+  current.config.forEach(p => expectedMap[p.n + p.l] = p.e);
+
+  cfgFb.className = 'cfg-feedback';
+
+  if (keys.length === 0){
+    cfgFb.classList.add('bad');
+    cfgFb.innerHTML = "✗ Aucune configuration saisie. Réponse attendue : <strong>"
+                      + formatConfig(current.configStr) + "</strong>";
+  } else if (mapsEqual(userMap, expectedMap)){
+    cfgFb.classList.add('good');
+    cfgFb.textContent = '✓ Configuration électronique correcte.';
+    score++;
+  } else {
+    const totalE = keys.reduce((s, k) => s + userMap[k], 0);
+    cfgFb.classList.add('bad');
+    cfgFb.innerHTML = '✗ Configuration incorrecte'
+      + (totalE !== current.Z
+          ? ` (tu as ${totalE} électron${totalE > 1 ? 's' : ''}, il en faut ${current.Z})`
+          : '')
+      + '. Réponse attendue : <strong>' + formatConfig(current.configStr) + '</strong>';
+  }
+
+  /* Valence et cœur */
+  if (checkElectronField(valInput, valFb,
+      current.valCore.valParts, current.valCore.valCount)) score++;
+
+  if (checkElectronField(coreInput, coreFb,
+      current.valCore.coreParts, current.valCore.coreCount)) score++;
+
+  elname.textContent = current.name.charAt(0).toUpperCase() + current.name.slice(1)
+                       + ' — ' + current.sym;
+
+  resultEl.className = 'result show ' + (score === TOTAL ? 'good' : 'bad');
+  resultEl.textContent = `Score : ${score} / ${TOTAL}`
+    + (score === TOTAL ? ' — Parfait ! 🎉'
+       : (score >= 7 ? ' — Presque ! 💪' : ' — Continue à réviser 📚'));
+}
+
+/* ------------------------------------------------------------------ */
+/*  Boutons                                                            */
+/* ------------------------------------------------------------------ */
+document.getElementById('checkBtn').addEventListener('click', correct);
+document.getElementById('resetBtn').addEventListener('click', newExercise);
+
+qBox.addEventListener('keydown', e => {
+  if (e.key === 'Enter'){ e.preventDefault(); correct(); }
+});
+
+/* Démarrage */
+newExercise();
+</script>
+</body>
+</html>

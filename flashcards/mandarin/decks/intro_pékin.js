@@ -1,4 +1,4 @@
-export var title = "Introduction Pékin";
+export var title = "Dictée N1 Pékin";
 export var date = "2026-11-07";
 
 export var flashcards = [

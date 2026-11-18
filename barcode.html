@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Mobile Barcode & QR Scanner</title>
+  <!-- html5-qrcode library for reliable cross-browser mobile camera scanning -->
+  <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --surface: #1e293b;
+      --surface-light: #334155;
+      --primary: #3b82f6;
+      --primary-hover: #2563eb;
+      --success: #10b981;
+      --danger: #ef4444;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      padding: 16px;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 16px;
+    }
+
+    header h1 {
+      font-size: 1.35rem;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    header p {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .scanner-card {
+      background: var(--surface);
+      border-radius: 16px;
+      padding: 12px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+      margin-bottom: 16px;
+    }
+
+    #reader {
+      width: 100%;
+      border-radius: 12px;
+      overflow: hidden;
+      background: #000;
+    }
+
+    /* Clean up default library styling */
+    #reader video {
+      border-radius: 12px;
+      object-fit: cover;
+    }
+
+    .controls {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    button {
+      border: none;
+      border-radius: 10px;
+      padding: 12px 14px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    button:active {
+      transform: scale(0.98);
+    }
+
+    button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+    }
+
+    .btn-primary:hover:not(:disabled) {
+      background: var(--primary-hover);
+    }
+
+    .btn-success {
+      background: var(--success);
+      grid-column: span 2;
+      font-size: 1rem;
+      padding: 14px;
+    }
+
+    .btn-danger {
+      background: var(--danger);
+    }
+
+    .btn-secondary {
+      background: var(--surface-light);
+    }
+
+    .options-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 12px;
+      padding-top: 10px;
+      border-top: 1px solid var(--surface-light);
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .options-bar label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+    }
+
+    .status-toast {
+      text-align: center;
+      font-size: 0.85rem;
+      min-height: 20px;
+      margin-bottom: 10px;
+      color: var(--success);
+      font-weight: 500;
+    }
+
+    .list-card {
+      background: var(--surface);
+      border-radius: 16px;
+      padding: 14px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .list-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .list-header h2 {
+      font-size: 1rem;
+      font-weight: 600;
+    }
+
+    .badge {
+      background: var(--primary);
+      color: white;
+      padding: 2px 10px;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      font-weight: 700;
+    }
+
+    .scanned-list {
+      list-style: none;
+      max-height: 260px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .scanned-item {
+      background: var(--bg);
+      padding: 10px 12px;
+      border-radius: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 0.9rem;
+      word-break: break-all;
+      animation: fadeIn 0.2s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .delete-item {
+      background: transparent;
+      color: var(--text-muted);
+      padding: 4px 8px;
+      font-size: 1rem;
+      margin-left: 8px;
+    }
+
+    .delete-item:hover {
+      color: var(--danger);
+    }
+
+    .empty-state {
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      padding: 24px 0;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Barcode & QR Batch Scanner</h1>
+    <p>Scan continuously and export all codes to a .txt file</p>
+  </header>
+
+  <div class="status-toast" id="statusToast">Ready to scan</div>
+
+  <div class="scanner-card">
+    <div id="reader"></div>
+
+    <div class="controls">
+      <button id="startBtn" class="btn-primary">Start Camera</button>
+      <button id="stopBtn" class="btn-secondary" disabled>Stop Camera</button>
+      <button id="downloadBtn" class="btn-success" disabled>Download .TXT (0)</button>
+    </div>
+
+    <div class="options-bar">
+      <label>
+        <input type="checkbox" id="allowDuplicates" />
+        Allow duplicate scans
+      </label>
+      <button id="clearBtn" class="btn-danger" style="padding: 6px 10px; font-size: 0.8rem;" disabled>Clear All</button>
+    </div>
+  </div>
+
+  <div class="list-card">
+    <div class="list-header">
+      <h2>Scanned Codes</h2>
+      <span class="badge" id="countBadge">0</span>
+    </div>
+    <ul class="scanned-list" id="scannedList">
+      <li class="empty-state" id="emptyState">No barcodes scanned yet. Tap "Start Camera" to begin.</li>
+    </ul>
+  </div>
+
+  <script>
+    const scannedCodes = [];
+    let html5QrCode = null;
+    let isScanning = false;
+    let lastScannedText = "";
+    let lastScanTime = 0;
+
+    const startBtn = document.getElementById("startBtn");
+    const stopBtn = document.getElementById("stopBtn");
+    const downloadBtn = document.getElementById("downloadBtn");
+    const clearBtn = document.getElementById("clearBtn");
+    const allowDuplicatesCheckbox = document.getElementById("allowDuplicates");
+    const scannedList = document.getElementById("scannedList");
+    const emptyState = document.getElementById("emptyState");
+    const countBadge = document.getElementById("countBadge");
+    const statusToast = document.getElementById("statusToast");
+
+    // Simple beep feedback using Web Audio API
+    function playBeep() {
+      try {
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const oscillator = audioCtx.createOscillator();
+        const gainNode = audioCtx.createGain();
+        oscillator.type = "sine";
+        oscillator.frequency.setValueAtTime(880, audioCtx.currentTime); // A5 note
+        gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
+        oscillator.connect(gainNode);
+        gainNode.connect(audioCtx.destination);
+        oscillator.start();
+        oscillator.stop(audioCtx.currentTime + 0.1);
+      } catch (e) {
+        // Ignore audio errors if blocked
+      }
+    }
+
+    function showToast(message, isWarning = false) {
+      statusToast.textContent = message;
+      statusToast.style.color = isWarning ? "#f59e0b" : "#10b981";
+    }
+
+    function updateUI() {
+      countBadge.textContent = scannedCodes.length;
+      downloadBtn.textContent = `Download .TXT (${scannedCodes.length})`;
+      downloadBtn.disabled = scannedCodes.length === 0;
+      clearBtn.disabled = scannedCodes.length === 0;
+
+      scannedList.innerHTML = "";
+      if (scannedCodes.length === 0) {
+        scannedList.appendChild(emptyState);
+        return;
+      }
+
+      // Render newest at the top for easy verification, while preserving scan order in the array
+      [...scannedCodes].reverse().forEach((code, revIndex) => {
+        const originalIndex = scannedCodes.length - 1 - revIndex;
+        const li = document.createElement("li");
+        li.className = "scanned-item";
+
+        const span = document.createElement("span");
+        span.textContent = `${originalIndex + 1}. ${code}`;
+
+        const delBtn = document.createElement("button");
+        delBtn.className = "delete-item";
+        delBtn.innerHTML = "&times;";
+        delBtn.title = "Remove";
+        delBtn.onclick = () => {
+          scannedCodes.splice(originalIndex, 1);
+          updateUI();
+        };
+
+        li.appendChild(span);
+        li.appendChild(delBtn);
+        scannedList.appendChild(li);
+      });
+    }
+
+    function onScanSuccess(decodedText) {
+      const now = Date.now();
+      // Cooldown of 1.5 seconds for the exact same code to prevent accidental rapid-fire reads
+      if (decodedText === lastScannedText && now - lastScanTime < 1500) {
+        return;
+      }
+      lastScannedText = decodedText;
+      lastScanTime = now;
+
+      const allowDuplicates = allowDuplicatesCheckbox.checked;
+      if (!allowDuplicates && scannedCodes.includes(decodedText)) {
+        showToast(`Duplicate skipped: ${decodedText}`, true);
+        return;
+      }
+
+      scannedCodes.push(decodedText);
+      playBeep();
+      if (navigator.vibrate) navigator.vibrate(100);
+      showToast(`Scanned: ${decodedText}`);
+      updateUI();
+    }
+
+    startBtn.addEventListener("click", async () => {
+      if (isScanning) return;
+
+      try {
+        html5QrCode = new Html5Qrcode("reader");
+        const config = {
+          fps: 10,
+          qrbox: { width: 250, height: 180 },
+          aspectRatio: 1.333334
+        };
+
+        // Prefer the rear-facing camera on mobile phones
+        await html5QrCode.start(
+          { facingMode: "environment" },
+          config,
+          onScanSuccess
+        );
+
+        isScanning = true;
+        startBtn.disabled = true;
+        stopBtn.disabled = false;
+        showToast("Camera active — point at a barcode or QR code");
+      } catch (err) {
+        showToast("Camera error: Ensure HTTPS & camera permissions are enabled.", true);
+        console.error(err);
+      }
+    });
+
+    stopBtn.addEventListener("click", async () => {
+      if (!isScanning || !html5QrCode) return;
+      try {
+        await html5QrCode.stop();
+        html5QrCode.clear();
+        isScanning = false;
+        startBtn.disabled = false;
+        stopBtn.disabled = true;
+        showToast("Camera stopped");
+      } catch (err) {
+        console.error(err);
+      }
+    });
+
+    downloadBtn.addEventListener("click", () => {
+      if (scannedCodes.length === 0) return;
+
+      // Join all scanned codes one per line
+      const fileContent = scannedCodes.join("\n");
+      const blob = new Blob([fileContent], { type: "text/plain;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+
+      const a = document.createElement("a");
+      const timestamp = new Date().toISOString().slice(0, 19).replace(/[:T]/g, "-");
+      a.href = url;
+      a.download = `scanned-barcodes-${timestamp}.txt`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+
+      showToast(`Exported ${scannedCodes.length} code(s) to .txt`);
+    });
+
+    clearBtn.addEventListener("click", () => {
+      if (confirm("Clear all scanned barcodes?")) {
+        scannedCodes.length = 0;
+        lastScannedText = "";
+        updateUI();
+        showToast("List cleared");
+      }
+    });
+  </script>
+</body>
+</html>

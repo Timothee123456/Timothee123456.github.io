@@ -68,10 +68,89 @@
       background: #000;
     }
 
-    /* Clean up default library styling */
     #reader video {
       border-radius: 12px;
       object-fit: cover;
+    }
+
+    /* Camera & Zoom Controls */
+    .camera-settings {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 12px;
+      background: var(--bg);
+      padding: 10px 12px;
+      border-radius: 10px;
+    }
+
+    .setting-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      font-size: 0.85rem;
+    }
+
+    .setting-row label {
+      color: var(--text-muted);
+      white-space: nowrap;
+      font-weight: 500;
+    }
+
+    select {
+      flex: 1;
+      background: var(--surface-light);
+      color: var(--text);
+      border: 1px solid #475569;
+      border-radius: 8px;
+      padding: 8px 10px;
+      font-size: 0.85rem;
+      outline: none;
+      max-width: 100%;
+    }
+
+    .zoom-controls {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex: 1;
+    }
+
+    input[type="range"] {
+      flex: 1;
+      accent-color: var(--primary);
+      cursor: pointer;
+    }
+
+    .zoom-badge {
+      background: var(--surface-light);
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 0.8rem;
+      min-width: 46px;
+      text-align: center;
+    }
+
+    .zoom-presets {
+      display: flex;
+      gap: 6px;
+      justify-content: flex-end;
+      flex-wrap: wrap;
+    }
+
+    .preset-btn {
+      background: var(--surface-light);
+      color: var(--text);
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 0.78rem;
+      font-weight: 600;
+    }
+
+    .preset-btn.active {
+      background: var(--primary);
     }
 
     .controls {
@@ -230,6 +309,10 @@
       font-size: 0.85rem;
       padding: 24px 0;
     }
+
+    .hidden {
+      display: none !important;
+    }
   </style>
 </head>
 <body>
@@ -243,6 +326,24 @@
 
   <div class="scanner-card">
     <div id="reader"></div>
+
+    <!-- Lens Selector & Optical/Digital Zoom Controls -->
+    <div class="camera-settings hidden" id="cameraSettings">
+      <div class="setting-row" id="cameraSelectRow">
+        <label for="cameraSelect">Lens:</label>
+        <select id="cameraSelect"></select>
+      </div>
+
+      <div class="setting-row hidden" id="zoomRow">
+        <label for="zoomSlider">Zoom:</label>
+        <div class="zoom-controls">
+          <input type="range" id="zoomSlider" min="1" max="5" step="0.1" value="1" />
+          <span class="zoom-badge" id="zoomValue">1.0x</span>
+        </div>
+      </div>
+
+      <div class="zoom-presets hidden" id="zoomPresets"></div>
+    </div>
 
     <div class="controls">
       <button id="startBtn" class="btn-primary">Start Camera</button>
@@ -275,6 +376,8 @@
     let isScanning = false;
     let lastScannedText = "";
     let lastScanTime = 0;
+    let availableCameras = [];
+    let currentCameraId = null;
 
     const startBtn = document.getElementById("startBtn");
     const stopBtn = document.getElementById("stopBtn");
@@ -286,22 +389,27 @@
     const countBadge = document.getElementById("countBadge");
     const statusToast = document.getElementById("statusToast");
 
-    // Simple beep feedback using Web Audio API
+    const cameraSettings = document.getElementById("cameraSettings");
+    const cameraSelectRow = document.getElementById("cameraSelectRow");
+    const cameraSelect = document.getElementById("cameraSelect");
+    const zoomRow = document.getElementById("zoomRow");
+    const zoomSlider = document.getElementById("zoomSlider");
+    const zoomValue = document.getElementById("zoomValue");
+    const zoomPresets = document.getElementById("zoomPresets");
+
     function playBeep() {
       try {
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         const oscillator = audioCtx.createOscillator();
         const gainNode = audioCtx.createGain();
         oscillator.type = "sine";
-        oscillator.frequency.setValueAtTime(880, audioCtx.currentTime); // A5 note
+        oscillator.frequency.setValueAtTime(880, audioCtx.currentTime);
         gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
         oscillator.connect(gainNode);
         gainNode.connect(audioCtx.destination);
         oscillator.start();
         oscillator.stop(audioCtx.currentTime + 0.1);
-      } catch (e) {
-        // Ignore audio errors if blocked
-      }
+      } catch (e) {}
     }
 
     function showToast(message, isWarning = false) {
@@ -321,7 +429,6 @@
         return;
       }
 
-      // Render newest at the top for easy verification, while preserving scan order in the array
       [...scannedCodes].reverse().forEach((code, revIndex) => {
         const originalIndex = scannedCodes.length - 1 - revIndex;
         const li = document.createElement("li");
@@ -347,7 +454,6 @@
 
     function onScanSuccess(decodedText) {
       const now = Date.now();
-      // Cooldown of 1.5 seconds for the exact same code to prevent accidental rapid-fire reads
       if (decodedText === lastScannedText && now - lastScanTime < 1500) {
         return;
       }
@@ -367,30 +473,214 @@
       updateUI();
     }
 
+    // Pick the standard 1x rear camera by default (avoiding ultra-wide 0.5x or macro lenses when labeled)
+    function selectDefault1xCamera(cameras) {
+      if (!cameras || cameras.length === 0) return null;
+
+      // Filter for rear/back cameras first
+      const backCameras = cameras.filter(c =>
+        /back|rear|environment/i.test(c.label) && !/front|user|selfie/i.test(c.label)
+      );
+
+      const pool = backCameras.length > 0 ? backCameras : cameras;
+
+      // Look for an explicit main/standard 1x lens (excluding ultra-wide, wide 0.5x, telephoto, macro, depth)
+      const standardMain = pool.find(c =>
+        !/ultra|0\.5|0\.6|macro|tele|zoom|depth|tof/i.test(c.label)
+      );
+
+      if (standardMain) return standardMain.id;
+
+      // On Android Chrome, camera 0 is typically the primary 1x rear sensor
+      return pool[0].id;
+    }
+
+    async function populateCameraDropdown() {
+      try {
+        availableCameras = await Html5Qrcode.getCameras();
+        if (!availableCameras || availableCameras.length === 0) return;
+
+        cameraSelect.innerHTML = "";
+        availableCameras.forEach((cam, idx) => {
+          const opt = document.createElement("option");
+          opt.value = cam.id;
+          opt.textContent = cam.label || `Camera ${idx + 1}`;
+          cameraSelect.appendChild(opt);
+        });
+
+        cameraSettings.classList.remove("hidden");
+        // Show lens dropdown whenever multiple cameras exist
+        if (availableCameras.length > 1) {
+          cameraSelectRow.classList.remove("hidden");
+        } else {
+          cameraSelectRow.classList.add("hidden");
+        }
+      } catch (e) {
+        console.warn("Could not enumerate cameras:", e);
+      }
+    }
+
+    // Configure hardware/optical zoom if supported by the active camera track, defaulting to 1.0x
+    async function setupHardwareZoom() {
+      zoomRow.classList.add("hidden");
+      zoomPresets.classList.add("hidden");
+      zoomPresets.innerHTML = "";
+
+      try {
+        const videoElem = document.querySelector("#reader video");
+        if (!videoElem || !videoElem.srcObject) return;
+
+        const track = videoElem.srcObject.getVideoTracks()[0];
+        if (!track || typeof track.getCapabilities !== "function") return;
+
+        const capabilities = track.getCapabilities();
+        if (!capabilities.zoom) return;
+
+        const minZoom = capabilities.zoom.min || 1;
+        const maxZoom = Math.min(capabilities.zoom.max || 1, 10); // cap slider at 10x for usability
+        const step = capabilities.zoom.step || 0.1;
+
+        if (maxZoom <= minZoom) return;
+
+        // Default to 1.0x (clamped to camera's supported range)
+        const defaultZoom = Math.min(Math.max(1.0, minZoom), maxZoom);
+
+        zoomSlider.min = minZoom;
+        zoomSlider.max = maxZoom;
+        zoomSlider.step = step;
+        zoomSlider.value = defaultZoom;
+        zoomValue.textContent = `${defaultZoom.toFixed(1)}x`;
+
+        await applyZoom(defaultZoom);
+
+        zoomRow.classList.remove("hidden");
+
+        // Build quick-tap preset buttons (e.g., 0.5x, 1x, 2x, 3x) within supported bounds
+        const candidatePresets = [0.5, 1.0, 2.0, 3.0, 5.0].filter(
+          z => z >= minZoom && z <= maxZoom
+        );
+
+        if (candidatePresets.length > 1) {
+          candidatePresets.forEach(z => {
+            const btn = document.createElement("button");
+            btn.type = "button";
+            btn.className = "preset-btn" + (Math.abs(z - defaultZoom) < 0.05 ? " active" : "");
+            btn.textContent = `${z % 1 === 0 ? z.toFixed(0) : z.toFixed(1)}x`;
+            btn.onclick = () => {
+              zoomSlider.value = z;
+              applyZoom(z);
+            };
+            zoomPresets.appendChild(btn);
+          });
+          zoomPresets.classList.remove("hidden");
+        }
+      } catch (e) {
+        console.warn("Zoom capabilities unavailable:", e);
+      }
+    }
+
+    async function applyZoom(zoomLevel) {
+      const val = parseFloat(zoomLevel);
+      zoomValue.textContent = `${val.toFixed(1)}x`;
+
+      // Highlight matching preset button
+      document.querySelectorAll(".preset-btn").forEach(btn => {
+        const btnVal = parseFloat(btn.textContent);
+        btn.classList.toggle("active", Math.abs(btnVal - val) < 0.05);
+      });
+
+      try {
+        const videoElem = document.querySelector("#reader video");
+        if (!videoElem || !videoElem.srcObject) return;
+        const track = videoElem.srcObject.getVideoTracks()[0];
+        if (track && typeof track.applyConstraints === "function") {
+          await track.applyConstraints({ advanced: [{ zoom: val }] });
+        }
+      } catch (e) {
+        console.warn("Failed to apply zoom:", e);
+      }
+    }
+
+    zoomSlider.addEventListener("input", (e) => {
+      applyZoom(e.target.value);
+    });
+
+    async function startScannerWithCamera(cameraId = null) {
+      if (isScanning && html5QrCode) {
+        await html5QrCode.stop();
+        html5QrCode.clear();
+        isScanning = false;
+      }
+
+      html5QrCode = new Html5Qrcode("reader");
+      const config = {
+        fps: 10,
+        qrbox: { width: 250, height: 180 },
+        aspectRatio: 1.333334
+      };
+
+      const cameraConfig = cameraId
+        ? { deviceId: { exact: cameraId } }
+        : { facingMode: "environment" };
+
+      await html5QrCode.start(cameraConfig, config, onScanSuccess);
+      isScanning = true;
+      startBtn.disabled = true;
+      stopBtn.disabled = false;
+
+      // Sync dropdown with the active track's deviceId
+      const videoElem = document.querySelector("#reader video");
+      if (videoElem && videoElem.srcObject) {
+        const activeTrack = videoElem.srcObject.getVideoTracks()[0];
+        const activeId = activeTrack?.getSettings()?.deviceId;
+        if (activeId) {
+          currentCameraId = activeId;
+          cameraSelect.value = activeId;
+        }
+      }
+
+      // Initialize zoom at 1x
+      await setupHardwareZoom();
+      showToast("Camera active (1.0x) — point at a barcode or QR code");
+    }
+
     startBtn.addEventListener("click", async () => {
       if (isScanning) return;
 
       try {
-        html5QrCode = new Html5Qrcode("reader");
-        const config = {
-          fps: 10,
-          qrbox: { width: 250, height: 180 },
-          aspectRatio: 1.333334
-        };
+        // Populate camera list first (if permissions were already granted, labels are visible immediately)
+        await populateCameraDropdown();
 
-        // Prefer the rear-facing camera on mobile phones
-        await html5QrCode.start(
-          { facingMode: "environment" },
-          config,
-          onScanSuccess
-        );
+        let targetId = cameraSelect.value || selectDefault1xCamera(availableCameras);
+        await startScannerWithCamera(targetId);
 
-        isScanning = true;
-        startBtn.disabled = true;
-        stopBtn.disabled = false;
-        showToast("Camera active — point at a barcode or QR code");
+        // Re-populate after stream starts in case browser hid camera labels prior to permission grant
+        const hadEmptyLabels = availableCameras.some(c => !c.label);
+        if (hadEmptyLabels) {
+          await populateCameraDropdown();
+          const best1xId = selectDefault1xCamera(availableCameras);
+          if (best1xId && best1xId !== currentCameraId) {
+            await startScannerWithCamera(best1xId);
+          } else if (currentCameraId) {
+            cameraSelect.value = currentCameraId;
+          }
+        }
       } catch (err) {
         showToast("Camera error: Ensure HTTPS & camera permissions are enabled.", true);
+        console.error(err);
+      }
+    });
+
+    // Switch physical lens when user selects another camera from the dropdown
+    cameraSelect.addEventListener("change", async (e) => {
+      const selectedId = e.target.value;
+      if (!selectedId || !isScanning) return;
+
+      try {
+        showToast("Switching camera lens...");
+        await startScannerWithCamera(selectedId);
+      } catch (err) {
+        showToast("Could not switch to selected camera.", true);
         console.error(err);
       }
     });
@@ -403,6 +693,8 @@
         isScanning = false;
         startBtn.disabled = false;
         stopBtn.disabled = true;
+        zoomRow.classList.add("hidden");
+        zoomPresets.classList.add("hidden");
         showToast("Camera stopped");
       } catch (err) {
         console.error(err);
@@ -412,7 +704,6 @@
     downloadBtn.addEventListener("click", () => {
       if (scannedCodes.length === 0) return;
 
-      // Join all scanned codes one per line
       const fileContent = scannedCodes.join("\n");
       const blob = new Blob([fileContent], { type: "text/plain;charset=utf-8" });
       const url = URL.createObjectURL(blob);

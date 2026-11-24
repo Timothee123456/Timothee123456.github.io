@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>QCM G1 – Sociétés et environnements</title>
+<style>
+:root{--bg:#f6f7f4;--card:#fff;--ink:#1d2623;--mute:#5d6a66;--line:#d5dcd8;--acc:#1f5c4d;--accink:#fff;--ok:#1d7a4a;--okbg:#e4f3ea;--ko:#b3322b;--kobg:#fbe9e7;--sel:#e8f0ed;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#121816;--card:#1b2320;--ink:#e6ece9;--mute:#9aa8a3;--line:#32403b;--acc:#6fc3a9;--accink:#0e1b17;--ok:#6fd09b;--okbg:#17301f;--ko:#f08b82;--kobg:#35201e;--sel:#24332e}}
+:root[data-theme="dark"]{--bg:#121816;--card:#1b2320;--ink:#e6ece9;--mute:#9aa8a3;--line:#32403b;--acc:#6fc3a9;--accink:#0e1b17;--ok:#6fd09b;--okbg:#17301f;--ko:#f08b82;--kobg:#35201e;--sel:#24332e}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.55 Georgia,"Times New Roman",serif}
+main{max-width:760px;margin:0 auto;padding:24px 16px 64px}
+h1{font-size:1.65rem;line-height:1.25;margin:8px 0 6px}
+.sub{color:var(--mute);margin:0 0 18px;font-family:system-ui,sans-serif;font-size:.95rem}
+.hud{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;font-family:system-ui,sans-serif;font-size:.9rem;color:var(--mute);margin-bottom:8px}
+.prog-wrap{width:100%;height:8px;background:var(--line);border-radius:99px;overflow:hidden;margin-bottom:20px}
+.prog-bar{height:100%;background:var(--acc);width:0%;transition:width .25s ease}
+.sec-badge{display:inline-block;font:bold .85rem system-ui,sans-serif;color:var(--acc);border:1px solid var(--acc);background:var(--sel);padding:4px 10px;border-radius:6px;margin-bottom:12px}
+.q{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:20px;margin:0 0 16px;box-shadow:0 2px 8px rgba(0,0,0,.03)}
+.q.ok{border-color:var(--ok);background:var(--okbg)}
+.q.ko{border-color:var(--ko);background:var(--kobg)}
+.q p{margin:0 0 14px;font-weight:bold;font-size:1.08rem}
+.q label{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;margin:6px 0;border:1px solid var(--line);border-radius:6px;cursor:pointer;background:var(--card);transition:background .15s}
+.q label:hover:not(.locked){background:var(--sel)}
+.q label.locked{cursor:default}
+.q input{margin-top:5px;accent-color:var(--acc)}
+.q .l{font-family:system-ui,sans-serif;font-weight:bold;min-width:1.2em}
+.q label.good{border-color:var(--ok);background:var(--okbg);outline:2px solid var(--ok)}
+.q label.bad{border-color:var(--ko);background:var(--kobg);text-decoration:line-through}
+.fb{margin-top:14px;padding:12px 14px;border-left:4px solid var(--ko);background:var(--card);border-radius:0 6px 6px 0;font-size:.96rem}
+.fb.ok-fb{border-left-color:var(--ok)}
+.fb b{font-family:system-ui,sans-serif}
+.bar{margin-top:20px;display:flex;gap:12px;justify-content:space-between;align-items:center;flex-wrap:wrap}
+button{font:bold 1rem system-ui,sans-serif;padding:13px 24px;border-radius:8px;border:2px solid var(--acc);background:var(--acc);color:var(--accink);cursor:pointer}
+button.alt{background:transparent;color:var(--acc)}
+button:disabled{opacity:.45;cursor:not-allowed}
+button:focus-visible,input:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
+.summary-card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:24px;text-align:center}
+.summary-score{font:bold 2.2rem system-ui,sans-serif;color:var(--acc);margin:8px 0}
+.summary-details{font-family:system-ui,sans-serif;color:var(--mute);margin-bottom:20px}
+</style>
+</head>
+<body>
+<main>
+<h1>QCM de révision – G1 : Sociétés et environnements, des équilibres fragiles</h1>
+<p class="sub">Une question à la fois avec correction immédiate (55 questions).</p>
+
+<div id="quiz-area">
+  <div class="hud">
+    <span id="q-counter">Question 1 / 55</span>
+    <span id="score-counter">Score : 0 / 0</span>
+  </div>
+  <div class="prog-wrap"><div class="prog-bar" id="prog-bar"></div></div>
+  <div id="sec-badge" class="sec-badge"></div>
+  <div id="q-container"></div>
+  <div class="bar">
+    <button id="prev-btn" class="alt" hidden>← Précédente</button>
+    <button id="next-btn" disabled>Question suivante →</button>
+  </div>
+</div>
+
+<div id="end-area" class="summary-card" hidden>
+  <h2>QCM terminé !</h2>
+  <div class="summary-score" id="final-score"></div>
+  <div class="summary-details" id="final-pct"></div>
+  <button id="restart-btn">Recommencer le QCM</button>
+</div>
+</main>
+
+<script>
+const S=["Partie 1 – Compréhension fondamentale","Partie 2 – Maîtrise du cours et vocabulaire","Partie 3 – Niveau avancé et analyse conceptuelle","Partie 4 – Analyse documentaire et esprit critique"];
+// [partie, question, [A,B,C,D], bonne réponse (0-3), explication]
+const Q=[
+[0,"Le schéma d’introduction (Société ⇄ Environnement) décrit les relations entre les deux ainsi :",
+["Les sociétés exploitent et dégradent leur environnement ; en retour, celui-ci ne leur apporte que des ressources, sans contrainte.","Les sociétés aménagent, exploitent, valorisent et protègent leur environnement ; en retour, celui-ci est un cadre de vie qui contraint leur installation et leurs activités, leur offre des ressources et leur fait courir des risques.","L’environnement aménage et protège les sociétés, qui lui imposent en retour des contraintes d’installation et de production.","Les sociétés s’adaptent à un environnement qu’elles ne transforment pas, celui-ci leur fournissant ressources et risques."],1,
+"Le schéma distingue deux sens. Société → environnement : aménager, exploiter, valoriser, protéger. Environnement → société : cadre de vie, contrainte, ressources, risque. A oublie les contraintes et les risques et réduit l’action des sociétés ; C inverse les sens ; D nie l’impact des sociétés, ce qui contredit l’accroche sur l’anthropocène."],
+[0,"Quelle relation entre les notions est exacte ?",
+["Un risque naît de la rencontre entre un aléa et une société vulnérable, exposée à cet aléa.","Un risque est un autre mot pour désigner un aléa.","Le risque est la réalisation brutale de l’aléa, qui provoque victimes et destructions.","La vulnérabilité est la cause naturelle du risque, l’aléa ne faisant que l’amplifier."],0,
+"Aléa + vulnérabilité (société exposée) → risque. B confond aléa et risque. C décrit la catastrophe, pas le risque. D inverse les rôles : l’aléa est le facteur naturel, la vulnérabilité la fragilité de la société."],
+[0,"Un séisme de magnitude 7,3 a fait environ 200 000 morts à Haïti (2010) et aucun mort à Okinawa. Quelle analyse est correcte ?",
+["L’aléa était beaucoup plus intense à Haïti.","La population d’Okinawa n’était pas exposée à l’aléa.","À aléa comparable, la vulnérabilité diffère : Haïti était peu préparée, Okinawa l’était.","L’aléa n’était pas de même nature : tellurique à Haïti, hydrologique à Okinawa."],2,
+"Même magnitude (7,3), conséquences opposées : l’aléa est identique, c’est la vulnérabilité qui diffère (Haïti non préparée et plus peuplée ; Okinawa préparée). A est contredite par les magnitudes identiques. B est fausse (Okinawa est exposée mais résiste). D est fausse : les deux aléas sont telluriques."],
+[0,"La catastrophe de 2011 au Japon illustre :",
+["Un aléa purement naturel, sans composante humaine.","Un enchaînement d’aléas, où un aléa naturel déclenche un aléa technologique.","Un accident industriel indépendant du séisme.","Une catastrophe due uniquement à l’absence de prévision du séisme."],1,
+"Le séisme (aléa tellurique) provoque le tsunami, qui provoque l’accident nucléaire (aléa technologique). C’est l’exemple cité dans le doc 2 de l’activité 2 : « un tsunami provoque une catastrophe nucléaire ». A et C nient l’enchaînement ; D est réducteur : les vulnérabilités techniques comptent aussi."],
+[0,"L’évacuation de la population sur 30 km décidée après l’accident de Fukushima relève :",
+["Du court terme : gestion de crise (« resist / withstand »).","Du moyen terme : se remettre de la catastrophe (« recover »).","Du long terme : se protéger.","De la prévention, car elle protège la population."],0,
+"Court terme = gestion de crise : évacuation sur 30 km et refroidissement des réacteurs. Le moyen terme est la décontamination, le long terme la protection. D est un piège : l’évacuation a lieu après l’accident, ce n’est donc pas de la prévention."],
+[0,"Quelle conclusion peut-on tirer du lien entre développement et consommation d’énergie ?",
+["Le niveau de développement d’un pays est corrélé à sa consommation d’énergie : chacun favorise l’autre.","Plus un pays est développé, moins il consomme d’énergie.","La consommation d’énergie est la seule cause du développement.","Les pays peu développés consomment plus d’énergie par habitant, car leurs équipements sont moins efficaces."],0,
+"La correction du schéma est circulaire : le développement permet une forte consommation d’énergie, qui à son tour favorise le développement. B et D sont fausses ; C est trop simpliste (« seule cause »)."],
+[1,"La prévision désigne :",
+["L’ensemble des actions permettant de mieux connaître les aléas (fréquence, intensité, lieux) pour les prédire, en mobilisant la communauté scientifique.","L’information et la formation des populations pour qu’elles sachent agir en cas de catastrophe.","Les aménagements et réglementations qui réduisent l’exposition aux aléas.","L’ensemble des mesures prises dans l’urgence pour gérer une catastrophe."],0,
+"Prévision = mieux connaître les aléas pour les prédire. B est la prévention, C la protection, D la gestion de crise."],
+[1,"La prévention désigne :",
+["L’ensemble des actions visant à prédire où, quand et avec quelle intensité un aléa se produira.","Les aménagements, équipements et réglementations réduisant l’exposition des activités aux aléas.","L’information et la formation des populations (secouristes, enseignants, personnels de santé…) et l’anticipation / préparation des crises.","L’ensemble des mesures prises sur le moment pour gérer la catastrophe."],2,
+"Prévention = informer, former, anticiper et préparer. A est la prévision, B la protection, D la gestion de crise."],
+[1,"La protection désigne :",
+["L’information des populations sur les comportements à adopter en cas de catastrophe.","L’ensemble des actions réduisant l’exposition des populations et des activités aux aléas (aménagements, équipements, réglementations).","L’ensemble des actions permettant de mieux connaître les aléas.","Les mesures d’urgence prises pendant la catastrophe."],1,
+"Protection = réduire l’exposition par des aménagements, équipements et réglementations (ex. la digue de 5 m). A est la prévention, C la prévision, D la gestion de crise."],
+[1,"La gestion de crise désigne :",
+["L’anticipation et la préparation des crises par la formation des acteurs.","La construction d’ouvrages destinés à limiter l’impact d’un aléa.","L’observation scientifique des aléas pour les prévoir.","L’ensemble des mesures prises par une société, sur le moment, pour gérer une catastrophe."],3,
+"Gestion de crise = mesures prises sur le moment pour gérer la catastrophe. A relève de la prévention, B de la protection, C de la prévision."],
+[2,"Quels facteurs de vulnérabilité permettent le mieux d’expliquer le bilan humain très lourd du séisme d’Haïti par rapport à Okinawa ?",
+["Un habitat peu résistant, une pauvreté importante, des secours peu organisés et une forte population exposée.","Un séisme plus profond, une faille plus active et une population très dispersée.","Une méconnaissance de l’aléa tellurique, qui est le seul facteur en cause.","Un manque de ressources en eau, qui a empêché les secours d’intervenir."],0,
+"Doc 5 de l’activité 1 : facteurs socio-économiques (pauvreté), techniques (qualité du bâti), organisationnels (secours) et spatiaux (densité). B et C sont contredites par les documents (même magnitude, plusieurs facteurs). D est hors sujet."],
+[2,"Pourquoi l’éruption d’un volcan islandais en 2010 a-t-elle eu des conséquences à l’échelle de l’hémisphère nord ?",
+["Parce que la mondialisation a multiplié les interconnexions (trafic aérien) : un aléa local peut perturber un système mondial.","Parce que cette éruption était d’une puissance sans précédent dans l’histoire.","Parce que l’Islande est un pays très vulnérable.","Parce que le nuage de cendres a touché directement des millions d’habitants."],0,
+"Doc 3 de l’activité 2 : le nuage de cendres a interrompu le trafic aérien dans tout l’hémisphère nord. La mondialisation (interconnexions) change l’échelle du risque. B et C ne figurent pas dans le document ; D est faux : les conséquences sont économiques et logistiques, pas sanitaires directes."],
+[2,"Quelle chaîne de causes explique l’arrêt du refroidissement à Fukushima Daiichi ?",
+["Le séisme détruit les réacteurs, puis le tsunami emporte la digue.","Le tsunami franchit la digue de 5 m, inonde le sous-sol et noie les générateurs ; sans électricité, le refroidissement s’arrête et le cœur risque de fondre.","Le séisme coupe l’eau de mer nécessaire, ce qui provoque l’explosion directe des réacteurs comme à Tchernobyl.","Une erreur humaine de TEPCO éteint volontairement le système de refroidissement."],1,
+"Chaîne : tsunami → digue de 5 m insuffisante → sous-sol inondé et générateurs noyés → plus d’électricité → arrêt du refroidissement → risque de fusion. A et C attribuent les dégâts directement au séisme, contrairement au témoignage de Yoshida ; D invente une faute volontaire."],
+[2,"Quelle association est correcte (Japon, avant 2011) ?",
+["Digue = prévention ; sismographes = protection ; alertes = prévision.","Digue = prévision ; sismographes = prévention ; alertes = protection.","Digue = protection ; sismographes = prévention ; alertes = prévision.","Digue = protection ; sismographes et satellites = prévision ; alertes automatiques et formation des secouristes = prévention."],3,
+"Digue = protection (aménagement) ; sismographes et satellites = prévision (connaître les aléas) ; alertes automatiques et formation = prévention. Les autres propositions mélangent ces trois notions."],
+[2,"Comment expliquer que les énergies renouvelables progressent aux États-Unis alors que l’échelon national soutient les énergies fossiles ?",
+["Elles progressent grâce aux subventions et permis d’exploitation du gouvernement fédéral.","Les échelles d’action divergent : le niveau national défend l’indépendance énergétique par les fossiles, mais des États (Californie : 100 % d’électricité propre en 2045), des villes (plans climat) et des entreprises (EDF, Google…) développent les renouvelables.","Les énergies fossiles sont épuisées sur le sol américain, ce qui force la transition.","Les accords internationaux sur le climat imposent aux États-Unis de remplacer progressivement les énergies fossiles."],1,
+"C’est le cœur de la conclusion de l’activité 7 : échelle nationale (fossiles, indépendance énergétique), fédérale (Californie, 100 % d’électricité propre en 2045), locale (plans climat urbains, entreprises). A est le piège : l’échelon national soutient les fossiles. C est faux. D est contredit par le retrait de Kyoto et de Paris."],
+[2,"Comment expliquer qu’un pays en « abondance énergétique » comme les États-Unis soit aussi un grand importateur ?",
+["Ses réserves sont épuisées, ce qui l’oblige à importer l’essentiel de sa consommation.","Il importe uniquement pour constituer des stocks stratégiques et réexporte la totalité.","Il importe par choix de dépendance à l’égard de ses alliés, car l’exploitation interne est interdite.","Sa production, bien qu’importante, ne suffit pas à couvrir une consommation très élevée : il complète par des importations (Canada, Mexique, Arabie saoudite…) et exploite aussi du pétrole à l’étranger via ses entreprises (concessions)."],3,
+"La production est élevée, mais la consommation l’est encore plus (environ 7 tep par habitant). Les États-Unis importent donc et exploitent aussi du pétrole à l’étranger par des concessions. A est fausse (abondance), B et C sont inventées."],
+[3,"Documents : site de Fukushima Daiichi (digue de 5 m, inondation de plus de 12 m), énoncé de l’activité 3 (vague de 15 m), témoignage de M. Yoshida. Quelle conclusion est la plus rigoureuse ?",
+["La digue a été détruite par le séisme avant l’arrivée du tsunami : la cause est un défaut de prévision sismique.","La digue était correctement dimensionnée, mais la centrale a été touchée par une vague exceptionnelle et imprévisible, qu’aucune protection n’aurait pu arrêter.","La protection (5 m) était très inférieure à la hauteur de l’eau (12 à 15 m) : l’écart révèle une sous-estimation de l’aléa tsunami, qui a transformé un aléa naturel en accident technologique.","Les habitants, mal formés, ont fait céder la digue en ne respectant pas les consignes d’évacuation."],2,
+"La digue de 5 m est très inférieure à l’eau mesurée (12 à 15 m) : l’aléa a été sous-estimé, d’où une protection sous-dimensionnée. Yoshida le dit : la digue « n’a pas été assez haute ». B contredit cette conclusion ; A est contredite par le témoignage (c’est l’inondation qui noie les générateurs) ; D n’a aucun appui documentaire."],
+[3,"Documents : site de Fukushima Daiichi (centrale sur le littoral « pour le refroidissement grâce à l’eau de mer »), carte des centrales au Japon, carte des enjeux de Tohoku, témoignage de M. Yoshida. Quelle lecture croisée est la mieux fondée ?",
+["Les centrales sont sur le littoral parce que les populations côtières y étaient favorables : la vulnérabilité vient du comportement des habitants.","La localisation littorale est un choix irrationnel, sans aucun avantage, qui prouve un défaut de prévention.","La localisation littorale est sans rapport avec le risque, car le tsunami a frappé tout le pays de la même manière.","La même ressource qui rend le site attractif (l’eau de mer pour refroidir) l’expose au tsunami : l’environnement est à la fois ressource et risque, et la dépendance du refroidissement à l’électricité devient le point de rupture."],3,
+"Le croisement fait apparaître un paradoxe : la proximité de la mer, indispensable au refroidissement, expose au tsunami. Le même élément de l’environnement est une ressource et un risque. A, B et C ne sont pas étayées : le choix a une logique technique, et le tsunami a frappé la côte nord-est, pas tout le pays."],
+[3,"Documents : rapport de l’analyste de l’Agence japonaise de l’énergie atomique (évacuer 250 km, dont Tokyo), rapport du géographe (évacuer Tokyo est inenvisageable), mesures effectivement mises en œuvre (évacuation sur 30 km). Quelle interprétation est la plus rigoureuse ?",
+["Les deux avis reposent sur des prémisses différentes (pire scénario pour l’analyste ; faisabilité spatiale pour le géographe : relief montagneux, 30 millions d’habitants) ; l’évacuation sur 30 km est un compromis, et l’absence d’explosion de type Tchernobyl n’invalide pas la logique de précaution.","L’analyste a eu tort : l’issue prouve que son scénario n’avait aucun fondement.","Le géographe a eu tort : évacuer Tokyo était réalisable, seule la volonté politique manquait.","Les deux avis se contredisent sur les faits (nombre de réacteurs), donc l’un des deux est faux."],0,
+"L’analyste raisonne sur un pire scénario, le géographe sur les contraintes spatiales. Ils ne se contredisent pas sur les faits. L’évacuation sur 30 km est un compromis. B est un raisonnement rétrospectif trompeur : un risque évité n’est pas un risque inexistant. C et D sont contredites par les documents."],
+[3,"Documents : carte des actions des États fédérés (majorités favorables aux accords de Paris, y compris dans des États dirigés par des climato-sceptiques), Doc 2 (Californie), Doc 3 (entreprises), position nationale (retrait de Kyoto et de Paris, soutien aux fossiles). Quelle conclusion est la mieux fondée ?",
+["Dans les États dirigés par des élus climato-sceptiques, le développement des énergies renouvelables est impossible.","La Californie est un cas isolé : ailleurs, ni les États ni les entreprises ne s’engagent.","Le soutien fédéral aux fossiles ne reflète pas un consensus : dans nombre d’États dirigés par des climato-sceptiques, une majorité se dit favorable aux accords de Paris, et des entreprises y développent des projets renouvelables ; la transition peut venir des échelles régionale et locale.","Le développement des renouvelables est uniquement la conséquence des subventions fédérales."],2,
+"La carte indique des majorités favorables aux accords de Paris dans plusieurs États dirigés par des climato-sceptiques, et les entreprises (EDF, Engie, géants du web) s’engagent. Attention : ce sont des opinions, pas des politiques adoptées, d’où la prudence « peut venir ». A généralise abusivement, B est contredite par les documents, D ignore la divergence entre échelles."],
+[0,"Dans le cours, l’« environnement » désigne :",["L’ensemble des milieux naturels non transformés par l’être humain.","L’ensemble des ressources naturelles qu’une société peut exploiter.","Le climat, le relief et la végétation d’un territoire.","Le cadre de vie des sociétés, qui associe éléments naturels et éléments artificiels."],3,"L’environnement est un cadre de vie à la fois naturel et artificiel. A et C le limitent au naturel (piège classique) ; B le confond avec les ressources."],
+[0,"Une « société » est :",["Un groupe d’êtres humains organisé selon des règles et des normes.","Un ensemble d’individus vivant sur un même territoire, quelle que soit leur organisation.","L’ensemble des acteurs économiques d’un pays (entreprises, ménages, administrations).","Un État et ses institutions politiques."],0,"Une société est un groupe humain organisé avec des règles et des normes. B oublie l’organisation, C est une vision purement économique, D réduit la société à l’État."],
+[0,"Quels sont les trois facteurs, présentés en introduction, qui font évoluer les relations société/environnement ?",["Mondialisation, avancées technologiques, changement climatique.","Urbanisation, mondialisation, croissance démographique.","Urbanisation, croissance démographique, changement climatique.","Croissance démographique, changement climatique, avancées technologiques."],2,"L’introduction cite l’urbanisation, la croissance démographique et le changement climatique. Ne pas confondre avec les facteurs d’aggravation du risque du schéma de synthèse (avancées technologiques, réchauffement, croissance démographique, mondialisation), qui sont une autre liste."],
+[0,"Le terme « anthropocène », évoqué en accroche, renvoie à :",["Une ère géologique dominée par les phénomènes climatiques naturels.","Une ère proposée par certains chercheurs, où l’être humain est capable de perturber le fonctionnement de la Terre.","Une période historique qui commence avec l’urbanisation et ne concerne que les villes.","Une théorie selon laquelle l’environnement détermine entièrement le développement des sociétés."],1,"L’anthropocène est une ère proposée par certains chercheurs : l’humain y perturbe le fonctionnement de la Terre. A inverse l’idée, C restreint à l’urbanisation, D décrit un déterminisme environnemental sans rapport."],
+[0,"Une « catastrophe » est :",["Tout aléa naturel d’intensité forte.","Un danger potentiel pouvant affecter une société.","Le degré de fragilité d’une société face à un aléa.","La réalisation brutale d’un risque, provoquant victimes et destructions."],3,"La catastrophe est la réalisation brutale d’un risque, avec victimes et destructions. A décrit un aléa fort, B le risque, C la vulnérabilité."],
+[0,"Parmi ces événements, lequel est un aléa anthropique ?",["Une pandémie.","Un accident industriel.","Une sécheresse.","Une inondation."],1,"L’accident industriel est un aléa technologique, donc anthropique. La pandémie est un aléa biologique (naturel) ; sécheresse (climatique) et inondation (hydrologique) sont naturelles. La pandémie est le piège habituel."],
+[0,"Une éruption volcanique est un aléa :",["Naturel, géophysique, de type tellurique.","Naturel, hydrologique.","Anthropique, technologique.","Naturel, climatique."],0,"D’après le doc 3 de l’activité 1, séismes, volcanisme et mouvements de terrain sont des aléas telluriques, donc géophysiques et naturels."],
+[0,"Dans le schéma de synthèse, quel élément correspond à un facteur de vulnérabilité socio-économique ?",["La qualité des bâtiments.","L’existence d’un plan de secours.","Le niveau de pauvreté de la population.","La connaissance du risque."],2,"Socio-économique : pauvreté. Qualité des bâtiments : technique. Plan de secours : organisationnel. Connaissance du risque : cognitif."],
+[0,"D’après le document sur l’Indonésie, qu’est-ce qui rend les habitants de Jakarta plus vulnérables ?",["Son éloignement du littoral, qui complique les secours.","La diminution des précipitations, qui fragilise l’approvisionnement.","Le déclin de sa population urbaine, qui affaiblit les services publics.","L’extension d’une ville littorale déjà sujette aux inondations, avec des populations pauvres dans des habitats précaires sur pilotis."],3,"Le document indique que la capitale s’étend sur le littoral, compte 10 millions d’habitants, subit des inondations régulières, et que les plus pauvres vivent dans des maisons précaires sur pilotis. A, B et C sont contraires au texte."],
+[0,"Quelle mesure relève du moyen terme (se remettre de la catastrophe) ?",["L’aspersion continue des réacteurs pour les refroidir.","Le renforcement des réglementations dans les centrales.","La décontamination des habitations, des sols, des routes et des forêts.","La mise à l’arrêt temporaire du parc nucléaire pour inspections."],2,"La décontamination est la mesure de moyen terme (« recover »). A est du court terme ; B et D sont des mesures de long terme (se protéger)."],
+[0,"Quelles sont les trois grandes régions consommatrices d’énergie en 2017 sur la carte étudiée ?",["États-Unis, Russie, Moyen-Orient.","Chine, Inde, Afrique.","Europe, Chine, Inde.","États-Unis, Europe, Chine."],3,"Les trois plus gros cercles de la carte de 2017 sont États-Unis, Europe et Chine. L’Inde, la Russie et le Moyen-Orient ont des cercles plus petits, d’où les pièges A, B et C."],
+[0,"Pourquoi dit-on que les États-Unis sont en situation d’« abondance énergétique » ?",["Parce qu’ils importent l’essentiel de leur pétrole.","Parce qu’ils disposent sur leur territoire de ressources abondantes (bassins d’hydrocarbures, gaz et pétrole de schiste) exploitées par de grandes entreprises.","Parce que leur consommation par habitant est faible.","Parce que les énergies renouvelables couvrent l’essentiel de leurs besoins."],1,"L’abondance énergétique est la situation d’un pays disposant de grandes ressources sur son territoire. A et C sont contraires au texte ; D est faux : les fossiles dominent."],
+[0,"En Angola, ExxonMobil exploite du pétrole :",["Après avoir acheté définitivement les terrains à l’État angolais.","En tant qu’entreprise publique américaine, sans contrepartie financière.","Dans le cadre de concessions, en échange d’un loyer versé au gouvernement angolais.","En partenariat avec le gouvernement américain, qui perçoit les redevances."],2,"Le document précise qu’ExxonMobil exploite le pétrole angolais « en échange d’un loyer versé au gouvernement angolais ». Une concession est un droit d’exploiter, pas une propriété (A)."],
+[0,"Comment extrait-on le gaz de schiste ?",["On fore un puits vertical dans la roche, puis le gaz remonte seul sous l’effet de la pression naturelle.","On excave la roche en mine à ciel ouvert, puis on la chauffe en surface pour libérer le gaz.","On injecte du gaz carbonique dans un forage vertical pour dissoudre la roche et récupérer le gaz.","On fore verticalement puis horizontalement, puis on injecte à haute pression de l’eau mélangée à du sable et à des produits chimiques pour fracturer la roche."],3,"La technique est la fracturation hydraulique : forage vertical puis horizontal, injection d’eau, de sable et de produits chimiques sous haute pression, remontée du gaz. A décrit une extraction conventionnelle."],
+[1,"La vulnérabilité d’une société est :",["La probabilité qu’un aléa se manifeste en un lieu donné.","L’intensité maximale d’un aléa que peut subir une société.","Son degré de fragilité face à un aléa, qui dépend de sa capacité de résistance.","L’ensemble des dommages causés par un aléa."],2,"La vulnérabilité est la fragilité d’une société face à un aléa. A est la probabilité de l’aléa, B son intensité, D le bilan de la catastrophe."],
+[1,"Une concession est :",["Le droit accordé par un État à une entreprise d’exploiter une ressource sur un territoire, en général contre une redevance ou un loyer.","La vente définitive d’un territoire riche en ressources à une entreprise étrangère.","L’autorisation d’importer des hydrocarbures à un prix négocié.","La prise de participation d’un État dans le capital d’une entreprise pétrolière."],0,"Une concession est un droit d’exploitation accordé par un État contre une redevance (exemple : Angola). B la confond avec une vente, C avec une licence d’importation, D avec une prise de participation."],
+[1,"Une raffinerie est :",["Un site d’extraction du pétrole brut, situé sur un gisement.","Une installation industrielle qui traite le pétrole brut pour obtenir des produits utilisables (carburants…) de meilleure qualité.","Une plateforme en eau profonde exploitant des gisements offshore.","Un terminal portuaire où le pétrole brut est stocké avant d’être transporté."],1,"La raffinerie traite et transforme le pétrole brut. Dans le bilan : exploitation puis raffinage pour obtenir un produit de meilleure qualité. A, C et D concernent l’extraction et la logistique."],
+[1,"L’abondance énergétique désigne :",["Une situation où la consommation par habitant dépasse 7 tonnes équivalent pétrole.","Une situation d’autosuffisance totale, sans aucune importation d’énergie.","Une situation où un pays produit plus d’énergie qu’il n’en exporte.","Une situation où un pays dispose, sur son territoire, de ressources énergétiques en grande quantité."],3,"L’abondance énergétique tient à la richesse des ressources présentes sur le territoire. Les États-Unis en bénéficient tout en important encore : l’autosuffisance (B) n’est pas requise. A confond avec la consommation, C avec l’exportation."],
+[1,"Le développement désigne :",["Le processus d’amélioration des conditions de vie d’une population (revenus, santé, éducation, infrastructures, accès à l’énergie…).","La seule augmentation de la production de richesses d’un pays.","L’extension des villes et la croissance de la population urbaine.","Le passage d’une économie agricole à une économie industrielle."],0,"Le développement est l’amélioration des conditions de vie d’une population. B le réduit à la croissance du PIB, C à l’urbanisation, D à l’industrialisation."],
+[1,"Une ressource est :",["Tout élément naturel présent dans un espace, qu’il soit exploité ou non.","Un élément de l’environnement qui limite l’installation et les activités d’une société.","Un élément de l’environnement que les sociétés peuvent exploiter et valoriser pour répondre à leurs besoins.","Un produit fabriqué à partir de matières premières importées."],2,"Une ressource est un élément de l’environnement que les sociétés exploitent et valorisent. A inclut les éléments non exploités (et même les aléas), B décrit une contrainte, D un produit fabriqué."],
+[2,"Rousseau écrit à Voltaire (1756) que le séisme de Lisbonne aurait fait moins de dégâts « au fond d’un désert ». Cette idée illustre que :",["L’ampleur d’une catastrophe dépend uniquement de l’intensité de l’aléa.","Une catastrophe est une punition de la Providence que l’homme ne peut pas éviter.","Les catastrophes sont plus probables dans les déserts, où les sociétés sont plus fragiles.","Une catastrophe résulte autant de la présence et de l’organisation des sociétés (concentration urbaine, vulnérabilité) que de l’aléa lui-même."],3,"Rousseau souligne que ce sont les villes concentrant des habitants qui rendent le séisme meurtrier : sans société exposée, pas de catastrophe. A et B ignorent le rôle de la société ; C est absurde (les déserts sont peu peuplés, donc peu exposés)."],
+[2,"Laquelle de ces affirmations est correcte ?",["Un séisme de magnitude 9 dans une zone inhabitée constitue un risque majeur.","Un aléa ne constitue un risque que si des biens et des personnes vulnérables y sont exposés.","Il n’y a de risque que dans les lieux où une catastrophe s’est déjà produite.","Plus l’aléa est intense, plus le risque est élevé, quelle que soit la société concernée."],1,"Le risque suppose un aléa et des enjeux vulnérables exposés. A est fausse : sans population exposée, pas de risque pour une société. C est fausse : le risque existe avant la catastrophe. D est fausse : la vulnérabilité module le risque (Haïti/Okinawa)."],
+[2,"Dans le schéma de synthèse « Les sociétés face aux risques », quel facteur est relié à l’aléa (qu’il augmente), et non à la vulnérabilité ?",["Le réchauffement climatique.","La croissance démographique.","Les avancées technologiques (nouvelles menaces).","La mondialisation."],2,"Dans le schéma, les avancées technologiques (nouvelles menaces) augmentent l’aléa (anthropique) ; réchauffement, croissance démographique et mondialisation sont reliés à la vulnérabilité."],
+[2,"Selon Ulrich Beck, la « société du risque » s’explique notamment par l’accroissement des connaissances. Quel exemple relève de cette explication ?",["Un volcan islandais en éruption paralyse le trafic aérien.","L’identification de risques dont on ignorait l’existence (amiante, perturbateurs endocriniens, trou dans la couche d’ozone).","La médiatisation de catastrophes comme Sandy ou Katrina.","L’apparition de menaces liées aux nanotechnologies et à l’intelligence artificielle."],1,"L’accroissement des connaissances permet d’identifier des aléas dont on ignorait l’existence (amiante, perturbateurs endocriniens, ozone, acidification). A illustre les conséquences inédites de menaces anciennes, C la médiatisation, D les nouvelles menaces."],
+[2,"Un élève affirme : « Il y a plus de risques aujourd’hui simplement parce que les médias en parlent davantage. » Cette affirmation est :",["Exacte : l’augmentation des risques n’est qu’une impression.","Fausse : la médiatisation n’a aucun rôle dans la perception des risques.","Exacte pour les aléas naturels, mais fausse pour les aléas technologiques.","Incomplète : la médiatisation accentue la perception de la menace, mais s’ajoutent des facteurs réels (nouvelles menaces, vulnérabilité accrue, changements d’échelle)."],3,"Beck cite la médiatisation (donc la perception) comme un facteur parmi d’autres. S’y ajoutent de vrais facteurs : nouvelles menaces, interdépendances, croissance démographique, réchauffement. A et B sont des positions extrêmes ; C est arbitraire."],
+[2,"Qu’est-ce qui distingue Fukushima de Tchernobyl d’après les documents ?",["Un seul réacteur était en cause à Fukushima, contre six à Tchernobyl.","À Fukushima, les réacteurs ont explosé et dispersé leur combustible, contrairement à Tchernobyl.","À Fukushima, les réacteurs sont restés intègres (explosions d’hydrogène, combustible non retrouvé à l’air libre), alors qu’à Tchernobyl le réacteur a été entièrement détruit et le combustible dispersé.","Aucune différence : même type d’explosion, seule la date change."],2,"À Tchernobyl, le réacteur a été éventré et le combustible dispersé ; à Fukushima, les réacteurs sont restés intègres (explosions d’hydrogène). A inverse le nombre de réacteurs (1 à Tchernobyl, 6 à Fukushima), B inverse les situations, D est fausse."],
+[2,"Quel ensemble de facteurs renforce la vulnérabilité du Japon face aux risques de 2011 ?",["Une faible densité de population, peu de côtes et l’absence de technologie nucléaire.","Un faible niveau de développement, l’absence de systèmes d’alerte et une population dispersée.","Une forte concentration de population sur le littoral (plaines côtières, relief montagneux), l’insularité et la présence de centrales nucléaires.","Un climat tropical, des sols instables et une industrie peu développée."],2,"Le tableau de l’activité 4 retient : grandes populations proches du littoral, centrales nucléaires, insularité (et plaines côtières limitées par le relief). A, B et D sont contredites : le Japon est développé, doté d’alertes et très peuplé."],
+[2,"Les mesures de long terme (inspections, transparence, réglementations renforcées, amélioration des protocoles de crise) visent à :",["Se protéger à l’avenir en réduisant la vulnérabilité technique et organisationnelle du parc nucléaire.","Se remettre des dommages causés, ce qui relève du « recover ».","Gérer la crise en cours, ce qui relève du « resist / withstand ».","Prévoir la date et l’intensité du prochain séisme."],0,"Long terme = se protéger (réduire la vulnérabilité technique et organisationnelle). B et C sont le moyen et le court terme. D est impossible : on ne prévoit pas précisément un séisme."],
+[2,"En 2023, TEPCO rejette en mer des eaux traitées contenant du tritium, diluées à 1 500 Bq/l (limite japonaise : 60 000 Bq/l ; limite OMS pour l’eau potable : 10 000 Bq/l). Quelle conclusion est la mieux justifiée ?",["Le rejet est sans aucun risque, puisque le tritium est un isotope stable de l’hydrogène.","Le niveau annoncé est très inférieur aux limites citées, mais la décision reste controversée, car elle soulève des enjeux de sécurité environnementale et de santé publique à long terme.","Le niveau annoncé dépasse la limite OMS, ce qui explique le débat.","La controverse existe uniquement parce que le tritium n’existe pas dans la nature."],1,"Le document donne 1 500 Bq/l contre 60 000 (Japon) et 10 000 (OMS) : les chiffres sont rassurants, mais la décision reste controversée. A est fausse : le tritium est radioactif (demi-vie de 12,32 ans). C est fausse. D est fausse : le tritium existe naturellement."],
+[2,"Pourquoi le gaz de schiste est-il à la fois un enjeu économique et géopolitique pour les États-Unis ?",["Parce qu’il est peu coûteux à extraire et sans conséquences locales, ce qui favorise les exportations.","Parce qu’il permet uniquement de réduire les émissions de gaz à effet de serre du pays.","Parce qu’il limite les exportations de pétrole américain.","Parce qu’il renforce l’indépendance énergétique et le rôle d’exportateur du pays (notamment face au gaz russe, dans le contexte de la guerre en Ukraine), tout en provoquant des nuisances locales (eau, séismes, biodiversité)."],3,"Le gaz de schiste renforce l’indépendance énergétique et le poids géopolitique (exportations, face au gaz russe pendant la guerre en Ukraine), avec des nuisances locales. A nie ces nuisances ; B et C sont inexacts."],
+[2,"D’après l’extrait radio, la situation de la France vis-à-vis du gaz de schiste est la suivante :",["Elle en importe tout en interdisant son extraction (fracturation hydraulique interdite en 2011).","Elle interdit à la fois l’extraction et l’importation, par principe de précaution.","Elle en extrait en petite quantité mais n’en importe pas.","Elle autorise l’extraction sous conditions d’indemnisation stricte des riverains."],0,"D’après l’extrait radio : la France importe du gaz de schiste mais en interdit l’extraction (fracturation hydraulique interdite en 2011). B et C sont fausses ; D décrit une situation absente des documents."],
+[2,"Les témoignages d’habitants et la question des dédommagements montrent que :",["Les bénéfices et les coûts de l’exploitation sont répartis équitablement entre tous les Américains.","Les coûts de l’exploitation sont essentiellement supportés par les entreprises.","Les bénéfices (indépendance énergétique, économie) sont nationaux, alors que les coûts (pollutions, dégâts, départs) sont supportés localement, avec peu de dédommagements.","Les nuisances touchent l’environnement mais pas les habitants."],2,"Les habitants parlent de dégâts, d’inondations, de produits chimiques et d’eau du robinet inflammable, avec peu de dédommagements. Bénéfices nationaux, coûts locaux. A, B et D sont contredites."],
+[2,"Quel argument du bilan sur les États-Unis montre que le lien développement/énergie fonctionne dans les deux sens ?",["Le pays riche investit pour que ses habitants aient accès à l’énergie (développement → consommation), et l’abondance d’énergie dès le début du XXe siècle a permis son développement (consommation → développement).","Le pays est riche, donc il consomme beaucoup d’énergie.","Le pays consomme beaucoup d’énergie, donc il est riche.","Le pays produit de l’énergie pour l’exporter, donc il se développe."],0,"Le bilan montre le sens développement → consommation (investissement de l’État pour l’accès à l’énergie) et le sens consommation → développement (production et consommation dès le XXe siècle). B et C n’en donnent qu’un seul sens ; D est hors sujet."],
+[2,"Quelle application de la grille « aléa – vulnérabilité – risque – catastrophe » à Fukushima est correcte ?",["Aléa : l’explosion d’hydrogène ; vulnérabilité : le tsunami ; risque : la décontamination ; catastrophe : le séisme.","Aléa : la fusion des cœurs ; vulnérabilité : l’évacuation ; risque : le rejet d’eau traitée ; catastrophe : la digue.","Aléa : séisme puis tsunami, déclenchant un aléa technologique ; vulnérabilité : littoral peuplé, digue insuffisante, générateurs exposés ; risque : fusion des cœurs et rejets radioactifs ; catastrophe : leur réalisation brutale.","Aléa : la centrale nucléaire ; vulnérabilité : la radioactivité ; risque : le séisme ; catastrophe : l’évacuation."],2,"C’est l’application exacte de la grille : aléa naturel déclenchant un aléa technologique, vulnérabilité (littoral peuplé, digue insuffisante, générateurs exposés), risque (fusion, rejets), catastrophe (réalisation brutale). Les autres propositions inversent les notions."],
+[3,"Documents : Doc 2 de l’activité 2 (Beck : « conséquences inédites de menaces anciennes » : Eyjafjöll, Fukushima, Katrina), Doc 3 (éruption islandaise), documents sur le Japon. Quel point commun explique que ces aléas anciens aient des conséquences nouvelles ?",["L’intensité des aléas naturels augmente partout, ce qui rend ces catastrophes plus fréquentes.","Des aléas anciens rencontrent des sociétés dont les systèmes techniques et les interdépendances (trafic aérien mondial, centrales côtières, infrastructures) créent de nouvelles vulnérabilités : progrès technologique et mondialisation changent la nature et l’échelle des conséquences.","Ces catastrophes résultent de leur seule médiatisation, qui les rend plus visibles.","Ces trois événements sont d’origine anthropique, et non naturelle."],1,"Beck parle de « conséquences inédites de menaces anciennes » : l’aléa (éruption, tsunami, cyclone) est ancien, mais la société technologique et mondialisée crée de nouvelles vulnérabilités. A n’est pas dans les documents ; C est un facteur secondaire ici ; D est faux : l’aléa déclencheur est naturel."]
+];
+
+Q.sort((a,b)=>a[0]-b[0]);
+const L="ABCD";
+let idx=0;
+const answers=new Array(Q.length).fill(null);
+
+const quizArea=document.getElementById("quiz-area");
+const endArea=document.getElementById("end-area");
+const qCounter=document.getElementById("q-counter");
+const scoreCounter=document.getElementById("score-counter");
+const progBar=document.getElementById("prog-bar");
+const secBadge=document.getElementById("sec-badge");
+const qContainer=document.getElementById("q-container");
+const prevBtn=document.getElementById("prev-btn");
+const nextBtn=document.getElementById("next-btn");
+
+function updateHud(){
+  const answeredCount=answers.filter(a=>a!==null).length;
+  const scoreCount=answers.reduce((acc,a,i)=>acc+(a===Q[i][3]?1:0),0);
+  qCounter.textContent=`Question ${idx+1} / ${Q.length}`;
+  scoreCounter.textContent=`Score : ${scoreCount} / ${answeredCount}`;
+  progBar.style.width=`${(answeredCount/Q.length)*100}%`;
+}
+
+function render(){
+  const q=Q[idx];
+  const chosen=answers[idx];
+  const isAnswered=chosen!==null;
+  const isCorrect=chosen===q[3];
+
+  secBadge.textContent=S[q[0]];
+  updateHud();
+
+  let boxClass="q";
+  if(isAnswered) boxClass+=isCorrect?" ok":" ko";
+
+  const optionsHtml=q[2].map((opt,j)=>{
+    let lblClass=isAnswered?"locked":"";
+    if(isAnswered){
+      if(j===q[3]) lblClass+=" good";
+      else if(j===chosen) lblClass+=" bad";
+    }
+    return `<label class="${lblClass}"><input type="radio" name="opt" value="${j}" ${chosen===j?"checked":""} ${isAnswered?"disabled":""}><span class="l">${L[j]}.</span><span>${opt}</span></label>`;
+  }).join("");
+
+  let fbHtml="";
+  if(isAnswered){
+    fbHtml=`<div class="fb ${isCorrect?"ok-fb":""}"><b>${isCorrect?"Bonne réponse !":"Réponse fausse."} ${!isCorrect?"Bonne réponse : "+L[q[3]]+".":""}</b><br>${q[4]}</div>`;
+  }
+
+  qContainer.innerHTML=`<fieldset class="${boxClass}" style="border-width:1px;border-style:solid"><p>${idx+1}. ${q[1]}</p>${optionsHtml}${fbHtml}</fieldset>`;
+
+  prevBtn.hidden=(idx===0);
+  nextBtn.disabled=!isAnswered;
+  nextBtn.textContent=(idx===Q.length-1)?"Voir le résultat final →":"Question suivante →";
+}
+
+qContainer.addEventListener("change",(e)=>{
+  if(e.target.name==="opt" && answers[idx]===null){
+    answers[idx]=parseInt(e.target.value,10);
+    render();
+  }
+});
+
+prevBtn.addEventListener("click",()=>{
+  if(idx>0){
+    idx--;
+    render();
+  }
+});
+
+nextBtn.addEventListener("click",()=>{
+  if(answers[idx]===null) return;
+  if(idx<Q.length-1){
+    idx++;
+    render();
+    window.scrollTo({top:0,behavior:"smooth"});
+  }else{
+    const scoreCount=answers.reduce((acc,a,i)=>acc+(a===Q[i][3]?1:0),0);
+    const pct=Math.round((scoreCount/Q.length)*100);
+    document.getElementById("final-score").textContent=`${scoreCount} / ${Q.length}`;
+    document.getElementById("final-pct").textContent=`Soit ${pct} % de bonnes réponses.`;
+    quizArea.hidden=true;
+    endArea.hidden=false;
+    window.scrollTo({top:0,behavior:"smooth"});
+  }
+});
+
+document.getElementById("restart-btn").addEventListener("click",()=>{
+  answers.fill(null);
+  idx=0;
+  endArea.hidden=true;
+  quizArea.hidden=false;
+  render();
+  window.scrollTo({top:0,behavior:"smooth"});
+});
+
+render();
+</script>
+</body>
+</html>
